@@ -64,6 +64,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //then
         적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
         총_거리가_응답됨(response, 5);
+        총_금액이_응답됨(response, 1250);
     }
 
     public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
@@ -92,5 +93,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public static void 총_거리가_응답됨(ExtractableResponse<Response> response, int totalDistance) {
         PathResponse pathResponse = response.as(PathResponse.class);
         assertThat(pathResponse.getDistance()).isEqualTo(totalDistance);
+    }
+
+    public static void 총_금액이_응답됨(ExtractableResponse<Response> response, int totalFare) {
+
     }
 }
