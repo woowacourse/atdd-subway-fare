@@ -19,6 +19,9 @@ public class LineResponse {
         this.stations = stations;
     }
 
+    public LineResponse() {
+    }
+
     public static LineResponse of(Line line) {
         List<StationResponse> stations = line.getStations().stream()
                 .map(it -> StationResponse.of(it))
