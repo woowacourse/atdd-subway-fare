@@ -1,14 +1,12 @@
 package wooteco.subway.path.ui;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import wooteco.subway.path.application.PathService;
 import wooteco.subway.path.dto.PathResponse;
 
 @RestController
+@RequestMapping("/api")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class PathController {
     private PathService pathService;
