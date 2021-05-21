@@ -1,6 +1,7 @@
 package wooteco.subway.path.domain;
 
 import java.util.List;
+import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.station.domain.Station;
 
 public class SubwayPath {
@@ -29,7 +30,7 @@ public class SubwayPath {
         return Fare.calculateFare(distance);
     }
 
-    public int calculateFareWithLine(int distance) {
-        return Fare.calculateFareWithLine(distance, sectionEdges.calculateMaxLineFare());
+    public int calculateFareWithLine(LoginMember loginMember, int distance) {
+        return Fare.calculateFareWithLine(loginMember, distance, sectionEdges.calculateMaxLineFare());
     }
 }

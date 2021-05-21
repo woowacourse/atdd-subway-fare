@@ -39,7 +39,7 @@ public class AuthService {
         String email = jwtTokenProvider.getPayload(credentials);
         try {
             Member member = memberDao.findByEmail(email);
-            return new LoginMember(member.getId(), member.getEmail(), member.getAge());
+            return new LoginMember(member.getId(), member.getEmail(), member.getAge(), true);
         } catch (Exception e) {
             return new LoginMember();
         }

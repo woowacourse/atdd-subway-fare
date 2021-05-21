@@ -26,14 +26,14 @@ public class PathService {
         this.pathFinder = pathFinder;
     }
 
-    public PathResponse findPath(Long source, Long target) {
+    public PathResponse findPath(LoginMember loginMember, Long source, Long target) {
         try {
             List<Line> lines = lineService.findLines();
             Station sourceStation = stationService.findStationById(source);
             Station targetStation = stationService.findStationById(target);
             SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
 
-            return PathResponseAssembler.assemble(subwayPath);
+            return PathResponseAssembler.assemble(loginMember, subwayPath);
         } catch (Exception e) {
             throw new InvalidPathException();
         }
