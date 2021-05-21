@@ -38,22 +38,22 @@ public class MemberDao {
     }
 
     public void update(Member member) {
-        String sql = "update member set email = ?, password = ?, age = ? where id = ?";
+        String sql = "update MEMBER set email = ?, password = ?, age = ? where id = ?";
         jdbcTemplate.update(sql, new Object[]{member.getEmail(), member.getPassword(), member.getAge(), member.getId()});
     }
 
     public void deleteById(Long id) {
-        String sql = "delete from member where id = ?";
+        String sql = "delete from MEMBER where id = ?";
         jdbcTemplate.update(sql, id);
     }
 
     public Member findById(Long id) {
-        String sql = "select * from member where id = ?";
+        String sql = "select * from MEMBER where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
     public Member findByEmail(String email) {
-        String sql = "select * from member where email = ?";
+        String sql = "select * from MEMBER where email = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, email);
     }
 }
