@@ -28,8 +28,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
 	// db
-	implementation group: 'mysql', name: 'mysql-connector-java', version: '5.1.38'
-
+	runtimeOnly 'mysql:mysql-connector-java'
 	runtimeOnly 'com.h2database:h2'
 
 	// jgrapht
