@@ -93,4 +93,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
         PathResponse pathResponse = response.as(PathResponse.class);
         assertThat(pathResponse.getDistance()).isEqualTo(totalDistance);
     }
+
+    @Test
+    void fare() {
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(4L, 1L);
+
+        PathResponse pathResponse = response.as(PathResponse.class);
+        System.out.println(pathResponse.getDistance());
+        assertThat(pathResponse.getFare()).isEqualTo(1350);
+    }
 }
