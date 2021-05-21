@@ -8,3 +8,5 @@ spring:
     url: jdbc:mysql://localhost:3306/subway?useSSL=true&serverTimezone=UTC
     username: root
     password: root
+    initialization-mode: always
+    schema: schema.sql
