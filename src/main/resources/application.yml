@@ -1,15 +1,19 @@
 spring:
+    profiles:
+        active: local
+---
+spring:
     config:
         activate:
             on-profile: "local"
     datasource:
         driver-class-name: org.h2.Driver
-            url: jdbc:h2:mem:subway
-                username: sa
-                password:
-            h2:
-                console:
-                    enabled: true
+        url: jdbc:h2:mem:subway
+        username: sa
+        password:
+        h2:
+            console:
+                enabled: true
 ---
 spring:
     config:
