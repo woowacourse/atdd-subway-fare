@@ -2,8 +2,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://54.180.108.67:8080/db_name?serverTimezone=UTC&characterEncoding=UTF-8
-    username: root
-    password: root
+    username: bepoz
+    password: bepoz
   h2:
     console:
       enabled: true
