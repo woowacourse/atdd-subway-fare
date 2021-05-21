@@ -23,7 +23,7 @@ import static wooteco.subway.line.SectionAcceptanceTest.지하철_구간_등록�
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
 @DisplayName("지하철 경로 조회")
-public class PathAcceptanceTest extends AcceptanceTest {
+public class PathFareByDistanceAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
@@ -79,7 +79,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
         신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", x역, c역, 10);
         이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", a역, x역, 10);
         삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", a역, c역, 5);
-
         사호선 = 지하철_노선_등록되어_있음("사호선", "bg-red-600", a역, d역, 10);
         오호선 = 지하철_노선_등록되어_있음("오호선", "bg-red-600", a역, e역, 11);
         육호선 = 지하철_노선_등록되어_있음("육호선", "bg-red-600", a역, f역, 15);
@@ -93,7 +92,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_구간_등록되어_있음(삼호선, a역, b역, 3);
     }
 
-    @DisplayName("두 역의 최단 거리 경로, 요금을 조회한다.")
+    @DisplayName("두 역의 최단 거리 경로와 거리를 조회한다.")
     @Test
     void findPathByDistance() {
         //when
@@ -111,8 +110,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 거리_경로_조회_요청(1L, 4L);
 
         //then
-        적절한_경로_응답됨(response, Lists.newArrayList(a역, d역));
-        총_거리가_응답됨(response, 10);
+//        적절한_경로_응답됨(response, Lists.newArrayList(a역, d역));
+//        총_거리가_응답됨(response, 10);
         총_요금이_응답됨(response, 1250);
     }
 
