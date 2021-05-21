@@ -9,6 +9,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.auth.AuthAcceptanceTest;
+import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.dto.StationResponse;
@@ -80,9 +82,47 @@ public class PathAcceptanceTest extends AcceptanceTest {
         총_금액이_응답됨(response, 2250);
     }
 
+    @DisplayName("비로그인 사용자가 두 역의 최단 거리 경로를 조회한다.")
+    @Test
+    void findPathByDistanceWhenNotLogin() {
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(3L, 2L);
+
+        //then
+        적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
+        총_거리가_응답됨(response, 5);
+        총_금액이_응답됨(response, 1250);
+    }
+
+    @DisplayName("로그인 사용자가 두 역의 최단 거리 경로를 조회한다.")
+    @Test
+    void findPathByDistanceWhenLogin() {
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청_인증_헤더(3L, 2L);
+
+        //then
+        적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
+        총_거리가_응답됨(response, 5);
+        총_금액이_응답됨(response, 720);
+    }
+
     public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
         return RestAssured
                 .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/paths?source={sourceId}&target={targetId}", source, target)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 거리_경로_조회_요청_인증_헤더(long source, long target) {
+        AuthAcceptanceTest.회원_등록되어_있음("email@email.com","1234",15);
+        final TokenResponse tokenResponse
+                = AuthAcceptanceTest.로그인되어_있음("email@email.com", "1234");
+
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/paths?source={sourceId}&target={targetId}", source, target)
                 .then().log().all()
