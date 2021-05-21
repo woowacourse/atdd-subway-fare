@@ -42,6 +42,6 @@ spring:
       on-profile: prod
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/subway_local?useSSL=false&serverTimezone=UTC&characterEncoding=utf8
-    username: root
-    password: root
+    url: jdbc:mysql://localhost:3306/subway?useSSL=false&serverTimezone=UTC&characterEncoding=utf8
+    username: bada
+    password: bada
