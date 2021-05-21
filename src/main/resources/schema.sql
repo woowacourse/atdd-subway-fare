@@ -1,3 +1,8 @@
+DROP TABLE SECTION;
+DROP TABLE STATION;
+DROP TABLE LINE;
+DROP TABLE MEMBER;
+
 create table if not exists STATION
 (
     id bigint auto_increment not null,
