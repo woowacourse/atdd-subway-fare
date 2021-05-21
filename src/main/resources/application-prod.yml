@@ -5,6 +5,6 @@ spring:
         - prod
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/subway?useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/subway?useSSL=true&serverTimezone=UTC
     username: root
     password: root
