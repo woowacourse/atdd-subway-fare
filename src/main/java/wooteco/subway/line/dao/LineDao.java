@@ -23,7 +23,7 @@ public class LineDao {
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("line")
+                .withTableName("LINE")
                 .usingGeneratedKeyColumns("id");
     }
 
@@ -106,6 +106,6 @@ public class LineDao {
     }
 
     public void deleteById(Long id) {
-        jdbcTemplate.update("delete from Line where id = ?", id);
+        jdbcTemplate.update("delete from LINE where id = ?", id);
     }
 }
