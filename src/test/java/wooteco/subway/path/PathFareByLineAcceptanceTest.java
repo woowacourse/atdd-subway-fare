@@ -25,11 +25,13 @@ public class PathFareByLineAcceptanceTest extends AcceptanceTest {
     private LineResponse 일호선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
+    private LineResponse 사호선;
 
     private StationResponse a역;
     private StationResponse b역;
     private StationResponse c역;
     private StationResponse d역;
+    private StationResponse e역;
 
     @BeforeEach
     public void setUp() {
@@ -39,10 +41,12 @@ public class PathFareByLineAcceptanceTest extends AcceptanceTest {
         b역 = 지하철역_등록되어_있음("b역");
         c역 = 지하철역_등록되어_있음("c역");
         d역 = 지하철역_등록되어_있음("d역");
+        e역 = 지하철역_등록되어_있음("e역");
 
-        일호선 = 지하철_노선_등록되어_있음("일호선", "bg-red-600", a역, b역, 1);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", b역, c역, 1);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", c역, d역, 1);
+        일호선 = 지하철_노선_등록되어_있음("일호선", "bg-red-600", 0, a역, b역, 1);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 500, b역, c역, 1);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 900, c역, d역, 1);
+        사호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 900, b역, e역, 1);
     }
 
     @DisplayName("추가요금 0원인 노선 이용.")
@@ -78,6 +82,50 @@ public class PathFareByLineAcceptanceTest extends AcceptanceTest {
         총_요금이_응답됨(response, 2150);
     }
 
+    @DisplayName("추가요금 0원, 500원인 노선 이용")
+    @Test
+    void findFareByLine4() {
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(1L, 3L);
+
+        //then
+        적절한_경로_응답됨(response, Lists.newArrayList(a역, b역, c역));
+        총_요금이_응답됨(response, 1750);
+    }
+
+    @DisplayName("추가요금 0원, 900원인 노선 이용")
+    @Test
+    void findFareByLine5() {
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(1L, 5L);
+
+        //then
+        적절한_경로_응답됨(response, Lists.newArrayList(a역, b역, e역));
+        총_요금이_응답됨(response, 2150);
+    }
+
+    @DisplayName("추가요금 500원, 900원인 노선 이용")
+    @Test
+    void findFareByLine6() {
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(2L, 4L);
+
+        //then
+        적절한_경로_응답됨(response, Lists.newArrayList(b역, c역, d역));
+        총_요금이_응답됨(response, 2150);
+    }
+
+    @DisplayName("추가요금 0원, 500원, 900원인 노선 이용")
+    @Test
+    void findFareByLine7() {
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(1L, 4L);
+
+        //then
+        적절한_경로_응답됨(response, Lists.newArrayList(a역, b역, c역, d역));
+        총_요금이_응답됨(response, 2150);
+    }
+
     public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
         return RestAssured
             .given().log().all()
@@ -99,11 +147,6 @@ public class PathFareByLineAcceptanceTest extends AcceptanceTest {
             .collect(Collectors.toList());
 
         assertThat(stationIds).containsExactlyElementsOf(expectedPathIds);
-    }
-
-    public static void 총_거리가_응답됨(ExtractableResponse<Response> response, int totalDistance) {
-        PathResponse pathResponse = response.as(PathResponse.class);
-        assertThat(pathResponse.getDistance()).isEqualTo(totalDistance);
     }
 
     public static void 총_요금이_응답됨(ExtractableResponse<Response> response, int fare) {
