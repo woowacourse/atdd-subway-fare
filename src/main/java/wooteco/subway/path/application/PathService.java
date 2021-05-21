@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
+import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.path.domain.Fare;
 import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.path.dto.PathResponse;
@@ -12,6 +13,7 @@ import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -29,19 +31,27 @@ public class PathService {
         this.fareCalculator = new FareCalculator();
     }
 
-    public PathResponse findPath(Long source, Long target) {
+    public PathResponse findPath(Long source, Long target, Optional<LoginMember> loginMember) {
         try {
             List<Line> lines = lineService.findLines();
             Station sourceStation = stationService.findStationById(source);
             Station targetStation = stationService.findStationById(target);
             SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
 
-            Fare fareByDistance = fareCalculator.getFareByDistance(new Fare(DEFAULT_FARE), subwayPath.calculateDistance());
-            Fare fareWithLineExtraFare = fareCalculator.getFareWithLineExtraFare(fareByDistance, subwayPath.getLines());
-            // TODO: 로그인 되어있을 경우, 사용자 나이로 할인 적용
-            return PathResponseAssembler.assemble(subwayPath, fareWithLineExtraFare);
+            Fare totalFare = getTotalFare(loginMember, subwayPath);
+            return PathResponseAssembler.assemble(subwayPath, totalFare);
         } catch (Exception e) {
             throw new InvalidPathException();
         }
+    }
+
+    private Fare getTotalFare(Optional<LoginMember> loginMember, SubwayPath subwayPath) {
+        Fare fareByDistance = fareCalculator.getFareByDistance(new Fare(DEFAULT_FARE), subwayPath.calculateDistance());
+        Fare fareWithLineExtraFare = fareCalculator.getFareWithLineExtraFare(fareByDistance, subwayPath.getLines());
+
+        if (!loginMember.isPresent()) {
+            return fareWithLineExtraFare;
+        }
+        return fareCalculator.getFareByAge(loginMember.get().getAge(), fareWithLineExtraFare);
     }
 }
