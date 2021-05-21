@@ -1,4 +1,4 @@
-create table if not exists STATION
+fcreate table if not exists STATION
 (
     id bigint auto_increment not null,
     name varchar(255) not null unique,
