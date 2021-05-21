@@ -15,6 +15,10 @@ public class Fare {
         return calculateFarePerDistance(distance - BASIC_DISTANCE) + BASIC_FARE;
     }
 
+    public static int calculateFareWithLine(int distance, int overLineFare) {
+        return calculateFare(distance) + overLineFare;
+    }
+
     private static int calculateFarePerDistance(int distance) {
         if (distance <= MIDDLE_DISTANCE) {
             return calculateOverFare(distance, 5, OVER_FARE);
