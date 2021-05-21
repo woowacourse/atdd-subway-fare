@@ -70,7 +70,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/paths?source={sourceId}&target={targetId}", source, target)
+                .when().get("/api/paths?source={sourceId}&target={targetId}", source, target)
                 .then().log().all()
                 .extract();
     }
