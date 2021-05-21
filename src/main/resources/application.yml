@@ -8,4 +8,5 @@ security:
       expire-length: 3600000
 
 
-spring.profiles.active=prod
+spring:
+  profiles.active: prod
