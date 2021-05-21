@@ -1,12 +1,15 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306
+    url: jdbc:mysql://localhost:3306/subway
     username: root
     password: root
   h2:
     console:
       enabled: true
+  config:
+    activate:
+      on-profile: prod
 handlebars:
   suffix: .html
   enabled: true

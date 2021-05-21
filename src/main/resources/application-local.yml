@@ -7,6 +7,9 @@ spring:
   h2:
     console:
       enabled: true
+  config:
+    activate:
+      on-profile: local
 handlebars:
   suffix: .html
   enabled: true
