@@ -42,10 +42,10 @@ public class LineDao {
                 "S.id as section_id, S.distance as section_distance, " +
                 "UST.id as up_station_id, UST.name as up_station_name, " +
                 "DST.id as down_station_id, DST.name as down_station_name " +
-                "from LINE L \n" +
+                "from line L \n" +
                 "left outer join SECTION S on L.id = S.line_id " +
-                "left outer join STATION UST on S.up_station_id = UST.id " +
-                "left outer join STATION DST on S.down_station_id = DST.id " +
+                "left outer join station UST on S.up_station_id = UST.id " +
+                "left outer join station DST on S.down_station_id = DST.id " +
                 "WHERE L.id = ?";
 
         List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, new Object[]{id});
@@ -62,10 +62,10 @@ public class LineDao {
                 "S.id as section_id, S.distance as section_distance, " +
                 "UST.id as up_station_id, UST.name as up_station_name, " +
                 "DST.id as down_station_id, DST.name as down_station_name " +
-                "from LINE L \n" +
-                "left outer join SECTION S on L.id = S.line_id " +
-                "left outer join STATION UST on S.up_station_id = UST.id " +
-                "left outer join STATION DST on S.down_station_id = DST.id ";
+                "from line L \n" +
+                "left outer join section S on L.id = S.line_id " +
+                "left outer join station UST on S.up_station_id = UST.id " +
+                "left outer join station DST on S.down_station_id = DST.id ";
 
         List<Map<String, Object>> result = jdbcTemplate.queryForList(sql);
         Map<Long, List<Map<String, Object>>> resultByLine = result.stream().collect(Collectors.groupingBy(it -> (Long) it.get("line_id")));

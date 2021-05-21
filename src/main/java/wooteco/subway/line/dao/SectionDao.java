@@ -20,7 +20,7 @@ public class SectionDao {
     public SectionDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
-                .withTableName("SECTION")
+                .withTableName("section")
                 .usingGeneratedKeyColumns("id");
     }
 
@@ -35,7 +35,7 @@ public class SectionDao {
     }
 
     public void deleteByLineId(Long lineId) {
-        jdbcTemplate.update("delete from SECTION where line_id = ?", lineId);
+        jdbcTemplate.update("delete from section where line_id = ?", lineId);
     }
 
     public void insertSections(Line line) {
