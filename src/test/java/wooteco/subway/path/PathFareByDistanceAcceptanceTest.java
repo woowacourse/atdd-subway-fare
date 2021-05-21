@@ -22,7 +22,8 @@ import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되�
 import static wooteco.subway.line.SectionAcceptanceTest.지하철_구간_등록되어_있음;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
-@DisplayName("지하철 경로 조회")
+// TODO 최단거리 테스트는 파일 분리하기
+@DisplayName("지하철 경로 조회 - 거리에 따른 추가요금")
 public class PathFareByDistanceAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
     private LineResponse 이호선;
@@ -50,15 +51,6 @@ public class PathFareByDistanceAcceptanceTest extends AcceptanceTest {
     private StationResponse j역;
     private StationResponse k역;
 
-
-
-    /**
-     * 교대역    --- *2호선* ---   강남역
-     * |                        |
-     * *3호선*                   *신분당선*
-     * |                        |
-     * 남부터미널역  --- *3호선* ---   양재
-     */
     @BeforeEach
     public void setUp() {
         super.setUp();
