@@ -7,6 +7,9 @@ spring:
         activate:
             on-profile: "local"
     datasource:
+        schema:
+            - classpath:schema.sql
+        initialization-mode: always
         driver-class-name: org.h2.Driver
         url: jdbc:h2:mem:subway
         username: sa
@@ -20,6 +23,9 @@ spring:
         activate:
             on-profile: "test"
     datasource:
+        schema:
+            - classpath:schema.sql
+        initialization-mode: always
         driver-class-name: org.h2.Driver
         url: jdbc:h2:mem:testdb
         username: sa
@@ -33,13 +39,13 @@ spring:
         activate:
             on-profile: "prod"
     datasource:
+        schema:
+            - classpath:schema.sql
+        initialization-mode: always
         driver-class-name: com.mysql.cj.jdbc.Driver
         url: jdbc:mysql://localhost:3306/subway?useSSL=false&serverTimezone=UTC
         username: root
         password: 1234
-        schema:
-            - classpath:schema.sql
-        initialization-mode: always
 ---
 handlebars:
     suffix: .html
