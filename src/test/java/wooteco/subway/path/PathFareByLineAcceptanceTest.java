@@ -1,58 +1,54 @@
 package wooteco.subway.path;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
-import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
-
 import com.google.common.collect.Lists;
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.line.dto.LineResponse;
-import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.dto.StationResponse;
+
+import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
+import static wooteco.subway.path.PathTest.*;
+import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
 @DisplayName("지하철 경로 조회 - 노선에 따른 추가요금")
 public class PathFareByLineAcceptanceTest extends AcceptanceTest {
+    private static final String COLOR = "bg-red-600";
+
     private LineResponse 일호선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
 
-    private StationResponse a역;
-    private StationResponse b역;
-    private StationResponse c역;
-    private StationResponse d역;
+    private StationResponse A역;
+    private StationResponse B역;
+    private StationResponse C역;
+    private StationResponse D역;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        a역 = 지하철역_등록되어_있음("a역");
-        b역 = 지하철역_등록되어_있음("b역");
-        c역 = 지하철역_등록되어_있음("c역");
-        d역 = 지하철역_등록되어_있음("d역");
+        A역 = 지하철역_등록되어_있음("A역");
+        B역 = 지하철역_등록되어_있음("B역");
+        C역 = 지하철역_등록되어_있음("C역");
+        D역 = 지하철역_등록되어_있음("D역");
 
-        일호선 = 지하철_노선_등록되어_있음("일호선", "bg-red-600", a역, b역, 1);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", b역, c역, 1);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", c역, d역, 1);
+        일호선 = 지하철_노선_등록되어_있음("1호선", A역, B역, 1);
+        이호선 = 지하철_노선_등록되어_있음("2호선", B역, C역, 1);
+        삼호선 = 지하철_노선_등록되어_있음("3호선", C역, D역, 1);
     }
 
     @DisplayName("추가요금 0원인 노선 이용.")
     @Test
     void findFareByLine1() {
         //when
-        ExtractableResponse<Response> response = 거리_경로_조회_요청(1L, 2L);
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(A역.getId(), B역.getId());
 
         //then
-        적절한_경로_응답됨(response, Lists.newArrayList(a역, b역));
+        적절한_경로_응답됨(response, Lists.newArrayList(A역, B역));
         총_요금이_응답됨(response, 1250);
     }
 
@@ -60,10 +56,10 @@ public class PathFareByLineAcceptanceTest extends AcceptanceTest {
     @Test
     void findFareByLine2() {
         //when
-        ExtractableResponse<Response> response = 거리_경로_조회_요청(2L, 3L);
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(B역.getId(), C역.getId());
 
         //then
-        적절한_경로_응답됨(response, Lists.newArrayList(b역, c역));
+        적절한_경로_응답됨(response, Lists.newArrayList(B역, C역));
         총_요금이_응답됨(response, 1750);
     }
 
@@ -71,43 +67,10 @@ public class PathFareByLineAcceptanceTest extends AcceptanceTest {
     @Test
     void findFareByLine3() {
         //when
-        ExtractableResponse<Response> response = 거리_경로_조회_요청(3L, 4L);
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(C역.getId(), D역.getId());
 
         //then
-        적절한_경로_응답됨(response, Lists.newArrayList(c역, d역));
+        적절한_경로_응답됨(response, Lists.newArrayList(C역, D역));
         총_요금이_응답됨(response, 2150);
-    }
-
-    public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
-        return RestAssured
-            .given().log().all()
-            .accept(MediaType.APPLICATION_JSON_VALUE)
-            .when().get("/paths?source={sourceId}&target={targetId}", source, target)
-            .then().log().all()
-            .extract();
-    }
-
-    public static void 적절한_경로_응답됨(ExtractableResponse<Response> response, ArrayList<StationResponse> expectedPath) {
-        PathResponse pathResponse = response.as(PathResponse.class);
-
-        List<Long> stationIds = pathResponse.getStations().stream()
-            .map(StationResponse::getId)
-            .collect(Collectors.toList());
-
-        List<Long> expectedPathIds = expectedPath.stream()
-            .map(StationResponse::getId)
-            .collect(Collectors.toList());
-
-        assertThat(stationIds).containsExactlyElementsOf(expectedPathIds);
-    }
-
-    public static void 총_거리가_응답됨(ExtractableResponse<Response> response, int totalDistance) {
-        PathResponse pathResponse = response.as(PathResponse.class);
-        assertThat(pathResponse.getDistance()).isEqualTo(totalDistance);
-    }
-
-    public static void 총_요금이_응답됨(ExtractableResponse<Response> response, int fare) {
-        PathResponse pathResponse = response.as(PathResponse.class);
-        assertThat(pathResponse.getFare()).isEqualTo(fare);
     }
 }

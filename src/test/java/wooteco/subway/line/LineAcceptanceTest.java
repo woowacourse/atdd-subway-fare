@@ -22,6 +22,8 @@ import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록�
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineAcceptanceTest extends AcceptanceTest {
+    private static final String COLOR = "bg-red-600";
+
     private StationResponse 강남역;
     private StationResponse downStation;
     private LineRequest lineRequest1;
@@ -35,8 +37,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         강남역 = 지하철역_등록되어_있음("강남역");
         downStation = 지하철역_등록되어_있음("광교역");
 
-        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 10);
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 15);
+        lineRequest1 = new LineRequest("신분당선", COLOR, 0, 강남역.getId(), downStation.getId(), 10);
+        lineRequest2 = new LineRequest("구신분당선", COLOR, 0, 강남역.getId(), downStation.getId(), 15);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -116,8 +118,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_삭제됨(response);
     }
 
-    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
-        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance);
+    public static LineResponse 지하철_노선_등록되어_있음(String name, StationResponse upStation, StationResponse downStation, int distance) {
+        LineRequest lineRequest = new LineRequest(name, COLOR, 0, upStation.getId(), downStation.getId(), distance);
         return 지하철_노선_등록되어_있음(lineRequest);
     }
 
