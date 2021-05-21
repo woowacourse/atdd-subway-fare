@@ -2,11 +2,12 @@ spring:
   config:
     activate:
       on-profile:
-        -prod
+        - prod
   datasource:
+    schema:
+      - classpath:schema.sql
+    initialization-mode: always
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/subway?useSSL=false&serverTimezone=UTC
     username: root
     password: root
-    schema: classpath:schema.sql
-    initialization-mode: always
