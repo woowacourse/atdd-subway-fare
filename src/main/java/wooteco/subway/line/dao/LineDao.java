@@ -23,7 +23,7 @@ public class LineDao {
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("line")
+                .withTableName("LINE")
                 .usingGeneratedKeyColumns("id");
     }
 
@@ -82,26 +82,26 @@ public class LineDao {
         List<Section> sections = extractSections(result);
 
         return new Line(
-                (Long) result.get(0).get("LINE_ID"),
-                (String) result.get(0).get("LINE_NAME"),
-                (String) result.get(0).get("LINE_COLOR"),
+                (Long) result.get(0).get("line_id"),
+                (String) result.get(0).get("line_name"),
+                (String) result.get(0).get("line_color"),
                 new Sections(sections));
     }
 
     private List<Section> extractSections(List<Map<String, Object>> result) {
-        if (result.isEmpty() || result.get(0).get("SECTION_ID") == null) {
+        if (result.isEmpty() || result.get(0).get("section_id") == null) {
             return Collections.EMPTY_LIST;
         }
         return result.stream()
-                .collect(Collectors.groupingBy(it -> it.get("SECTION_ID")))
+                .collect(Collectors.groupingBy(it -> it.get("section_id")))
                 .entrySet()
                 .stream()
                 .map(it ->
                         new Section(
                                 (Long) it.getKey(),
-                                new Station((Long) it.getValue().get(0).get("UP_STATION_ID"), (String) it.getValue().get(0).get("UP_STATION_Name")),
-                                new Station((Long) it.getValue().get(0).get("DOWN_STATION_ID"), (String) it.getValue().get(0).get("DOWN_STATION_Name")),
-                                (int) it.getValue().get(0).get("SECTION_DISTANCE")))
+                                new Station((Long) it.getValue().get(0).get("up_station_id"), (String) it.getValue().get(0).get("up_station_name")),
+                                new Station((Long) it.getValue().get(0).get("down_station_id"), (String) it.getValue().get(0).get("up_station_name")),
+                                (int) it.getValue().get(0).get("section_distance")))
                 .collect(Collectors.toList());
     }
 
