@@ -7,12 +7,8 @@ spring:
   h2:
     console:
       enabled: true
-  config:
-    activate:
-      on-profile: prod
   profiles:
     active: prod
-    include: prod
 handlebars:
   suffix: .html
   enabled: true
