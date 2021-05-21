@@ -60,7 +60,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void findPathByDistance() {
         //when
         ExtractableResponse<Response> response = 거리_경로_조회_요청(3L, 2L);
-
         //then
         적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
         총_거리가_응답됨(response, 5);

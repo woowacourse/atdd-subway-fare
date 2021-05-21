@@ -1,5 +1,6 @@
 package wooteco.subway.path.dto;
 
+import wooteco.subway.path.domain.Price;
 import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.station.dto.StationResponse;
 
@@ -13,6 +14,7 @@ public class PathResponseAssembler {
                 .collect(Collectors.toList());
 
         int distance = subwayPath.calculateDistance();
-        return new PathResponse(stationResponses, distance);
+        Price price = new Price(distance);
+        return new PathResponse(stationResponses, distance, price);
     }
 }
