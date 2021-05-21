@@ -1,7 +1,7 @@
-DROP TABLE SECTION;
-DROP TABLE STATION;
-DROP TABLE LINE;
-DROP TABLE MEMBER;
+DROP TABLE IF EXISTS SECTION;
+DROP TABLE IF EXISTS STATION;
+DROP TABLE IF EXISTS LINE;
+DROP TABLE IF EXISTS MEMBER;
 
 create table if not exists STATION
 (
@@ -26,8 +26,8 @@ create table if not exists SECTION
     down_station_id bigint not null,
     distance int not null,
     primary key(id),
-    foreign key (up_station_id) references station(id),
-    foreign key (down_station_id) references station(id)
+    foreign key (up_station_id) references STATION(id),
+    foreign key (down_station_id) references STATION(id)
 );
 
 create table if not exists MEMBER
