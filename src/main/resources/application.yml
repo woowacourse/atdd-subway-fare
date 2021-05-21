@@ -15,3 +15,39 @@ security:
     token:
       secret-key: my_secret_is_secret
       expire-length: 3600000
+
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
+    h2:
+      console:
+        enabled: true
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:13306/subway_local?useSSL=false&serverTimezone=UTC&characterEncoding=utf8
+    username: bada
+    password: bada
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/subway_local?useSSL=false&serverTimezone=UTC&characterEncoding=utf8
+    username: root
+    password: root
