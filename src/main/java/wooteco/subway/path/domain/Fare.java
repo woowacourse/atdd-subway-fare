@@ -12,7 +12,7 @@ public class Fare {
         if (distance <= BASIC_DISTANCE) {
             return BASIC_FARE;
         }
-        return calculateFarePerDistance(distance);
+        return calculateFarePerDistance(distance - BASIC_DISTANCE) + BASIC_FARE;
     }
 
     private static int calculateFarePerDistance(int distance) {
@@ -24,6 +24,6 @@ public class Fare {
 
 
     private static int calculateOverFare(int distance, int overDistance, int overFare) {
-        return (int) ((Math.ceil((distance - 1) / overDistance) + 1) * overFare) + BASIC_FARE;
+        return (int) ((Math.ceil((distance - 1) / overDistance) + 1) * overFare);
     }
 }
