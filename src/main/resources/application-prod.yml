@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306
+    username: root
+    password: 1234
+  h2:
+    console:
+      enabled: true
+  config:
+    activate:
+      on-profile: prod
+  profiles:
+    active: prod
+    include: prod
+handlebars:
+  suffix: .html
+  enabled: true
+security:
+  jwt:
+    token:
+      secret-key: my_secret_is_secret
+      expire-length: 3600000
