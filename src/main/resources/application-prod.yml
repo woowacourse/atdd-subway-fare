@@ -4,9 +4,7 @@ spring:
     url: jdbc:mysql://localhost:3306/Subway?serverTimezone=UTC&characterEncoding=UTF-8
     username: root
     password:
-  h2:
-    console:
-      enabled: true
+    initialization-mode: always
 handlebars:
   suffix: .html
   enabled: true
