@@ -1,47 +1,47 @@
 spring:
-  profiles:
-    active: local
-
+    config:
+        activate:
+            on-profile: "local"
+    datasource:
+        driver-class-name: org.h2.Driver
+            url: jdbc:h2:mem:subway
+                username: sa
+                password:
+            h2:
+                console:
+                    enabled: true
 ---
 spring:
-  profiles: local
-  datasource:
-      driver-class-name: org.h2.Driver
-      url: jdbc:h2:mem:subway
-      username: sa
-      password:
-    h2:
-      console:
-        enabled: true
+    config:
+        activate:
+            on-profile: "test"
+    datasource:
+        driver-class-name: org.h2.Driver
+        url: jdbc:h2:mem:testdb
+        username: sa
+        password:
+        h2:
+            console:
+                enabled: true
 ---
 spring:
-  profiles: test
-  datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:testdb
-    username: sa
-    password:
-    h2:
-      console:
-        enabled: true
+    config:
+        activate:
+            on-profile: "prod"
+    datasource:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/subway?useSSL=false&serverTimezone=UTC
+        username: root
+        password: 1234
+        h2:
+            console:
+                enabled: true
 ---
-spring:
-  profiles: prod
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/subway?useSSL=false&serverTimezone=UTC
-    username: root
-    password: 1234
-    h2:
-      console:
-        enabled: true
----
-
 handlebars:
-  suffix: .html
-  enabled: true
+    suffix: .html
+    enabled: true
 security:
-  jwt:
-    token:
-      secret-key: my_secret_is_secret
-      expire-length: 3600000
+    jwt:
+        token:
+            secret-key: my_secret_is_secret
+            expire-length: 3600000
