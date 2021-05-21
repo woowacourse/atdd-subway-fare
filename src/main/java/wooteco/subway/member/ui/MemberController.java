@@ -11,6 +11,7 @@ import wooteco.subway.member.dto.MemberResponse;
 import java.net.URI;
 
 @RestController
+@RequestMapping("/api/members")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class MemberController {
     private MemberService memberService;
@@ -19,25 +20,25 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    @PostMapping("/members")
+    @PostMapping
     public ResponseEntity createMember(@RequestBody MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
         return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
     }
 
-    @GetMapping("/members/me")
+    @GetMapping("/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         MemberResponse member = memberService.findMember(loginMember);
         return ResponseEntity.ok().body(member);
     }
 
-    @PutMapping("/members/me")
+    @PutMapping("/me")
     public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest param) {
         memberService.updateMember(loginMember, param);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/members/me")
+    @DeleteMapping("/me")
     public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         memberService.deleteMember(loginMember);
         return ResponseEntity.noContent().build();
