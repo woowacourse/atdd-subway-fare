@@ -1,12 +1,11 @@
 package wooteco.subway.line.domain;
 
-import wooteco.subway.station.domain.Station;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import wooteco.subway.station.domain.Station;
 
 public class Sections {
     private List<Section> sections = new ArrayList<>();
@@ -54,16 +53,16 @@ public class Sections {
 
     private void addSectionUpToUp(Section section) {
         this.sections.stream()
-                .filter(it -> it.getUpStation().equals(section.getUpStation()))
-                .findFirst()
-                .ifPresent(it -> replaceSectionWithDownStation(section, it));
+            .filter(it -> it.getUpStation().equals(section.getUpStation()))
+            .findFirst()
+            .ifPresent(it -> replaceSectionWithDownStation(section, it));
     }
 
     private void addSectionDownToDown(Section section) {
         this.sections.stream()
-                .filter(it -> it.getDownStation().equals(section.getDownStation()))
-                .findFirst()
-                .ifPresent(it -> replaceSectionWithUpStation(section, it));
+            .filter(it -> it.getDownStation().equals(section.getDownStation()))
+            .findFirst()
+            .ifPresent(it -> replaceSectionWithUpStation(section, it));
     }
 
     private void replaceSectionWithUpStation(Section newSection, Section existSection) {
@@ -102,20 +101,20 @@ public class Sections {
 
     private Section findUpEndSection() {
         List<Station> downStations = this.sections.stream()
-                .map(it -> it.getDownStation())
-                .collect(Collectors.toList());
+            .map(it -> it.getDownStation())
+            .collect(Collectors.toList());
 
         return this.sections.stream()
-                .filter(it -> !downStations.contains(it.getUpStation()))
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
+            .filter(it -> !downStations.contains(it.getUpStation()))
+            .findFirst()
+            .orElseThrow(RuntimeException::new);
     }
 
     private Section findSectionByNextUpStation(Station station) {
         return this.sections.stream()
-                .filter(it -> it.getUpStation().equals(station))
-                .findFirst()
-                .orElse(null);
+            .filter(it -> it.getUpStation().equals(station))
+            .findFirst()
+            .orElse(null);
     }
 
     public void removeStation(Station station) {
@@ -124,11 +123,11 @@ public class Sections {
         }
 
         Optional<Section> upSection = sections.stream()
-                .filter(it -> it.getUpStation().equals(station))
-                .findFirst();
+            .filter(it -> it.getUpStation().equals(station))
+            .findFirst();
         Optional<Section> downSection = sections.stream()
-                .filter(it -> it.getDownStation().equals(station))
-                .findFirst();
+            .filter(it -> it.getDownStation().equals(station))
+            .findFirst();
 
         if (upSection.isPresent() && downSection.isPresent()) {
             Station newUpStation = downSection.get().getUpStation();

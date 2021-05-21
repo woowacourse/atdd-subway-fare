@@ -26,8 +26,12 @@ public class Fare {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Fare fare1 = (Fare) o;
         return fare == fare1.fare;
     }
@@ -40,8 +44,8 @@ public class Fare {
     @Override
     public String toString() {
         return "Fare{" +
-                "fare=" + fare +
-                '}';
+            "fare=" + fare +
+            '}';
     }
 
     public Fare sub(Fare subFare) {

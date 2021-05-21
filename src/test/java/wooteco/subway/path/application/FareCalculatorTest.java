@@ -64,11 +64,11 @@ class FareCalculatorTest {
     }
 
     @DisplayName("나이에 따른 요금 할인 정책을 적용한다.")
-    @ParameterizedTest(name="{3}")
+    @ParameterizedTest(name = "{3}")
     @CsvSource({
-            "18, 1250, 720, 청소년",
-            "12, 1250, 450, 어린이",
-            "19, 1250, 1250, 성인"
+        "18, 1250, 720, 청소년",
+        "12, 1250, 450, 어린이",
+        "19, 1250, 1250, 성인"
     })
     void getFareWithAge(int age, int currentFare, int expectedFare, String testCaseName) {
         Fare actualFare = fareCalculator.getFareByAge(age, new Fare(currentFare));
