@@ -1,5 +1,6 @@
 package wooteco.subway.line.domain;
 
+import java.util.Objects;
 import wooteco.subway.path.domain.Fare;
 import wooteco.subway.station.domain.Station;
 
@@ -18,12 +19,14 @@ public class Line {
     public Line(String name, String color) {
         this.name = name;
         this.color = color;
+        this.extraFare = new Fare(0);
     }
 
     public Line(Long id, String name, String color) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.extraFare = new Fare(0);
     }
 
     public Line(Long id, String name, String color, Sections sections) {
@@ -31,6 +34,7 @@ public class Line {
         this.name = name;
         this.color = color;
         this.sections = sections;
+        this.extraFare = new Fare(0);
     }
 
     public Line(String name, String color, Fare extraFare) {
@@ -43,6 +47,21 @@ public class Line {
         this.name = name;
         this.color = color;
         this.extraFare = new Fare(extraFare);
+    }
+
+    public Line(Long lineId, String name, String color, Fare extraFare) {
+        this.id = lineId;
+        this.name = name;
+        this.color = color;
+        this.extraFare = extraFare;
+    }
+
+    public Line(Long id, String name, String color, Fare extraFare, Sections sections) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
+        this.extraFare = extraFare;
+        this.sections = sections;
     }
 
     public Long getId() {
@@ -88,5 +107,22 @@ public class Line {
 
     public Fare getExtraFare() {
         return extraFare;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Line line = (Line) o;
+        return Objects.equals(id, line.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
