@@ -9,4 +9,4 @@ spring:
     username: root
     password: root
     initialization-mode: always
-    schema: schema.sql
+    schema: classpath:schema.sql
