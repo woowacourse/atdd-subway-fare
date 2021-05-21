@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost/db_name?serverTimezone=UTC&characterEncoding=UTF-8
+    username: root
+    password: root
+  h2:
+    console:
+      enabled: true
+handlebars:
+  suffix: .html
+  enabled: true
+security:
+  jwt:
+    token:
+      secret-key: my_secret_is_secret
+      expire-length: 3600000
