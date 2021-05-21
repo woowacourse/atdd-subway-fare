@@ -10,7 +10,7 @@ public class Line {
     private String name;
     private String color;
     private Sections sections = new Sections();
-    private Fare fare;
+    private Fare extraFare;
 
     public Line() {
     }
@@ -33,10 +33,16 @@ public class Line {
         this.sections = sections;
     }
 
-    public Line(String name, String color, Fare fare) {
+    public Line(String name, String color, Fare extraFare) {
         this.name = name;
         this.color = color;
-        this.fare = fare;
+        this.extraFare = extraFare;
+    }
+
+    public Line(String name, String color, int extraFare) {
+        this.name = name;
+        this.color = color;
+        this.extraFare = new Fare(extraFare);
     }
 
     public Long getId() {
@@ -80,7 +86,7 @@ public class Line {
         return sections.getStations();
     }
 
-    public Fare getFare() {
-        return fare;
+    public Fare getExtraFare() {
+        return extraFare;
     }
 }
