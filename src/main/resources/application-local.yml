@@ -9,8 +9,8 @@ spring:
     initialization-mode: always
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:13306/subway?useSSL=false&ServerTimezone=UTC
-    username: produser
-    password: prod
+    username: localuser
+    password: local
 handlebars:
   suffix: .html
   enabled: true
