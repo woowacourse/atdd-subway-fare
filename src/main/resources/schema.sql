@@ -1,11 +1,11 @@
-create table if not exists STATION
+create table if not exists station
 (
     id bigint auto_increment not null,
     name varchar(255) not null unique,
     primary key(id)
 );
 
-create table if not exists LINE
+create table if not exists line
 (
     id bigint auto_increment not null,
     name varchar(255) not null unique,
@@ -13,7 +13,7 @@ create table if not exists LINE
     primary key(id)
 );
 
-create table if not exists SECTION
+create table if not exists section
 (
     id bigint auto_increment not null,
     line_id bigint not null,
@@ -25,7 +25,7 @@ create table if not exists SECTION
     foreign key (down_station_id) references station(id)
 );
 
-create table if not exists MEMBER
+create table if not exists member
 (
     id bigint auto_increment not null,
     email varchar(255) not null unique,
