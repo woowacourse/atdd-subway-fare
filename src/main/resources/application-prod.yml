@@ -3,8 +3,10 @@ spring:
     activate:
       on-profile:
         -dev
-datasource:
-  driver-class-name: com.mysql.cj.jdbc.Driver
-  url: jdbc:mysql://localhost:3306/subway?useSSL=false&serverTimezone=UTC
-  username: root
-  password: root
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/subway?useSSL=false&serverTimezone=UTC
+    username: root
+    password: root
+    schema: schema.sql
+    initialization-mode: always
