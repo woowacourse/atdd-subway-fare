@@ -9,22 +9,27 @@ import wooteco.subway.path.domain.Price;
 
 public class PriceTest {
 
-
     @DisplayName("기본 운임인 경우")
     @Test
     void defaultPrice(){
-        assertThat(new Price(10).getPrice()).isEqualTo(1250);
+        Price price = new Price(0);
+        price.calculatePrice(10);
+        assertThat(price.getPrice()).isEqualTo(1250);
     }
 
     @DisplayName("50키로 이하인 경우")
     @Test
     void middlePrice(){
-        assertThat(new Price(50).getPrice()).isEqualTo(2050);
+        Price price = new Price(0);
+        price.calculatePrice(50);
+        assertThat(price.getPrice()).isEqualTo(2050);
     }
 
     @DisplayName("49키로인 경우")
     @Test
     void middlePrice49(){
-        assertThat(new Price(49).getPrice()).isEqualTo(2050);
+        Price price = new Price(0);
+        price.calculatePrice(49);
+        assertThat(price.getPrice()).isEqualTo(2050);
     }
 }
