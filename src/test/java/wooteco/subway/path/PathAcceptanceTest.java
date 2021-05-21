@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
+import static wooteco.subway.line.LineAcceptanceTest.지하철_추가요금_노선_등록되어_있음;
 import static wooteco.subway.line.SectionAcceptanceTest.지하철_구간_등록되어_있음;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
@@ -48,8 +49,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         교대역 = 지하철역_등록되어_있음("교대역");
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역");
 
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 11);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
+        신분당선 = 지하철_추가요금_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 11, 900);
+        이호선 = 지하철_추가요금_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10, 1100);
         삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5);
 
         지하철_구간_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
@@ -76,7 +77,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //then
         적절한_경로_응답됨(response, Lists.newArrayList(강남역, 양재역));
         총_거리가_응답됨(response, 11);
-        총_금액이_응답됨(response, 1350);
+        총_금액이_응답됨(response, 2250);
     }
 
     public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {

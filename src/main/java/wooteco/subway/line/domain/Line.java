@@ -19,6 +19,13 @@ public class Line {
         this.color = color;
     }
 
+    public Line(String name, String color, int fare) {
+        this.name = name;
+        this.color = color;
+        this.fare = fare;
+    }
+
+
     public Line(Long id, String name, String color) {
         this.id = id;
         this.name = name;
@@ -32,12 +39,12 @@ public class Line {
         this.sections = sections;
     }
 
-    public Line(Long id, String name, String color, Sections sections, int fare) {
+    public Line(Long id, String name, String color, int fare, Sections sections) {
         this.id = id;
         this.name = name;
         this.color = color;
-        this.sections = sections;
         this.fare = fare;
+        this.sections = sections;
     }
 
     public Long getId() {
