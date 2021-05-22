@@ -10,6 +10,7 @@ import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,7 +35,10 @@ public class PathFinder {
 
     private SubwayPath convertSubwayPath(GraphPath graphPath) {
         List<SectionEdge> edges = (List<SectionEdge>) graphPath.getEdgeList().stream().collect(Collectors.toList());
+        Set<Line> lines = edges.stream()
+                .map(edge -> edge.getLine())
+                .collect(Collectors.toSet());
         List<Station> stations = graphPath.getVertexList();
-        return new SubwayPath(edges, stations);
+        return new SubwayPath(edges, stations, lines);
     }
 }
