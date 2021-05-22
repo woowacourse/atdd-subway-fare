@@ -9,6 +9,8 @@ import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
+import java.util.Optional;
+
 @Service
 public class MemberService {
     private MemberDao memberDao;
@@ -18,10 +20,13 @@ public class MemberService {
     }
 
     public MemberResponse createMember(MemberRequest request) {
-        try {
-            Member member = memberDao.insert(request.toMember());
-            return MemberResponse.of(member);
-        } catch (DuplicateKeyException e) {
+        Member member = memberDao.insert(request.toMember());
+        return MemberResponse.of(member);
+    }
+
+    public void existMember(String email) {
+        Optional<Member> member = memberDao.existEmail(email);
+        if (member.isPresent()) {
             throw new DuplicateEmailException();
         }
     }
