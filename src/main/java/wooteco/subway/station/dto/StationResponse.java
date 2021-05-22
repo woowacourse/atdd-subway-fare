@@ -1,9 +1,8 @@
 package wooteco.subway.station.dto;
 
-import wooteco.subway.station.domain.Station;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import wooteco.subway.station.domain.Station;
 
 public class StationResponse {
     private Long id;

@@ -1,9 +1,8 @@
 package wooteco.subway.path.domain;
 
+import java.util.List;
 import wooteco.subway.member.domain.AuthMember;
 import wooteco.subway.station.domain.Station;
-
-import java.util.List;
 
 public class SubwayPath {
     private static final int DEFAULT_DISTANCE = 10;
