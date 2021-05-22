@@ -1,6 +1,14 @@
 package wooteco.subway.member.domain;
 
-public class LoginMember {
+public class LoginMember implements AuthMember {
+
+    private static final int TEENAGER_AGE_BOUNDARY = 13;
+    private static final int CHILD_AGE_BOUNDARY = 6;
+    private static final int ADULT_AGE_BOUNDARY = 19;
+    private static final double DISCOUNT_RATE_FOR_CHILD = 0.5;
+    private static final int DISCOUNT_PRICE_FOR_CHILD = 350;
+    private static final int DISOCUNT_FOR_TEENAGER = 350;
+    private static final double DISCOUNT_RATE_FOR_TEENAGER = 0.8;
     private Long id;
     private String email;
     private Integer age;
@@ -24,5 +32,21 @@ public class LoginMember {
 
     public Integer getAge() {
         return age;
+    }
+
+    @Override
+    public int discountFareByAge(int fare) {
+        if (CHILD_AGE_BOUNDARY <= age & age < TEENAGER_AGE_BOUNDARY) {
+            return (int) ((fare - DISCOUNT_PRICE_FOR_CHILD) * DISCOUNT_RATE_FOR_CHILD);
+        }
+        if (TEENAGER_AGE_BOUNDARY <= age & age < ADULT_AGE_BOUNDARY) {
+            return (int) ((fare - DISOCUNT_FOR_TEENAGER) * DISCOUNT_RATE_FOR_TEENAGER);
+        }
+        return fare;
+    }
+
+    @Override
+    public boolean isLoggedIn() {
+        return true;
     }
 }

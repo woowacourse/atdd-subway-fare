@@ -23,6 +23,7 @@ public class MemberService {
     }
 
     public MemberResponse findMember(LoginMember loginMember) {
+
         Member member = memberDao.findByEmail(loginMember.getEmail());
         return MemberResponse.of(member);
     }

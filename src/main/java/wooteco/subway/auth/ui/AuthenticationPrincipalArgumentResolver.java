@@ -12,6 +12,7 @@ import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
 import wooteco.subway.member.domain.LoginMember;
 
 import javax.servlet.http.HttpServletRequest;
+import wooteco.subway.member.domain.NotLoginMember;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
     private AuthService authService;
@@ -31,7 +32,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
         LoginMember member = authService.findMemberByToken(credentials);
         if (member.getId() == null) {
-            throw new AuthorizationException();
+            return new NotLoginMember();
         }
         return member;
     }
