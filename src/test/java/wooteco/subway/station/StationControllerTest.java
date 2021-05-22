@@ -46,7 +46,7 @@ public class StationControllerTest {
 
     @Test
     @DisplayName("역 생성 - 성공")
-    public void createStation() throws Exception {
+    public void create() throws Exception {
         //given
         StationRequest stationRequest = new StationRequest("잠실역");
         StationResponse stationResponse = new StationResponse(1L, "잠실역");
@@ -87,5 +87,16 @@ public class StationControllerTest {
                         .value(Matchers.containsInAnyOrder("잠실역", "강남역", "사당역", "잠실새내역", "종합운동장역")))
                 .andDo(print())
                 .andDo(document("station-find"));
+    }
+
+    @Test
+    @DisplayName("역 삭제 - 성공")
+    public void deleteStation() throws Exception {
+        //given
+        mockMvc.perform(delete("/api/stations/1")
+        )
+                .andExpect(status().isNoContent())
+                .andDo(print())
+                .andDo(document("station-delete"));
     }
 }
