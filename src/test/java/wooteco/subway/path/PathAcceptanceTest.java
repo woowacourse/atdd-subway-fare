@@ -27,24 +27,45 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
+    private LineResponse 사호선;
+    private LineResponse 오호선;
+    private LineResponse 육호선;
     private StationResponse 강남역;
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
     private StationResponse 멀리있는역;
+    private StationResponse 잠실역;
+    private StationResponse 강변역;
+    private StationResponse 구의역;
+    private StationResponse 성수역;
+    private StationResponse 뚝섬역;
 
     /*
      * 교대역    --- *2호선*10km---   강남역
      * |                        |
      * *3호선*3km                   *신분당선*10km
      * |                        |
-     * 남부터미널역  --- *3호선*2km ---   양재
+     * 남부터미널역  --- *3호선*2km ---   양재  --50km--  멀리있는역
      *
      *     강남1
      *     양재2
      *     교대3
      *     남부4
      *     멀리5
+     */
+
+    /*
+     * 잠실역    --- *4호선5km900---   강변역
+     * |                        |
+     * *6호선*8km1500         *5호선*6km500
+     * |                        |
+     * 성수역  --- *6호선*7km1500 ---   구의역  -- 6호선50km  --- 뚝섬
+     *
+     *     잠실6
+     *     강변7
+     *     구의8
+     *     성수9
      */
 
     @BeforeEach
@@ -57,13 +78,24 @@ public class PathAcceptanceTest extends AcceptanceTest {
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역");
         멀리있는역 = 지하철역_등록되어_있음("멀리있는역");
 
-
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5);
+        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10, 0);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10, 0);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5, 0);
 
         지하철_구간_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
         지하철_구간_등록되어_있음(삼호선, 양재역, 멀리있는역, 50);
+
+        잠실역 = 지하철역_등록되어_있음("잠실역");
+        강변역 = 지하철역_등록되어_있음("강변역");
+        구의역 = 지하철역_등록되어_있음("구의역");
+        성수역 = 지하철역_등록되어_있음("성수역");
+        뚝섬역 = 지하철역_등록되어_있음("뚝섬역");
+        사호선 = 지하철_노선_등록되어_있음("사호선", "bg-red-600", 잠실역, 강변역, 5, 900);
+        오호선 = 지하철_노선_등록되어_있음("오호선", "bg-red-600", 강변역, 구의역, 6, 500);
+        육호선 = 지하철_노선_등록되어_있음("육호선", "bg-red-600", 구의역, 성수역, 7, 1500);
+
+        지하철_구간_등록되어_있음(육호선, 성수역, 잠실역, 8);
+        지하철_구간_등록되어_있음(육호선, 구의역, 뚝섬역, 50);
     }
 
     @DisplayName("두 역의 최단 거리 경로를 조회한다.(추가운임(55km))")
@@ -100,6 +132,42 @@ public class PathAcceptanceTest extends AcceptanceTest {
         적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
         총_거리가_응답됨(response, 5);
         총_요금이_응답됨(response, 1250);
+    }
+
+    @DisplayName("두 역의 최단 거리 경로를 조회한다.(기본운임(5km), 노선 추가 요금 900원)")
+    @Test
+    void findPathByDistance5kmWithExtraFare() {
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(6L, 7L);
+
+        //then
+        적절한_경로_응답됨(response, Lists.newArrayList(잠실역, 강변역));
+        총_거리가_응답됨(response, 5);
+        총_요금이_응답됨(response, 2150);
+    }
+
+    @DisplayName("두 역의 최단 거리 경로를 조회한다.(추가운임(61km), 노선 추가 요금 900원)")
+    @Test
+    void findPathByDistance61kmWithExtraFare() {
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(6L, 9L);
+
+        //then
+        적절한_경로_응답됨(response, Lists.newArrayList(잠실역, 강변역, 구의역, 뚝섬역));
+        총_거리가_응답됨(response, 61);
+        총_요금이_응답됨(response, 3750);
+    }
+
+    @DisplayName("두 역의 최단 거리 경로를 조회한다.(추가운임(11km), 노선 추가 요금 900원)")
+    @Test
+    void findPathByDistance11kmWithExtraFare() {
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(6L, 8L);
+
+        //then
+        적절한_경로_응답됨(response, Lists.newArrayList(잠실역, 강변역, 구의역));
+        총_거리가_응답됨(response, 11);
+        총_요금이_응답됨(response, 2250);
     }
 
     public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
