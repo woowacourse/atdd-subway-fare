@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.dto.MemberPasswordUpdateRequest;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
@@ -42,6 +43,12 @@ public class MemberController {
     public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest param) {
         memberService.updateMember(loginMember, param);
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/me/pw")
+    public ResponseEntity<MemberResponse> updateMemberPasswordOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberPasswordUpdateRequest memberPasswordUpdateRequest) {
+        memberService.updateMemberPassword(loginMember, memberPasswordUpdateRequest);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/me")
