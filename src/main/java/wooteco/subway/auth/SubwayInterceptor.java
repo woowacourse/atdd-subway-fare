@@ -23,6 +23,9 @@ public class SubwayInterceptor implements HandlerInterceptor {
         if (isPreflightRequest(request)) {
             return true;
         }
+        if (isGet(request) && isNotMembersMe(request)) {
+            return true;
+        }
         String token = AuthorizationExtractor.extract(request);
         jwtTokenProvider.validateToken(token);
         return true;
@@ -46,5 +49,13 @@ public class SubwayInterceptor implements HandlerInterceptor {
 
     private boolean hasOrigin(HttpServletRequest request) {
         return Objects.nonNull(request.getHeader("Origin"));
+    }
+
+    private boolean isGet(HttpServletRequest request) {
+        return request.getMethod().equalsIgnoreCase(HttpMethod.GET.toString());
+    }
+
+    private boolean isNotMembersMe(HttpServletRequest request) {
+        return !request.getRequestURI().equalsIgnoreCase("/api/members/me");
     }
 }
