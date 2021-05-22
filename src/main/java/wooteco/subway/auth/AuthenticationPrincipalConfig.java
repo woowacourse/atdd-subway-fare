@@ -10,7 +10,6 @@ import wooteco.subway.auth.ui.AuthenticationPrincipalArgumentResolver;
 import java.util.List;
 
 @Configuration
-@Profile("!test")
 public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
     private final AuthService authService;
 
