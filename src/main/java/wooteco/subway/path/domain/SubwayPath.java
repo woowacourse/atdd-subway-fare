@@ -1,8 +1,8 @@
 package wooteco.subway.path.domain;
 
-import wooteco.subway.station.domain.Station;
-
 import java.util.List;
+
+import wooteco.subway.station.domain.Station;
 
 public class SubwayPath {
     private static final int DEFAULT_FARE = 1250;
@@ -27,14 +27,22 @@ public class SubwayPath {
     }
 
     public int calculateFare(int distance) {
+        int extraFare = findExtraFare();
         if (distance <= 10) {
-            return DEFAULT_FARE;
+            return extraFare + DEFAULT_FARE;
         }
 
         if (distance <= 50) {
-            return (distance - 10) / 5 * 100 + DEFAULT_FARE;
+            return extraFare + (distance - 10) / 5 * 100 + DEFAULT_FARE;
         }
 
-        return (distance - 10) / 8 * 100 + DEFAULT_FARE;
+        return extraFare + (distance - 10) / 8 * 100 + DEFAULT_FARE;
+    }
+
+    private int findExtraFare() {
+        return sectionEdges.stream()
+                           .mapToInt(it -> it.getLine().getExtraFare())
+                           .max()
+                           .orElse(0);
     }
 }
