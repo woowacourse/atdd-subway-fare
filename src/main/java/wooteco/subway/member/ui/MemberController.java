@@ -20,7 +20,8 @@ import wooteco.subway.member.dto.MemberResponse;
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class MemberController {
-    private MemberService memberService;
+
+    private final MemberService memberService;
 
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
@@ -33,7 +34,8 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal AuthMember authMember) {
+    public ResponseEntity<MemberResponse> findMemberOfMine(
+        @AuthenticationPrincipal AuthMember authMember) {
         if (!authMember.isLoggedIn()) {
             throw new AuthorizationException();
         }
@@ -42,7 +44,8 @@ public class MemberController {
     }
 
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal AuthMember authMember, @RequestBody MemberRequest param) {
+    public ResponseEntity<MemberResponse> updateMemberOfMine(
+        @AuthenticationPrincipal AuthMember authMember, @RequestBody MemberRequest param) {
         if (!authMember.isLoggedIn()) {
             throw new AuthorizationException();
         }
@@ -51,7 +54,8 @@ public class MemberController {
     }
 
     @DeleteMapping("/members/me")
-    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal AuthMember authMember) {
+    public ResponseEntity<MemberResponse> deleteMemberOfMine(
+        @AuthenticationPrincipal AuthMember authMember) {
         if (!authMember.isLoggedIn()) {
             throw new AuthorizationException();
         }

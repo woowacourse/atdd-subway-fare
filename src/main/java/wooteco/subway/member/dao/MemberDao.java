@@ -11,23 +11,24 @@ import wooteco.subway.member.domain.Member;
 
 @Repository
 public class MemberDao {
+
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert simpleJdbcInsert;
 
     private RowMapper<Member> rowMapper = (rs, rowNum) ->
-            new Member(
-                    rs.getLong("id"),
-                    rs.getString("email"),
-                    rs.getString("password"),
-                    rs.getInt("age")
-            );
+        new Member(
+            rs.getLong("id"),
+            rs.getString("email"),
+            rs.getString("password"),
+            rs.getInt("age")
+        );
 
 
     public MemberDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
-                .withTableName("MEMBER")
-                .usingGeneratedKeyColumns("id");
+            .withTableName("MEMBER")
+            .usingGeneratedKeyColumns("id");
     }
 
     public Member insert(Member member) {
@@ -38,7 +39,8 @@ public class MemberDao {
 
     public void update(Member member) {
         String sql = "update MEMBER set email = ?, password = ?, age = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{member.getEmail(), member.getPassword(), member.getAge(), member.getId()});
+        jdbcTemplate.update(sql,
+            new Object[]{member.getEmail(), member.getPassword(), member.getAge(), member.getId()});
     }
 
     public void deleteById(Long id) {

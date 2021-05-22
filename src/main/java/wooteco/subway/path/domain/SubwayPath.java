@@ -5,13 +5,13 @@ import wooteco.subway.member.domain.AuthMember;
 import wooteco.subway.station.domain.Station;
 
 public class SubwayPath {
+
     private static final int DEFAULT_DISTANCE = 10;
     private static final int OVER_LIMIT_DISTANCE = 50;
-    private static final int NO_ADDITIONAL_FARE = 0;
-    private final int DEFAULT_FARE = 1250;
+    private static final int DEFAULT_FARE = 1250;
 
-    private List<SectionEdge> sectionEdges;
-    private List<Station> stations;
+    private final List<SectionEdge> sectionEdges;
+    private final List<Station> stations;
 
     public SubwayPath(List<SectionEdge> sectionEdges, List<Station> stations) {
         this.sectionEdges = sectionEdges;
@@ -41,7 +41,7 @@ public class SubwayPath {
 
     private int calculateAdditionalFareByDistance(int distance) {
         int fare = 0;
-        if (DEFAULT_DISTANCE < distance & distance <= OVER_LIMIT_DISTANCE) {
+        if (DEFAULT_DISTANCE < distance && distance <= OVER_LIMIT_DISTANCE) {
             return calculateAdditionalFareOver10km(distance - DEFAULT_DISTANCE);
         }
 
@@ -62,7 +62,7 @@ public class SubwayPath {
 
     private int calculateAdditionalFareByLine() {
         return sectionEdges.stream()
-            .mapToInt(section -> section.getExtraFare())
+            .mapToInt(SectionEdge::getExtraFare)
             .max()
             .getAsInt();
     }

@@ -4,6 +4,7 @@ import java.util.List;
 import wooteco.subway.station.domain.Station;
 
 public class Line {
+
     private Long id;
     private String name;
     private String color;
@@ -14,7 +15,7 @@ public class Line {
     }
 
     public Line(String name, String color, int extraFare) {
-        this(null, name, color ,extraFare);
+        this(null, name, color, extraFare);
     }
 
     public Line(Long id, String name, String color, int extraFare) {

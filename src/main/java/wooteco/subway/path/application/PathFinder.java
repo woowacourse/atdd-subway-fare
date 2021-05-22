@@ -13,6 +13,7 @@ import wooteco.subway.station.domain.Station;
 
 @Service
 public class PathFinder {
+
     public SubwayPath findPath(List<Line> lines, Station source, Station target) {
         if (source.equals(target)) {
             throw new InvalidPathException();
@@ -32,7 +33,8 @@ public class PathFinder {
     }
 
     private SubwayPath convertSubwayPath(GraphPath graphPath) {
-        List<SectionEdge> edges = (List<SectionEdge>) graphPath.getEdgeList().stream().collect(Collectors.toList());
+        List<SectionEdge> edges = (List<SectionEdge>) graphPath.getEdgeList().stream()
+            .collect(Collectors.toList());
         List<Station> stations = graphPath.getVertexList();
         return new SubwayPath(edges, stations);
     }
