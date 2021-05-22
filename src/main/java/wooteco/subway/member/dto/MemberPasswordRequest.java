@@ -1,7 +1,11 @@
 package wooteco.subway.member.dto;
 
+import javax.validation.constraints.NotBlank;
+
 public class MemberPasswordRequest {
+    @NotBlank
     private String currentPassword;
+    @NotBlank
     private String newPassword;
 
     public MemberPasswordRequest() {

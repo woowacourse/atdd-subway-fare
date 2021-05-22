@@ -7,6 +7,7 @@ import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.dto.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import java.net.URI;
 
@@ -21,7 +22,7 @@ public class MemberController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createMember(@RequestBody MemberRequest request) {
+    public ResponseEntity<Void> createMember(@Valid @RequestBody MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
         return ResponseEntity.created(URI.create("/api/members/" + member.getId())).build();
     }
@@ -40,14 +41,14 @@ public class MemberController {
 
     @PutMapping("/me/pw")
     public ResponseEntity<Void> updatePasswordMemberOfMine(@AuthenticationPrincipal LoginMember loginMember,
-                                                           @RequestBody MemberPasswordRequest param) {
+                                                           @Valid @RequestBody MemberPasswordRequest param) {
         memberService.updateMemberPassword(loginMember, param);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/me")
     public ResponseEntity<MemberAgeResponse> updateAgeMemberOfMine(@AuthenticationPrincipal LoginMember loginMember,
-                                                                   @RequestBody MemberAgeRequest param) {
+                                                                   @Valid @RequestBody MemberAgeRequest param) {
         MemberAgeResponse member = memberService.updateMemberAge(loginMember, param);
         return ResponseEntity.ok(member);
     }

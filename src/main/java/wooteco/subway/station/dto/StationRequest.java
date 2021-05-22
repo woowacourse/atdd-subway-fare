@@ -2,7 +2,10 @@ package wooteco.subway.station.dto;
 
 import wooteco.subway.station.domain.Station;
 
+import javax.validation.constraints.NotBlank;
+
 public class StationRequest {
+    @NotBlank
     private String name;
 
     public StationRequest() {
