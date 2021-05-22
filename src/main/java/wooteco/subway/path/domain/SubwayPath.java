@@ -5,6 +5,13 @@ import wooteco.subway.station.domain.Station;
 import java.util.List;
 
 public class SubwayPath {
+    private static final int EXTRA_FARE_SECOND_BOUNDARY = 50;
+    private static final int EXTRA_FARE_FIRST_BOUNDARY = 10;
+    private static final int EXTRA_FARE_RATE_AFTER_SECOND_BOUNDARY = 8;
+    private static final int EXTRA_FARE_RATE_AFTER_FIRST_BOUNDARY = 5;
+    private static final int BASE_FARE = 1250;
+    private static final int FARE_BETWEEN_10_TO_50 = 800;
+    private static final int FARE_RATE = 100;
     private List<SectionEdge> sectionEdges;
     private List<Station> stations;
 
@@ -27,12 +34,16 @@ public class SubwayPath {
 
     public int calculateFare() {
         int totalDistance = calculateDistance();
-        if (totalDistance > 50) {
-            return 1250 + 800 + (int) ((Math.ceil((totalDistance - 51) / 8)) + 1) * 100;
+        if (totalDistance > EXTRA_FARE_SECOND_BOUNDARY) {
+            return BASE_FARE + FARE_BETWEEN_10_TO_50 + (int)
+                    ((Math.ceil((totalDistance - EXTRA_FARE_SECOND_BOUNDARY - 1) /
+                            EXTRA_FARE_RATE_AFTER_SECOND_BOUNDARY)) + 1) * FARE_RATE;
         }
-        if (10 < totalDistance && totalDistance <= 50) {
-            return 1250 + (int) ((Math.ceil((totalDistance - 11) / 5)) + 1) * 100;
+        if (EXTRA_FARE_FIRST_BOUNDARY < totalDistance && totalDistance <= EXTRA_FARE_SECOND_BOUNDARY) {
+            return BASE_FARE + (int)
+                    ((Math.ceil((totalDistance - EXTRA_FARE_FIRST_BOUNDARY - 1) /
+                            EXTRA_FARE_RATE_AFTER_FIRST_BOUNDARY)) + 1) * FARE_RATE;
         }
-        return 1250;
+        return BASE_FARE;
     }
 }
