@@ -3,11 +3,14 @@ package wooteco.subway.station;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.auth.dto.TokenResponse;
+import wooteco.subway.member.MemberAcceptanceTest;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
@@ -21,6 +24,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class StationAcceptanceTest extends AcceptanceTest {
     private static final String 강남역 = "강남역";
     private static final String 역삼역 = "역삼역";
+    private static TokenResponse tokenResponse;
+
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+
+        tokenResponse = MemberAcceptanceTest.회원_로그인된_상태();
+    }
 
     @DisplayName("지하철역을 생성한다.")
     @Test
@@ -77,14 +88,32 @@ public class StationAcceptanceTest extends AcceptanceTest {
         return 지하철역_생성_요청(name).as(StationResponse.class);
     }
 
+    public static StationResponse 지하철역_등록되어_있음(String name, TokenResponse tokenResponse) {
+        return 지하철역_생성_요청(name, tokenResponse).as(StationResponse.class);
+    }
+
     public static ExtractableResponse<Response> 지하철역_생성_요청(String name) {
         StationRequest stationRequest = new StationRequest(name);
 
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .body(stationRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/stations")
+                .when().post("/api/stations")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철역_생성_요청(String name, TokenResponse tokenResponse) {
+        StationRequest stationRequest = new StationRequest(name);
+
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .body(stationRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/api/stations")
                 .then().log().all()
                 .extract();
     }
@@ -92,7 +121,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철역_목록_조회_요청() {
         return RestAssured
                 .given().log().all()
-                .when().get("/stations")
+                .when().get("/api/stations")
                 .then().log().all()
                 .extract();
     }
@@ -100,7 +129,8 @@ public class StationAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철역_제거_요청(StationResponse stationResponse) {
         return RestAssured
                 .given().log().all()
-                .when().delete("/stations/" + stationResponse.getId())
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .when().delete("/api/stations/" + stationResponse.getId())
                 .then().log().all()
                 .extract();
     }

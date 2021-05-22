@@ -9,8 +9,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
+import wooteco.subway.member.MemberAcceptanceTest;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.Arrays;
@@ -18,6 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
 @DisplayName("지하철 노선 관련 기능")
@@ -26,14 +29,16 @@ public class LineAcceptanceTest extends AcceptanceTest {
     private StationResponse downStation;
     private LineRequest lineRequest1;
     private LineRequest lineRequest2;
+    private static TokenResponse tokenResponse;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
 
         // given
-        강남역 = 지하철역_등록되어_있음("강남역");
-        downStation = 지하철역_등록되어_있음("광교역");
+        tokenResponse = MemberAcceptanceTest.회원_로그인된_상태();
+        강남역 = 지하철역_등록되어_있음("강남역", tokenResponse);
+        downStation = 지하철역_등록되어_있음("광교역", tokenResponse);
 
         lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 10);
         lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 15);
@@ -121,16 +126,37 @@ public class LineAcceptanceTest extends AcceptanceTest {
         return 지하철_노선_등록되어_있음(lineRequest);
     }
 
+    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance, TokenResponse tokenResponse) {
+        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance);
+        return 지하철_노선_등록되어_있음(lineRequest, tokenResponse);
+    }
+
     public static LineResponse 지하철_노선_등록되어_있음(LineRequest lineRequest) {
         return 지하철_노선_생성_요청(lineRequest).as(LineResponse.class);
+    }
+
+    public static LineResponse 지하철_노선_등록되어_있음(LineRequest lineRequest, TokenResponse tokenResponse) {
+        return 지하철_노선_생성_요청(lineRequest, tokenResponse).as(LineResponse.class);
     }
 
     public static ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest params) {
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
-                .when().post("/lines")
+                .when().post("/api/lines")
+                .then().log().all().
+                        extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest params, TokenResponse tokenResponse) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/api/lines")
                 .then().log().all().
                         extract();
     }
@@ -139,7 +165,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines")
+                .when().get("/api/lines")
                 .then().log().all()
                 .extract();
     }
@@ -148,7 +174,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines/{lineId}", response.getId())
+                .when().get("/api/lines/{lineId}", response.getId())
                 .then().log().all()
                 .extract();
     }
@@ -157,9 +183,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
-                .when().put("/lines/" + response.getId())
+                .when().put("/api/lines/" + response.getId())
                 .then().log().all()
                 .extract();
     }
@@ -167,7 +194,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철_노선_제거_요청(LineResponse lineResponse) {
         return RestAssured
                 .given().log().all()
-                .when().delete("/lines/" + lineResponse.getId())
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .when().delete("/api/lines/" + lineResponse.getId())
                 .then().log().all()
                 .extract();
     }

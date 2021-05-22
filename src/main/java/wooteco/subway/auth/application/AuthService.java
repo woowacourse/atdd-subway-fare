@@ -46,4 +46,11 @@ public class AuthService {
             return new LoginMember();
         }
     }
+
+    public void validateToken(String accessToken) {
+        if (jwtTokenProvider.validateToken(accessToken)) {
+            return;
+        }
+        throw new AuthorizationException();
+    }
 }

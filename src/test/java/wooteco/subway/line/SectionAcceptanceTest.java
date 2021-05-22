@@ -9,8 +9,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.member.MemberAcceptanceTest;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.Arrays;
@@ -29,17 +31,19 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 정자역;
     private StationResponse 광교역;
+    private static TokenResponse tokenResponse;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        강남역 = 지하철역_등록되어_있음("강남역");
-        양재역 = 지하철역_등록되어_있음("양재역");
-        정자역 = 지하철역_등록되어_있음("정자역");
-        광교역 = 지하철역_등록되어_있음("광교역");
+        tokenResponse = MemberAcceptanceTest.회원_로그인된_상태();
+        강남역 = 지하철역_등록되어_있음("강남역", tokenResponse);
+        양재역 = 지하철역_등록되어_있음("양재역", tokenResponse);
+        정자역 = 지하철역_등록되어_있음("정자역", tokenResponse);
+        광교역 = 지하철역_등록되어_있음("광교역", tokenResponse);
 
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 광교역, 10);
+        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 광교역, 10, tokenResponse);
     }
 
     @DisplayName("지하철 구간을 등록한다.")
@@ -118,7 +122,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(sectionRequest)
-                .when().post("/lines/{lineId}/sections", line.getId())
+                .when().post("/api/lines/{lineId}/sections", line.getId())
                 .then().log().all()
                 .extract();
     }
@@ -139,7 +143,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(LineResponse line, StationResponse station) {
         return RestAssured
                 .given().log().all()
-                .when().delete("/lines/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
+                .when().delete("/api/lines/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
                 .then().log().all()
                 .extract();
     }

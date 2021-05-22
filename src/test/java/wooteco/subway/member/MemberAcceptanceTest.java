@@ -104,4 +104,11 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
+
+    public static TokenResponse 회원_로그인된_상태() {
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성됨(createResponse);
+
+        return 로그인되어_있음(EMAIL, PASSWORD);
+    }
 }
