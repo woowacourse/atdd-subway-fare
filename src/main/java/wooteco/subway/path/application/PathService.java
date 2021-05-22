@@ -19,6 +19,7 @@ import wooteco.subway.station.domain.Station;
 @Transactional
 public class PathService {
     private static final int DEFAULT_FARE = 1250;
+
     private LineService lineService;
     private StationService stationService;
     private PathFinder pathFinder;
@@ -37,7 +38,6 @@ public class PathService {
             Station sourceStation = stationService.findStationById(source);
             Station targetStation = stationService.findStationById(target);
             SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
-
             Fare totalFare = getTotalFare(loginMember, subwayPath);
             return PathResponseAssembler.assemble(subwayPath, totalFare);
         } catch (Exception e) {
@@ -45,13 +45,13 @@ public class PathService {
         }
     }
 
-    private Fare getTotalFare(Optional<LoginMember> loginMember, SubwayPath subwayPath) {
+    private Fare getTotalFare(Optional<LoginMember> loginMemberOptional, SubwayPath subwayPath) {
         Fare fareByDistance = fareCalculator.getFareByDistance(new Fare(DEFAULT_FARE), subwayPath.calculateDistance());
         Fare fareWithLineExtraFare = fareCalculator.getFareWithLineExtraFare(fareByDistance, subwayPath.getLines());
-
-        if (!loginMember.isPresent()) {
+        if (!loginMemberOptional.isPresent()) {
             return fareWithLineExtraFare;
         }
-        return fareCalculator.getFareByAge(loginMember.get().getAge(), fareWithLineExtraFare);
+        LoginMember loginMember = loginMemberOptional.get();
+        return fareCalculator.getFareByAge(loginMember.getAge(), fareWithLineExtraFare);
     }
 }
