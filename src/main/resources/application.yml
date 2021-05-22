@@ -1,3 +1,4 @@
+# 공통(기본 프로파일 : local)
 spring:
   profiles:
     active: local
@@ -13,6 +14,7 @@ security:
       expire-length: 3600000
 
 ---
+# test 프로파일
 spring:
   config:
     activate:
@@ -27,6 +29,7 @@ spring:
       enabled: true
 
 ---
+# local 프로파일
 spring:
   config:
     activate:
@@ -38,6 +41,7 @@ spring:
     password: air
 
 ---
+# prod 프로파일
 spring:
   config:
     activate:
