@@ -7,6 +7,7 @@ import java.util.List;
 public class SubwayPath {
     private static final int DEFAULT_DISTANCE = 10;
     private static final int OVER_LIMIT_DISTANCE = 50;
+    private static final int NO_ADDITIONAL_FARE = 0;
     private final int DEFAULT_FARE = 1250;
 
     private List<SectionEdge> sectionEdges;
@@ -30,21 +31,22 @@ public class SubwayPath {
     }
 
     public int calculateFare(int distance) {
-        if (distance <= DEFAULT_DISTANCE) {
-            return DEFAULT_FARE;
+        int fare = DEFAULT_FARE;
+        fare += calculateAdditionalFareByDistance(distance);
+        fare += calculateAdditionalFareByLine();
+
+        return fare;
+    }
+
+    private int calculateAdditionalFareByDistance(int distance) {
+        if (DEFAULT_DISTANCE < distance & distance <= OVER_LIMIT_DISTANCE) {
+            return calculateAdditionalFareOver10km(distance - DEFAULT_DISTANCE);
         }
 
-        if (distance <= OVER_LIMIT_DISTANCE) {
-            int overFare = calculateAdditionalFareOver10km(distance - DEFAULT_DISTANCE);
-            return DEFAULT_FARE + overFare;
+        if (OVER_LIMIT_DISTANCE < distance) {
+            return calculateAdditionalFareOver50km(distance - OVER_LIMIT_DISTANCE);
         }
-
-        int additionalFareOver10km = calculateAdditionalFareOver10km(OVER_LIMIT_DISTANCE - DEFAULT_DISTANCE);
-        int additionalFareOver50km = calculateAdditionalFareOver50km(distance - OVER_LIMIT_DISTANCE);
-
-        return DEFAULT_FARE
-                + additionalFareOver10km
-                + additionalFareOver50km;
+        return NO_ADDITIONAL_FARE;
     }
 
     private int calculateAdditionalFareOver10km(int distance) {
@@ -53,5 +55,12 @@ public class SubwayPath {
 
     private int calculateAdditionalFareOver50km(int distance) {
         return (int) ((Math.ceil((distance - 1) / 8) + 1) * 100);
+    }
+
+    private int calculateAdditionalFareByLine() {
+        return sectionEdges.stream()
+            .mapToInt(section -> section.getExtraFare())
+            .max()
+            .getAsInt();
     }
 }
