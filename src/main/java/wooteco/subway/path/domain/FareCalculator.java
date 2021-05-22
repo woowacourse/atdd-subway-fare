@@ -3,21 +3,44 @@ package wooteco.subway.path.domain;
 import java.util.Comparator;
 import java.util.List;
 import wooteco.subway.line.domain.Line;
-import wooteco.subway.path.domain.Fare;
 
 public class FareCalculator {
+    private static final int DEFAULT_FARE_DISTANCE = 10;
+    private static final int SECOND_EXTRA_FARE_DISTANCE_RANGE_START_DISTANCE = 50;
+    private static final int EXTRA_FARE_BY_DISTANCE = 100;
+    private static final double FIRST_EXTRA_FARE_DISTANCE_STANDARD = 5.0;
+    private static final double SECOND_EXTRA_FARE_DISTANCE_STANDARD = 8.0;
+    private static final int AGE_DISCOUNT_SUBTRACT_FARE = 350;
+    private static final double CHILD_DISCOUNT_RATE = 0.5;
+    private static final double TEENAGER_DISCOUNT_RATE = 0.2;
+    private static final int CHILD_START_AGE = 6;
+    private static final int TEENAGER_START_AGE = 13;
+    private static final int ADULT_START_AGE = 19;
+
     public Fare getFareByDistance(Fare currentFare, int distance) {
-        if (distance <= 10) {
+        if (distance <= DEFAULT_FARE_DISTANCE) {
             return currentFare;
         }
-        if (distance <= 50) {
-            int extraDistance = distance - 10;
-            int extraFare = (int) (Math.ceil(extraDistance / 5.0) * 100);
-            return getFareByDistance(currentFare, 10).add(new Fare(extraFare));
+        if (distance <= SECOND_EXTRA_FARE_DISTANCE_RANGE_START_DISTANCE) {
+            return getFareWithExtraFareOfFirstRange(currentFare, distance);
         }
-        int extraDistance = distance - 50;
-        int extraFare = (int) (Math.ceil(extraDistance / 8.0) * 100);
-        return getFareByDistance(currentFare, 50).add(new Fare(extraFare));
+        return getFareWithExtraFareOfSecondRange(currentFare, distance);
+    }
+
+    private Fare getFareWithExtraFareOfFirstRange(Fare currentFare, int distance) {
+        int extraDistance = distance - DEFAULT_FARE_DISTANCE;
+        double numberOfExtraStandardDistance = Math.ceil(extraDistance / FIRST_EXTRA_FARE_DISTANCE_STANDARD);
+        int extraFare = (int) (numberOfExtraStandardDistance * EXTRA_FARE_BY_DISTANCE);
+        Fare fareBeforeFirstRange = getFareByDistance(currentFare, DEFAULT_FARE_DISTANCE);
+        return fareBeforeFirstRange.add(new Fare(extraFare));
+    }
+
+    private Fare getFareWithExtraFareOfSecondRange(Fare currentFare, int distance) {
+        int extraDistance = distance - SECOND_EXTRA_FARE_DISTANCE_RANGE_START_DISTANCE;
+        double numberOfExtraStandardDistance = Math.ceil(extraDistance / SECOND_EXTRA_FARE_DISTANCE_STANDARD);
+        int extraFare = (int) (numberOfExtraStandardDistance * EXTRA_FARE_BY_DISTANCE);
+        Fare fareBeforeSecondRange = getFareByDistance(currentFare, SECOND_EXTRA_FARE_DISTANCE_RANGE_START_DISTANCE);
+        return fareBeforeSecondRange.add(new Fare(extraFare));
     }
 
 
@@ -29,16 +52,26 @@ public class FareCalculator {
             .add(currentFare);
     }
 
-    public Fare getFareByAge(int age, Fare fare) {
-        if (age < 6) {
+    public Fare getFareByAge(int age, Fare currentFare) {
+        if (age < CHILD_START_AGE) {
             return new Fare(0);
         }
-        if (age < 13) {
-            return fare.sub(new Fare(350)).discount(0.5);
+        if (age < TEENAGER_START_AGE) {
+            return getFareDiscountedByChildAge(currentFare);
         }
-        if (age < 19) {
-            return fare.sub(new Fare(350)).discount(0.2);
+        if (age < ADULT_START_AGE) {
+            return getFareDiscountedByTeenagerAge(currentFare);
         }
-        return fare;
+        return currentFare;
+    }
+
+    private Fare getFareDiscountedByChildAge(Fare currentFare) {
+        Fare discountedFare = currentFare.sub(new Fare(AGE_DISCOUNT_SUBTRACT_FARE));
+        return discountedFare.discount(CHILD_DISCOUNT_RATE);
+    }
+
+    private Fare getFareDiscountedByTeenagerAge(Fare currentFare) {
+        Fare discountedFare = currentFare.sub(new Fare(AGE_DISCOUNT_SUBTRACT_FARE));
+        return discountedFare.discount(TEENAGER_DISCOUNT_RATE);
     }
 }
