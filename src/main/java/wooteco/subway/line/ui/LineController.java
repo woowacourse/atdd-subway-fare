@@ -3,6 +3,7 @@ package wooteco.subway.line.ui;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.line.application.LineService;
+import wooteco.subway.line.dto.LineDetailResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
@@ -31,6 +32,16 @@ public class LineController {
     @GetMapping
     public ResponseEntity<List<LineResponse>> findAllLines() {
         return ResponseEntity.ok(lineService.findLineResponses());
+    }
+
+    @GetMapping("/detail")
+    public ResponseEntity<List<LineDetailResponse>> findAllLinesDetail() {
+        return ResponseEntity.ok(lineService.findLineDetailResponses());
+    }
+
+    @GetMapping("/detail/{id}")
+    public ResponseEntity<LineDetailResponse> findLineDetailById(@PathVariable Long id) {
+        return ResponseEntity.ok(lineService.findLineDetailResponseById(id));
     }
 
     @GetMapping("/{id}")
