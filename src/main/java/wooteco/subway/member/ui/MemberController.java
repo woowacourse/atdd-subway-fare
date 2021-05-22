@@ -34,12 +34,12 @@ public class MemberController {
 
     @PutMapping("/me")
     public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest param) {
-        memberService.updateMember(loginMember, param);
-        return ResponseEntity.ok().build();
+        final MemberResponse updatedMember = memberService.updateMember(loginMember, param);
+        return ResponseEntity.ok(updatedMember);
     }
 
     @DeleteMapping("/me")
-    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
+    public ResponseEntity<Void> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         memberService.deleteMember(loginMember);
         return ResponseEntity.noContent().build();
     }

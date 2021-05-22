@@ -27,9 +27,11 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
+    public MemberResponse updateMember(LoginMember loginMember, MemberRequest memberRequest) {
         Member member = memberDao.findByEmail(loginMember.getEmail());
-        memberDao.update(new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
+        final Member updatedMember = new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge());
+        memberDao.update(updatedMember);
+        return MemberResponse.of(updatedMember);
     }
 
     public void deleteMember(LoginMember loginMember) {
