@@ -38,4 +38,8 @@ public class Station {
     public int hashCode() {
         return Objects.hash(id, name);
     }
+
+    public Station update(String name) {
+        return new Station(this.id, name);
+    }
 }

@@ -32,6 +32,12 @@ public class StationController {
         return ResponseEntity.ok().body(stationService.findAllStationResponses());
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<StationResponse> updateStation(@PathVariable Long id, @RequestBody StationRequest stationRequest) {
+        StationResponse stationResponse = stationService.updateStation(id, stationRequest);
+        return ResponseEntity.ok(stationResponse);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity deleteStation(@PathVariable Long id) {
         stationService.deleteStationById(id);

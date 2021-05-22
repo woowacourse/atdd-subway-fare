@@ -50,4 +50,9 @@ public class StationDao {
         String sql = "select * from STATION where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
+
+    public void update(Station updateStation) {
+        String sql = "update STATION set name = ? where = ?";
+        jdbcTemplate.update(sql, updateStation.getName(), updateStation.getId());
+    }
 }
