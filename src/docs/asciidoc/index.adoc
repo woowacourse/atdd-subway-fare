@@ -80,3 +80,10 @@ include::{snippets}/section-delete/http-response.adoc[]
 include::{snippets}/path-find/http-request.adoc[]
 - Response
 include::{snippets}/path-find/http-response.adoc[]
+
+== Auth (인증)
+=== 유저 로그인
+- Request
+include::{snippets}/auth-login/http-request.adoc[]
+- Response
+include::{snippets}/auth-login/http-response.adoc[]
