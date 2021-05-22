@@ -96,6 +96,6 @@ include::{snippets}/member-update/http-request.adoc[]
 include::{snippets}/member-update/http-response.adoc[]
 === 유저 삭제
 ==== Request
-include::{snippets}/members-delete/http-request.adoc[]
+include::{snippets}/member-delete/http-request.adoc[]
 ==== Response
-include::{snippets}/members-delete/http-response.adoc[]
+include::{snippets}/member-delete/http-response.adoc[]
