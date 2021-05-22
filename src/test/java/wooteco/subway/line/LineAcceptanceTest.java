@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
@@ -130,7 +131,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
-                .when().post("/lines")
+                .when().post("/api/lines")
                 .then().log().all().
                         extract();
     }
@@ -139,7 +140,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines")
+                .when().get("/api/lines")
                 .then().log().all()
                 .extract();
     }
@@ -148,7 +149,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines/{lineId}", response.getId())
+                .when().get("/api/lines/{lineId}", response.getId())
                 .then().log().all()
                 .extract();
     }
@@ -159,7 +160,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
-                .when().put("/lines/" + response.getId())
+                .when().put("/api/lines/" + response.getId())
                 .then().log().all()
                 .extract();
     }
@@ -167,7 +168,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철_노선_제거_요청(LineResponse lineResponse) {
         return RestAssured
                 .given().log().all()
-                .when().delete("/lines/" + lineResponse.getId())
+                .when().delete("/api/lines/" + lineResponse.getId())
                 .then().log().all()
                 .extract();
     }
@@ -193,12 +194,12 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철_노선_목록_포함됨(ExtractableResponse<Response> response, List<LineResponse> createdResponses) {
         List<Long> expectedLineIds = createdResponses.stream()
-                .map(it -> it.getId())
-                .collect(Collectors.toList());
+                .map(LineResponse::getId)
+                .collect(toList());
 
         List<Long> resultLineIds = response.jsonPath().getList(".", LineResponse.class).stream()
                 .map(LineResponse::getId)
-                .collect(Collectors.toList());
+                .collect(toList());
 
         assertThat(resultLineIds).containsAll(expectedLineIds);
     }
