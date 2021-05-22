@@ -22,8 +22,7 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -89,8 +88,18 @@ class StationControllerTest {
                 .value(Matchers.containsInAnyOrder("잠실역", "강남역", "사당역", "잠실새내역", "종합운동장역")))
                 .andDo(print())
                 .andDo(document("station-find"));
-        //when
-
-        //then
     }
+
+    @Test
+    @DisplayName("역 삭제 - 성공")
+    public void deleteStations() throws Exception {
+        //given
+        mockMvc.perform(
+                delete("/api/stations/1")
+        )
+                .andExpect(status().isNoContent())
+                .andDo(document("station-delete"));
+    }
+
+
 }
