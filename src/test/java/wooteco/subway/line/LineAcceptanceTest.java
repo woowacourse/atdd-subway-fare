@@ -76,6 +76,21 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_목록_포함됨(response, Arrays.asList(lineResponse1, lineResponse2));
     }
 
+    @DisplayName("GET '/api/lines' 로 지하철 노선 목록을 조회한다.")
+    @Test
+    void getApiLines() {
+        // given
+        LineResponse lineResponse1 = 지하철_노선_등록되어_있음(lineRequest1);
+        LineResponse lineResponse2 = 지하철_노선_등록되어_있음(lineRequest2);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_목록_API_LINES_로_조회_요청();
+
+        // then
+        지하철_노선_목록_응답됨(response);
+        지하철_노선_목록_포함됨(response, Arrays.asList(lineResponse1, lineResponse2));
+    }
+
     @DisplayName("지하철 노선을 조회한다.")
     @Test
     void getLine() {
@@ -144,6 +159,15 @@ public class LineAcceptanceTest extends AcceptanceTest {
             .given().log().all()
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .when().get("/lines")
+            .then().log().all()
+            .extract();
+    }
+
+    private static ExtractableResponse<Response> 지하철_노선_목록_API_LINES_로_조회_요청() {
+        return RestAssured
+            .given().log().all()
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/api/lines")
             .then().log().all()
             .extract();
     }
