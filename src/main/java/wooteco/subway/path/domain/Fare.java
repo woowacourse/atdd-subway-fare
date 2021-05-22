@@ -20,6 +20,14 @@ public class Fare {
         return new Fare(this.fare + fare.getFare());
     }
 
+    public Fare sub(Fare subFare) {
+        return new Fare(this.fare - subFare.getFare());
+    }
+
+    public Fare discount(double rate) {
+        return new Fare((int) Math.round(this.fare * (1 - rate)));
+    }
+
     public int getFare() {
         return fare;
     }
@@ -46,13 +54,5 @@ public class Fare {
         return "Fare{" +
             "fare=" + fare +
             '}';
-    }
-
-    public Fare sub(Fare subFare) {
-        return new Fare(this.fare - subFare.getFare());
-    }
-
-    public Fare discount(double rate) {
-        return new Fare((int) Math.round(this.fare * (1 - rate)));
     }
 }
