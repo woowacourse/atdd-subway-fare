@@ -1,9 +1,7 @@
 package wooteco.subway.member.application;
 
-import org.apache.commons.logging.Log;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.DuplicatedEmailException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
@@ -44,7 +42,7 @@ public class MemberService {
     public AgeResponse updateAge(LoginMember loginMember, String age) {
         Member member = memberDao.findByEmail(loginMember.getEmail());
         memberDao.update(new Member(member.getId(), member.getEmail(), age, member.getAge()));
-        return AgeResponse.of(member);
+        return new AgeResponse(member.getId(), Integer.parseInt(age));
     }
 
     private void checkCurrentPassword(String password, String currentPassword) {

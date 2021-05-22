@@ -4,17 +4,19 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.station.application.StationService;
+import wooteco.subway.station.dto.StationNameRequest;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-@RequestMapping("/stations")
+@RequestMapping("/api/stations")
 public class StationController {
     private StationService stationService;
 
@@ -31,6 +33,12 @@ public class StationController {
     @GetMapping
     public ResponseEntity<List<StationResponse>> showStations() {
         return ResponseEntity.ok().body(stationService.findAllStationResponses());
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity updateStation(@PathVariable Long id, @RequestBody StationNameRequest req) {
+        StationResponse station = stationService.updateName(id, req);
+        return ResponseEntity.ok().body(station);
     }
 
     @DeleteMapping("/{id}")

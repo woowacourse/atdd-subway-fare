@@ -1,4 +1,4 @@
-package wooteco.subway;
+package wooteco.subway.exception;
 
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;

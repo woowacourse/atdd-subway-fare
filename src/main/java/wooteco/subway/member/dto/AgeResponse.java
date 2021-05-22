@@ -14,8 +14,4 @@ public class AgeResponse {
     public int getAge() {
         return age;
     }
-
-    public static AgeResponse of(Member member) {
-        return new AgeResponse(member.getId(), member.getAge());
-    }
 }
