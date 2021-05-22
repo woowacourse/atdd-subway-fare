@@ -1,3 +1,4 @@
+= 지하철 협업 미션 API Document
 ifndef::snippets[]
 :snippets: ../../../build/generated-snippets
 endif::[]
@@ -5,7 +6,7 @@ endif::[]
 :icons: font
 :source-highlighter: highlightjs
 :toc: left
-:toclevels: 4
+:toclevels: 2
 
 == 역Station 관리
 === 생성
