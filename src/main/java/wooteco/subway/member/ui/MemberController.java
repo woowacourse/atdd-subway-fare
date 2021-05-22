@@ -43,7 +43,7 @@ public class MemberController {
     }
 
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody ChangeAgeRequest request) {
+    public ResponseEntity<MemberResponse> changeAge(@AuthenticationPrincipal LoginMember loginMember, @RequestBody ChangeAgeRequest request) {
         memberService.changeAge(loginMember, request);
         MemberResponse member = memberService.findMember(loginMember);
         return ResponseEntity.ok().body(member);
