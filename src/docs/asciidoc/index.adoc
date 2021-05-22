@@ -1,0 +1,22 @@
+ifndef::snippets[]
+:snippets: ../../../build/generated-snippets
+endif::[]
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+
+== Stations (역)
+
+=== 역 생성
+- Request
+include::{snippets}/station-create/http-request.adoc[]
+- Response
+include::{snippets}/station-create/http-response.adoc[]
+
+=== 역 조회
+- Request
+include::{snippets}/station-find/http-request.adoc[]
+- Response
+include::{snippets}/station-find/http-response.adoc[]
