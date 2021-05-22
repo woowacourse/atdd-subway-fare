@@ -1,4 +1,4 @@
-package wooteco.subway.station.ui;
+package wooteco.subway.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -13,7 +13,6 @@ import java.util.List;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -25,6 +24,7 @@ import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
+import wooteco.subway.station.ui.StationController;
 
 @WebMvcTest(controllers = StationController.class)
 @ActiveProfiles("test")
@@ -86,5 +86,15 @@ class StationControllerTest {
                 .value(Matchers.containsInAnyOrder("잠실역", "강남역", "사당역", "잠실새내역", "종합운동장역")))
             .andDo(print())
             .andDo(document("station-find"));
+    }
+
+    @Test
+    @DisplayName("역 삭제 - 성공")
+    public void deleteStations() throws Exception{
+        mockMvc.perform(
+            delete("/api/stations/1")
+        )
+            .andExpect(status().isNoContent())
+            .andDo(document("station-delete"));
     }
 }
