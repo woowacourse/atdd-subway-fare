@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -83,5 +84,15 @@ class StationControllerTest {
                 .value(Matchers.containsInAnyOrder("잠실역", "강남역", "사당역", "잠실새내역", "종합운동장역")))
             .andDo(print())
             .andDo(document("station-find"));
+    }
+
+    @Test
+    @DisplayName("역 삭제 성공")
+    public void deleteStation() throws Exception{
+        mockMvc.perform(delete("/stations/1")
+        )
+            .andExpect(status().isNoContent())
+            .andDo(print())
+            .andDo(document("station-delete"));
     }
 }
