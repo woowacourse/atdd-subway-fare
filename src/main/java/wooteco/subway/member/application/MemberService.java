@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
+import wooteco.subway.member.dto.ChangeAgeRequest;
 import wooteco.subway.member.dto.ChangePasswordRequest;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
@@ -33,9 +34,9 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
+    public void changeAge(LoginMember loginMember, ChangeAgeRequest request) {
         Member member = memberDao.findByEmail(loginMember.getEmail());
-        memberDao.update(new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
+        memberDao.update(new Member(member.getId(), member.getEmail(), member.getPassword(), request.getAge()));
     }
 
     public void changePassword(LoginMember loginMember, ChangePasswordRequest request) {
