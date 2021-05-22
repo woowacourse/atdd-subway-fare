@@ -34,8 +34,8 @@ public class MemberController {
 
     @PutMapping("/me")
     public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest param) {
-        memberService.updateMember(loginMember, param);
-        return ResponseEntity.ok().build();
+        final MemberResponse memberResponse = memberService.updateMember(loginMember, param);
+        return ResponseEntity.ok(memberResponse);
     }
 
     @DeleteMapping("/me")
