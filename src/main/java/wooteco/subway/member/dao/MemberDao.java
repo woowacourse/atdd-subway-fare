@@ -48,7 +48,12 @@ public class MemberDao {
         }
     }
 
-    public void update(Member member) {
+    public void updatePassword(Member member) {
+        String sql = "update MEMBER set password = ? where id = ?";
+        jdbcTemplate.update(sql, new Object[]{member.getEmail(), member.getPassword(), member.getAge(), member.getId()});
+    }
+
+    public void updateAge(Member member) {
         String sql = "update MEMBER set email = ?, password = ?, age = ? where id = ?";
         jdbcTemplate.update(sql, new Object[]{member.getEmail(), member.getPassword(), member.getAge(), member.getId()});
     }
@@ -65,7 +70,11 @@ public class MemberDao {
 
     public Member findByEmail(String email) {
         String sql = "select * from MEMBER where email = ?";
-
         return jdbcTemplate.queryForObject(sql, rowMapper, email);
+    }
+
+    public Member findByEmailAndPassword(String email, String password) {
+        String sql = "select * from MEMBER where email = ?, password = ?";
+        return jdbcTemplate.queryForObject(sql, rowMapper, email, password);
     }
 }
