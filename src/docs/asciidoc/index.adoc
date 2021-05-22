@@ -79,3 +79,35 @@ include::{snippets}/section-create/http-response.adoc[]
 include::{snippets}/path-find/http-request.adoc[]
 - Response
 include::{snippets}/path-find/http-response.adoc[]
+
+== Auth (인증)
+=== 유저 로그인
+- Request
+include::{snippets}/auth-login/http-request.adoc[]
+- Response
+include::{snippets}/auth-login/http-response.adoc[]
+
+== Member (유저)
+=== 유저 생성
+- Request
+include::{snippets}/member-create/http-request.adoc[]
+- Response
+include::{snippets}/member-create/http-response.adoc[]
+
+=== 현재 유저 조회
+- Request
+include::{snippets}/members-findme/http-request.adoc[]
+- Response
+include::{snippets}/members-findme/http-response.adoc[]
+
+=== 현재 유저 수정
+- Request
+include::{snippets}/members-updateme/http-request.adoc[]
+- Response
+include::{snippets}/members-updateme/http-response.adoc[]
+
+=== 현재 유저 삭제
+- Request
+include::{snippets}/members-deleteme/http-request.adoc[]
+- Response
+include::{snippets}/members-deleteme/http-response.adoc[]
