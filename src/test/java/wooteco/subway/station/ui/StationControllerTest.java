@@ -46,7 +46,7 @@ class StationControllerTest {
     @Test
     @DisplayName("역 생성 - 성공")
     public void createStation() throws Exception {
-        //givne
+        //given
         StationRequest stationRequest = new StationRequest("잠실역");
         StationResponse stationResponse = new StationResponse(1L, "잠실역");
         given(stationService.saveStation(any(StationRequest.class)))
