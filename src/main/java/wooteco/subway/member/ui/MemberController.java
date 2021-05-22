@@ -1,10 +1,13 @@
 package wooteco.subway.member.ui;
 
+import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.dto.EmailExistsRequest;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
@@ -23,6 +26,12 @@ public class MemberController {
     public ResponseEntity createMember(@RequestBody MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
         return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
+    }
+
+    @PostMapping("/members/exists")
+    public ResponseEntity checkEmailExists(@Valid @RequestBody EmailExistsRequest emailExistsRequest) {
+        memberService.checkEmailExists(emailExistsRequest.getEmail());
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/members/me")

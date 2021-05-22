@@ -8,6 +8,7 @@ import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
+import wooteco.subway.member.exception.DuplicateEmailException;
 
 @Service
 public class MemberService {
@@ -18,6 +19,10 @@ public class MemberService {
     }
 
     public MemberResponse createMember(MemberRequest request) {
+        if (!memberDao.exists(request.getEmail())) {
+            throw new DuplicateEmailException();
+        }
+
         Member member = memberDao.insert(request.toMember());
         return MemberResponse.of(member);
     }
@@ -35,5 +40,11 @@ public class MemberService {
     public void deleteMember(LoginMember loginMember) {
         Member member = memberDao.findByEmail(loginMember.getEmail());
         memberDao.deleteById(member.getId());
+    }
+
+    public void checkEmailExists(String email) {
+        if (!memberDao.exists(email)) {
+            throw new DuplicateEmailException();
+        }
     }
 }
