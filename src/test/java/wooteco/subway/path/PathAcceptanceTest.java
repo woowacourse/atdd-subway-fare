@@ -79,7 +79,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         총_요금이_응답됨(response, 1250 + 100 + 300);
     }
 
-    @DisplayName("두 역의 최단 거리 경로와 노선 거리 추가요금에 따른 총 요금을 조회한다.")
+    @DisplayName("로그인 상태에서 경로 조회 시, 두 역의 최단 거리 경로와 노선 거리 추가요금에 따른 총 요금을 조회한다.")
     @ParameterizedTest(name = "{3}")
     @CsvSource({
         "adult@email.com, 20, 1650, 성인 요금",
