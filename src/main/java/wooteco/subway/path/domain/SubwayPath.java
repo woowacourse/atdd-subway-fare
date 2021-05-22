@@ -26,17 +26,10 @@ public class SubwayPath {
         return sectionEdges.stream().mapToInt(it -> it.getSection().getDistance()).sum();
     }
 
-    public int calculateFare(int distance) {
+    public int calculateFare(int distance, Integer age) {
         int extraFare = findExtraFare();
-        if (distance <= 10) {
-            return extraFare + DEFAULT_FARE;
-        }
-
-        if (distance <= 50) {
-            return extraFare + (distance - 10) / 5 * 100 + DEFAULT_FARE;
-        }
-
-        return extraFare + (distance - 10) / 8 * 100 + DEFAULT_FARE;
+        final int fare = DEFAULT_FARE + extraFare + DistanceExtraFarePolicy.apply(distance);
+        return fare - DiscountPolicy.apply(age, fare);
     }
 
     private int findExtraFare() {
