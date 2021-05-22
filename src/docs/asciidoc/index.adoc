@@ -6,3 +6,15 @@ endif::[]
 :source-highlighter: highlightjs
 :toc: left
 :toclevels: 4
+
+== 역 관리
+=== 생성
+==== Request
+include::{snippets}/station-create/http-request.adoc[]
+==== Response
+include::{snippets}/station-create/http-response.adoc[]
+=== 조회
+==== Request
+include::{snippets}/station-show/http-request.adoc[]
+==== Response
+include::{snippets}/station-show/http-response.adoc[]
