@@ -70,8 +70,9 @@ public class LineService {
         return lineDao.findById(id);
     }
 
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
+    public LineResponse updateLine(Long id, LineRequest lineUpdateRequest) {
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        return LineResponse.of(lineDao.findById(id));
     }
 
     public void deleteLineById(Long id) {
