@@ -22,4 +22,10 @@ public class ExceptionAdvice {
         return ResponseEntity.badRequest().body(exceptionRes);
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity handleIllegalArgumentException(IllegalArgumentException e) {
+        ExceptionResponse exceptionRes = new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST.value());
+        return ResponseEntity.badRequest().body(exceptionRes);
+    }
+
 }

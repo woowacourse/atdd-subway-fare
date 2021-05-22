@@ -8,8 +8,10 @@ import wooteco.subway.exception.DuplicatedEmailException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
+import wooteco.subway.member.dto.AgeResponse;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
+import wooteco.subway.member.dto.PasswordRequest;
 
 @Service
 public class MemberService {
@@ -33,9 +35,22 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
+    public void updatePassword(LoginMember loginMember, PasswordRequest req) {
         Member member = memberDao.findByEmail(loginMember.getEmail());
-        memberDao.update(new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
+        checkCurrentPassword(member.getPassword(), req.getCurrentPassword());
+        memberDao.update(new Member(member.getId(), member.getEmail(), req.getNewPassword(), member.getAge()));
+    }
+
+    public AgeResponse updateAge(LoginMember loginMember, String age) {
+        Member member = memberDao.findByEmail(loginMember.getEmail());
+        memberDao.update(new Member(member.getId(), member.getEmail(), age, member.getAge()));
+        return AgeResponse.of(member);
+    }
+
+    private void checkCurrentPassword(String password, String currentPassword) {
+        if (currentPassword.equals(password)) {
+            throw new IllegalArgumentException("입력하신 현재 비밀번호가 올바르지 않습니다.");
+        }
     }
 
     public void deleteMember(LoginMember loginMember) {

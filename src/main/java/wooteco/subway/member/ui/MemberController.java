@@ -6,10 +6,13 @@ import org.springframework.web.bind.annotation.*;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.dto.AgeResponse;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
+import wooteco.subway.member.dto.PasswordRequest;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import java.net.URI;
 
 @RestController
@@ -35,9 +38,15 @@ public class MemberController {
     }
 
     @PutMapping("/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest param) {
-        memberService.updateMember(loginMember, param);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<AgeResponse> updateAgeOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody @NotBlank String age) {
+        AgeResponse member = memberService.updateAge(loginMember, age);
+        return ResponseEntity.ok().body(member);
+    }
+
+    @PutMapping("/me/pw")
+    public ResponseEntity<MemberResponse> updatePasswordOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody PasswordRequest req) {
+        memberService.updatePassword(loginMember, req);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/me")
