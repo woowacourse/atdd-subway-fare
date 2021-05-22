@@ -8,6 +8,7 @@ import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.path.domain.Fare;
+import wooteco.subway.path.domain.FareCalculator;
 import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.path.dto.PathResponseAssembler;

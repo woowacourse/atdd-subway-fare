@@ -1,4 +1,4 @@
-package wooteco.subway.path.application;
+package wooteco.subway.path.domain;
 
 import java.util.Comparator;
 import java.util.List;
