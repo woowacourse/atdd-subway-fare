@@ -1,5 +1,6 @@
 package wooteco.subway.station.application;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
@@ -18,8 +19,12 @@ public class StationService {
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationDao.insert(stationRequest.toStation());
-        return StationResponse.of(station);
+        try {
+            Station station = stationDao.insert(stationRequest.toStation());
+            return StationResponse.of(station);
+        } catch (DuplicateKeyException e) {
+            throw new IllegalStateException("입력하신 역이 이미 존재합니다.");
+        }
     }
 
     public Station findStationById(Long id) {
