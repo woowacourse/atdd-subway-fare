@@ -23,6 +23,7 @@ include::{snippets}/station-show/http-response.adoc[]
 include::{snippets}/station-delete/http-request.adoc[]
 ==== Response
 include::{snippets}/station-delete/http-response.adoc[]
+
 == 노선Line 관리
 === 생성
 ==== Request
@@ -49,6 +50,7 @@ include::{snippets}/line-update/http-response.adoc[]
 include::{snippets}/line-delete/http-request.adoc[]
 ==== Response
 include::{snippets}/line-delete/http-response.adoc[]
+
 == 구간Section 관리
 === 생성
 ==== Request
@@ -60,15 +62,39 @@ include::{snippets}/section-create/http-response.adoc[]
 include::{snippets}/section-delete/http-request.adoc[]
 ==== Response
 include::{snippets}/section-delete/http-response.adoc[]
+
 == 경로Path 관리
 === 조회
 ==== Request
 include::{snippets}/path-find/http-request.adoc[]
 ==== Response
 include::{snippets}/path-find/http-response.adoc[]
+
 == 인증Auth 관리
 === 로그인
 ==== Request
 include::{snippets}/auth-login/http-request.adoc[]
 ==== Response
 include::{snippets}/auth-login/http-response.adoc[]
+
+== 유저Member 관리
+=== 유저 생성
+==== Request
+include::{snippets}/member-create/http-request.adoc[]
+==== Response
+include::{snippets}/member-create/http-response.adoc[]
+=== 유저 조회
+==== Request
+include::{snippets}/member-find/http-request.adoc[]
+==== Response
+include::{snippets}/member-find/http-response.adoc[]
+=== 유저 수정
+==== Request
+include::{snippets}/member-update/http-request.adoc[]
+==== Response
+include::{snippets}/member-update/http-response.adoc[]
+=== 유저 삭제
+==== Request
+include::{snippets}/members-delete/http-request.adoc[]
+==== Response
+include::{snippets}/members-delete/http-response.adoc[]
