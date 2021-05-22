@@ -24,7 +24,7 @@ public class MemberService {
             Member member = memberDao.insert(request.toMember());
             return MemberResponse.of(member);
         } catch(DuplicateKeyException e) {
-            throw new DuplicatedEmailException("중복된 이메일이 존재합니다.");
+            throw new DuplicatedEmailException("중복된 회원이 존재합니다.");
         }
     }
 
@@ -41,5 +41,11 @@ public class MemberService {
     public void deleteMember(LoginMember loginMember) {
         Member member = memberDao.findByEmail(loginMember.getEmail());
         memberDao.deleteById(member.getId());
+    }
+
+    public void checkExistEmail(String email) {
+        if (memberDao.findByEmail(email) != null) {
+            throw new DuplicatedEmailException("중복된 이메일이 존재합니다.");
+        }
     }
 }
