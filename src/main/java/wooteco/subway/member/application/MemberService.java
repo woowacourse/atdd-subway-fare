@@ -33,9 +33,11 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
+    public MemberResponse updateMember(LoginMember loginMember, MemberRequest memberRequest) {
         Member member = memberDao.findByEmail(loginMember.getEmail()).orElseThrow(MemberNotFoundException::new);
-        memberDao.update(new Member(member.getId(), member.getEmail(), member.getPassword(), memberRequest.getAge()));
+        Member updateMember = member.update(member.getEmail(), member.getPassword(), memberRequest.getAge());
+        memberDao.update(updateMember);
+        return MemberResponse.of(updateMember);
     }
 
     public void updateMemberPassword(LoginMember loginMember, MemberPasswordUpdateRequest memberPasswordUpdateRequest) {

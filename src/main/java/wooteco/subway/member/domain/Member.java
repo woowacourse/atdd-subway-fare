@@ -53,4 +53,8 @@ public class Member {
             throw new PasswordMissMatchException();
         }
     }
+
+    public Member update(String email, String password, Integer age) {
+        return new Member(this.id, email, password, age);
+    }
 }
