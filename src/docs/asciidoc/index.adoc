@@ -23,3 +23,46 @@ include::{snippets}/station-show/http-response.adoc[]
 include::{snippets}/station-delete/http-request.adoc[]
 ==== Response
 include::{snippets}/station-delete/http-response.adoc[]
+== 노선 관리
+=== 생성
+==== Request
+include::{snippets}/line-create/http-request.adoc[]
+==== Response
+include::{snippets}/line-create/http-response.adoc[]
+=== 조회
+==== Request
+include::{snippets}/line-findALl/http-request.adoc[]
+==== Response
+include::{snippets}/line-findALl/http-response.adoc[]
+=== id 조회
+==== Request
+include::{snippets}/line-findById/http-request.adoc[]
+==== Response
+include::{snippets}/line-findById/http-response.adoc[]
+=== 수정
+==== Request
+include::{snippets}/line-update/http-request.adoc[]
+==== Response
+include::{snippets}/line-update/http-response.adoc[]
+=== 삭제
+==== Request
+include::{snippets}/line-delete/http-request.adoc[]
+==== Response
+include::{snippets}/line-delete/http-response.adoc[]
+== 구간 관리
+=== 생성
+==== Request
+include::{snippets}/section-create/http-request.adoc[]
+==== Response
+include::{snippets}/section-create/http-response.adoc[]
+=== 삭제
+==== Request
+include::{snippets}/section-delete/http-request.adoc[]
+==== Response
+include::{snippets}/section-delete/http-response.adoc[]
+== 경로 관리
+=== 조회
+==== Request
+include::{snippets}/path-find/http-request.adoc[]
+==== Response
+include::{snippets}/path-find/http-response.adoc[]
