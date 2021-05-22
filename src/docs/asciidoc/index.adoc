@@ -18,3 +18,8 @@ include::{snippets}/station-create/http-response.adoc[]
 include::{snippets}/station-show/http-request.adoc[]
 ==== Response
 include::{snippets}/station-show/http-response.adoc[]
+=== 삭제
+==== Request
+include::{snippets}/station-delete/http-request.adoc[]
+==== Response
+include::{snippets}/station-delete/http-response.adoc[]

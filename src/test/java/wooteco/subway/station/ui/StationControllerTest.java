@@ -3,6 +3,7 @@ package wooteco.subway.station.ui;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -45,7 +46,7 @@ public class StationControllerTest {
 
     @DisplayName("역 생성 테스트")
     @Test
-    public void create() throws Exception {
+    public void createStation() throws Exception {
         //given
         StationRequest stationRequest = new StationRequest("잠실역");
         StationResponse stationResponse = new StationResponse(1L, "잠실역");
@@ -66,7 +67,7 @@ public class StationControllerTest {
 
     @DisplayName("역 조회 - 성공")
     @Test
-    public void show() throws Exception {
+    public void showStations() throws Exception {
         //given
         List<StationResponse> stationResponses = Arrays.asList(
             new StationResponse(1L, "잠실역"),
@@ -87,5 +88,14 @@ public class StationControllerTest {
             )
             .andDo(print())
             .andDo(document("station-show"));
+    }
+
+    @DisplayName("역 삭제 - 성공")
+    @Test
+    public void deleteStation() throws Exception {
+        mockMvc.perform(delete("/api/stations/1"))
+            .andExpect(status().isNoContent())
+            .andDo(print())
+            .andDo(document("station-delete"));
     }
 }
