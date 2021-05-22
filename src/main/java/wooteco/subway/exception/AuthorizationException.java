@@ -16,4 +16,8 @@ public class AuthorizationException extends RuntimeException {
         super(message);
         this.errorCode = errorCode;
     }
+
+    public ErrorCode getErrorCode() {
+        return errorCode;
+    }
 }

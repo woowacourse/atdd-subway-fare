@@ -14,4 +14,11 @@ public class GlobalExceptionHandler {
             .status(HttpStatus.BAD_REQUEST)
             .body(new ApiError(e.getErrorCode()));
     }
+
+    @ExceptionHandler(AuthorizationException.class)
+    public ResponseEntity<ApiError> authorizationExceptionHandler(AuthorizationException e) {
+        return ResponseEntity
+            .status(HttpStatus.UNAUTHORIZED)
+            .body(new ApiError(e.getErrorCode()));
+    }
 }
