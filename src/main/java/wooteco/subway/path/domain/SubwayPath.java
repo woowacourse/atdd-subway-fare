@@ -33,6 +33,22 @@ public class SubwayPath {
     }
 
     public int calculateFare() {
+        return calculateFareByDistance() + calculateFareByLineExtraFare();
+    }
+
+    private int calculateFareByLineExtraFare() {
+        int maxExtrafare = 0;
+        for(Station station : stations){
+            for(SectionEdge sectionEdge : sectionEdges){
+                if(sectionEdge.getLine().getStations().contains(station)){
+                    maxExtrafare = Math.max(sectionEdge.getLine().getExtraFare(), maxExtrafare);
+                }
+            }
+        }
+        return maxExtrafare;
+    }
+
+    public int calculateFareByDistance(){
         int totalDistance = calculateDistance();
         if (totalDistance > EXTRA_FARE_SECOND_BOUNDARY) {
             return BASE_FARE + FARE_BETWEEN_10_TO_50 + (int)

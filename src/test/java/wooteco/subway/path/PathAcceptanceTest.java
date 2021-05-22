@@ -95,7 +95,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         육호선 = 지하철_노선_등록되어_있음("육호선", "bg-red-600", 구의역, 성수역, 7, 1500);
 
         지하철_구간_등록되어_있음(육호선, 성수역, 잠실역, 8);
-        지하철_구간_등록되어_있음(육호선, 구의역, 뚝섬역, 50);
+        지하철_구간_등록되어_있음(육호선, 뚝섬역, 구의역, 50);
     }
 
     @DisplayName("두 역의 최단 거리 경로를 조회한다.(추가운임(55km))")
@@ -150,7 +150,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findPathByDistance61kmWithExtraFare() {
         //when
-        ExtractableResponse<Response> response = 거리_경로_조회_요청(6L, 9L);
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(6L, 10L);
 
         //then
         적절한_경로_응답됨(response, Lists.newArrayList(잠실역, 강변역, 구의역, 뚝섬역));
