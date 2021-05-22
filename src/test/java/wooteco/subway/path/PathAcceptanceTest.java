@@ -37,7 +37,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 남부터미널역;
 
     /**
-     * 교대역    --- *2호선* 10 ---   강남역 |                              | *3호선* 3                   *신분당선* 10 |                              | 남부터미널역  --- *3호선* 2 ---   양재
+     * 교대역    --- *2호선* ---   강남역
+     * |                        |
+     * *3호선*                   *신분당선*
+     * |                        |
+     * 남부터미널역  --- *3호선* ---   양재
      */
     @BeforeEach
     public void setUp() {
