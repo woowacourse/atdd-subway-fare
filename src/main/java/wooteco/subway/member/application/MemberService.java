@@ -21,7 +21,7 @@ public class MemberService {
     }
 
     public MemberResponse createMember(MemberRequest request) {
-        if (!memberDao.exists(request.getEmail())) {
+        if (memberDao.exists(request.getEmail())) {
             throw new DuplicateEmailException();
         }
 
@@ -51,7 +51,7 @@ public class MemberService {
     }
 
     public void checkEmailExists(String email) {
-        if (!memberDao.exists(email)) {
+        if (memberDao.exists(email)) {
             throw new DuplicateEmailException();
         }
     }
