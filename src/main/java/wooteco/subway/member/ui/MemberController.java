@@ -15,7 +15,7 @@ import java.net.URI;
 @RequestMapping("/api/members")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class MemberController {
-    private MemberService memberService;
+    private final MemberService memberService;
 
     public MemberController(MemberService memberService) {
         this.memberService = memberService;

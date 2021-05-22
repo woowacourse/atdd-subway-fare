@@ -16,7 +16,7 @@ import java.util.List;
 @RequestMapping("/api/stations")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class StationController {
-    private StationService stationService;
+    private final StationService stationService;
 
     public StationController(StationService stationService) {
         this.stationService = stationService;
