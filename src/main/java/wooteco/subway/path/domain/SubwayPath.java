@@ -29,7 +29,7 @@ public class SubwayPath {
         return sectionEdges.stream().mapToInt(it -> it.getSection().getDistance()).sum();
     }
 
-    public int getMaxLineFare(){
+    public int getMaxLineFare() {
         return lines.stream()
                 .mapToInt(line -> line.getExtraFare())
                 .max()

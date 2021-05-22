@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class PathResponseAssembler {
-    public static PathResponse assemble(SubwayPath subwayPath) {
+    public static PathResponse assemble(int age, SubwayPath subwayPath) {
         List<StationResponse> stationResponses = subwayPath.getStations().stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
@@ -16,7 +16,7 @@ public class PathResponseAssembler {
         int distance = subwayPath.calculateDistance();
         int lineFare = subwayPath.getMaxLineFare();
 
-        SubwayPathFare subwayPathFare = new SubwayPathFare(distance, lineFare);
+        SubwayPathFare subwayPathFare = new SubwayPathFare(age, distance, lineFare);
 
         return new PathResponse(stationResponses, distance, subwayPathFare.getFare());
     }

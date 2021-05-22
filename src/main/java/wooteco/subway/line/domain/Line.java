@@ -15,7 +15,7 @@ public class Line {
     }
 
     public Line(String name, String color) {
-        this(null, name, color,0);
+        this(null, name, color, 0);
     }
 
     public Line(Long id, String name, String color) {
