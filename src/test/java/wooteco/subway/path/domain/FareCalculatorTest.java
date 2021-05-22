@@ -14,7 +14,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.path.application.FareCalculator;
-import wooteco.subway.path.domain.Fare;
 
 class FareCalculatorTest {
     private FareCalculator fareCalculator;
