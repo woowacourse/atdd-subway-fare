@@ -11,6 +11,7 @@ import wooteco.subway.member.dto.MemberResponse;
 import java.net.URI;
 
 @RestController
+@RequestMapping("/api/members")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class MemberController {
     private MemberService memberService;
@@ -19,10 +20,16 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    @PostMapping("/members")
+    @PostMapping
     public ResponseEntity createMember(@RequestBody MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
         return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
+    }
+
+    @PostMapping("/exists")
+    public ResponseEntity<Void> checkDuplicateEmail(@RequestBody String email) {
+        memberService.checkDuplicateEmail(email);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/members/me")
