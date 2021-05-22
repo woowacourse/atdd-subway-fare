@@ -67,6 +67,43 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
+    @DisplayName("이메일 중복 확인 - 존재 하지 않는 이메일 중복 확인시 204")
+    @Test
+    void nonDuplicateEmail() {
+        // given
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+
+        // when
+        Map<String, String> params = new HashMap<>();
+        params.put("email", "test@naver.com");
+        RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(params)
+            .when().post("/api/members/exists")
+            .then().log().all()
+            .statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("이메일 중복 확인 - 이미 존재하는 이메일 중복 확인시 400")
+    @Test
+    void duplicateEmail() {
+        // given
+        String email = "test@naver.com";
+        회원_등록되어_있음(email, PASSWORD, AGE);
+
+        // when
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(params)
+            .when().post("/api/members/exists")
+            .then().log().all()
+            .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
     public static ExtractableResponse<Response> 회원_등록되어_있음(String email, String password, Integer age) {
         return 회원_생성을_요청(email, password, age);
     }
