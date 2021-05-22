@@ -2,6 +2,7 @@ package wooteco.subway.member.ui;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import wooteco.subway.auth.application.AuthorizationException;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.LoginMember;
@@ -27,19 +28,28 @@ public class MemberController {
 
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
+        unAuthorizedThrowException(loginMember);
         MemberResponse member = memberService.findMember(loginMember);
         return ResponseEntity.ok().body(member);
     }
 
     @PutMapping("/members/me")
     public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest param) {
+        unAuthorizedThrowException(loginMember);
         memberService.updateMember(loginMember, param);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/members/me")
     public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
+        unAuthorizedThrowException(loginMember);
         memberService.deleteMember(loginMember);
         return ResponseEntity.noContent().build();
+    }
+
+    private void unAuthorizedThrowException(@AuthenticationPrincipal LoginMember loginMember) {
+        if (loginMember.getId() == null) {
+            throw new AuthorizationException();
+        }
     }
 }
