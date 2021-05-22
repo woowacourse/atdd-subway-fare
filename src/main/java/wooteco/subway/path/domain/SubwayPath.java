@@ -39,14 +39,16 @@ public class SubwayPath {
     }
 
     private int calculateAdditionalFareByDistance(int distance) {
+        int fare = 0;
         if (DEFAULT_DISTANCE < distance & distance <= OVER_LIMIT_DISTANCE) {
             return calculateAdditionalFareOver10km(distance - DEFAULT_DISTANCE);
         }
 
         if (OVER_LIMIT_DISTANCE < distance) {
-            return calculateAdditionalFareOver50km(distance - OVER_LIMIT_DISTANCE);
+            return calculateAdditionalFareOver10km(OVER_LIMIT_DISTANCE - DEFAULT_DISTANCE)
+                + calculateAdditionalFareOver50km(distance - OVER_LIMIT_DISTANCE);
         }
-        return NO_ADDITIONAL_FARE;
+        return fare;
     }
 
     private int calculateAdditionalFareOver10km(int distance) {
