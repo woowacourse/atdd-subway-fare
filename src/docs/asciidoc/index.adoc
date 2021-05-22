@@ -84,3 +84,28 @@ include::{snippets}/auth-login/http-request.adoc[]
 - Response
 include::{snippets}/auth-login/http-response.adoc[]
 
+== Member(회원)
+=== 회원 가입
+- Request
+include::{snippets}/member-create/http-request.adoc[]
+- Response
+include::{snippets}/member-create/http-response.adoc[]
+
+=== 회원 조회
+- Request
+include::{snippets}/member-find/http-request.adoc[]
+- Response
+include::{snippets}/member-find/http-response.adoc[]
+
+=== 회원 수정
+- Request
+include::{snippets}/member-update/http-request.adoc[]
+- Response
+include::{snippets}/member-update/http-response.adoc[]
+
+=== 회원 삭제
+- Request
+include::{snippets}/member-delete/http-request.adoc[]
+- Response
+include::{snippets}/member-delete/http-response.adoc[]
+
