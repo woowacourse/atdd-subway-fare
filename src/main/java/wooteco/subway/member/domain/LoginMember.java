@@ -9,6 +9,7 @@ public class LoginMember implements AuthMember {
     private static final int DISCOUNT_PRICE_FOR_CHILD = 350;
     private static final int DISOCUNT_FOR_TEENAGER = 350;
     private static final double DISCOUNT_RATE_FOR_TEENAGER = 0.8;
+    private static final int NO_FARE = 0;
     private Long id;
     private String email;
     private Integer age;
@@ -36,13 +37,28 @@ public class LoginMember implements AuthMember {
 
     @Override
     public int discountFareByAge(int fare) {
-        if (CHILD_AGE_BOUNDARY <= age & age < TEENAGER_AGE_BOUNDARY) {
+        if (isBaby()) {
+            return NO_FARE;
+        }
+        if (isChild()) {
             return (int) ((fare - DISCOUNT_PRICE_FOR_CHILD) * DISCOUNT_RATE_FOR_CHILD);
         }
-        if (TEENAGER_AGE_BOUNDARY <= age & age < ADULT_AGE_BOUNDARY) {
+        if (isTeenager()) {
             return (int) ((fare - DISOCUNT_FOR_TEENAGER) * DISCOUNT_RATE_FOR_TEENAGER);
         }
         return fare;
+    }
+
+    private boolean isBaby() {
+        return age < CHILD_AGE_BOUNDARY;
+    }
+
+    private boolean isTeenager() {
+        return TEENAGER_AGE_BOUNDARY <= age & age < ADULT_AGE_BOUNDARY;
+    }
+
+    private boolean isChild() {
+        return CHILD_AGE_BOUNDARY <= age & age < TEENAGER_AGE_BOUNDARY;
     }
 
     @Override

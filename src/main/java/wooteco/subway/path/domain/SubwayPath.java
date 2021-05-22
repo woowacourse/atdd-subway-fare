@@ -1,5 +1,6 @@
 package wooteco.subway.path.domain;
 
+import wooteco.subway.member.domain.AuthMember;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
@@ -30,10 +31,11 @@ public class SubwayPath {
         return sectionEdges.stream().mapToInt(it -> it.getSection().getDistance()).sum();
     }
 
-    public int calculateFare(int distance) {
+    public int calculateFare(int distance, AuthMember authMember) {
         int fare = DEFAULT_FARE;
         fare += calculateAdditionalFareByDistance(distance);
         fare += calculateAdditionalFareByLine();
+        fare = authMember.discountFareByAge(fare);
 
         return fare;
     }
