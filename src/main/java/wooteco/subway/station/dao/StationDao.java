@@ -41,13 +41,18 @@ public class StationDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public void deleteById(Long id) {
-        String sql = "delete from STATION where id = ?";
-        jdbcTemplate.update(sql, id);
-    }
-
     public Station findById(Long id) {
         String sql = "select * from STATION where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    }
+
+    public void update(Station station) {
+        String sql = "update STATION set name = ? where id = ?";
+        jdbcTemplate.update(sql, new Object[]{station.getName(), station.getId()});
+    }
+
+    public void deleteById(Long id) {
+        String sql = "delete from STATION where id = ?";
+        jdbcTemplate.update(sql, id);
     }
 }

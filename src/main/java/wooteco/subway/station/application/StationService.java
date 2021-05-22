@@ -39,6 +39,11 @@ public class StationService {
                 .collect(toList());
     }
 
+    public StationResponse updateStationById(Long id, StationRequest stationRequest) {
+        stationDao.update(new Station(id, stationRequest.getName()));
+        return StationResponse.of(stationDao.findById(id));
+    }
+
     public void deleteStationById(Long id) {
         stationDao.deleteById(id);
     }
