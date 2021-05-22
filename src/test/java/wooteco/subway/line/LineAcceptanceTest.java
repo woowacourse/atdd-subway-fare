@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.line.dto.LineDetailResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.station.dto.StationResponse;
@@ -77,6 +78,21 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_목록_포함됨(response, Arrays.asList(lineResponse1, lineResponse2));
     }
 
+    @DisplayName("지하철 노선(상세) 목록을 조회한다.")
+    @Test
+    void getDetailLines() {
+        // given
+        LineResponse lineResponse1 = 지하철_노선_등록되어_있음(lineRequest1);
+        LineResponse lineResponse2 = 지하철_노선_등록되어_있음(lineRequest2);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_상세_목록_조회_요청();
+
+        // then
+        지하철_노선_목록_응답됨(response);
+        지하철_노선_상세_목록_포함됨(response, Arrays.asList(lineResponse1, lineResponse2));
+    }
+
     @DisplayName("지하철 노선을 조회한다.")
     @Test
     void getLine() {
@@ -88,6 +104,19 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_노선_응답됨(response, lineResponse);
+    }
+
+    @DisplayName("지하철 상세노선을 조회한다.")
+    @Test
+    void getLineDetail() {
+        // given
+        LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_상세_조회_요청(lineResponse);
+
+        // then
+        지하철_노선_상세_응답됨(response, lineResponse);
     }
 
     @DisplayName("지하철 노선을 수정한다.")
@@ -144,11 +173,29 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+    private static ExtractableResponse<Response> 지하철_노선_상세_목록_조회_요청() {
+        return RestAssured
+                .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/lines/detail")
+                .then().log().all()
+                .extract();
+    }
+
     public static ExtractableResponse<Response> 지하철_노선_조회_요청(LineResponse response) {
         return RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/lines/{lineId}", response.getId())
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선_상세_조회_요청(LineResponse response) {
+        return RestAssured
+                .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/lines/detail/{lineId}", response.getId())
                 .then().log().all()
                 .extract();
     }
@@ -191,6 +238,12 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(resultResponse.getId()).isEqualTo(lineResponse.getId());
     }
 
+    public static void 지하철_노선_상세_응답됨(ExtractableResponse<Response> response, LineResponse lineResponse) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        LineDetailResponse resultResponse = response.as(LineDetailResponse.class);
+        assertThat(resultResponse.getId()).isEqualTo(lineResponse.getId());
+    }
+
     public static void 지하철_노선_목록_포함됨(ExtractableResponse<Response> response, List<LineResponse> createdResponses) {
         List<Long> expectedLineIds = createdResponses.stream()
                 .map(it -> it.getId())
@@ -198,6 +251,18 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         List<Long> resultLineIds = response.jsonPath().getList(".", LineResponse.class).stream()
                 .map(LineResponse::getId)
+                .collect(Collectors.toList());
+
+        assertThat(resultLineIds).containsAll(expectedLineIds);
+    }
+
+    public static void 지하철_노선_상세_목록_포함됨(ExtractableResponse<Response> response, List<LineResponse> createdResponses) {
+        List<Long> expectedLineIds = createdResponses.stream()
+                .map(it -> it.getId())
+                .collect(Collectors.toList());
+
+        List<Long> resultLineIds = response.jsonPath().getList(".", LineDetailResponse.class).stream()
+                .map(LineDetailResponse::getId)
                 .collect(Collectors.toList());
 
         assertThat(resultLineIds).containsAll(expectedLineIds);

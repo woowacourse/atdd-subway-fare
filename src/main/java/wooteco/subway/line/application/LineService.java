@@ -5,6 +5,7 @@ import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
+import wooteco.subway.line.dto.LineDetailResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
@@ -49,6 +50,13 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
+    public List<LineDetailResponse> findDetailLineResponse() {
+        List<Line> persistLines = findLines();
+        return persistLines.stream()
+                .map(line -> LineDetailResponse.of(line))
+                .collect(Collectors.toList());
+    }
+
     public List<Line> findLines() {
         return lineDao.findAll();
     }
@@ -56,6 +64,11 @@ public class LineService {
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
         return LineResponse.of(persistLine);
+    }
+
+    public LineDetailResponse findDetailLineResponseById(Long id) {
+        Line persistLine = findLineById(id);
+        return LineDetailResponse.of(persistLine);
     }
 
     public Line findLineById(Long id) {
@@ -88,5 +101,4 @@ public class LineService {
         sectionDao.deleteByLineId(lineId);
         sectionDao.insertSections(line);
     }
-
 }
