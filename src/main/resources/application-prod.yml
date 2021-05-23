@@ -4,7 +4,8 @@ spring:
     url: jdbc:mysql://localhost:3306/spring_subway?serverTimezone=UTC&characterEncoding=UTF-8
     username: ecsimsw
     password: root
-    initialize: true
+    initialization-mode=always:
+
 handlebars:
   suffix: .html
   enabled: true
