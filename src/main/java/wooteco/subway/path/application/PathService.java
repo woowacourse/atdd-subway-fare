@@ -26,12 +26,12 @@ public class PathService {
         this.pathFinder = pathFinder;
     }
 
-    public PathResponse findPath(Long source, Long target) {
+    public PathResponse findPath(Long departure, Long arrival) {
         try {
             List<Line> lines = lineService.findLines();
-            Station sourceStation = stationService.findStationById(source);
-            Station targetStation = stationService.findStationById(target);
-            SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
+            Station departureStation = stationService.findStationById(departure);
+            Station arrivalStation = stationService.findStationById(arrival);
+            SubwayPath subwayPath = pathFinder.findPath(lines, departureStation, arrivalStation);
 
             return PathResponseAssembler.assemble(subwayPath);
         } catch (Exception e) {

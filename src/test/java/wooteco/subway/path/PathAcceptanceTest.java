@@ -66,11 +66,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
         총_거리가_응답됨(response, 5);
     }
 
-    public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
+    public static ExtractableResponse<Response> 거리_경로_조회_요청(long departure, long arrival) {
         return RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/paths?source={sourceId}&target={targetId}", source, target)
+                .when().get("/paths?departure={departureId}&arrival={arrivalId}", departure, arrival)
                 .then().log().all()
                 .extract();
     }
