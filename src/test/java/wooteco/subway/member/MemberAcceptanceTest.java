@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
+import wooteco.subway.member.dto.MemberInfoUpdateRequest;
+import wooteco.subway.member.dto.MemberPasswordUpdateRequest;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
@@ -19,7 +21,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
     public static final int AGE = 20;
-    public static final String NEW_EMAIL = "new_email@email.com";
     public static final String NEW_PASSWORD = "new_password";
     public static final int NEW_AGE = 30;
 
@@ -37,8 +38,11 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> findResponse = 내_회원_정보_조회_요청(사용자);
         회원_정보_조회됨(findResponse, EMAIL, AGE);
 
-        ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(사용자, EMAIL, NEW_PASSWORD, NEW_AGE);
-        회원_정보_수정됨(updateResponse);
+        ExtractableResponse<Response> updateInfoResponse = 내_회원_정보_수정_요청(사용자, NEW_AGE);
+        회원_정보_수정됨(updateInfoResponse);
+
+        ExtractableResponse<Response> updatePasswordResponse = 내_회원_비밀번호_수정_요청(사용자, PASSWORD, NEW_PASSWORD);
+        회원_비밀번호_수정됨(updatePasswordResponse);
 
         ExtractableResponse<Response> deleteResponse = 내_회원_삭제_요청(사용자);
         회원_삭제됨(deleteResponse);
@@ -91,15 +95,28 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 내_회원_정보_수정_요청(TokenResponse tokenResponse, String email, String password, Integer age) {
-        MemberRequest memberRequest = new MemberRequest(email, password, age);
+    public static ExtractableResponse<Response> 내_회원_정보_수정_요청(TokenResponse tokenResponse, Integer age) {
+        MemberInfoUpdateRequest memberInfoUpdateRequest = new MemberInfoUpdateRequest(age);
 
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(memberRequest)
+                .body(memberInfoUpdateRequest)
                 .when().put("/api/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 내_회원_비밀번호_수정_요청(TokenResponse tokenResponse, String currentPassword, String newPassword) {
+        MemberPasswordUpdateRequest memberPasswordUpdateRequest = new MemberPasswordUpdateRequest(currentPassword, newPassword);
+
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(memberPasswordUpdateRequest)
+                .when().put("/api/members/me/pw")
                 .then().log().all()
                 .extract();
     }
@@ -126,6 +143,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 회원_정보_수정됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 회원_비밀번호_수정됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {

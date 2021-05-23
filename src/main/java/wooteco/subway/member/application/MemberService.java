@@ -7,6 +7,7 @@ import wooteco.subway.exception.notfound.MemberNotFoundException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
+import wooteco.subway.member.dto.MemberInfoUpdateRequest;
 import wooteco.subway.member.dto.MemberPasswordUpdateRequest;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
@@ -33,9 +34,9 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public MemberResponse updateMember(LoginMember loginMember, MemberRequest memberRequest) {
+    public MemberResponse updateMember(LoginMember loginMember, MemberInfoUpdateRequest memberInfoUpdateRequest) {
         Member member = memberDao.findByEmail(loginMember.getEmail()).orElseThrow(MemberNotFoundException::new);
-        Member updateMember = member.update(member.getEmail(), member.getPassword(), memberRequest.getAge());
+        Member updateMember = member.update(member.getEmail(), member.getPassword(), memberInfoUpdateRequest.getAge());
         memberDao.update(updateMember);
         return MemberResponse.of(updateMember);
     }
