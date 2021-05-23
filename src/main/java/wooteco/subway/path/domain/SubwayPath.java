@@ -6,15 +6,14 @@ import java.util.List;
 
 public class SubwayPath {
     private final List<Station> stations;
+
     private final int distance;
-    private final int fare;
+    private final int extraFare;
 
     public SubwayPath(List<SectionEdge> sectionEdges, List<Station> stations) {
         this.stations = stations;
         this.distance = sectionEdges.stream().mapToInt(it -> it.getSection().getDistance()).sum();
-
-        int extraFare = sectionEdges.stream().mapToInt(it -> it.getLine().getExtraFare()).max().orElse(0);
-        this.fare = FarePolicy.calculate(distance) + extraFare;
+        this.extraFare = sectionEdges.stream().mapToInt(it -> it.getLine().getExtraFare()).max().orElse(0);
     }
 
     public List<Station> stations() {
@@ -25,7 +24,8 @@ public class SubwayPath {
         return distance;
     }
 
-    public int fare() {
-        return fare;
+    public int extraFare() {
+        return extraFare;
     }
 }
+

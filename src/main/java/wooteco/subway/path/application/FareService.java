@@ -1,6 +1,11 @@
-package wooteco.subway.path.domain;
+package wooteco.subway.path.application;
 
-public class FarePolicy {
+import org.springframework.stereotype.Service;
+import wooteco.subway.member.domain.MemberType;
+import wooteco.subway.path.domain.FareType;
+
+@Service
+public class FareService {
 
     private static final int DEFAULT_FARE = 1250;
     private static final int FARE_PER_UNIT_DISTANCE = 100;
@@ -11,11 +16,19 @@ public class FarePolicy {
     private static final int FIRST_ADDITIONAL_FARE_UNIT_DISTANCE = 5;
     private static final int SECOND_ADDITIONAL_FARE_UNIT_DISTANCE = 8;
 
-    public static int calculate(int distance) {
+    public int calculate(int distance, int extraFare, MemberType memberType) {
+        return FareType.of(memberType).price(fareByDistance(distance) + extraFare);
+    }
+
+    public int fareByPath(int distance, int extraFare) {
+        return fareByDistance(distance) + extraFare;
+    }
+
+    private int fareByDistance(int distance) {
         return DEFAULT_FARE + fareInFirstSection(distance) + fareInSecondSection(distance);
     }
 
-    private static int fareInFirstSection(int distance) {
+    private int fareInFirstSection(int distance) {
         if (distance < FIRST_ADDITIONAL_FARE_SECTION) {
             return 0;
         }
@@ -23,15 +36,19 @@ public class FarePolicy {
         return calculateAdditionalFare(firstSectionDistance, FIRST_ADDITIONAL_FARE_UNIT_DISTANCE);
     }
 
-    private static int fareInSecondSection(int distance) {
+    private int fareInSecondSection(int distance) {
         if (distance < SECOND_ADDITIONAL_FARE_SECTION) {
             return 0;
         }
+
         int secondSectionDistance = distance - SECOND_ADDITIONAL_FARE_SECTION;
         return calculateAdditionalFare(secondSectionDistance, SECOND_ADDITIONAL_FARE_UNIT_DISTANCE);
     }
 
-    private static int calculateAdditionalFare(int additionalDistance, int unitDistance) {
+    private int calculateAdditionalFare(int additionalDistance, int unitDistance) {
         return (int) ((Math.ceil((additionalDistance - 1) / unitDistance) + 1) * FARE_PER_UNIT_DISTANCE);
+    }
+
+    public static void main(String[] args) {
     }
 }

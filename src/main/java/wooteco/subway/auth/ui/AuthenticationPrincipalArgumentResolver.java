@@ -12,6 +12,7 @@ import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
 import wooteco.subway.member.domain.LoginMember;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Optional;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
     private AuthService authService;
@@ -28,10 +29,8 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
-        LoginMember member = authService.findMemberByToken(credentials);
-        if (member.getId() == null) {
-            throw new AuthorizationException();
-        }
-        return member;
+        Optional<LoginMember> memberByToken = authService.findMemberByToken(credentials);
+
+        return memberByToken.orElseThrow(()-> new AuthorizationException("올바른 회원이 아닙니다."));
     }
 }
