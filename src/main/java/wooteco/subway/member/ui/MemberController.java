@@ -41,15 +41,15 @@ public class MemberController {
 
     @PutMapping("/me/pw")
     public ResponseEntity<Void> updatePasswordMemberOfMine(@AuthenticationPrincipal LoginMember loginMember,
-                                                           @Valid @RequestBody MemberPasswordRequest param) {
-        memberService.updateMemberPassword(loginMember, param);
+                                                           @Valid @RequestBody MemberPasswordRequest memberPasswordRequest) {
+        memberService.updateMemberPassword(loginMember, memberPasswordRequest);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/me")
     public ResponseEntity<MemberAgeResponse> updateAgeMemberOfMine(@AuthenticationPrincipal LoginMember loginMember,
-                                                                   @Valid @RequestBody MemberAgeRequest param) {
-        MemberAgeResponse member = memberService.updateMemberAge(loginMember, param);
+                                                                   @Valid @RequestBody MemberAgeRequest memberAgeRequest) {
+        MemberAgeResponse member = memberService.updateMemberAge(loginMember, memberAgeRequest);
         return ResponseEntity.ok(member);
     }
 

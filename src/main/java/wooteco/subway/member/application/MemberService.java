@@ -39,12 +39,12 @@ public class MemberService {
 
     public void updateMemberPassword(LoginMember loginMember, MemberPasswordRequest memberRequest) {
         Member member = memberDao.findByEmailAndPassword(loginMember.getEmail(), memberRequest.getCurrentPassword());
-        memberDao.updatePassword(new Member(member.getId(), member.getEmail(), memberRequest.getNewPassword(), member.getAge()));
+        memberDao.update(new Member(member.getId(), member.getEmail(), memberRequest.getNewPassword(), member.getAge()));
     }
 
     public MemberAgeResponse updateMemberAge(LoginMember loginMember, MemberAgeRequest memberRequest) {
         Member member = memberDao.findByEmail(loginMember.getEmail());
-        memberDao.updateAge(new Member(member.getId(), member.getEmail(), member.getPassword(), memberRequest.getAge()));
+        memberDao.update(new Member(member.getId(), member.getEmail(), member.getPassword(), memberRequest.getAge()));
         return MemberAgeResponse.of(memberDao.findByEmail(loginMember.getEmail()));
     }
 
