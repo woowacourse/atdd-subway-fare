@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
+import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.auth.AuthAcceptanceTest.*;
+import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_생성_요청;
 
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {
@@ -78,6 +80,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철역_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static void 지하철역_삭제_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static void 지하철역_목록_포함됨(ExtractableResponse<Response> response, List<StationResponse> createdResponses) {
@@ -147,6 +153,23 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철역_삭제됨(response);
+    }
+
+    @DisplayName("노선에 등록된 지하철역을 삭제하려고 하면 실패한다.")
+    @Test
+    void deleteStationFail() {
+        // given
+        StationResponse upStation = 지하철역_등록되어_있음(강남역, tokenResponse);
+        StationResponse downStation = 지하철역_등록되어_있음(역삼역, tokenResponse);
+
+        LineRequest lineRequest1 = new LineRequest("신분당선", "bg-red-600", upStation.getId(), downStation.getId(), 10);
+        지하철_노선_생성_요청(lineRequest1, tokenResponse);
+
+        // when
+        ExtractableResponse<Response> response = 지하철역_제거_요청(upStation, tokenResponse);
+
+        // then
+        지하철역_삭제_실패됨(response);
     }
 
     @DisplayName("지하철역 이름에 공백이 있거나 길이가 2미만, 20 초과인경우, 400 에러를 받는다.")

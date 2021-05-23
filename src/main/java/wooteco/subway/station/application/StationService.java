@@ -1,7 +1,9 @@
 package wooteco.subway.station.application;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import wooteco.subway.exception.DuplicateException;
+import wooteco.subway.exception.InvalidInputException;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;
@@ -41,6 +43,10 @@ public class StationService {
     }
 
     public void deleteStationById(Long id) {
-        stationDao.deleteById(id);
+        try {
+            stationDao.deleteById(id);
+        } catch (DataAccessException e) {
+            throw new InvalidInputException("노선에 등록된 역은 삭제할 수 없습니다.");
+        }
     }
 }
