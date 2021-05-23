@@ -1,5 +1,7 @@
 package wooteco.subway.path.domain;
 
+import wooteco.subway.member.domain.Member;
+
 public class Fare {
 
     private static final int BASIC_DISTANCE = 10;
@@ -13,10 +15,20 @@ public class Fare {
     private final int value;
 
     public Fare(int distance) {
-        this.value = calculateFare(distance);
+        this.value = calculateFareByDistance(distance);
     }
 
-    private int calculateFare(int distance) {
+    public Fare(int distance, Member member, int extraFare) {
+        this.value = calculateFare(distance, member, extraFare);
+    }
+
+    private int calculateFare(int distance, Member member, int extraFare) {
+        int basicFare = calculateFareByDistance(distance) + extraFare;
+        AgeAppliedRule ageAppliedRule = AgeAppliedRule.matchRule(member.getAge());
+        return (int) ((basicFare - ageAppliedRule.getDeductedFare()) * ageAppliedRule.getAppliedRate());
+    }
+
+    private int calculateFareByDistance(int distance) {
         if (distance < BASIC_DISTANCE) {
             return BASIC_FARE;
         }
