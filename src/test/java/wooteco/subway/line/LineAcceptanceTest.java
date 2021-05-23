@@ -6,6 +6,8 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
@@ -40,7 +42,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         downStation = 지하철역_등록되어_있음("광교역", tokenResponse);
 
         lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 10);
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 15);
+        lineRequest2 = new LineRequest("구신분당선", "bg-black-500", 강남역.getId(), downStation.getId(), 15);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -58,9 +60,38 @@ public class LineAcceptanceTest extends AcceptanceTest {
     void createLineWithDuplicateName() {
         // given
         지하철_노선_등록되어_있음(lineRequest1, tokenResponse);
+        LineRequest newRequest = new LineRequest(lineRequest1.getName(), lineRequest2.getColor(), lineRequest2.getUpStationId(), lineRequest2.getDownStationId(), lineRequest2.getDistance());
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1, tokenResponse);
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(newRequest, tokenResponse);
+
+        // then
+        지하철_노선_생성_실패됨(response);
+    }
+
+    @DisplayName("기존에 존재하는 지하철 노선 색깔로 지하철 노선을 생성한다.")
+    @Test
+    void createLineWithDuplicateColor() {
+        // given
+        지하철_노선_등록되어_있음(lineRequest1, tokenResponse);
+        LineRequest newRequest = new LineRequest(lineRequest2.getName(), lineRequest1.getColor(), lineRequest2.getUpStationId(), lineRequest2.getDownStationId(), lineRequest2.getDistance());
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(newRequest, tokenResponse);
+
+        // then
+        지하철_노선_생성_실패됨(response);
+    }
+
+    @DisplayName("지하철노선 이름에 공백이 있거나 길이가 2미만, 20 초과인경우, 400 에러를 받는다.")
+    @ParameterizedTest
+    @ValueSource(strings = {" ", "에", "우아한테크코스검프에어바다포츈우기화이팅짱"})
+    void createStationFail(String name) {
+        //given
+        LineRequest lineRequest = new LineRequest(name, lineRequest1.getColor(), lineRequest1.getUpStationId(), lineRequest1.getDownStationId(), lineRequest1.getDistance());
+
+        //when
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest, tokenResponse);
 
         // then
         지하철_노선_생성_실패됨(response);
