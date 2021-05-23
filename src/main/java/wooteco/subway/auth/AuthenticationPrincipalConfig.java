@@ -34,7 +34,6 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
         registry.addInterceptor(subwayInterceptor)
                 .addPathPatterns(
                         "/api/members/me/**",
-                        "/api/members/exists",
                         "/api/stations/**",
                         "/api/lines/**",
                         "/api/paths/**"

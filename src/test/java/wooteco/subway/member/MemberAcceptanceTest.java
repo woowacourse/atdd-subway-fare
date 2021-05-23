@@ -25,12 +25,23 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
+        회원_이메일_중복_확인(memberRequest.getEmail());
 
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(memberRequest)
                 .when().post("/api/members")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 회원_이메일_중복_확인(String email) {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(email)
+                .when().post("/api/members/exists")
                 .then().log().all()
                 .extract();
     }
