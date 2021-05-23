@@ -34,7 +34,7 @@ public class PathService {
 
             return PathResponseAssembler.assemble(subwayPath);
         } catch (Exception e) {
-            throw new InvalidPathException();
+            throw new InvalidPathException(e.getMessage());
         }
     }
 }
