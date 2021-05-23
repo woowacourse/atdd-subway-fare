@@ -25,7 +25,7 @@ public class LineResponse {
         List<StationResponse> stations = line.getStations().stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
-        List<SectionResponse> sections = line.getSections().stream()
+        List<SectionResponse> sections = line.getSortSections().stream()
                 .map(SectionResponse::of)
                 .collect(Collectors.toList());
         return new LineResponse(line.getId(), line.getName(), line.getColor(), stations, sections);

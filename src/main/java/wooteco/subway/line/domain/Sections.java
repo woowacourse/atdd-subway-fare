@@ -2,10 +2,7 @@ package wooteco.subway.line.domain;
 
 import wooteco.subway.station.domain.Station;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -99,6 +96,23 @@ public class Sections {
         }
 
         return stations;
+    }
+
+    public List<Section> getSortSections() {
+        if (sections.isEmpty()) {
+            return Arrays.asList();
+        }
+
+        List<Section> sections = new ArrayList<>();
+        Section upEndSection = findUpEndSection();
+
+        Section nextSection = upEndSection;
+        while (nextSection != null) {
+            sections.add(nextSection);
+            nextSection = findSectionByNextUpStation(nextSection.getDownStation());
+        }
+
+        return sections;
     }
 
     private Section findUpEndSection() {
