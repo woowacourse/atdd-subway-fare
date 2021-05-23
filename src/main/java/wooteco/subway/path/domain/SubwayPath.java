@@ -12,7 +12,9 @@ public class SubwayPath {
     public SubwayPath(List<SectionEdge> sectionEdges, List<Station> stations) {
         this.stations = stations;
         this.distance = sectionEdges.stream().mapToInt(it -> it.getSection().getDistance()).sum();
-        this.fare = FarePolicy.calculate(distance);
+
+        int extraFare = sectionEdges.stream().mapToInt(it -> it.getLine().getExtraFare()).max().orElse(0);
+        this.fare = FarePolicy.calculate(distance) + extraFare;
     }
 
     public List<Station> stations() {
