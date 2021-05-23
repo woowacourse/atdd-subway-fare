@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.member.domain.Member;
+import wooteco.subway.member.dto.EmailCheckRequest;
 
 import javax.sql.DataSource;
 
@@ -56,5 +57,10 @@ public class MemberDao {
     public Member findByEmail(String email) {
         String sql = "select * from MEMBER where email = ?";
         return DataAccessUtils.singleResult(jdbcTemplate.query(sql, rowMapper, email));
+    }
+
+    public boolean checkExistsMemberBy(EmailCheckRequest email) {
+        String sql = "select EXISTS(select * from MEMBER where email = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, email.getEmail());
     }
 }

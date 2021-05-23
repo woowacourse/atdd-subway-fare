@@ -1,24 +1,5 @@
 spring:
   profiles:
-    group:
-      "test": "test"
-
----
-spring:
-  profiles:
-    group:
-      "prod": "prod"
-
----
-spring:
-  profiles:
-    group:
-      "local":  "local"
-
----
-
-spring:
-  profiles:
     active: "local"
 ---
 
@@ -54,10 +35,6 @@ spring:
     url: jdbc:mysql://localhost:3306/subway?useSSL=true&serverTimezone=Asia/Seoul
     username: root
     password: root
-    # TODO 배포시에는 제외필수 !!!!
-    initialization-mode: always
-    schema:
-      - classpath:schema.sql
   h2:
     console:
       enabled: true

@@ -54,7 +54,7 @@ public class MemberService {
     }
 
     public void checkExistEmail(EmailCheckRequest email) {
-        if (memberDao.findByEmail(email.getEmail()) != null) {
+        if (memberDao.checkExistsMemberBy(email)) {
             throw new DuplicatedException("중복된 이메일이 존재합니다.");
         }
     }
