@@ -10,7 +10,8 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Repository
 public class SectionDao {
@@ -49,7 +50,7 @@ public class SectionDao {
                     params.put("distance", section.getDistance());
                     return params;
                 })
-                .collect(Collectors.toList());
+                .collect(toList());
 
         simpleJdbcInsert.executeBatch(batchValues.toArray(new Map[sections.size()]));
     }

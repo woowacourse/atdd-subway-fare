@@ -86,6 +86,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
     public static void 지하철역_생성됨(ExtractableResponse response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
+
+        StationResponse createStation = response.jsonPath().getObject(".", StationResponse.class);
+
+        assertThat(createStation.getName()).isEqualTo(강남역);
     }
 
     public static void 지하철역_생성_실패됨(ExtractableResponse<Response> response) {

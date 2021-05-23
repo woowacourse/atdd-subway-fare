@@ -2,11 +2,9 @@ package wooteco.subway.line.domain;
 
 import wooteco.subway.station.domain.Station;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.*;
+
+import static java.util.stream.Collectors.toList;
 
 public class Sections {
     private List<Section> sections = new ArrayList<>();
@@ -84,7 +82,7 @@ public class Sections {
 
     public List<Station> getStations() {
         if (sections.isEmpty()) {
-            return Arrays.asList();
+            return Collections.emptyList();
         }
 
         List<Station> stations = new ArrayList<>();
@@ -102,8 +100,8 @@ public class Sections {
 
     private Section findUpEndSection() {
         List<Station> downStations = this.sections.stream()
-                .map(it -> it.getDownStation())
-                .collect(Collectors.toList());
+                .map(Section::getDownStation)
+                .collect(toList());
 
         return this.sections.stream()
                 .filter(it -> !downStations.contains(it.getUpStation()))

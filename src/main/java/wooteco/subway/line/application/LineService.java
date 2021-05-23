@@ -9,6 +9,7 @@ import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.line.dto.SectionResponse;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
@@ -78,7 +79,7 @@ public class LineService {
         lineDao.deleteById(id);
     }
 
-    public void addLineStation(Long lineId, SectionRequest request) {
+    public SectionResponse addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
@@ -86,6 +87,18 @@ public class LineService {
 
         sectionDao.deleteByLineId(lineId);
         sectionDao.insertSections(line);
+
+        return findAddedSection(lineId, upStation, downStation);
+    }
+
+    private SectionResponse findAddedSection(Long lineId, Station upStation, Station downStation) {
+        Line updatedLine = lineDao.findById(lineId);
+        Section addedSection = updatedLine.getSections().getSections().stream()
+                .filter(section -> section.getUpStation().equals(upStation) &&
+                        section.getDownStation().equals(downStation))
+                .findAny().get();
+
+        return SectionResponse.of(addedSection);
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
@@ -96,5 +109,4 @@ public class LineService {
         sectionDao.deleteByLineId(lineId);
         sectionDao.insertSections(line);
     }
-
 }

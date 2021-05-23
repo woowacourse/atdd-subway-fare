@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
+import wooteco.subway.member.dto.MemberRequest;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,7 +23,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     private static final Integer AGE = 20;
 
     public static ExtractableResponse<Response> 회원_등록되어_있음(String email, String password, Integer age) {
-        return 회원_생성을_요청(email, password, age);
+        return 회원_생성을_요청(new MemberRequest(email, password, age));
     }
 
     public static TokenResponse 로그인되어_있음(String email, String password) {

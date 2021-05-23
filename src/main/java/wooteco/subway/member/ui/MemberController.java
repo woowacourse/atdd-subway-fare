@@ -22,9 +22,9 @@ public class MemberController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createMember(@Valid @RequestBody MemberRequest request) {
+    public ResponseEntity<MemberResponse> createMember(@Valid @RequestBody MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
-        return ResponseEntity.created(URI.create("/api/members/" + member.getId())).build();
+        return ResponseEntity.created(URI.create("/api/members/" + member.getId())).body(member);
     }
 
     @PostMapping("/exists")

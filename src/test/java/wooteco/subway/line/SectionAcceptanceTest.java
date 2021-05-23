@@ -12,6 +12,7 @@ import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.line.dto.SectionResponse;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.Arrays;
@@ -82,12 +83,9 @@ public class SectionAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static void 지하철_구간_생성됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
     public static void 지하철_노선에_지하철역_제외됨(ExtractableResponse<Response> result, LineResponse lineResponse, List<StationResponse> stationResponses) {
-        assertThat(result.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(result.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(lineResponse);
         지하철_노선에_지하철역_순서_정렬됨(response, stationResponses);
     }
@@ -98,6 +96,23 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철_노선에_지하철역_제외_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    private void 지하철_구간_생성됨(ExtractableResponse<Response> result, LineResponse lineResponse, List<StationResponse> stationResponses) {
+        assertThat(result.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+
+        ExtractableResponse<Response> response = 지하철_노선_조회_요청(lineResponse);
+        지하철_노선에_지하철역_순서_정렬됨(response, stationResponses);
+
+        SectionResponse addedSection = result.jsonPath().getObject(".", SectionResponse.class);
+        LineResponse findLine = response.jsonPath().getObject(".", LineResponse.class);
+
+        List<Long> stationIds = findLine.getStations().stream()
+                .map(StationResponse::getId)
+                .collect(toList());
+
+        assertThat(stationIds.contains(addedSection.getUpStationId())).isTrue();
+        assertThat(stationIds.contains(addedSection.getDownStationId())).isTrue();
     }
 
     @BeforeEach
@@ -175,11 +190,5 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_노선에_지하철역_제외_실패됨(removeResponse);
-    }
-
-    private void 지하철_구간_생성됨(ExtractableResponse<Response> result, LineResponse lineResponse, List<StationResponse> stationResponses) {
-        assertThat(result.statusCode()).isEqualTo(HttpStatus.OK.value());
-        ExtractableResponse<Response> response = 지하철_노선_조회_요청(lineResponse);
-        지하철_노선에_지하철역_순서_정렬됨(response, stationResponses);
     }
 }

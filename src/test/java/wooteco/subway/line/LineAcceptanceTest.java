@@ -101,9 +101,16 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static void 지하철_노선_생성됨(ExtractableResponse response) {
+    public static void 지하철_노선_생성됨(ExtractableResponse response, LineRequest lineRequest) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
+
+        LineResponse createLine = response.jsonPath().getObject(".", LineResponse.class);
+
+        assertThat(createLine)
+                .usingRecursiveComparison()
+                .ignoringFields("id", "stations")
+                .isEqualTo(lineRequest);
     }
 
     public static void 지하철_노선_생성_실패됨(ExtractableResponse<Response> response) {
@@ -166,7 +173,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1);
 
         // then
-        지하철_노선_생성됨(response);
+        지하철_노선_생성됨(response, lineRequest1);
     }
 
     @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")

@@ -6,6 +6,7 @@ import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.line.dto.SectionResponse;
 
 import java.net.URI;
 import java.sql.SQLException;
@@ -52,17 +53,17 @@ public class LineController {
     }
 
     @PostMapping("/{lineId}/sections")
-    public ResponseEntity<Void> addLineStation(@PathVariable Long lineId,
-                                               @RequestBody SectionRequest sectionRequest) {
-        lineService.addLineStation(lineId, sectionRequest);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<SectionResponse> addLineStation(@PathVariable Long lineId,
+                                                          @RequestBody SectionRequest sectionRequest) {
+        SectionResponse sectionResponse = lineService.addLineStation(lineId, sectionRequest);
+        return ResponseEntity.created(URI.create("/api/lines" + lineId + "/sections")).body(sectionResponse);
     }
 
     @DeleteMapping("/{lineId}/sections")
     public ResponseEntity<Void> removeLineStation(@PathVariable Long lineId,
                                                   @RequestParam Long stationId) {
         lineService.removeLineStation(lineId, stationId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @ExceptionHandler(SQLException.class)

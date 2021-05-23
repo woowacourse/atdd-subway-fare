@@ -21,8 +21,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final int AGE = 20;
     public static final int NEW_AGE = 30;
 
-    public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
-        MemberRequest memberRequest = new MemberRequest(email, password, age);
+    public static ExtractableResponse<Response> 회원_생성을_요청(MemberRequest memberRequest) {
         회원_이메일_중복_확인(memberRequest.getEmail());
 
         return RestAssured
@@ -88,13 +87,22 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static void 회원_생성됨(ExtractableResponse<Response> response) {
+    public static void 회원_생성됨(ExtractableResponse<Response> response, MemberRequest memberRequest) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+
+        MemberResponse createMember = response.jsonPath().getObject(".", MemberResponse.class);
+
+        assertThat(createMember)
+                .usingRecursiveComparison()
+                .ignoringFields("id")
+                .isEqualTo(memberRequest);
     }
 
-    public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
+    public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, Integer age) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+
         MemberResponse memberResponse = response.as(MemberResponse.class);
-        assertThat(memberResponse.getId()).isNotNull();
+
         assertThat(memberResponse.getEmail()).isEqualTo(email);
         assertThat(memberResponse.getAge()).isEqualTo(age);
     }
@@ -121,8 +129,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("회원 정보를 관리한다.")
     @Test
     void manageMember() {
-        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
-        회원_생성됨(createResponse);
+        MemberRequest memberRequest = new MemberRequest(EMAIL, PASSWORD, AGE);
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(memberRequest);
+        회원_생성됨(createResponse, memberRequest);
 
         TokenResponse 사용자 = 로그인되어_있음(EMAIL, PASSWORD);
 
