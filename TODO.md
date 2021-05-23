@@ -1,10 +1,10 @@
 # 기능 구현 목록
 
 ## 1단계
-- [ ] 설정 파일 나누기
-    - [ ] local 환경 (application-local.properties)
-    - [ ] production 환경 (application-prod.properties)
-    - [ ] test 환경 (application-test.properties)
+- [x] 설정 파일 나누기
+    - [x] local 환경 (application-local.properties)
+    - [x] production 환경 (application-prod.properties)
+    - [x] test 환경 (application-test.properties)
     
 ## 2단계
 - [ ] 
