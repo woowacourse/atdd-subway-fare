@@ -1,5 +1,6 @@
 package wooteco.subway.line.domain;
 
+import java.util.Objects;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
@@ -70,5 +71,22 @@ public class Line {
 
     public List<Station> getStations() {
         return sections.getStations();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Line line = (Line) o;
+        return Objects.equals(id, line.id) && name.equals(line.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
 }
