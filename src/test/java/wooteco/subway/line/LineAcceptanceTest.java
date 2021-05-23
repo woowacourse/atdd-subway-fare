@@ -132,8 +132,15 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(resultLineIds).containsAll(expectedLineIds);
     }
 
-    public static void 지하철_노선_수정됨(ExtractableResponse<Response> response) {
+    public static void 지하철_노선_수정됨(ExtractableResponse<Response> response, LineRequest params) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        LineResponse updatedLine = response.jsonPath().getObject(".", LineResponse.class);
+
+        assertThat(updatedLine)
+                .usingRecursiveComparison()
+                .ignoringFields("id", "stations")
+                .isEqualTo(params);
     }
 
     public static void 지하철_노선_삭제됨(ExtractableResponse<Response> response) {
@@ -213,7 +220,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse, lineRequest2);
 
         // then
-        지하철_노선_수정됨(response);
+        지하철_노선_수정됨(response, lineRequest2);
     }
 
     @DisplayName("지하철 노선을 제거한다.")
