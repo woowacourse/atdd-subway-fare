@@ -1,7 +1,7 @@
-drop table if exists STATION:
-drop table if exists LINE:
-drop table if exists SECTION:
-drop table if exists MEMBER:
+drop table if exists STATION;
+drop table if exists LINE;
+drop table if exists SECTION;
+drop table if exists MEMBER;
 
 create table if not exists STATION
 (
