@@ -3,8 +3,9 @@ package wooteco.subway.line.domain;
 import wooteco.subway.station.domain.Station;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.*;
 
 public class Sections {
     private List<Section> sections = new ArrayList<>();

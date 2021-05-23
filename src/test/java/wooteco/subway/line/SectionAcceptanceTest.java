@@ -10,9 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
-import wooteco.subway.line.dto.LineResponse;
-import wooteco.subway.line.dto.SectionRequest;
-import wooteco.subway.line.dto.SectionResponse;
+import wooteco.subway.line.dto.*;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.Arrays;
@@ -104,7 +102,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(lineResponse);
         지하철_노선에_지하철역_순서_정렬됨(response, stationResponses);
 
-        SectionResponse addedSection = result.jsonPath().getObject(".", SectionResponse.class);
+        SectionAddResponse addedSection = result.jsonPath().getObject(".", SectionAddResponse.class);
         LineResponse findLine = response.jsonPath().getObject(".", LineResponse.class);
 
         List<Long> stationIds = findLine.getStations().stream()

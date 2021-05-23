@@ -6,10 +6,7 @@ import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
-import wooteco.subway.line.dto.LineRequest;
-import wooteco.subway.line.dto.LineResponse;
-import wooteco.subway.line.dto.SectionRequest;
-import wooteco.subway.line.dto.SectionResponse;
+import wooteco.subway.line.dto.*;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
@@ -70,16 +67,16 @@ public class LineService {
         return lineDao.findById(id);
     }
 
-    public LineResponse updateLine(Long id, LineRequest lineUpdateRequest) {
+    public LineUpdateResponse updateLine(Long id, LineRequest lineUpdateRequest) {
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
-        return LineResponse.of(lineDao.findById(id));
+        return LineUpdateResponse.of(lineDao.findById(id));
     }
 
     public void deleteLineById(Long id) {
         lineDao.deleteById(id);
     }
 
-    public SectionResponse addLineStation(Long lineId, SectionRequest request) {
+    public SectionAddResponse addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
@@ -91,14 +88,14 @@ public class LineService {
         return findAddedSection(lineId, upStation, downStation);
     }
 
-    private SectionResponse findAddedSection(Long lineId, Station upStation, Station downStation) {
+    private SectionAddResponse findAddedSection(Long lineId, Station upStation, Station downStation) {
         Line updatedLine = lineDao.findById(lineId);
         Section addedSection = updatedLine.getSections().getSections().stream()
                 .filter(section -> section.getUpStation().equals(upStation) &&
                         section.getDownStation().equals(downStation))
                 .findAny().get();
 
-        return SectionResponse.of(addedSection);
+        return SectionAddResponse.of(addedSection);
     }
 
     public void removeLineStation(Long lineId, Long stationId) {

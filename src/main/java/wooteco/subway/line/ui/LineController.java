@@ -3,10 +3,7 @@ package wooteco.subway.line.ui;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.line.application.LineService;
-import wooteco.subway.line.dto.LineRequest;
-import wooteco.subway.line.dto.LineResponse;
-import wooteco.subway.line.dto.SectionRequest;
-import wooteco.subway.line.dto.SectionResponse;
+import wooteco.subway.line.dto.*;
 
 import java.net.URI;
 import java.sql.SQLException;
@@ -40,10 +37,10 @@ public class LineController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<LineResponse> updateLine(@PathVariable Long id,
-                                                   @RequestBody LineRequest lineUpdateRequest) {
-        LineResponse lineResponse = lineService.updateLine(id, lineUpdateRequest);
-        return ResponseEntity.ok(lineResponse);
+    public ResponseEntity<LineUpdateResponse> updateLine(@PathVariable Long id,
+                                                         @RequestBody LineRequest lineUpdateRequest) {
+        LineUpdateResponse lineUpdateResponse = lineService.updateLine(id, lineUpdateRequest);
+        return ResponseEntity.ok(lineUpdateResponse);
     }
 
     @DeleteMapping("/{id}")
@@ -53,10 +50,10 @@ public class LineController {
     }
 
     @PostMapping("/{lineId}/sections")
-    public ResponseEntity<SectionResponse> addLineStation(@PathVariable Long lineId,
-                                                          @RequestBody SectionRequest sectionRequest) {
-        SectionResponse sectionResponse = lineService.addLineStation(lineId, sectionRequest);
-        return ResponseEntity.created(URI.create("/api/lines" + lineId + "/sections")).body(sectionResponse);
+    public ResponseEntity<SectionAddResponse> addLineStation(@PathVariable Long lineId,
+                                                             @RequestBody SectionRequest sectionRequest) {
+        SectionAddResponse sectionAddResponse = lineService.addLineStation(lineId, sectionRequest);
+        return ResponseEntity.created(URI.create("/api/lines" + lineId + "/sections")).body(sectionAddResponse);
     }
 
     @DeleteMapping("/{lineId}/sections")

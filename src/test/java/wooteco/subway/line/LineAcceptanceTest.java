@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.line.dto.LineRequest;
+import wooteco.subway.line.dto.LineUpdateResponse;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.station.dto.StationResponse;
 
@@ -109,7 +110,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         assertThat(createLine)
                 .usingRecursiveComparison()
-                .ignoringFields("id", "stations")
+                .ignoringFields("id", "stations", "sections")
                 .isEqualTo(lineRequest);
     }
 
@@ -123,7 +124,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철_노선_응답됨(ExtractableResponse<Response> response, LineResponse lineResponse) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+
         LineResponse resultResponse = response.as(LineResponse.class);
+
         assertThat(resultResponse.getId()).isEqualTo(lineResponse.getId());
     }
 
@@ -131,7 +134,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
         List<Long> expectedLineIds = createdResponses.stream()
                 .map(LineResponse::getId)
                 .collect(toList());
-
         List<Long> resultLineIds = response.jsonPath().getList(".", LineResponse.class).stream()
                 .map(LineResponse::getId)
                 .collect(toList());
@@ -142,11 +144,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
     public static void 지하철_노선_수정됨(ExtractableResponse<Response> response, LineRequest params) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
-        LineResponse updatedLine = response.jsonPath().getObject(".", LineResponse.class);
+        LineUpdateResponse updatedLine = response.jsonPath().getObject(".", LineUpdateResponse.class);
 
         assertThat(updatedLine)
                 .usingRecursiveComparison()
-                .ignoringFields("id", "stations")
+                .ignoringFields("id")
                 .isEqualTo(params);
     }
 
@@ -194,14 +196,14 @@ public class LineAcceptanceTest extends AcceptanceTest {
     void getLines() {
         // given
         LineResponse lineResponse1 = 지하철_노선_등록되어_있음(lineRequest1);
-        LineResponse lineResponse2 = 지하철_노선_등록되어_있음(lineRequest2);
+        LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest2);
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청();
 
         // then
         지하철_노선_목록_응답됨(response);
-        지하철_노선_목록_포함됨(response, Arrays.asList(lineResponse1, lineResponse2));
+        지하철_노선_목록_포함됨(response, Arrays.asList(lineResponse1, lineResponse));
     }
 
     @DisplayName("지하철 노선을 조회한다.")

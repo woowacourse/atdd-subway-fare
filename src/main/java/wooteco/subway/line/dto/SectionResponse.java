@@ -1,30 +1,29 @@
 package wooteco.subway.line.dto;
 
 import wooteco.subway.line.domain.Section;
+import wooteco.subway.station.domain.Station;
 
 public class SectionResponse {
-    private final Long upStationId;
-    private final Long downStationId;
+    private final Station upStation;
+    private final Station downStation;
     private final int distance;
 
-    public SectionResponse(Long upStationId, Long downStationId, int distance) {
-        this.upStationId = upStationId;
-        this.downStationId = downStationId;
+    public SectionResponse(Station upStation, Station downStation, int distance) {
+        this.upStation = upStation;
+        this.downStation = downStation;
         this.distance = distance;
     }
 
     public static SectionResponse of(Section section) {
-        Long upStationId = section.getUpStation().getId();
-        Long downStationId = section.getDownStation().getId();
-        return new SectionResponse(upStationId, downStationId, section.getDistance());
+        return new SectionResponse(section.getUpStation(), section.getDownStation(), section.getDistance());
     }
 
-    public Long getUpStationId() {
-        return upStationId;
+    public Station getUpStation() {
+        return upStation;
     }
 
-    public Long getDownStationId() {
-        return downStationId;
+    public Station getDownStation() {
+        return downStation;
     }
 
     public int getDistance() {
