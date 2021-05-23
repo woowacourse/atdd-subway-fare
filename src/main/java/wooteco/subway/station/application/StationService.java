@@ -20,7 +20,7 @@ public class StationService {
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
-        if (stationDao.existsStationByName(stationRequest.getName())) {
+        if (stationDao.existsByName(stationRequest.getName())) {
             throw new DuplicateException("이미 존재하는 역 이름 입니다. (입력된 이름 값 : " + stationRequest.getName() + ")");
         }
 
