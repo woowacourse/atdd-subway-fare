@@ -1,20 +1,14 @@
 package wooteco.subway.line.domain;
 
+import wooteco.subway.exception.DuplicatedException;
 import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.station.domain.Station;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Sections {
     private List<Section> sections = new ArrayList<>();
-
-    public List<Section> getSections() {
-        return sections;
-    }
 
     public Sections() {
     }
@@ -41,7 +35,7 @@ public class Sections {
     private void checkAlreadyExisted(Section section) {
         List<Station> stations = getStations();
         if (!stations.contains(section.getUpStation()) && !stations.contains(section.getDownStation())) {
-            throw new RuntimeException();
+            throw new DuplicatedException("구간은 존재하는 역이어야만 등록 가능합니다.");
         }
     }
 
@@ -49,7 +43,7 @@ public class Sections {
         List<Station> stations = getStations();
         List<Station> stationsOfNewSection = Arrays.asList(section.getUpStation(), section.getDownStation());
         if (stations.containsAll(stationsOfNewSection)) {
-            throw new RuntimeException();
+            throw new DuplicatedException("추가하려는 구간이 이미 존재합니다.");
         }
     }
 
@@ -109,7 +103,7 @@ public class Sections {
         return this.sections.stream()
                 .filter(it -> !downStations.contains(it.getUpStation()))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new NotFoundException("해당하는 역이 없습니다."));
     }
 
     private Section findSectionByNextUpStation(Station station) {
@@ -121,7 +115,7 @@ public class Sections {
 
     public void removeStation(Station station) {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new IllegalArgumentException("구간이 하나인 경우 삭제할 수 없습니다.");
         }
 
         Optional<Section> upSection = sections.stream()
@@ -148,5 +142,40 @@ public class Sections {
                 .filter(section -> section.getDownStationId().equals(downStationId))
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException("일치하는 구간이 없습니다."));
+    }
+
+    public List<Section> getSections() {
+        return sort(sections);
+    }
+
+    private List<Section> sort(List<Section> sections) {
+        Queue<Section> waiting = new LinkedList<>(sections);
+        Deque<Section> result = new ArrayDeque<>();
+
+        result.addLast(waiting.poll());
+        sortUpToDown(waiting, result);
+
+        return new ArrayList<>(result);
+    }
+
+    private void sortUpToDown(Queue<Section> waiting, Deque<Section> result) {
+        while (!waiting.isEmpty()) {
+            sortSectionSequence(waiting, result);
+        }
+    }
+
+    private void sortSectionSequence(Queue<Section> waiting, Deque<Section> result) {
+        Section current = waiting.poll();
+        Section first = result.peekFirst();
+        Section last = result.peekLast();
+        if (current.isBefore(first)) {
+            result.addFirst(current);
+            return;
+        }
+        if (current.isAfter(last)) {
+            result.addLast(current);
+            return;
+        }
+        waiting.add(current);
     }
 }
