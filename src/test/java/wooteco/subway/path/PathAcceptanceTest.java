@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.dto.StationResponse;
@@ -18,6 +19,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
+import static wooteco.subway.auth.AuthAcceptanceTest.회원_등록되어_있음;
 import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static wooteco.subway.line.SectionAcceptanceTest.지하철_구간_등록되어_있음;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
@@ -81,6 +84,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target, TokenResponse tokenResponse) {
+        return RestAssured
+                .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .header("authorization", tokenResponse.getAccessToken())
+                .when().get("/paths?source={sourceId}&target={targetId}", source, target)
+                .then().log().all()
+                .extract();
+    }
+
     public static void 적절한_경로_응답됨(ExtractableResponse<Response> response, ArrayList<StationResponse> expectedPath) {
         PathResponse pathResponse = response.as(PathResponse.class);
 
@@ -100,7 +113,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(pathResponse.getDistance()).isEqualTo(totalDistance);
     }
 
-    public static void 총_요금이_응답됨(ExtractableResponse<Response> response, int fare) {
+    public static void 총_요금이_응답됨(ExtractableResponse<Response> response, double fare) {
         PathResponse pathResponse = response.as(PathResponse.class);
         assertThat(pathResponse.getFare()).isEqualTo(fare);
     }
@@ -136,6 +149,51 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //then
         적절한_경로_응답됨(response, Lists.newArrayList(강남역, 양재역, 잠실역, 석촌역));
         총_요금이_응답됨(response, 3450);
+    }
+    
+    @Test
+    @DisplayName("로그인이 되어 있는 경우 경로 조회 - 성인")
+    public void calculateFareByAgeAdult() {
+        //given
+        회원_등록되어_있음("adult@adult", "adult", 19);
+        TokenResponse tokenResponse = 로그인되어_있음("teenager@teenager", "teenager");
+
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(강남역.getId(), 석촌역.getId(), tokenResponse);
+
+        //then
+        적절한_경로_응답됨(response, Lists.newArrayList(강남역, 양재역, 잠실역, 석촌역));
+        총_요금이_응답됨(response,  3450);
+    }
+
+    @Test
+    @DisplayName("로그인이 되어 있는 경우 경로 조회 - 청소년")
+    public void calculateFareByAgeTeenager() {
+        //given
+        회원_등록되어_있음("teenager@teenager", "teenager", 13);
+        TokenResponse tokenResponse = 로그인되어_있음("teenager@teenager", "teenager");
+
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(강남역.getId(), 석촌역.getId(), tokenResponse);
+
+        //then
+        적절한_경로_응답됨(response, Lists.newArrayList(강남역, 양재역, 잠실역, 석촌역));
+        총_요금이_응답됨(response,  3450 - ((3450 - 350) * 0.2));
+    }
+
+    @Test
+    @DisplayName("로그인이 되어 있는 경우 경로 조회 - 어린이")
+    public void calculateFareByAgeKids() {
+        //given
+        회원_등록되어_있음("kids@kids", "kids", 12);
+        TokenResponse tokenResponse = 로그인되어_있음("teenager@teenager", "teenager");
+
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(강남역.getId(), 석촌역.getId(), tokenResponse);
+
+        //then
+        적절한_경로_응답됨(response, Lists.newArrayList(강남역, 양재역, 잠실역, 석촌역));
+        총_요금이_응답됨(response,  3450 - ((3450 - 350) * 0.5));
     }
 }
 
