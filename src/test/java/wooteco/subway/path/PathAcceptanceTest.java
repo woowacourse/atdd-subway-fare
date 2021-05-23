@@ -52,9 +52,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         잠실역 = 지하철역_등록되어_있음("잠실역");
         석촌역 = 지하철역_등록되어_있음("석촌역");
 
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5);
+        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10, 900);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10, 0);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5, 0);
 
         지하철_구간_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
         지하철_구간_등록되어_있음(신분당선, 양재역, 잠실역, 40);
@@ -124,7 +124,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         //then
         적절한_경로_응답됨(response, Lists.newArrayList(강남역, 양재역, 잠실역));
-        총_요금이_응답됨(response, 2050);
+        총_요금이_응답됨(response, 2950);
     }
 
     @Test
@@ -135,7 +135,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         //then
         적절한_경로_응답됨(response, Lists.newArrayList(강남역, 양재역, 잠실역, 석촌역));
-        총_요금이_응답됨(response, 2550);
+        총_요금이_응답됨(response, 3450);
     }
 }
 
