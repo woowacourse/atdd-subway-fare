@@ -26,8 +26,11 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("회원 정보를 관리한다.")
     @Test
     void manageMember() {
+        유효한_이메일로_중복체크(EMAIL);
         ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
         회원_생성됨(createResponse);
+
+        중복된_이메일로_중복체크(EMAIL);
 
         TokenResponse 사용자 = 로그인되어_있음(EMAIL, PASSWORD);
 
@@ -51,6 +54,30 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .when().post("/api/members")
                 .then().log().all()
                 .extract();
+    }
+
+    public static void 유효한_이메일로_중복체크(String email) {
+        ExtractableResponse<Response> checkDuplicateResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(email)
+                .when().log().all().post("/api/members/exists")
+                .then().log().all()
+                .extract();
+
+        assertThat(checkDuplicateResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static void 중복된_이메일로_중복체크(String email) {
+        ExtractableResponse<Response> checkDuplicateResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(email)
+                .when().post("/api/members/exists")
+                .then().log().all()
+                .extract();
+
+        assertThat(checkDuplicateResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {

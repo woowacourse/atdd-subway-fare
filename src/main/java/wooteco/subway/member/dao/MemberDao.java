@@ -1,5 +1,6 @@
 package wooteco.subway.member.dao;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -49,12 +50,20 @@ public class MemberDao {
     }
 
     public Optional<Member> findById(Long id) {
-        String sql = "select * from MEMBER where id = ?";
-        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
+        try {
+            String sql = "select * from MEMBER where id = ?";
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     public Optional<Member> findByEmail(String email) {
-        String sql = "select * from MEMBER where email = ?";
-        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, email));
+        try {
+            String sql = "select * from MEMBER where email = ?";
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, email));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 }
