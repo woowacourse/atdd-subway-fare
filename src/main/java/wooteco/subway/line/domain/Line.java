@@ -15,7 +15,7 @@ public class Line {
     }
 
     public Line(String name, String color) {
-        this(name, color ,0);
+        this(name, color, 0);
     }
 
     public Line(String name, String color, int extraFare) {
