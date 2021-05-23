@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Set;
 
 public class SubwayPath {
-    private List<SectionEdge> sectionEdges;
-    private List<Station> stations;
-    private Set<Line> lines;
+    private final List<SectionEdge> sectionEdges;
+    private final List<Station> stations;
+    private final Set<Line> lines;
 
     public SubwayPath(List<SectionEdge> sectionEdges, List<Station> stations, Set<Line> lines) {
         this.sectionEdges = sectionEdges;
@@ -31,7 +31,7 @@ public class SubwayPath {
 
     public int getMaxLineFare() {
         return lines.stream()
-                .mapToInt(line -> line.getExtraFare())
+                .mapToInt(Line::getExtraFare)
                 .max()
                 .orElse(0);
     }
