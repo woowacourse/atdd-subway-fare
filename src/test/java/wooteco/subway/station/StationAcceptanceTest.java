@@ -73,6 +73,15 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_삭제됨(response);
     }
 
+    @Test
+    void updateStation() {
+        지하철역_등록되어_있음(강남역);
+
+        ExtractableResponse<Response> response = 지하철역_수정_요청("남강역");
+
+        지하철역_수정됨(response, "남강역");
+    }
+
     public static StationResponse 지하철역_등록되어_있음(String name) {
         return 지하철역_생성_요청(name).as(StationResponse.class);
     }
@@ -103,6 +112,35 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 .when().delete("/stations/" + stationResponse.getId())
                 .then().log().all()
                 .extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철역_수정_요청(String name) {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.ALL_VALUE)
+                .when()
+                .body(new StationRequest(name))
+                .put("/stations/1")
+                .then().log().all()
+                .extract();
+    }
+
+    public static void 지하철역_수정됨(ExtractableResponse response, String expected) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        ExtractableResponse<Response> allStations = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.ALL_VALUE)
+                .when()
+                .get("/stations")
+                .then().log().all()
+                .extract();
+
+        List<String> list = allStations.jsonPath().getList("name");
+        assertThat(list).contains(expected);
+
     }
 
     public static void 지하철역_생성됨(ExtractableResponse response) {
