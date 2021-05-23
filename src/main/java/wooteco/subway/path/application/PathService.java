@@ -13,6 +13,7 @@ import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Transactional
@@ -27,13 +28,21 @@ public class PathService {
         this.pathFinder = pathFinder;
     }
 
-    public PathResponse findPath(Long source, Long target) {
+    public PathResponse findPath(Long source, Long target, LoginMember loginMember) {
         try {
             List<Line> lines = lineService.findLines();
             Station sourceStation = stationService.findStationById(source);
             Station targetStation = stationService.findStationById(target);
             SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
-            return PathResponseAssembler.assemble(subwayPath);
+
+            List<Station> stations = subwayPath.getStations();
+            int distance = subwayPath.calculateDistance();
+            Fare fare = new Fare(distance, subwayPath.calculateLineFare());
+            if (Objects.isNull(loginMember)) {
+                return PathResponseAssembler.assemble(stations, distance, fare.calculateBasicFare());
+            }
+            return PathResponseAssembler.assemble(stations,distance, fare.calculateDiscountFare(loginMember.getAge()));
+
         } catch (Exception e) {
             throw new InvalidPathException();
         }
