@@ -1,4 +1,4 @@
-package wooteco.subway.line.dao;
+package wooteco.subway.line.infrastructure.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;

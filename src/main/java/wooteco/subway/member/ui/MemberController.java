@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.*;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.LoginMember;
-import wooteco.subway.member.dto.MemberRequest;
-import wooteco.subway.member.dto.MemberResponse;
+import wooteco.subway.member.ui.dto.MemberRequest;
+import wooteco.subway.member.ui.dto.MemberResponse;
 
 import java.net.URI;
 

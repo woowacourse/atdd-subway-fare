@@ -1,13 +1,13 @@
 package wooteco.subway.line.application;
 
 import org.springframework.stereotype.Service;
-import wooteco.subway.line.dao.LineDao;
-import wooteco.subway.line.dao.SectionDao;
+import wooteco.subway.line.infrastructure.dao.LineDao;
+import wooteco.subway.line.infrastructure.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
-import wooteco.subway.line.dto.LineRequest;
-import wooteco.subway.line.dto.LineResponse;
-import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.line.ui.dto.LineRequest;
+import wooteco.subway.line.ui.dto.LineResponse;
+import wooteco.subway.line.ui.dto.SectionRequest;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
