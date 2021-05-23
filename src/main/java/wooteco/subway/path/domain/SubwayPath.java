@@ -5,23 +5,25 @@ import wooteco.subway.station.domain.Station;
 import java.util.List;
 
 public class SubwayPath {
-    private List<SectionEdge> sectionEdges;
-    private List<Station> stations;
+    private final List<Station> stations;
+    private final int distance;
+    private final int fare;
 
     public SubwayPath(List<SectionEdge> sectionEdges, List<Station> stations) {
-        this.sectionEdges = sectionEdges;
         this.stations = stations;
+        this.distance = sectionEdges.stream().mapToInt(it -> it.getSection().getDistance()).sum();
+        this.fare = FarePolicy.calculate(distance);
     }
 
-    public List<SectionEdge> getSectionEdges() {
-        return sectionEdges;
-    }
-
-    public List<Station> getStations() {
+    public List<Station> stations() {
         return stations;
     }
 
-    public int calculateDistance() {
-        return sectionEdges.stream().mapToInt(it -> it.getSection().getDistance()).sum();
+    public int distance() {
+        return distance;
+    }
+
+    public int fare() {
+        return fare;
     }
 }
