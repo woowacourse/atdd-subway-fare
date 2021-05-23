@@ -68,7 +68,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         지하철_구간_생성됨(response, 신분당선, Arrays.asList(정자역, 강남역, 양재역, 광교역));
     }
 
-    @DisplayName("지하철 노선에 이미 등록되어있는 역을 등록한다.")
+    @DisplayName("지하철 노선에 이미 등록되어있는 구간을 등록한다.")
     @Test
     void addLineSectionWithSameStation() {
         // when
@@ -83,6 +83,26 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     void addLineSectionWithNoStation() {
         // when
         ExtractableResponse<Response> response = 지하철_구간_생성_요청(신분당선, 정자역, 양재역, 3, tokenResponse);
+
+        // then
+        지하철_구간_등록_실패됨(response);
+    }
+
+    @DisplayName("중간에 추가하려는 구간이 기존에 존재하는 구간의 길이 보다 길 경우 예외")
+    @Test
+    void addLineSectionLengthException() {
+        // when
+        ExtractableResponse<Response> response = 지하철_구간_생성_요청(신분당선, 강남역, 양재역, 11, tokenResponse);
+
+        // then
+        지하철_구간_등록_실패됨(response);
+    }
+
+    @DisplayName("상행과 하행이 같은 경우 예외")
+    @Test
+    void addLineSectionSameStationException() {
+        // when
+        ExtractableResponse<Response> response = 지하철_구간_생성_요청(신분당선, 강남역, 강남역, 5, tokenResponse);
 
         // then
         지하철_구간_등록_실패됨(response);
@@ -168,10 +188,10 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 지하철_구간_등록_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static void 지하철_노선에_지하철역_제외_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
