@@ -21,15 +21,27 @@ public class SubwayPath {
 
     public int calculateFare() {
         int distance = calculateDistance();
+        long extraFare = findExtraFare();
+        int baseFare = BASIC_FARE + (int) extraFare;
 
         if (distance <= FIRST_OVER_FARE_DISTANCE) {
-            return BASIC_FARE;
+            return baseFare;
         }
 
         if (distance <= SECOND_OVER_FARE_DISTANCE) {
-            return calculateOverFare(BASIC_FARE, distance - FIRST_OVER_FARE_DISTANCE, 5);
+            return calculateOverFare(baseFare, distance - FIRST_OVER_FARE_DISTANCE, 5);
         }
-        return calculateOverFare(OVER_FARE, distance - SECOND_OVER_FARE_DISTANCE, 8);
+
+        baseFare = OVER_FARE + (int) extraFare;
+        return calculateOverFare(baseFare, distance - SECOND_OVER_FARE_DISTANCE, 8);
+    }
+
+
+    private Long findExtraFare() {
+        return sectionEdges.stream()
+                .mapToLong(SectionEdge::extraFare)
+                .max()
+                .orElse(0);
     }
 
     private int calculateOverFare(int baseFare, int distance, int perDistance) {
