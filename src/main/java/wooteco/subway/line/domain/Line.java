@@ -89,4 +89,8 @@ public class Line {
     public int hashCode() {
         return Objects.hash(id, name);
     }
+
+    public void updateSectionDistance(Long upStationId, Long downStationId, Integer distance) {
+        sections.updateDistance(upStationId, downStationId, distance);
+    }
 }

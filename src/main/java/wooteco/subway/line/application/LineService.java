@@ -8,13 +8,7 @@ import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.infrastructure.dao.LineDao;
 import wooteco.subway.line.infrastructure.dao.SectionDao;
-import wooteco.subway.line.ui.dto.LineRequest;
-import wooteco.subway.line.ui.dto.LineResponse;
-import wooteco.subway.line.ui.dto.LineWithTransferLineResponse;
-import wooteco.subway.line.ui.dto.SectionRequest;
-import wooteco.subway.line.ui.dto.SectionsOfLineResponse;
-import wooteco.subway.line.ui.dto.SectionsResponse;
-import wooteco.subway.line.ui.dto.StationOfLineResponse;
+import wooteco.subway.line.ui.dto.*;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
@@ -132,4 +126,15 @@ public class LineService {
             .collect(toList());
     }
 
+    public void updateSectionDistance(Long lineId, SectionDistanceRequest sectionDistanceRequest) {
+        Line line = findLineById(lineId);
+
+        line.updateSectionDistance(
+                sectionDistanceRequest.getUpStationId(),
+                sectionDistanceRequest.getDownStationId(),
+                sectionDistanceRequest.getDistance()
+        );
+
+        lineDao.update(line);
+    }
 }

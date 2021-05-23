@@ -19,7 +19,7 @@ public class Sections {
     }
 
     public Sections(List<Section> sections) {
-        this.sections = sections;
+        this.sections = new ArrayList<>(sections);
     }
 
     public void addSection(Section section) {
@@ -139,5 +139,34 @@ public class Sections {
 
         upSection.ifPresent(it -> sections.remove(it));
         downSection.ifPresent(it -> sections.remove(it));
+    }
+
+    public void updateDistance(Long upStationId, Long downStationId, Integer distance) {
+        validateDistance(distance);
+
+        Section targetSection = findSectionByUpStationIdAndDownStationId(upStationId, downStationId);
+        sections.remove(targetSection);
+        sections.add(
+                new Section(
+                        targetSection.getId(),
+                        targetSection.getUpStation(),
+                        targetSection.getDownStation(),
+                        distance
+                )
+        );
+    }
+
+    private void validateDistance(Integer distance) {
+        if(distance <= 0) {
+            throw new IllegalArgumentException("구간 사이 거리는 0보다 작거나 같을 수 없습니다.");
+        }
+    }
+
+    private Section findSectionByUpStationIdAndDownStationId(Long upStationId, Long downStationId) {
+        return sections.stream()
+                .filter(section -> section.hasSameDownStationId(downStationId))
+                .filter(section -> section.hasSameUpStationId(upStationId))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("일치하는 섹션을 찾을 수 없습니다."));
     }
 }

@@ -3,14 +3,11 @@ package wooteco.subway.line.ui;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.line.application.LineService;
-import wooteco.subway.line.ui.dto.LineRequest;
-import wooteco.subway.line.ui.dto.LineResponse;
-import wooteco.subway.line.ui.dto.SectionRequest;
+import wooteco.subway.line.ui.dto.*;
 
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
-import wooteco.subway.line.ui.dto.SectionsOfLineResponse;
 
 @RestController
 @RequestMapping("/lines")
@@ -65,6 +62,14 @@ public class LineController {
     @DeleteMapping("/{lineId}/sections")
     public ResponseEntity<Void> removeLineStation(@PathVariable Long lineId, @RequestParam Long stationId) {
         lineService.removeLineStation(lineId, stationId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{lineId}/sections")
+    public ResponseEntity<Void> updateSection(@PathVariable Long lineId,
+                                              SectionDistanceRequest sectionDistanceRequest) {
+        lineService.updateSectionDistance(lineId, sectionDistanceRequest);
+
         return ResponseEntity.ok().build();
     }
 
