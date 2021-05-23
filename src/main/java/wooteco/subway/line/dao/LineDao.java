@@ -74,6 +74,11 @@ public class LineDao {
                 .collect(Collectors.toList());
     }
 
+    public boolean existsByName(String name) {
+        String sql = "select exists (select * from LINE where name = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, name);
+    }
+
     private Line mapLine(List<Map<String, Object>> result) {
         if (result.size() == 0) {
             throw new RuntimeException();

@@ -15,7 +15,10 @@ public enum ErrorCode {
 
     // STATION
     DUPLICATE_STATION_NAME("[ERROR] 이미 존재하는 지하철 역 이름입니다. 다른 이름을 사용해주세요.", HttpStatus.BAD_REQUEST.value()),
-    INVALID_STATION_DELETION("[ERROR] 노선에 포함된 지하철 역이므로 삭제할 수 없습니다.", HttpStatus.BAD_REQUEST.value());
+    INVALID_STATION_DELETION("[ERROR] 노선에 포함된 지하철 역이므로 삭제할 수 없습니다.", HttpStatus.BAD_REQUEST.value()),
+
+    // Line
+    DUPLICATE_LINE_NAME("[ERROR] 이미 존재하는 노선 이름입니다. 다른 이름을 사용해주세요.", HttpStatus.BAD_REQUEST.value());
 
     private final String message;
     private final int status;

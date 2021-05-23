@@ -7,12 +7,15 @@ import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
+import wooteco.subway.line.dto.LineUpdateRequest;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.line.exception.DuplicateLineNameException;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import wooteco.subway.station.exception.DuplicateStationNameException;
 
 @Service
 public class LineService {
@@ -27,6 +30,10 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
+        if (lineDao.existsByName(request.getName())) {
+            throw new DuplicateLineNameException();
+        }
+
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);
@@ -62,7 +69,10 @@ public class LineService {
         return lineDao.findById(id);
     }
 
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
+    public void updateLine(Long id, LineUpdateRequest lineUpdateRequest) {
+        if (lineDao.existsByName(lineUpdateRequest.getName())) {
+            throw new DuplicateLineNameException();
+        }
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
