@@ -1,20 +1,29 @@
 package wooteco.subway.station.application;
 
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
+
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import org.springframework.stereotype.Service;
-import wooteco.subway.station.infrastructure.dao.StationDao;
+import wooteco.subway.line.domain.Line;
+import wooteco.subway.line.infrastructure.dao.LineDao;
 import wooteco.subway.station.domain.Station;
+import wooteco.subway.station.infrastructure.dao.StationDao;
+import wooteco.subway.station.ui.dto.LineResponse;
 import wooteco.subway.station.ui.dto.StationRequest;
 import wooteco.subway.station.ui.dto.StationResponse;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
 public class StationService {
-    private StationDao stationDao;
 
-    public StationService(StationDao stationDao) {
+    private final StationDao stationDao;
+    private final LineDao lineDao;
+
+    public StationService(StationDao stationDao, LineDao lineDao) {
         this.stationDao = stationDao;
+        this.lineDao = lineDao;
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
@@ -27,11 +36,26 @@ public class StationService {
     }
 
     public List<StationResponse> findAllStationResponses() {
-        List<Station> stations = stationDao.findAll();
+        List<Station> allStations = stationDao.findAll();
+        List<Line> allLines = lineDao.findAll();
 
-        return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+        Map<Station, List<Line>> stationsWithLines = allStations.stream()
+            .collect(toMap(Function.identity(), station ->
+                allLines.stream()
+                    .filter(line -> line.getStations().contains(station))
+                    .collect(toList())
+            ));
+
+        return stationsWithLines.keySet().stream()
+            .map(station -> new StationResponse(station.getId(), station.getName(),
+                convertLinesToLineResponses(stationsWithLines.get(station))))
+            .collect(toList());
+    }
+
+    private List<LineResponse> convertLinesToLineResponses(List<Line> lines) {
+        return lines.stream()
+            .map(line -> new LineResponse(line.getId(), line.getName(), line.getColor()))
+            .collect(toList());
     }
 
     public void deleteStationById(Long id) {
