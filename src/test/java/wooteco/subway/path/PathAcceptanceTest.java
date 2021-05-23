@@ -57,7 +57,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5);
 
         지하철_구간_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
-        지하철_구간_등록되어_있음(신분당선, 양재역, 잠실역, 20);
+        지하철_구간_등록되어_있음(신분당선, 양재역, 잠실역, 40);
         지하철_구간_등록되어_있음(신분당선, 잠실역, 석촌역, 40);
     }
 
@@ -106,7 +106,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("주어진 경로의 요금을 계산한다. - 기본운임")
+    @DisplayName("주어진 경로의 요금을 계산한다. - 기본 운임")
     public void calculateFareByDistanceBasic() {
         //when
         ExtractableResponse<Response> response = 거리_경로_조회_요청(교대역.getId(), 남부터미널역.getId());
@@ -117,25 +117,25 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("주어진 경로의 요금을 계산한다.-10KM-50KM")
+    @DisplayName("주어진 경로의 요금을 계산한다.10KM - 50KM")
     public void calculateFareByDistance_10km_50km() {
         //when
         ExtractableResponse<Response> response = 거리_경로_조회_요청(강남역.getId(), 잠실역.getId());
 
         //then
         적절한_경로_응답됨(response, Lists.newArrayList(강남역, 양재역, 잠실역));
-        총_요금이_응답됨(response, 1850);
+        총_요금이_응답됨(response, 2050);
     }
 
     @Test
-    @DisplayName("주어진 경로의 요금을 계산한다.-10KM-50KM")
+    @DisplayName("주어진 경로의 요금을 계산한다. 50KM 초과")
     public void calculateFareByDistance_50km_over() {
         //when
         ExtractableResponse<Response> response = 거리_경로_조회_요청(강남역.getId(), 석촌역.getId());
 
         //then
         적절한_경로_응답됨(response, Lists.newArrayList(강남역, 양재역, 잠실역, 석촌역));
-        총_요금이_응답됨(response, 2350);
+        총_요금이_응답됨(response, 2550);
     }
 }
 
