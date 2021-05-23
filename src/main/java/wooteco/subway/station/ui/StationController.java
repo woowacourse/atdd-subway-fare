@@ -27,7 +27,7 @@ public class StationController {
     @PostMapping
     public ResponseEntity<StationResponse> createStation(@RequestBody @Valid StationRequest stationRequest) {
         StationResponse station = stationService.saveStation(stationRequest);
-        return ResponseEntity.created(URI.create("/stations/" + station.getId())).body(station);
+        return ResponseEntity.created(URI.create("/api/stations/" + station.getId())).body(station);
     }
 
     @GetMapping
@@ -36,7 +36,7 @@ public class StationController {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity updateStation(@PathVariable Long id, @RequestBody StationNameRequest req) {
+    public ResponseEntity updateStation(@PathVariable Long id, @RequestBody @Valid StationNameRequest req) {
         StationResponse station = stationService.updateName(id, req);
         return ResponseEntity.ok().body(station);
     }

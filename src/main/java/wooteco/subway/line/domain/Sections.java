@@ -144,8 +144,8 @@ public class Sections {
 
     public Section findSectionByIds(Long upStationId, Long downStationId) {
         return sections.stream()
-                .filter(section -> section.getUpStation().getId().equals(upStationId))
-                .filter(section -> section.getDownStation().getId().equals(downStationId))
+                .filter(section -> section.getUpStationId().equals(upStationId))
+                .filter(section -> section.getDownStationId().equals(downStationId))
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException("일치하는 구간이 없습니다."));
     }

@@ -8,6 +8,7 @@ import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.dto.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.net.URI;
@@ -23,7 +24,7 @@ public class MemberController {
     }
 
     @PostMapping
-    public ResponseEntity createMember(@RequestBody MemberRequest request) {
+    public ResponseEntity createMember(@RequestBody @Valid MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
         return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
     }
@@ -35,13 +36,13 @@ public class MemberController {
     }
 
     @PutMapping("/me")
-    public ResponseEntity<AgeResponse> updateAgeOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody AgeRequest age) {
+    public ResponseEntity<AgeResponse> updateAgeOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody @Valid AgeRequest age) {
         AgeResponse member = memberService.updateAge(loginMember, age);
         return ResponseEntity.ok().body(member);
     }
 
     @PutMapping("/me/pw")
-    public ResponseEntity updatePasswordOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody PasswordRequest req) {
+    public ResponseEntity updatePasswordOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody @Valid PasswordRequest req) {
         memberService.updatePassword(loginMember, req);
         return ResponseEntity.noContent().build();
     }
@@ -53,7 +54,7 @@ public class MemberController {
     }
 
     @PostMapping("/exists")
-    public ResponseEntity checkExistsMember(@RequestBody EmailCheckRequest email) {
+    public ResponseEntity checkExistsMember(@RequestBody @Valid EmailCheckRequest email) {
         memberService.checkExistEmail(email);
         return ResponseEntity.noContent().build();
     }

@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.dto.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
@@ -22,13 +23,9 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity createLine(@RequestBody LineRequest lineRequest) {
-        try{
-            LineResponse line = lineService.saveLine(lineRequest);
-            return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
-        } catch (DuplicateKeyException e) {
-            throw new IllegalArgumentException("중복된 노선이 존재합니다.");
-        }
+    public ResponseEntity createLine(@RequestBody @Valid LineRequest lineRequest) {
+        LineResponse line = lineService.saveLine(lineRequest);
+        return ResponseEntity.ok().body(line);
     }
 
     @GetMapping
@@ -42,7 +39,7 @@ public class LineController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity updateLine(@PathVariable Long id, @RequestBody LineRequest lineUpdateRequest) {
+    public ResponseEntity updateLine(@PathVariable Long id, @RequestBody @Valid LineRequest lineUpdateRequest) {
         LineUpdateResponse response = lineService.updateLine(id, lineUpdateRequest);
         return ResponseEntity.ok().body(response);
     }
@@ -54,7 +51,7 @@ public class LineController {
     }
 
     @PostMapping("/{lineId}/sections")
-    public ResponseEntity addLineStation(@PathVariable Long lineId, @RequestBody SectionRequest sectionRequest) {
+    public ResponseEntity addLineStation(@PathVariable Long lineId, @RequestBody @Valid SectionRequest sectionRequest) {
         SectionResponse sectionResponse = lineService.addLineStation(lineId, sectionRequest);
         return ResponseEntity.ok().body(sectionResponse);
     }

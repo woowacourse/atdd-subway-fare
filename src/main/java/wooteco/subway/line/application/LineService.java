@@ -1,5 +1,6 @@
 package wooteco.subway.line.application;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
@@ -25,9 +26,13 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
-        persistLine.addSection(addInitSection(persistLine, request));
-        return LineResponse.of(persistLine);
+        try{
+            Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
+            persistLine.addSection(addInitSection(persistLine, request));
+            return LineResponse.of(persistLine);
+        } catch (DuplicateKeyException e) {
+            throw new IllegalArgumentException("중복된 노선이 존재합니다.");
+        }
     }
 
     private Section addInitSection(Line line, LineRequest request) {
@@ -87,7 +92,8 @@ public class LineService {
         sectionDao.deleteByLineId(lineId);
         sectionDao.insertSections(line);
 
-        Section section = line.findSectionByIds(request.getUpStationId(), request.getDownStationId());
+        Line updatedLine = findLineById(lineId);
+        Section section = updatedLine.findSectionByIds(request.getUpStationId(), request.getDownStationId());
         return SectionResponse.of(section);
     }
 

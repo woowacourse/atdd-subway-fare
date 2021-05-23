@@ -11,6 +11,10 @@ public class AgeResponse {
         this.age = age;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public int getAge() {
         return age;
     }
