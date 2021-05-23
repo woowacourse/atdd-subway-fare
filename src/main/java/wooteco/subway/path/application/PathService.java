@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
-import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.path.dto.PathResponseAssembler;
@@ -35,7 +34,7 @@ public class PathService {
 
             return PathResponseAssembler.assemble(subwayPath);
         } catch (Exception e) {
-            throw new InvalidPathException();
+            throw new InvalidPathException(e.getMessage());
         }
     }
 }
