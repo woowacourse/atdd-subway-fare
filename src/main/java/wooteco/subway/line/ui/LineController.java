@@ -3,8 +3,10 @@ package wooteco.subway.line.ui;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.dto.*;
+import wooteco.subway.member.domain.LoginMember;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -25,7 +27,7 @@ public class LineController {
     @PostMapping
     public ResponseEntity createLine(@RequestBody @Valid LineRequest lineRequest) {
         LineResponse line = lineService.saveLine(lineRequest);
-        return ResponseEntity.ok().body(line);
+        return ResponseEntity.created(URI.create("/api/lines/" + line.getId())).body(line);
     }
 
     @GetMapping
