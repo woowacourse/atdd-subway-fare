@@ -25,7 +25,7 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity createLine(@RequestBody @Valid LineRequest lineRequest) {
+    public ResponseEntity createLine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody @Valid LineRequest lineRequest) {
         LineResponse line = lineService.saveLine(lineRequest);
         return ResponseEntity.created(URI.create("/api/lines/" + line.getId())).body(line);
     }
@@ -41,13 +41,13 @@ public class LineController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity updateLine(@PathVariable Long id, @RequestBody @Valid LineRequest lineUpdateRequest) {
+    public ResponseEntity updateLine(@AuthenticationPrincipal LoginMember loginMember, @PathVariable Long id, @RequestBody @Valid LineRequest lineUpdateRequest) {
         LineUpdateResponse response = lineService.updateLine(id, lineUpdateRequest);
         return ResponseEntity.ok().body(response);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteLine(@PathVariable Long id) {
+    public ResponseEntity deleteLine(@AuthenticationPrincipal LoginMember loginMember, @PathVariable Long id) {
         lineService.deleteLineById(id);
         return ResponseEntity.noContent().build();
     }

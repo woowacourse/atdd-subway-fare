@@ -45,7 +45,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철역_생성_요청(비회원, 강남역);
 
         // then
-        지하철역_비회원_요청_실패됨(response);
+        비회원_요청_실패됨(response);
     }
 
     @DisplayName("기존에 존재하는 지하철역 이름으로 지하철역을 생성한다.")
@@ -101,7 +101,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철역_수정_요청(비회원, 역삼역);
 
         // then
-        지하철역_비회원_요청_실패됨(response);
+        비회원_요청_실패됨(response);
     }
 
     @DisplayName("기존에 존재하는 지하철역 이름으로 지하철역 이름을 수정한다.")
@@ -142,7 +142,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철역_제거_요청(비회원, stationResponse);
 
         // then
-        지하철역_비회원_요청_실패됨(response);
+        비회원_요청_실패됨(response);
     }
 
     private ExtractableResponse<Response> 지하철역_수정_요청(TokenResponse token, String name) {
@@ -156,10 +156,6 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 .when().put("/api/stations/1")
                 .then().log().all()
                 .extract();
-    }
-
-    private void 지하철역_비회원_요청_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     public static StationResponse 지하철역_등록되어_있음(String name) {

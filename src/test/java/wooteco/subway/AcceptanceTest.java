@@ -6,10 +6,12 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import wooteco.subway.auth.dto.TokenResponse;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
 import static wooteco.subway.member.MemberAcceptanceTest.회원_생성됨;
 import static wooteco.subway.member.MemberAcceptanceTest.회원_생성을_요청;
@@ -27,7 +29,7 @@ public class AcceptanceTest {
     public static final String NEW_PASSWORD = "new_password";
     public static final int NEW_AGE = 30;
     public static TokenResponse 사용자;
-    public static TokenResponse 비회원;
+    public static TokenResponse 비회원 = new TokenResponse("Unauthorized");
 
     @BeforeEach
     public void setUp() {
@@ -36,6 +38,9 @@ public class AcceptanceTest {
         ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
         회원_생성됨(createResponse);
         사용자 = 로그인되어_있음(EMAIL, PASSWORD);
-        비회원 = new TokenResponse("Unauthorized");
+    }
+
+    protected void 비회원_요청_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
