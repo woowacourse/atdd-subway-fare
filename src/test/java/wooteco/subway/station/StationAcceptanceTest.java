@@ -6,9 +6,12 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.ErrorResponse;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
@@ -27,65 +30,12 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
     private TokenResponse tokenResponse;
 
-    @BeforeEach
-    void init() {
-        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
-        tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
-    }
-
-    @DisplayName("지하철역을 생성한다.")
-    @Test
-    void createStation() {
-        // when
-        ExtractableResponse<Response> response = 지하철역_생성_요청(강남역, tokenResponse);
-
-        // then
-        지하철역_생성됨(response);
-    }
-
-    @DisplayName("기존에 존재하는 지하철역 이름으로 지하철역을 생성한다.")
-    @Test
-    void createStationWithDuplicateName() {
-        //given
-        지하철역_등록되어_있음(강남역, tokenResponse);
-
-        // when
-        ExtractableResponse<Response> response = 지하철역_생성_요청(강남역, tokenResponse);
-
-        // then
-        지하철역_생성_실패됨(response);
-    }
-
-    @DisplayName("지하철역을 조회한다.")
-    @Test
-    void getStations() {
-        // given
-        StationResponse stationResponse1 = 지하철역_등록되어_있음(강남역, tokenResponse);
-        StationResponse stationResponse2 = 지하철역_등록되어_있음(역삼역, tokenResponse);
-
-        // when
-        ExtractableResponse<Response> response = 지하철역_목록_조회_요청();
-
-        // then
-        지하철역_목록_응답됨(response);
-        지하철역_목록_포함됨(response, Arrays.asList(stationResponse1, stationResponse2));
-    }
-
-    @DisplayName("지하철역을 제거한다.")
-    @Test
-    void deleteStation() {
-        // given
-        StationResponse stationResponse = 지하철역_등록되어_있음(강남역, tokenResponse);
-
-        // when
-        ExtractableResponse<Response> response = 지하철역_제거_요청(stationResponse, tokenResponse);
-
-        // then
-        지하철역_삭제됨(response);
-    }
-
     public static StationResponse 지하철역_등록되어_있음(String name, TokenResponse tokenResponse) {
         return 지하철역_생성_요청(name, tokenResponse).as(StationResponse.class);
+    }
+
+    public static ErrorResponse 지하철역_등록되어_있지않음(String name, TokenResponse tokenResponse) {
+        return 지하철역_생성_요청(name, tokenResponse).as(ErrorResponse.class);
     }
 
     public static ExtractableResponse<Response> 지하철역_생성_요청(String name, TokenResponse tokenResponse) {
@@ -146,4 +96,73 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         assertThat(resultLineIds).containsAll(expectedLineIds);
     }
+
+    @BeforeEach
+    void init() {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
+    }
+
+    @DisplayName("지하철역을 생성한다.")
+    @Test
+    void createStation() {
+        // when
+        ExtractableResponse<Response> response = 지하철역_생성_요청(강남역, tokenResponse);
+
+        // then
+        지하철역_생성됨(response);
+    }
+
+    @DisplayName("기존에 존재하는 지하철역 이름으로 지하철역을 생성한다.")
+    @Test
+    void createStationWithDuplicateName() {
+        //given
+        지하철역_등록되어_있음(강남역, tokenResponse);
+
+        // when
+        ExtractableResponse<Response> response = 지하철역_생성_요청(강남역, tokenResponse);
+
+        // then
+        지하철역_생성_실패됨(response);
+    }
+
+    @DisplayName("지하철역을 조회한다.")
+    @Test
+    void getStations() {
+        // given
+        StationResponse stationResponse1 = 지하철역_등록되어_있음(강남역, tokenResponse);
+        StationResponse stationResponse2 = 지하철역_등록되어_있음(역삼역, tokenResponse);
+
+        // when
+        ExtractableResponse<Response> response = 지하철역_목록_조회_요청();
+
+        // then
+        지하철역_목록_응답됨(response);
+        지하철역_목록_포함됨(response, Arrays.asList(stationResponse1, stationResponse2));
+    }
+
+    @DisplayName("지하철역을 제거한다.")
+    @Test
+    void deleteStation() {
+        // given
+        StationResponse stationResponse = 지하철역_등록되어_있음(강남역, tokenResponse);
+
+        // when
+        ExtractableResponse<Response> response = 지하철역_제거_요청(stationResponse, tokenResponse);
+
+        // then
+        지하철역_삭제됨(response);
+    }
+
+    @DisplayName("지하철역 이름에 공백이 있거나 길이가 2미만, 20 초과인경우, 400 에러를 받는다.")
+    @ParameterizedTest
+    @ValueSource(strings = {" ", "에", "우아한테크코스검프에어바다포츈우기화이팅짱"})
+    void createStationFail(String name) {
+        //when
+        ExtractableResponse<Response> response = 지하철역_생성_요청(name, tokenResponse);
+
+        // then
+        지하철역_생성_실패됨(response);
+    }
+
 }
