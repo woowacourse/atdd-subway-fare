@@ -1,7 +1,7 @@
 package wooteco.subway.member.application;
 
-import exception.duplicate.EmailDuplicatedException;
 import org.springframework.stereotype.Service;
+import wooteco.subway.exception.duplicate.EmailDuplicatedException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
@@ -23,12 +23,11 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public MemberResponse checkDuplicatedEmail(String email) {
+    public void checkDuplicatedEmail(String email) {
         Member member = memberDao.findByEmail(email);
         if (Objects.nonNull(member)) {
             throw new EmailDuplicatedException();
         }
-        return MemberResponse.of(member);
     }
 
     public MemberResponse findMember(LoginMember loginMember) {

@@ -67,6 +67,25 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
+    @DisplayName("이메일 중복 검사 - 성공")
+    @Test
+    void emailDuplicate_success() throws Exception {
+        RestAssured.given().log().all()
+                .when().get("/members/check-validation/?email=Other_login%40email.com")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
+    }
+
+    @DisplayName("이메일 중복 검사 - 실패")
+    @Test
+    void emailDuplicate_fail() throws Exception {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        RestAssured.given().log().all()
+                .when().get("/members/check-validation/?email=" + EMAIL)
+                .then().log().all()
+                .statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value());
+    }
+
     public static ExtractableResponse<Response> 회원_등록되어_있음(String email, String password, Integer age) {
         return 회원_생성을_요청(email, password, age);
     }

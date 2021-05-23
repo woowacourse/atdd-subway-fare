@@ -8,10 +8,8 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.domain.AuthorizationMemberPrincipal;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
-import wooteco.subway.member.domain.LoginMember;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Optional;
 
 public class AuthorizationMemberPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
     private AuthService authService;
