@@ -3,14 +3,14 @@ package wooteco.subway.exception.notfound;
 import org.springframework.http.HttpStatus;
 import wooteco.subway.exception.SubwayException;
 
-public class NotFound extends SubwayException {
+public class NotFoundException extends SubwayException {
     private static final HttpStatus httpStatus = HttpStatus.NOT_FOUND;
 
-    public NotFound(String message) {
+    public NotFoundException(String message) {
         super(message, httpStatus);
     }
 
-    public NotFound(String message, Throwable cause) {
+    public NotFoundException(String message, Throwable cause) {
         super(message, cause, httpStatus);
     }
 

@@ -1,6 +1,6 @@
 package wooteco.subway.exception.unauthorized;
 
-public class PasswordMissMatchException extends UnAuthorized{
+public class PasswordMissMatchException extends UnAuthorizedException {
     private static final String MESSAGE = "입력하신 비밀번호가 일치하지 않습니다.";
 
     public PasswordMissMatchException() {

@@ -3,14 +3,14 @@ package wooteco.subway.exception.unauthorized;
 import org.springframework.http.HttpStatus;
 import wooteco.subway.exception.SubwayException;
 
-public class UnAuthorized extends SubwayException {
+public class UnAuthorizedException extends SubwayException {
     private static final HttpStatus httpStatus = HttpStatus.UNAUTHORIZED;
 
-    public UnAuthorized(String message) {
+    public UnAuthorizedException(String message) {
         super(message, httpStatus);
     }
 
-    public UnAuthorized(String message, Throwable cause) {
+    public UnAuthorizedException(String message, Throwable cause) {
         super(message, cause, httpStatus);
     }
 
