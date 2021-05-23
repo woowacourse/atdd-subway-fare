@@ -1,24 +1,5 @@
 spring:
   profiles:
-    group:
-      "test": "test"
-
----
-spring:
-  profiles:
-    group:
-      "prod": "prod"
-
----
-spring:
-  profiles:
-    group:
-      "local":  "local"
-
----
-
-spring:
-  profiles:
     active: "local"
 ---
 
