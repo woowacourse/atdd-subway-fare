@@ -26,4 +26,5 @@ public class StationOfSectionResponse {
     public String getName() {
         return name;
     }
+
 }

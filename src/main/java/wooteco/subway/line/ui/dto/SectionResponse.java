@@ -35,4 +35,5 @@ public class SectionResponse {
     public int getDistance() {
         return distance;
     }
+
 }

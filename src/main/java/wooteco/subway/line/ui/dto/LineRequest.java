@@ -1,15 +1,16 @@
 package wooteco.subway.line.ui.dto;
 
+import java.beans.ConstructorProperties;
+
 public class LineRequest {
-    private String name;
-    private String color;
-    private Long upStationId;
-    private Long downStationId;
-    private int distance;
 
-    public LineRequest() {
-    }
+    private final String name;
+    private final String color;
+    private final Long upStationId;
+    private final Long downStationId;
+    private final int distance;
 
+    @ConstructorProperties({"name", "color", "upStationId", "downStationId", "distance"})
     public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance) {
         this.name = name;
         this.color = color;
@@ -37,4 +38,5 @@ public class LineRequest {
     public int getDistance() {
         return distance;
     }
+
 }

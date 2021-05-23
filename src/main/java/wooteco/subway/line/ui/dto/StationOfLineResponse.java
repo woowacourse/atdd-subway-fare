@@ -41,4 +41,5 @@ public class StationOfLineResponse {
     public List<TransferLineResponse> getTransferLineResponses() {
         return transferLineResponses;
     }
+
 }

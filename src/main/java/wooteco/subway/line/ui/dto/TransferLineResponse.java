@@ -25,4 +25,5 @@ public class TransferLineResponse {
     public String getColor() {
         return color;
     }
+
 }

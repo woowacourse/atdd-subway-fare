@@ -3,14 +3,16 @@ package wooteco.subway.line.ui.dto;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.station.ui.dto.StationResponse;
 
+import java.beans.ConstructorProperties;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class LineResponse {
-    private Long id;
-    private String name;
-    private String color;
-    private List<StationResponse> stations;
+
+    private final Long id;
+    private final String name;
+    private final String color;
+    private final List<StationResponse> stations;
 
     public LineResponse(Long id, String name, String color, List<StationResponse> stations) {
         this.id = id;
@@ -21,7 +23,7 @@ public class LineResponse {
 
     public static LineResponse of(Line line) {
         List<StationResponse> stations = line.getStations().stream()
-                .map(it -> StationResponse.of(it))
+                .map(StationResponse::of)
                 .collect(Collectors.toList());
         return new LineResponse(line.getId(), line.getName(), line.getColor(), stations);
     }
@@ -47,4 +49,5 @@ public class LineResponse {
     public List<StationResponse> getStations() {
         return stations;
     }
+
 }

@@ -98,15 +98,30 @@ public class LineService {
     public SectionsOfLineResponse getSectionsResponseOfLine(Long lineId) {
         Line line = findLineById(lineId);
 
-        List<StationOfLineResponse> collect = line.getStations().stream()
-            .map(station -> new StationOfLineResponse(station, findTransferLinesOfStation(station, line)))
-            .collect(toList());
+        return createSectionOfResponse(line);
+    }
 
-        LineWithTransferLineResponse lineResponse = new LineWithTransferLineResponse(line.getId(),
-            line.getColor(), line.getName(), collect);
+    private SectionsOfLineResponse createSectionOfResponse(Line line) {
+        LineWithTransferLineResponse lineResponse = createLineResponse(line);
         SectionsResponse sectionsResponse = new SectionsResponse(line.getSections());
 
         return new SectionsOfLineResponse(lineResponse, sectionsResponse);
+    }
+
+    private LineWithTransferLineResponse createLineResponse(Line line) {
+        List<StationOfLineResponse> stationOfLineResponses = createStationOfLineResponses(line);
+        return new LineWithTransferLineResponse(
+                line.getId(),
+                line.getColor(),
+                line.getName(),
+                stationOfLineResponses
+        );
+    }
+
+    private List<StationOfLineResponse> createStationOfLineResponses(Line line) {
+        return line.getStations().stream()
+                .map(station -> new StationOfLineResponse(station, findTransferLinesOfStation(station, line)))
+                .collect(toList());
     }
 
     private List<Line> findTransferLinesOfStation(Station station, Line targetLine) {

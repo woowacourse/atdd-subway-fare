@@ -35,4 +35,5 @@ public class LineWithTransferLineResponse {
     public List<StationOfLineResponse> getStationResponses() {
         return stationResponses;
     }
+
 }
