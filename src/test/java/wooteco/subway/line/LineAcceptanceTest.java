@@ -10,8 +10,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
+import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
+import wooteco.subway.line.dto.SectionInLineResponse;
+import wooteco.subway.line.dto.SectionResponse;
+import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.Arrays;
@@ -30,6 +34,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     private static StationResponse 광교역;
     private static LineRequest 신분당선;
     private static LineRequest 구신분당선;
+    private static SectionInLineResponse 강남에서광교;
 
     @BeforeEach
     public void setUp() {
@@ -37,6 +42,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // given
         강남역 = 지하철역_등록되어_있음("강남역");
         광교역 = 지하철역_등록되어_있음("광교역");
+
+        강남에서광교 = new SectionInLineResponse(강남역, 광교역, 10);
 
         신분당선 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
         구신분당선 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15);
@@ -217,6 +224,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
     public static void 지하철_노선_생성됨(ExtractableResponse response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isEqualTo("/api/lines/1");
+        LineResponse res = response.as(LineResponse.class);
+        assertThat(res.getSections()).usingRecursiveComparison().isEqualTo(Arrays.asList(강남에서광교));
     }
 
     public static void 지하철_노선_생성_실패됨(ExtractableResponse<Response> response) {

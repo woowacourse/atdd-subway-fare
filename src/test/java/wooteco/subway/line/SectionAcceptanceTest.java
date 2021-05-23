@@ -12,6 +12,7 @@ import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.line.dto.SectionResponse;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.Arrays;
@@ -68,7 +69,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     void addLineSection2() {
         // when
         지하철_구간_생성_요청(사용자, 신분당선, 강남역, 양재역, 2);
-        ExtractableResponse<Response> response = 지하철_구간_생성_요청(사용자, 신분당선, 정자역, 강남역, 5);
+        ExtractableResponse<Response> response = 지하철_구간_생성_요청(사용자, 신분당선, 정자역, 강남역, 3);
 
         // then
         지하철_구간_생성됨(response, 신분당선, Arrays.asList(정자역, 강남역, 양재역, 광교역));
@@ -149,34 +150,10 @@ public class SectionAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static void 지하철_노선에_지하철역_순서_정렬됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
-        LineResponse line = response.as(LineResponse.class);
-        List<Long> stationIds = line.getStations().stream()
-                .map(it -> it.getId())
-                .collect(Collectors.toList());
-
-        List<Long> expectedStationIds = expectedStations.stream()
-                .map(it -> it.getId())
-                .collect(Collectors.toList());
-
-        assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
-    }
-
-    public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(TokenResponse token, LineResponse line, StationResponse station) {
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(token.getAccessToken())
-                .when().delete("/api/lines/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
-                .then().log().all()
-                .extract();
-    }
-
-    public static void 지하철_구간_생성됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
     private void 지하철_구간_생성됨(ExtractableResponse<Response> result, LineResponse lineResponse, List<StationResponse> stationResponses) {
         assertThat(result.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(result.as(SectionResponse.class).getDistance()).isEqualTo(3);
+
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(lineResponse);
         지하철_노선에_지하철역_순서_정렬됨(response, stationResponses);
     }
@@ -187,11 +164,33 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_순서_정렬됨(response, stationResponses);
     }
 
+    public static void 지하철_노선에_지하철역_순서_정렬됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
+    LineResponse line = response.as(LineResponse.class);
+    List<Long> stationIds = line.getStations().stream()
+                .map(it -> it.getId())
+                .collect(Collectors.toList());
+
+    List<Long> expectedStationIds = expectedStations.stream()
+                .map(it -> it.getId())
+                .collect(Collectors.toList());
+
+    assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
+}
+
+    public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(TokenResponse token, LineResponse line, StationResponse station) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token.getAccessToken())
+                .when().delete("/api/lines/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
+                .then().log().all()
+                .extract();
+    }
+
     public static void 지하철_구간_등록_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static void 지하철_노선에_지하철역_제외_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }

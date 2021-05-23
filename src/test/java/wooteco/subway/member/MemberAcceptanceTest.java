@@ -39,7 +39,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("중복된 이메일이 존재하는지 검증한다.")
+    @DisplayName("중복된 이메일이 존재하면 예외를 던진다.")
     void testCheckExistsEmail() {
         String Email = "new@new.com";
         ExtractableResponse<Response> createResponse = 회원_생성을_요청(Email, PASSWORD, AGE);
@@ -49,9 +49,20 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         중복된_이메일_존재함(findResponse);
     }
 
+    @Test
+    @DisplayName("중복된 이메일이 존재하지 않는 경우 응답코드 NO_CONTENT.")
+    void testCheckExistsEmailWhenNotExists() {
+        String Email = "new@new.com";
+
+        ExtractableResponse<Response> findResponse = 이메일_중복_확인(Email);
+
+        assertThat(findResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
     private void 중복된_이메일_존재함(ExtractableResponse<Response> findResponse) {
         assertThat(findResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
+
 
     private ExtractableResponse<Response> 이메일_중복_확인(String email) {
         EmailCheckRequest request = new EmailCheckRequest(email);
@@ -63,7 +74,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .then().log().all()
                 .extract();
     }
-
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);

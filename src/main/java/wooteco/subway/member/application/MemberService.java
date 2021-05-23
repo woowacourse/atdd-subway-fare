@@ -2,7 +2,7 @@ package wooteco.subway.member.application;
 
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
-import wooteco.subway.exception.DuplicatedEmailException;
+import wooteco.subway.exception.DuplicatedException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
@@ -21,7 +21,7 @@ public class MemberService {
             Member member = memberDao.insert(request.toMember());
             return MemberResponse.of(member);
         } catch(DuplicateKeyException e) {
-            throw new DuplicatedEmailException("중복된 회원이 존재합니다.");
+            throw new DuplicatedException("중복된 회원이 존재합니다.");
         }
     }
 
@@ -55,7 +55,7 @@ public class MemberService {
 
     public void checkExistEmail(EmailCheckRequest email) {
         if (memberDao.findByEmail(email.getEmail()) != null) {
-            throw new DuplicatedEmailException("중복된 이메일이 존재합니다.");
+            throw new DuplicatedException("중복된 이메일이 존재합니다.");
         }
     }
 }
