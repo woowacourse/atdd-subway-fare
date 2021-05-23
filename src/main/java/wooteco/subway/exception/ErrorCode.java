@@ -3,6 +3,9 @@ package wooteco.subway.exception;
 import org.springframework.http.HttpStatus;
 
 public enum ErrorCode {
+    // COMMON
+    INVALID_INPUT("[ERROR] 유효하지 않는 요청 값입니다.", HttpStatus.BAD_REQUEST.value()),
+
     // AUTH
     INVALID_LOGIN("[ERROR] 이메일 혹은 비밀번호가 틀렸습니다. 다시 입력해주세요.", HttpStatus.UNAUTHORIZED.value()),
     INVALID_TOKEN("[ERROR] 유효하지 않는 토큰 정보입니다.", HttpStatus.UNAUTHORIZED.value()),

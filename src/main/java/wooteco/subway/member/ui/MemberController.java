@@ -7,6 +7,7 @@ import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.dto.ChangeAgeRequest;
+import wooteco.subway.member.dto.ChangeAgeResponse;
 import wooteco.subway.member.dto.ChangePasswordRequest;
 import wooteco.subway.member.dto.EmailExistsRequest;
 import wooteco.subway.member.dto.MemberRequest;
@@ -43,10 +44,10 @@ public class MemberController {
     }
 
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> changeAge(@AuthenticationPrincipal LoginMember loginMember, @RequestBody ChangeAgeRequest request) {
+    public ResponseEntity<ChangeAgeResponse> changeAge(@AuthenticationPrincipal LoginMember loginMember, @Valid @RequestBody ChangeAgeRequest request) {
         memberService.changeAge(loginMember, request);
-        MemberResponse member = memberService.findMember(loginMember);
-        return ResponseEntity.ok().body(member);
+        ChangeAgeResponse response = new ChangeAgeResponse(loginMember.getId(), request.getAge());
+        return ResponseEntity.ok().body(response);
     }
 
     @PutMapping("/members/me/pw")
