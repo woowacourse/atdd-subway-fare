@@ -38,7 +38,7 @@ public class Sections {
     private void checkAlreadyExisted(Section section) {
         List<Station> stations = getStations();
         if (!stations.contains(section.getUpStation()) && !stations.contains(section.getDownStation())) {
-            throw new RuntimeException();
+            throw new IllegalArgumentException("연결할 수 있는 구간이 존재하지 않습니다. 구간에 등록할 지하철 역을 확인해주세요.");
         }
     }
 
@@ -46,7 +46,7 @@ public class Sections {
         List<Station> stations = getStations();
         List<Station> stationsOfNewSection = Arrays.asList(section.getUpStation(), section.getDownStation());
         if (stations.containsAll(stationsOfNewSection)) {
-            throw new RuntimeException();
+            throw new IllegalArgumentException("이미 존재하는 구간입니다.");
         }
     }
 
@@ -65,19 +65,21 @@ public class Sections {
     }
 
     private void replaceSectionWithUpStation(Section newSection, Section existSection) {
-        if (existSection.getDistance() <= newSection.getDistance()) {
-            throw new RuntimeException();
-        }
+        checkSectionDistance(newSection, existSection);
         this.sections.add(new Section(existSection.getUpStation(), newSection.getUpStation(), existSection.getDistance() - newSection.getDistance()));
         this.sections.remove(existSection);
     }
 
     private void replaceSectionWithDownStation(Section newSection, Section existSection) {
-        if (existSection.getDistance() <= newSection.getDistance()) {
-            throw new RuntimeException();
-        }
+        checkSectionDistance(newSection, existSection);
         this.sections.add(new Section(newSection.getDownStation(), existSection.getDownStation(), existSection.getDistance() - newSection.getDistance()));
         this.sections.remove(existSection);
+    }
+
+    private void checkSectionDistance(Section newSection, Section existSection) {
+        if (existSection.getDistance() <= newSection.getDistance()) {
+            throw new IllegalArgumentException("연결할 구간보다 거리가 크거나 같으면 등록할 수 없습니다.");
+        }
     }
 
     public List<Station> getStations() {
@@ -117,13 +119,13 @@ public class Sections {
 
     private Section findUpEndSection() {
         List<Station> downStations = this.sections.stream()
-                .map(it -> it.getDownStation())
+                .map(Section::getDownStation)
                 .collect(Collectors.toList());
 
         return this.sections.stream()
                 .filter(it -> !downStations.contains(it.getUpStation()))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new IllegalStateException("지하철 종점이 존재하지 않습니다."));
     }
 
     private Section findSectionByNextUpStation(Station station) {
@@ -135,7 +137,7 @@ public class Sections {
 
     public void removeStation(Station station) {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new IllegalStateException("지하철 구간이 1개 이하일 때 더 이상 삭제할 수 없습니다.");
         }
 
         Optional<Section> upSection = sections.stream()
