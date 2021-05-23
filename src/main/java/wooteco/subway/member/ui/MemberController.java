@@ -19,6 +19,12 @@ public class MemberController {
         this.memberService = memberService;
     }
 
+    @GetMapping("/members/check-validation")
+    public ResponseEntity findDuplicatedEmail(@RequestParam String email) {
+        memberService.checkDuplicatedEmail(email);
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/members")
     public ResponseEntity createMember(@RequestBody MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
