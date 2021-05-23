@@ -14,6 +14,8 @@ public class LinesResponse {
     private List<StationResponse> stations;
     private List<SectionResponse> sections;
 
+    public LinesResponse() {
+    }
 
     public LinesResponse(final Long id, final String name, final String color, final int distance, final List<StationResponse> stations, final List<SectionResponse> sections) {
         this.id = id;
