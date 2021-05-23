@@ -6,6 +6,7 @@ import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.path.domain.SubwayPath;
+import wooteco.subway.path.domain.SubwayPathFare;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.path.dto.PathResponseAssembler;
 import wooteco.subway.station.application.StationService;
@@ -32,8 +33,10 @@ public class PathService {
             Station sourceStation = stationService.findStationById(source);
             Station targetStation = stationService.findStationById(target);
             SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
-
-            return PathResponseAssembler.assemble(loginMember.getAge(), subwayPath);
+            int distance = subwayPath.calculateDistance();
+            int lineFare = subwayPath.getMaxLineFare();
+            SubwayPathFare subwayPathFare = new SubwayPathFare(loginMember.getAge(), distance, lineFare);
+            return PathResponseAssembler.assemble(subwayPath, subwayPathFare);
         } catch (Exception e) {
             throw new InvalidPathException();
         }

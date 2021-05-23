@@ -8,16 +8,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class PathResponseAssembler {
-    public static PathResponse assemble(int age, SubwayPath subwayPath) {
+    public static PathResponse assemble(SubwayPath subwayPath, SubwayPathFare subwayPathFare) {
         List<StationResponse> stationResponses = subwayPath.getStations().stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
 
-        int distance = subwayPath.calculateDistance();
-        int lineFare = subwayPath.getMaxLineFare();
-
-        SubwayPathFare subwayPathFare = new SubwayPathFare(age, distance, lineFare);
-
-        return new PathResponse(stationResponses, distance, subwayPathFare.getFare());
+        return new PathResponse(stationResponses, subwayPath.calculateDistance(), subwayPathFare.getFare());
     }
 }
