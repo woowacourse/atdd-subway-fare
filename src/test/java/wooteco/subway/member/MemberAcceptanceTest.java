@@ -129,11 +129,12 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 회원_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.header("Location")).isEqualTo("/members/1");
     }
 
     public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
         MemberResponse memberResponse = response.as(MemberResponse.class);
-        assertThat(memberResponse.getId()).isNotNull();
+        assertThat(memberResponse.getId()).isEqualTo(1);
         assertThat(memberResponse.getEmail()).isEqualTo(email);
         assertThat(memberResponse.getAge()).isEqualTo(age);
     }
@@ -148,6 +149,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     private void 나이_정보_수정됨(ExtractableResponse<Response> updateAgeResponse) {
         assertThat(updateAgeResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(updateAgeResponse.as(AgeResponse.class).getId()).isEqualTo(1);
         assertThat(updateAgeResponse.as(AgeResponse.class).getAge()).isEqualTo(NEW_AGE);
     }
 }

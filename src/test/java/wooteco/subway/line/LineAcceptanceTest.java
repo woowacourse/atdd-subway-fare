@@ -22,10 +22,10 @@ import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록�
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineAcceptanceTest extends AcceptanceTest {
-    private StationResponse 강남역;
-    private StationResponse downStation;
-    private LineRequest lineRequest1;
-    private LineRequest lineRequest2;
+    private static StationResponse 강남역;
+    private static StationResponse 광교역;
+    private static LineRequest 신분당선;
+    private static LineRequest 구신분당선;
 
     @BeforeEach
     public void setUp() {
@@ -33,17 +33,17 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // given
         강남역 = 지하철역_등록되어_있음("강남역");
-        downStation = 지하철역_등록되어_있음("광교역");
+        광교역 = 지하철역_등록되어_있음("광교역");
 
-        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 10);
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 15);
+        신분당선 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
+        구신분당선 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
     @Test
     void createLine() {
         // when
-        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1);
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(신분당선);
 
         // then
         지하철_노선_생성됨(response);
@@ -53,10 +53,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void createLineWithDuplicateName() {
         // given
-        지하철_노선_등록되어_있음(lineRequest1);
+        지하철_노선_등록되어_있음(신분당선);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1);
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(신분당선);
 
         // then
         지하철_노선_생성_실패됨(response);
@@ -66,8 +66,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void getLines() {
         // given
-        LineResponse lineResponse1 = 지하철_노선_등록되어_있음(lineRequest1);
-        LineResponse lineResponse2 = 지하철_노선_등록되어_있음(lineRequest2);
+        LineResponse lineResponse1 = 지하철_노선_등록되어_있음(신분당선);
+        LineResponse lineResponse2 = 지하철_노선_등록되어_있음(구신분당선);
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청();
@@ -81,7 +81,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void getLine() {
         // given
-        LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1);
+        LineResponse lineResponse = 지하철_노선_등록되어_있음(신분당선);
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(lineResponse);
@@ -94,10 +94,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void updateLine() {
         // given
-        LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1);
+        LineResponse lineResponse = 지하철_노선_등록되어_있음(신분당선);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse, lineRequest2);
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse, 구신분당선);
 
         // then
         지하철_노선_수정됨(response);
@@ -107,7 +107,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteLine() {
         // given
-        LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1);
+        LineResponse lineResponse = 지하철_노선_등록되어_있음(신분당선);
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_제거_요청(lineResponse);
@@ -174,7 +174,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철_노선_생성됨(ExtractableResponse response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(response.header("Location")).isNotBlank();
+        assertThat(response.header("Location")).isEqualTo("/api/lines/1");
     }
 
     public static void 지하철_노선_생성_실패됨(ExtractableResponse<Response> response) {
@@ -188,19 +188,20 @@ public class LineAcceptanceTest extends AcceptanceTest {
     public static void 지하철_노선_응답됨(ExtractableResponse<Response> response, LineResponse lineResponse) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         LineResponse resultResponse = response.as(LineResponse.class);
+
         assertThat(resultResponse.getId()).isEqualTo(lineResponse.getId());
+        assertThat(resultResponse.getName()).isEqualTo("신분당선");
+        assertThat(resultResponse.getColor()).isEqualTo("bg-red-600");
+
+        assertThat(resultResponse.getStations())
+                .usingRecursiveComparison()
+                .isEqualTo(Arrays.asList(강남역, 광교역));
     }
 
     public static void 지하철_노선_목록_포함됨(ExtractableResponse<Response> response, List<LineResponse> createdResponses) {
-        List<Long> expectedLineIds = createdResponses.stream()
-                .map(it -> it.getId())
-                .collect(Collectors.toList());
+        List<LineResponse> resultLineIds = response.jsonPath().getList(".", LineResponse.class);
 
-        List<Long> resultLineIds = response.jsonPath().getList(".", LineResponse.class).stream()
-                .map(LineResponse::getId)
-                .collect(Collectors.toList());
-
-        assertThat(resultLineIds).containsAll(expectedLineIds);
+        assertThat(resultLineIds).usingRecursiveComparison().isEqualTo(createdResponses);
     }
 
     public static void 지하철_노선_수정됨(ExtractableResponse<Response> response) {

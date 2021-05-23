@@ -96,8 +96,8 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         return RestAssured
                 .given().log().all()
-                .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
                 .when().put("/api/stations/1")
                 .then().log().all()
                 .extract();
@@ -138,6 +138,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
     public static void 지하철역_생성됨(ExtractableResponse response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
+
+        StationResponse stationRes = response.as(StationResponse.class);
+        assertThat(stationRes.getId()).isEqualTo(1);
+        assertThat(stationRes.getName()).isEqualTo("강남역");
     }
 
     public static void 지하철역_생성_실패됨(ExtractableResponse<Response> response) {
