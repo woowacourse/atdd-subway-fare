@@ -55,6 +55,7 @@ public class LineDao {
     public void update(Line newLine) {
         String sql = "update LINE set name = ?, color = ? where id = ?";
         jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
+
     }
 
     public List<Line> findAll() {
@@ -107,5 +108,10 @@ public class LineDao {
 
     public void deleteById(Long id) {
         jdbcTemplate.update("delete from Line where id = ?", id);
+    }
+
+    public boolean existNewNameExceptCurrentName(String newName, String currentName) {
+        String query = "SELECT EXISTS (SELECT * FROM line WHERE name IN (?) AND name NOT IN (?))";
+        return jdbcTemplate.queryForObject(query, Boolean.class, newName, currentName);
     }
 }

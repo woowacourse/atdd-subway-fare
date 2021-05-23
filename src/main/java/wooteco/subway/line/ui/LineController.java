@@ -1,18 +1,17 @@
 package wooteco.subway.line.ui;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.line.application.LineService;
-import wooteco.subway.line.dto.LineRequest;
-import wooteco.subway.line.dto.LineResponse;
-import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.line.dto.*;
 
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/lines")
+@RequestMapping("/api/lines")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class LineController {
 
@@ -24,8 +23,12 @@ public class LineController {
 
     @PostMapping
     public ResponseEntity createLine(@RequestBody LineRequest lineRequest) {
-        LineResponse line = lineService.saveLine(lineRequest);
-        return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
+        try{
+            LineResponse line = lineService.saveLine(lineRequest);
+            return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
+        } catch (DuplicateKeyException e) {
+            throw new IllegalArgumentException("중복된 노선이 존재합니다.");
+        }
     }
 
     @GetMapping
@@ -40,8 +43,8 @@ public class LineController {
 
     @PutMapping("/{id}")
     public ResponseEntity updateLine(@PathVariable Long id, @RequestBody LineRequest lineUpdateRequest) {
-        lineService.updateLine(id, lineUpdateRequest);
-        return ResponseEntity.ok().build();
+        LineUpdateResponse response = lineService.updateLine(id, lineUpdateRequest);
+        return ResponseEntity.ok().body(response);
     }
 
     @DeleteMapping("/{id}")
@@ -52,14 +55,14 @@ public class LineController {
 
     @PostMapping("/{lineId}/sections")
     public ResponseEntity addLineStation(@PathVariable Long lineId, @RequestBody SectionRequest sectionRequest) {
-        lineService.addLineStation(lineId, sectionRequest);
-        return ResponseEntity.ok().build();
+        SectionResponse sectionResponse = lineService.addLineStation(lineId, sectionRequest);
+        return ResponseEntity.ok().body(sectionResponse);
     }
 
     @DeleteMapping("/{lineId}/sections")
     public ResponseEntity removeLineStation(@PathVariable Long lineId, @RequestParam Long stationId) {
         lineService.removeLineStation(lineId, stationId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @ExceptionHandler(SQLException.class)
