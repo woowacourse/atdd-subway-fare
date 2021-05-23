@@ -14,7 +14,7 @@ import static wooteco.subway.path.PathTest.*;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
 @DisplayName("지하철 경로 조회 - 거리에 따른 추가요금")
-public class PathFareByDistanceAcceptanceTest2 extends AcceptanceTest {
+public class PathFareByDistanceAcceptanceTest extends AcceptanceTest {
     private StationResponse A역;
     private StationResponse B역;
     private StationResponse C역;

@@ -119,7 +119,17 @@ public class LineAcceptanceTest extends AcceptanceTest {
     }
 
     public static LineResponse 지하철_노선_등록되어_있음(String name, StationResponse upStation, StationResponse downStation, int distance) {
-        LineRequest lineRequest = new LineRequest(name, COLOR, 0, upStation.getId(), downStation.getId(), distance);
+        return 지하철_노선_등록되어_있음(name, upStation, downStation, distance, 0);
+    }
+
+    public static LineResponse 지하철_노선_등록되어_있음(String name, StationResponse upStation, StationResponse downStation, int distance, int extraFare) {
+        LineRequest lineRequest = new LineRequest(
+                name,
+                COLOR,
+                extraFare,
+                upStation.getId(),
+                downStation.getId(),
+                distance);
         return 지하철_노선_등록되어_있음(lineRequest);
     }
 

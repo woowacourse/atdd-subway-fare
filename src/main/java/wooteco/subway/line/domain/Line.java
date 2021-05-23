@@ -15,7 +15,13 @@ public class Line {
     }
 
     public Line(String name, String color) {
-        this(null, name, color ,0);
+        this(name, color ,0);
+    }
+
+    public Line(String name, String color, int extraFare) {
+        this.name = name;
+        this.color = color;
+        this.extraFare = extraFare;
     }
 
     public Line(Long id, String name, String color, int extraFare) {
