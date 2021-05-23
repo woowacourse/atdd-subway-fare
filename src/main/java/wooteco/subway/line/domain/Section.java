@@ -39,4 +39,12 @@ public class Section {
     public int getDistance() {
         return distance;
     }
+
+    public boolean isBefore(Section section) {
+        return downStation.equals(section.getUpStation());
+    }
+
+    public boolean isAfter(Section section) {
+        return upStation.equals(section.getDownStation());
+    }
 }

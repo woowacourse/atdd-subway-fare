@@ -3,9 +3,8 @@ package wooteco.subway.line.domain;
 import wooteco.subway.station.domain.Station;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toList;
 
 public class Sections {
     private List<Section> sections = new ArrayList<>();
@@ -18,7 +17,39 @@ public class Sections {
     }
 
     public List<Section> getSections() {
-        return sections;
+        return sort(sections);
+    }
+
+    private List<Section> sort(List<Section> sections) {
+        Queue<Section> waiting = new LinkedList<>(sections);
+        Deque<Section> sorted = new ArrayDeque<>();
+
+        sorted.addLast(waiting.poll());
+        sortWaiting(waiting, sorted);
+
+        return new ArrayList<>(sorted);
+    }
+
+    private void sortWaiting(Queue<Section> waiting, Deque<Section> sorted) {
+        while (!waiting.isEmpty()) {
+            sortInAscendingOrder(waiting, sorted);
+        }
+    }
+
+    private void sortInAscendingOrder(Queue<Section> waiting, Deque<Section> sorted) {
+        Section current = waiting.poll();
+        Section first = sorted.peekFirst();
+        Section last = sorted.peekLast();
+
+        if (current.isBefore(first)) {
+            sorted.addFirst(current);
+            return;
+        }
+        if (current.isAfter(last)) {
+            sorted.addLast(current);
+            return;
+        }
+        waiting.add(current);
     }
 
     public void addSection(Section section) {
