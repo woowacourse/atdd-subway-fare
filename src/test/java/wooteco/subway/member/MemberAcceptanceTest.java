@@ -19,31 +19,33 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("회원 정보를 관리한다.")
     @Test
     void manageMember() {
-        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
-        회원_생성됨(createResponse);
+        String Email = "new@new.com";
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(Email, PASSWORD, AGE);
+        신규_회원_생성됨(createResponse);
 
-        TokenResponse 사용자 = 로그인되어_있음(EMAIL, PASSWORD);
+        TokenResponse 신규회원 = 로그인되어_있음(Email, PASSWORD);
 
-        ExtractableResponse<Response> findResponse = 내_회원_정보_조회_요청(사용자);
-        회원_정보_조회됨(findResponse, EMAIL, AGE);
+        ExtractableResponse<Response> findResponse = 내_회원_정보_조회_요청(신규회원);
+        신규회원_정보_조회됨(findResponse, Email, AGE);
 
-        ExtractableResponse<Response> updatePwResponse = 내_비밀번호_수정_요청(사용자, PASSWORD, NEW_PASSWORD);
+        ExtractableResponse<Response> updatePwResponse = 내_비밀번호_수정_요청(신규회원, PASSWORD, NEW_PASSWORD);
         회원_정보_수정됨(updatePwResponse);
 
-        ExtractableResponse<Response> updateAgeResponse = 내_나이정보_수정_요청(사용자, NEW_AGE);
+        ExtractableResponse<Response> updateAgeResponse = 내_나이정보_수정_요청(신규회원, NEW_AGE);
         나이_정보_수정됨(updateAgeResponse);
 
-        ExtractableResponse<Response> deleteResponse = 내_회원_삭제_요청(사용자);
+        ExtractableResponse<Response> deleteResponse = 내_회원_삭제_요청(신규회원);
         회원_삭제됨(deleteResponse);
     }
 
     @Test
     @DisplayName("중복된 이메일이 존재하는지 검증한다.")
     void testCheckExistsEmail() {
-        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
-        회원_생성됨(createResponse);
+        String Email = "new@new.com";
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(Email, PASSWORD, AGE);
+        신규_회원_생성됨(createResponse);
 
-        ExtractableResponse<Response> findResponse = 이메일_중복_확인(EMAIL);
+        ExtractableResponse<Response> findResponse = 이메일_중복_확인(Email);
         중복된_이메일_존재함(findResponse);
     }
 
@@ -126,9 +128,21 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.header("Location")).isEqualTo("/members/1");
     }
 
+    public static void 신규_회원_생성됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.header("Location")).isEqualTo("/members/2");
+    }
+
     public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
         MemberResponse memberResponse = response.as(MemberResponse.class);
         assertThat(memberResponse.getId()).isEqualTo(1);
+        assertThat(memberResponse.getEmail()).isEqualTo(email);
+        assertThat(memberResponse.getAge()).isEqualTo(age);
+    }
+
+    private void 신규회원_정보_조회됨(ExtractableResponse<Response> findResponse, String email, int age) {
+        MemberResponse memberResponse = findResponse.as(MemberResponse.class);
+        assertThat(memberResponse.getId()).isEqualTo(2);
         assertThat(memberResponse.getEmail()).isEqualTo(email);
         assertThat(memberResponse.getAge()).isEqualTo(age);
     }
@@ -143,7 +157,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     private void 나이_정보_수정됨(ExtractableResponse<Response> updateAgeResponse) {
         assertThat(updateAgeResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(updateAgeResponse.as(AgeResponse.class).getId()).isEqualTo(1);
+        assertThat(updateAgeResponse.as(AgeResponse.class).getId()).isEqualTo(2);
         assertThat(updateAgeResponse.as(AgeResponse.class).getAge()).isEqualTo(NEW_AGE);
     }
 }

@@ -25,7 +25,7 @@ public class AuthService {
             Member member = memberDao.findByEmail(request.getEmail());
             member.checkPassword(request.getPassword());
         } catch (Exception e) {
-            throw new AuthorizationException();
+            throw new AuthorizationException("유효하지 않은 사용자입니다.");
         }
         String token = jwtTokenProvider.createToken(request.getEmail());
         return new TokenResponse(token);
