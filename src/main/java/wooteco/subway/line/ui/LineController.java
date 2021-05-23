@@ -53,13 +53,13 @@ public class LineController {
     }
 
     @PostMapping("/{lineId}/sections")
-    public ResponseEntity addLineStation(@PathVariable Long lineId, @RequestBody @Valid SectionRequest sectionRequest) {
+    public ResponseEntity addLineStation(@AuthenticationPrincipal LoginMember loginMember, @PathVariable Long lineId, @RequestBody @Valid SectionRequest sectionRequest) {
         SectionResponse sectionResponse = lineService.addLineStation(lineId, sectionRequest);
         return ResponseEntity.ok().body(sectionResponse);
     }
 
     @DeleteMapping("/{lineId}/sections")
-    public ResponseEntity removeLineStation(@PathVariable Long lineId, @RequestParam Long stationId) {
+    public ResponseEntity removeLineStation(@AuthenticationPrincipal LoginMember loginMember, @PathVariable Long lineId, @RequestParam Long stationId) {
         lineService.removeLineStation(lineId, stationId);
         return ResponseEntity.noContent().build();
     }

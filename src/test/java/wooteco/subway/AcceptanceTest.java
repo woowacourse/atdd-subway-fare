@@ -29,7 +29,7 @@ public class AcceptanceTest {
     public static final String NEW_PASSWORD = "new_password";
     public static final int NEW_AGE = 30;
     public static TokenResponse 사용자;
-    public static TokenResponse 비회원 = new TokenResponse("Unauthorized");
+    public static TokenResponse 비회원;
 
     @BeforeEach
     public void setUp() {
@@ -38,6 +38,7 @@ public class AcceptanceTest {
         ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
         회원_생성됨(createResponse);
         사용자 = 로그인되어_있음(EMAIL, PASSWORD);
+        비회원 = new TokenResponse("Unauthorized");
     }
 
     protected void 비회원_요청_실패됨(ExtractableResponse<Response> response) {
