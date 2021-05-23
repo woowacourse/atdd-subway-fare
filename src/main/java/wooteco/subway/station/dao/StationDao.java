@@ -51,8 +51,8 @@ public class StationDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public void update(Station updateStation) {
-        String sql = "update STATION set name = ? where = ?";
-        jdbcTemplate.update(sql, updateStation.getName(), updateStation.getId());
+    public void update(Station station) {
+        String sql = "update STATION set name = ? where id = ?";
+        jdbcTemplate.update(sql, station.getName(), station.getId());
     }
 }
