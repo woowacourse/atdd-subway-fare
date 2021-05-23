@@ -1,3 +1,4 @@
+
 spring:
   h2:
     console:
@@ -9,6 +10,9 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     schema: classpath*:schema.sql
     initialization-mode: always
+  config:
+    activate:
+      on-profile: prod
 
 handlebars:
   suffix: .html
