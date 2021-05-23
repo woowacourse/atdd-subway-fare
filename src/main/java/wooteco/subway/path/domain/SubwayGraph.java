@@ -23,7 +23,9 @@ public class SubwayGraph extends WeightedMultigraph<Station, SectionEdge> {
 
     public void addEdge(List<Line> lines) {
         for (Line line : lines) {
-            line.getSections().getSections().stream()
+            line.getSections()
+                    .getSections()
+                    .stream()
                     .forEach(it -> addEdge(it, line));
         }
     }
