@@ -12,17 +12,14 @@ import java.util.stream.Collectors;
 public class StationResponse {
     private final Long id;
     private final String name;
-    private final List<LineResponse> lines;
 
     public static StationResponse of(Station station) {
-        return new StationResponse(station.getId(), station.getName(), Collections.emptyList());
+        return new StationResponse(station.getId(), station.getName());
     }
 
-    @ConstructorProperties({"id", "name", "lineResponses"})
-    public StationResponse(Long id, String name, List<LineResponse> lines) {
+    public StationResponse(Long id, String name) {
         this.id = id;
         this.name = name;
-        this.lines = new ArrayList<>(lines);
     }
 
     public static List<StationResponse> listOf(List<Station> stations) {

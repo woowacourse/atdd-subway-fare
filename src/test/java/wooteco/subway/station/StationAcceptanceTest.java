@@ -8,10 +8,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.line.ui.dto.LineRequest;
+import wooteco.subway.station.ui.dto.LineResponse;
 import wooteco.subway.station.ui.dto.StationRequest;
 import wooteco.subway.station.ui.dto.StationResponse;
 
+import javax.print.attribute.standard.Media;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -71,6 +75,44 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철역_삭제됨(response);
+    }
+
+    @DisplayName("지항철 역 목록 조회")
+    @Test
+    void showAllStations() {
+        StationResponse upStation = 지하철역_등록되어_있음("강남역");
+        StationResponse downStation = 지하철역_등록되어_있음("광교역");
+
+        LineRequest line = new LineRequest("신분당선", "bg-red-600", upStation.getId(), downStation.getId(), 10);
+
+        RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(line)
+                .when()
+                .post("/lines");
+
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.ALL_VALUE)
+                .when()
+                .get("/stations")
+                .then()
+                .extract();
+
+        System.out.println(response.body().asString());
+        assertThat(response.jsonPath().getList("id", Long.class)).containsAll(Arrays.asList(1L, 2L));
+        assertThat(response.jsonPath().getList("name", String.class)).containsAll(Arrays.asList("강남역", "광교역"));
+
+        List<LineResponse> lines = response.jsonPath().getList("[0].lines", LineResponse.class);
+        assertThat(lines).usingRecursiveComparison().isEqualTo(
+                Collections.singletonList(new LineResponse(1L, line.getName(), line.getColor()))
+        );
+
+        lines = response.jsonPath().getList("[1].lines", LineResponse.class);
+        assertThat(lines).usingRecursiveComparison().isEqualTo(
+                Collections.singletonList(new LineResponse(1L, line.getName(), line.getColor()))
+        );
     }
 
     @Test

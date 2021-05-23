@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.ui.dto.StationRequest;
 import wooteco.subway.station.ui.dto.StationResponse;
+import wooteco.subway.station.ui.dto.StationWithLinesResponse;
 
 import java.net.URI;
 import java.sql.SQLException;
@@ -27,7 +28,7 @@ public class StationController {
     }
 
     @GetMapping(value = "/stations", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<StationResponse>> showStations() {
+    public ResponseEntity<List<StationWithLinesResponse>> showStations() {
         return ResponseEntity.ok().body(stationService.findAllStationResponses());
     }
 

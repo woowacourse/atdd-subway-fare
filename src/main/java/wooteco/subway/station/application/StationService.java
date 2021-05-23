@@ -14,6 +14,7 @@ import wooteco.subway.station.infrastructure.dao.StationDao;
 import wooteco.subway.station.ui.dto.LineResponse;
 import wooteco.subway.station.ui.dto.StationRequest;
 import wooteco.subway.station.ui.dto.StationResponse;
+import wooteco.subway.station.ui.dto.StationWithLinesResponse;
 
 @Service
 public class StationService {
@@ -35,7 +36,7 @@ public class StationService {
         return stationDao.findById(id);
     }
 
-    public List<StationResponse> findAllStationResponses() {
+    public List<StationWithLinesResponse> findAllStationResponses() {
         List<Station> allStations = stationDao.findAll();
         List<Line> allLines = lineDao.findAll();
 
@@ -47,7 +48,7 @@ public class StationService {
             ));
 
         return stationsWithLines.keySet().stream()
-            .map(station -> new StationResponse(station.getId(), station.getName(),
+            .map(station -> new StationWithLinesResponse(station.getId(), station.getName(),
                 convertLinesToLineResponses(stationsWithLines.get(station))))
             .collect(toList());
     }
