@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -172,9 +173,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_삭제_실패됨(response);
     }
 
-    @DisplayName("지하철역 이름에 공백이 있거나 길이가 2미만, 20 초과인경우, 400 에러를 받는다.")
+    @DisplayName("지하철역 이름에 공백이 있거나 길이가 3미만, 20 초과인경우, 400 에러를 받는다.")
     @ParameterizedTest
-    @ValueSource(strings = {" ", "에", "우아한테크코스검프에어바다포츈우기화이팅짱"})
+    @NullAndEmptySource
+    @ValueSource(strings = {"에", "예예", "우아한테크코스검프에어바다포츈우기화이팅짱"})
     void createStationFail(String name) {
         //when
         ExtractableResponse<Response> response = 지하철역_생성_요청(name, tokenResponse);
