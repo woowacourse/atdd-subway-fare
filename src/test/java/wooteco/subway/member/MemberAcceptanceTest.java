@@ -56,7 +56,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 내_회원_정보_수정_요청_비밀번호(TokenResponse tokenResponse,
-                                                                        MemberPasswordRequest params) {
+                                                                   MemberPasswordRequest params) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
@@ -68,7 +68,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 내_회원_정보_수정_요청_나이(TokenResponse tokenResponse,
-                                                                     MemberAgeRequest params) {
+                                                                 MemberAgeRequest params) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
