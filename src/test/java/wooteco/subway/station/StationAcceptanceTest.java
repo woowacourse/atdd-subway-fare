@@ -11,7 +11,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
-import wooteco.subway.ErrorResponse;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
@@ -32,10 +31,6 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
     public static StationResponse 지하철역_등록되어_있음(String name, TokenResponse tokenResponse) {
         return 지하철역_생성_요청(name, tokenResponse).as(StationResponse.class);
-    }
-
-    public static ErrorResponse 지하철역_등록되어_있지않음(String name, TokenResponse tokenResponse) {
-        return 지하철역_생성_요청(name, tokenResponse).as(ErrorResponse.class);
     }
 
     public static ExtractableResponse<Response> 지하철역_생성_요청(String name, TokenResponse tokenResponse) {
@@ -164,5 +159,4 @@ public class StationAcceptanceTest extends AcceptanceTest {
         // then
         지하철역_생성_실패됨(response);
     }
-
 }
