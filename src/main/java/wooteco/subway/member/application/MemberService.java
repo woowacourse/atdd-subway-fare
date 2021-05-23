@@ -53,8 +53,8 @@ public class MemberService {
         memberDao.deleteById(member.getId());
     }
 
-    public void checkExistEmail(String email) {
-        if (memberDao.findByEmail(email) != null) {
+    public void checkExistEmail(EmailCheckRequest email) {
+        if (memberDao.findByEmail(email.getEmail()) != null) {
             throw new DuplicatedEmailException("중복된 이메일이 존재합니다.");
         }
     }

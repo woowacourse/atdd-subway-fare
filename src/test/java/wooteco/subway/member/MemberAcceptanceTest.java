@@ -58,10 +58,11 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 이메일_중복_확인(String email) {
+        EmailCheckRequest request = new EmailCheckRequest(email);
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(email)
+                .body(request)
                 .when().post("/api/members/exists")
                 .then().log().all()
                 .extract();

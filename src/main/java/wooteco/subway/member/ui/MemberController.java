@@ -53,7 +53,7 @@ public class MemberController {
     }
 
     @PostMapping("/exists")
-    public ResponseEntity checkExistsMember(@RequestBody @Email String email) {
+    public ResponseEntity checkExistsMember(@RequestBody EmailCheckRequest email) {
         memberService.checkExistEmail(email);
         return ResponseEntity.noContent().build();
     }
