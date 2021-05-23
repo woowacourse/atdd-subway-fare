@@ -6,10 +6,7 @@ import wooteco.subway.exception.DuplicatedEmailException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
-import wooteco.subway.member.dto.AgeResponse;
-import wooteco.subway.member.dto.MemberRequest;
-import wooteco.subway.member.dto.MemberResponse;
-import wooteco.subway.member.dto.PasswordRequest;
+import wooteco.subway.member.dto.*;
 
 @Service
 public class MemberService {
@@ -39,14 +36,14 @@ public class MemberService {
         memberDao.update(new Member(member.getId(), member.getEmail(), req.getNewPassword(), member.getAge()));
     }
 
-    public AgeResponse updateAge(LoginMember loginMember, String age) {
+    public AgeResponse updateAge(LoginMember loginMember, AgeRequest age) {
         Member member = memberDao.findByEmail(loginMember.getEmail());
-        memberDao.update(new Member(member.getId(), member.getEmail(), age, member.getAge()));
-        return new AgeResponse(member.getId(), Integer.parseInt(age));
+        memberDao.update(new Member(member.getId(), member.getEmail(), member.getPassword(), age.getAge()));
+        return new AgeResponse(member.getId(), age.getAge());
     }
 
     private void checkCurrentPassword(String password, String currentPassword) {
-        if (currentPassword.equals(password)) {
+        if (!currentPassword.equals(password)) {
             throw new IllegalArgumentException("입력하신 현재 비밀번호가 올바르지 않습니다.");
         }
     }

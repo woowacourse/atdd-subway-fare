@@ -1,16 +1,14 @@
 package wooteco.subway.auth.ui;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 
-@RestController("/login")
+@RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
+@RequestMapping("/api/login")
 public class AuthController {
     private AuthService authService;
 
