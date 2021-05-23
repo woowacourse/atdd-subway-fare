@@ -1,12 +1,7 @@
 package wooteco.subway.line.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
@@ -14,7 +9,6 @@ import wooteco.subway.line.domain.Sections;
 import wooteco.subway.station.domain.Station;
 
 import javax.sql.DataSource;
-import java.sql.PreparedStatement;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -34,24 +28,18 @@ public class LineDao {
     }
 
     public Line insert(Line line) {
-        String query = "INSERT INTO LINE (name, color) VALUES (?, ?)";
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        PreparedStatementCreator preparedStatementCreator = getPreparedStatementCreator(line, query);
-        jdbcTemplate.update(preparedStatementCreator, keyHolder);
-        return new Line(keyHolder.getKey().longValue(), line.getName(), line.getColor());
-    }
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", line.getId());
+        params.put("name", line.getName());
+        params.put("color", line.getColor());
+        params.put("extra_fare", line.getExtraFare());
 
-    private PreparedStatementCreator getPreparedStatementCreator(Line line, String query) {
-        return (connection) -> {
-            PreparedStatement prepareStatement = connection.prepareStatement(query, new String[]{"id"});
-            prepareStatement.setString(1, line.getName());
-            prepareStatement.setString(2, line.getColor());
-            return prepareStatement;
-        };
+        Long lineId = insertAction.executeAndReturnKey(params).longValue();
+        return new Line(lineId, line.getName(), line.getColor(), line.getExtraFare());
     }
 
     public Line findById(Long id) {
-        String sql = "select L.id as line_id, L.name as line_name, L.color as line_color, " +
+        String sql = "select L.id as line_id, L.name as line_name, L.color as line_color, L.extra_fare as line_extra_fare,  " +
                 "S.id as section_id, S.distance as section_distance, " +
                 "UST.id as up_station_id, UST.name as up_station_name, " +
                 "DST.id as down_station_id, DST.name as down_station_name " +
@@ -71,7 +59,7 @@ public class LineDao {
     }
 
     public List<Line> findAll() {
-        String sql = "select L.id as line_id, L.name as line_name, L.color as line_color, " +
+        String sql = "select L.id as line_id, L.name as line_name, L.color as line_color, L.extra_fare as line_extra_fare, " +
                 "S.id as section_id, S.distance as section_distance, " +
                 "UST.id as up_station_id, UST.name as up_station_name, " +
                 "DST.id as down_station_id, DST.name as down_station_name " +
@@ -98,6 +86,7 @@ public class LineDao {
                 (Long) result.get(0).get("LINE_ID"),
                 (String) result.get(0).get("LINE_NAME"),
                 (String) result.get(0).get("LINE_COLOR"),
+                (Integer) result.get(0).get("LINE_EXTRA_FARE"),
                 new Sections(sections));
     }
 
