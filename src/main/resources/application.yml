@@ -2,6 +2,10 @@ spring:
   profiles:
     active: local
 
+handlebars:
+  suffix: .html
+  enabled: true
+
 security:
   jwt:
     token:
