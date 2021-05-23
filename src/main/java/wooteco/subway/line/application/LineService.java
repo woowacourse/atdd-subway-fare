@@ -3,6 +3,7 @@ package wooteco.subway.line.application;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import wooteco.subway.exception.badrequest.DuplicateNameException;
+import wooteco.subway.exception.notfound.LineNotFoundException;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
@@ -63,12 +64,16 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        return lineDao.findById(id);
+        return lineDao.findById(id).orElseThrow(LineNotFoundException::new);
     }
 
     public LineNameColorResponse updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
-        return new LineNameColorResponse(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor());
+        try {
+            lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+            return new LineNameColorResponse(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor());
+        } catch (DuplicateKeyException e) {
+            throw new DuplicateNameException("수정하려는 이름이 이미 존재하는 노선 이름입니다.");
+        }
     }
 
     public void deleteLineById(Long id) {

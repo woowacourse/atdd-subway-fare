@@ -1,5 +1,6 @@
 package wooteco.subway.line.dao;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -9,10 +10,7 @@ import wooteco.subway.line.domain.Sections;
 import wooteco.subway.station.domain.Station;
 
 import javax.sql.DataSource;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
@@ -37,19 +35,23 @@ public class LineDao {
         return new Line(lineId, line.getName(), line.getColor());
     }
 
-    public Line findById(Long id) {
-        String sql = "select L.id as line_id, L.name as line_name, L.color as line_color, " +
-                "S.id as section_id, S.distance as section_distance, " +
-                "UST.id as up_station_id, UST.name as up_station_name, " +
-                "DST.id as down_station_id, DST.name as down_station_name " +
-                "from LINE L \n" +
-                "left outer join SECTION S on L.id = S.line_id " +
-                "left outer join STATION UST on S.up_station_id = UST.id " +
-                "left outer join STATION DST on S.down_station_id = DST.id " +
-                "WHERE L.id = ?";
+    public Optional<Line> findById(Long id) {
+        try {
+            String sql = "select L.id as line_id, L.name as line_name, L.color as line_color, " +
+                    "S.id as section_id, S.distance as section_distance, " +
+                    "UST.id as up_station_id, UST.name as up_station_name, " +
+                    "DST.id as down_station_id, DST.name as down_station_name " +
+                    "from LINE L \n" +
+                    "left outer join SECTION S on L.id = S.line_id " +
+                    "left outer join STATION UST on S.up_station_id = UST.id " +
+                    "left outer join STATION DST on S.down_station_id = DST.id " +
+                    "WHERE L.id = ?";
 
-        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, new Object[]{id});
-        return mapLine(result);
+            List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, new Object[]{id});
+            return Optional.of(mapLine(result));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     public void update(Line newLine) {
@@ -76,7 +78,7 @@ public class LineDao {
 
     private Line mapLine(List<Map<String, Object>> result) {
         if (result.size() == 0) {
-            throw new RuntimeException();
+            throw new EmptyResultDataAccessException(result.size());
         }
 
         List<Section> sections = extractSections(result);
