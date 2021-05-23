@@ -23,6 +23,6 @@ public class PathController {
     public ResponseEntity<PathResponse> findPath(@AuthorizationMemberPrincipal LoginMember loginMember,
                                                  @RequestParam Long source, @RequestParam Long target) {
 
-        return ResponseEntity.ok(pathService.findPath(source, target));
+        return ResponseEntity.ok(pathService.findPath(loginMember, source, target));
     }
 }

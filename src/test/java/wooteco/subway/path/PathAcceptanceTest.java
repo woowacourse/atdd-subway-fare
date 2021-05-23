@@ -88,7 +88,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .header("authorization", tokenResponse.getAccessToken())
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .when().get("/paths?source={sourceId}&target={targetId}", source, target)
                 .then().log().all()
                 .extract();
@@ -150,13 +150,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
         적절한_경로_응답됨(response, Lists.newArrayList(강남역, 양재역, 잠실역, 석촌역));
         총_요금이_응답됨(response, 3450);
     }
-    
+
     @Test
     @DisplayName("로그인이 되어 있는 경우 경로 조회 - 성인")
     public void calculateFareByAgeAdult() {
         //given
         회원_등록되어_있음("adult@adult", "adult", 19);
-        TokenResponse tokenResponse = 로그인되어_있음("teenager@teenager", "teenager");
+        TokenResponse tokenResponse = 로그인되어_있음("adult@adult", "adult");
 
         //when
         ExtractableResponse<Response> response = 거리_경로_조회_요청(강남역.getId(), 석촌역.getId(), tokenResponse);
@@ -186,7 +186,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public void calculateFareByAgeKids() {
         //given
         회원_등록되어_있음("kids@kids", "kids", 12);
-        TokenResponse tokenResponse = 로그인되어_있음("teenager@teenager", "teenager");
+        TokenResponse tokenResponse = 로그인되어_있음("kids@kids", "kids");
 
         //when
         ExtractableResponse<Response> response = 거리_경로_조회_요청(강남역.getId(), 석촌역.getId(), tokenResponse);

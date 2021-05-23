@@ -19,21 +19,26 @@ public class PathService {
     private LineService lineService;
     private StationService stationService;
     private PathFinder pathFinder;
+    private FarePrincipalFinder farePrincipalFinder;
 
-    public PathService(LineService lineService, StationService stationService, PathFinder pathFinder) {
+    public PathService(LineService lineService, StationService stationService, PathFinder pathFinder,
+                       FarePrincipalFinder farePrincipalFinder) {
+
         this.lineService = lineService;
         this.stationService = stationService;
         this.pathFinder = pathFinder;
+        this.farePrincipalFinder = farePrincipalFinder;
     }
 
-    public PathResponse findPath(Long source, Long target) {
+    public PathResponse findPath(LoginMember loginMember, Long source, Long target) {
         try {
             List<Line> lines = lineService.findLines();
             Station sourceStation = stationService.findStationById(source);
             Station targetStation = stationService.findStationById(target);
             SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
 
-            return PathResponseAssembler.assemble(subwayPath);
+            return PathResponseAssembler.assemble(subwayPath,
+                    farePrincipalFinder.findFarePrincipal(loginMember.getAge()));
         } catch (Exception e) {
             throw new InvalidPathException();
         }
