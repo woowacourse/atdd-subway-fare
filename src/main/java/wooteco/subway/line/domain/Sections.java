@@ -1,5 +1,6 @@
 package wooteco.subway.line.domain;
 
+import wooteco.subway.line.exception.InvalidSectionException;
 import wooteco.subway.station.domain.Station;
 
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class Sections {
     private void checkAlreadyExisted(Section section) {
         List<Station> stations = getStations();
         if (!stations.contains(section.getUpStation()) && !stations.contains(section.getDownStation())) {
-            throw new RuntimeException();
+            throw new InvalidSectionException("[ERROR] 두 지하철 역 모두 해당 노선에 존재하지 않습니다.");
         }
     }
 
@@ -48,7 +49,7 @@ public class Sections {
         List<Station> stations = getStations();
         List<Station> stationsOfNewSection = Arrays.asList(section.getUpStation(), section.getDownStation());
         if (stations.containsAll(stationsOfNewSection)) {
-            throw new RuntimeException();
+            throw new InvalidSectionException("[ERROR] 두 지하철 역 모두 해당 노선에 존재합니다.");
         }
     }
 
@@ -68,7 +69,7 @@ public class Sections {
 
     private void replaceSectionWithUpStation(Section newSection, Section existSection) {
         if (existSection.getDistance() <= newSection.getDistance()) {
-            throw new RuntimeException();
+            throw new InvalidSectionException("[ERROR] 새로운 구간의 거리는 기존 구간의 거리보다 짧아야합니다.");
         }
         this.sections.add(new Section(existSection.getUpStation(), newSection.getUpStation(), existSection.getDistance() - newSection.getDistance()));
         this.sections.remove(existSection);
@@ -76,7 +77,7 @@ public class Sections {
 
     private void replaceSectionWithDownStation(Section newSection, Section existSection) {
         if (existSection.getDistance() <= newSection.getDistance()) {
-            throw new RuntimeException();
+            throw new InvalidSectionException("[ERROR] 새로운 구간의 거리는 기존 구간의 거리보다 짧아야합니다.");
         }
         this.sections.add(new Section(newSection.getDownStation(), existSection.getDownStation(), existSection.getDistance() - newSection.getDistance()));
         this.sections.remove(existSection);
@@ -100,6 +101,27 @@ public class Sections {
         return stations;
     }
 
+    public List<Section> getSortedSections() {
+        if (sections.isEmpty()) {
+            return Arrays.asList();
+        }
+
+        List<Section> sortedSection = new ArrayList<>();
+        Section upEndSection = findUpEndSection();
+
+        sortedSection.add(upEndSection);
+        for (int i = 0; i < sections.size() - 1; i++) {
+            Section lastSection = sortedSection.get(sortedSection.size() - 1);
+            for (Section section : sections) {
+                if (lastSection.isConnectedBetweenDownAndUp(section)) {
+                    sortedSection.add(section);
+                    break;
+                }
+            }
+        }
+        return sortedSection;
+    }
+
     private Section findUpEndSection() {
         List<Station> downStations = this.sections.stream()
                 .map(it -> it.getDownStation())
@@ -120,7 +142,7 @@ public class Sections {
 
     public void removeStation(Station station) {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new InvalidSectionException("[ERROR] 구간이 하나 이상일 때 삭제 가능합니다.");
         }
 
         Optional<Section> upSection = sections.stream()

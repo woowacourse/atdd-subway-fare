@@ -4,7 +4,9 @@ import com.google.common.collect.Lists;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -55,6 +57,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_구간_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
     }
 
+    @Disabled
     @DisplayName("두 역의 최단 거리 경로를 조회한다.")
     @Test
     void findPathByDistance() {

@@ -30,7 +30,7 @@ public class SectionResponse {
     }
 
     public static List<SectionResponse> listOf(Line line) {
-        return line.getSections().getSections()
+        return line.getSections().getSortedSections()
             .stream()
             .map(it -> of(it))
             .collect(Collectors.toList());
