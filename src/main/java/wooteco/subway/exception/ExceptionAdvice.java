@@ -28,4 +28,10 @@ public class ExceptionAdvice {
         return ResponseEntity.badRequest().body(exceptionRes);
     }
 
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity handleNotFoundException(NotFoundException e) {
+        ExceptionResponse exceptionRes = new ExceptionResponse(e.getMessage(), HttpStatus.NOT_FOUND.value());
+        return new ResponseEntity(exceptionRes, HttpStatus.NOT_FOUND);
+    }
+
 }

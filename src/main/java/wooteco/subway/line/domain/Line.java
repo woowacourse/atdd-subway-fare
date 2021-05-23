@@ -71,4 +71,8 @@ public class Line {
     public List<Station> getStations() {
         return sections.getStations();
     }
+
+    public Section findSectionByIds(Long upStationId, Long downStationId) {
+        return sections.findSectionByIds(upStationId, downStationId);
+    }
 }
