@@ -5,6 +5,7 @@ public class LineRequest {
     private String color;
     private Long upStationId;
     private Long downStationId;
+    private int extraFare;
     private int distance;
 
     public LineRequest() {
@@ -15,6 +16,15 @@ public class LineRequest {
         this.color = color;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
+        this.distance = distance;
+    }
+
+    public LineRequest(String name, String color, Long upStationId, Long downStationId, int extraFare, int distance) {
+        this.name = name;
+        this.color = color;
+        this.upStationId = upStationId;
+        this.downStationId = downStationId;
+        this.extraFare = extraFare;
         this.distance = distance;
     }
 
@@ -36,5 +46,9 @@ public class LineRequest {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 }

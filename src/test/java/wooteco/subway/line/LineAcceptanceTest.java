@@ -35,8 +35,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         강남역 = 지하철역_등록되어_있음("강남역");
         downStation = 지하철역_등록되어_있음("광교역");
 
-        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 10);
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 15);
+        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 900,10);
+        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 900,15);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -49,17 +49,14 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_생성됨(response);
     }
 
-    @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
+    @DisplayName("지하철 노선에 추가요금을 포함하여 생성한다.")
     @Test
-    void createLineWithDuplicateName() {
-        // given
-        지하철_노선_등록되어_있음(lineRequest1);
-
+    void createLineWithExtraFare() {
         // when
         ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1);
 
         // then
-        지하철_노선_생성_실패됨(response);
+        지하철_노선_생성됨(response);
     }
 
     @DisplayName("지하철 노선 목록을 조회한다.")
