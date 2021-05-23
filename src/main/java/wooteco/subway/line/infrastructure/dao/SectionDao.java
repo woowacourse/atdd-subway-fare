@@ -1,5 +1,7 @@
 package wooteco.subway.line.infrastructure.dao;
 
+import static java.util.stream.Collectors.toList;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -11,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import wooteco.subway.line.domain.Sections;
 
 @Repository
 public class SectionDao {
@@ -49,8 +52,28 @@ public class SectionDao {
                     params.put("distance", section.getDistance());
                     return params;
                 })
-                .collect(Collectors.toList());
+                .collect(toList());
 
         simpleJdbcInsert.executeBatch(batchValues.toArray(new Map[sections.size()]));
+    }
+
+    public void update(List<Section> sections) {
+        String sql = "update section set up_station_id = ?, "
+            + "down_station_id = ?, "
+            + "distance = ?"
+            + "where id = ?";
+
+        List<Object[]> params = sections.stream().map(
+            section -> {
+                Long upStationId = section.getUpStation().getId();
+                Long downStationId = section.getDownStation().getId();
+                int distance = section.getDistance();
+                Long id = section.getId();
+
+                return new Object[]{upStationId, downStationId, distance, id};
+            }
+        ).collect(toList());
+
+        jdbcTemplate.batchUpdate(sql, params);
     }
 }

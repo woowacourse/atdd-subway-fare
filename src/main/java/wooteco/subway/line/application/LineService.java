@@ -8,7 +8,13 @@ import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.infrastructure.dao.LineDao;
 import wooteco.subway.line.infrastructure.dao.SectionDao;
-import wooteco.subway.line.ui.dto.*;
+import wooteco.subway.line.ui.dto.LineRequest;
+import wooteco.subway.line.ui.dto.LineResponse;
+import wooteco.subway.line.ui.dto.LineWithTransferLineResponse;
+import wooteco.subway.line.ui.dto.SectionRequest;
+import wooteco.subway.line.ui.dto.SectionsOfLineResponse;
+import wooteco.subway.line.ui.dto.SectionsResponse;
+import wooteco.subway.line.ui.dto.StationOfLineResponse;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
@@ -105,17 +111,18 @@ public class LineService {
     private LineWithTransferLineResponse createLineResponse(Line line) {
         List<StationOfLineResponse> stationOfLineResponses = createStationOfLineResponses(line);
         return new LineWithTransferLineResponse(
-                line.getId(),
-                line.getColor(),
-                line.getName(),
-                stationOfLineResponses
+            line.getId(),
+            line.getColor(),
+            line.getName(),
+            stationOfLineResponses
         );
     }
 
     private List<StationOfLineResponse> createStationOfLineResponses(Line line) {
         return line.getStations().stream()
-                .map(station -> new StationOfLineResponse(station, findTransferLinesOfStation(station, line)))
-                .collect(toList());
+            .map(station -> new StationOfLineResponse(station,
+                findTransferLinesOfStation(station, line)))
+            .collect(toList());
     }
 
     private List<Line> findTransferLinesOfStation(Station station, Line targetLine) {
@@ -126,15 +133,16 @@ public class LineService {
             .collect(toList());
     }
 
-    public void updateSectionDistance(Long lineId, SectionDistanceRequest sectionDistanceRequest) {
+    public void updateSectionDistance(Long lineId, Long upStationId, Long downStationId,
+        int distance) {
         Line line = findLineById(lineId);
 
         line.updateSectionDistance(
-                sectionDistanceRequest.getUpStationId(),
-                sectionDistanceRequest.getDownStationId(),
-                sectionDistanceRequest.getDistance()
+            upStationId,
+            downStationId,
+            distance
         );
 
-        lineDao.update(line);
+        sectionDao.update(line.getSections().getSections());
     }
 }

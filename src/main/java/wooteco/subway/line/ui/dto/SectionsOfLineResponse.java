@@ -1,5 +1,6 @@
 package wooteco.subway.line.ui.dto;
 
+import java.beans.ConstructorProperties;
 import java.util.List;
 
 public class SectionsOfLineResponse {
@@ -10,6 +11,17 @@ public class SectionsOfLineResponse {
 
     private final List<StationOfLineResponse> stations;
     private final List<SectionResponse> sections;
+
+    @ConstructorProperties({"id", "color", "name", "stations", "sections"})
+    public SectionsOfLineResponse(Long id, String color, String name,
+        List<StationOfLineResponse> stations,
+        List<SectionResponse> sections) {
+        this.id = id;
+        this.color = color;
+        this.name = name;
+        this.stations = stations;
+        this.sections = sections;
+    }
 
     public SectionsOfLineResponse(LineWithTransferLineResponse lineResponse,
         SectionsResponse sectionsResponse) {
