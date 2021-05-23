@@ -75,7 +75,20 @@ public class StationAcceptanceTest extends AcceptanceTest {
         // then
         지하철역_목록_응답됨(response);
         지하철역_목록_포함됨(역삼응답, Arrays.asList(new StationResponse(1L, 역삼역)));
+    }
 
+    @DisplayName("기존에 존재하는 지하철역 이름으로 지하철역 이름을 수정한다.")
+    @Test
+    void testChangeStationWhenAlreadyExistsName() {
+        // given
+        지하철역_등록되어_있음(강남역);
+        지하철역_등록되어_있음(역삼역);
+
+        // when
+        ExtractableResponse<Response> response = 지하철역_수정_요청(역삼역);
+
+        // then
+        지하철역_생성_실패됨(response);
     }
 
     @DisplayName("지하철역을 제거한다.")

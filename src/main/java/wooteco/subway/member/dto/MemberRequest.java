@@ -4,13 +4,14 @@ import wooteco.subway.member.domain.Member;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 public class MemberRequest {
     @NotBlank
     private String email;
     @NotBlank
     private String password;
-    @NotNull
+    @NotNull @Positive
     private Integer age;
 
     public MemberRequest() {
