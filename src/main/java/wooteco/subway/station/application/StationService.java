@@ -37,4 +37,17 @@ public class StationService {
     public void deleteStationById(Long id) {
         stationDao.deleteById(id);
     }
+
+    public void updateStation(Long id, StationRequest stationRequest) {
+        validateStationRequest(id, stationRequest);
+        Station station = findStationById(id);
+        Station newStation = new Station(station.getId(), stationRequest.getName());
+        stationDao.updateStation(newStation);
+    }
+
+    private void validateStationRequest(Long id, StationRequest stationRequest) {
+        if (stationDao.existsByNameExceptId(id, stationRequest.getName())) {
+            throw new IllegalArgumentException("이미 존재하는 이름입니다.");
+        }
+    }
 }

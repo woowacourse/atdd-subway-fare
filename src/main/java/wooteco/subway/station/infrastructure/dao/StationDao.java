@@ -50,4 +50,14 @@ public class StationDao {
         String sql = "select * from station where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
+
+    public void updateStation(Station station) {
+        String sql = "update station set name = ? where id = ?";
+        jdbcTemplate.update(sql, station.getName(), station.getId());
+    }
+
+    public boolean existsByNameExceptId(Long id, String name) {
+        String sql = "select exists (select * from station where id <> ? and name = ?)";
+        return jdbcTemplate.queryForObject(sql, boolean.class, id, name);
+    }
 }
