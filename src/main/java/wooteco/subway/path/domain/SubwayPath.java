@@ -26,6 +26,12 @@ public class SubwayPath {
         return stations;
     }
 
+    public int calculateFare() {
+        int distance = calculateDistance();
+
+        return distanceAdditionalFare(distance) + lineAdditionalFare();
+    }
+
     public int calculateDistance() {
         if (distance != null) {
             return distance;
@@ -35,13 +41,6 @@ public class SubwayPath {
                 .mapToInt(it -> it.getSection().getDistance())
                 .sum();
         return distance;
-    }
-
-    public int calculateFare() {
-        int distance = calculateDistance();
-
-        return distanceAdditionalFare(distance)
-                + lineAdditionalFare();
     }
 
     private int distanceAdditionalFare(int distance) {
@@ -64,16 +63,18 @@ public class SubwayPath {
 
     private int lineAdditionalFare() {
         return sectionEdges.stream()
-                .map(sectionEdge -> sectionEdge.getLine().getExtraFare())
-                .max(Integer::compare)
+                .mapToInt(sectionEdge -> sectionEdge.getLine().getExtraFare())
+                .max()
                 .orElse(0);
     }
 
     private int calculateAdditionalFareOver10km(int distance) {
-        return (int) ((Math.ceil((distance - DEFAULT_DISTANCE - 1) / 5) + 1) * 100);
+        int additionalDistance = distance - DEFAULT_DISTANCE - 1;
+        return (additionalDistance / 5 + 1) * 100;
     }
 
     private int calculateAdditionalFareOver50km(int distance) {
-        return (int) ((Math.ceil((distance - OVER_LIMIT_DISTANCE - 1) / 8) + 1) * 100);
+        int additionalDistance = distance - OVER_LIMIT_DISTANCE - 1;
+        return (additionalDistance / 8 + 1) * 100;
     }
 }
