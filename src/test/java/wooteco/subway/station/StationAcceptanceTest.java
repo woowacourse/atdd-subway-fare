@@ -1,6 +1,7 @@
 package wooteco.subway.station;
 
 import io.restassured.RestAssured;
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,6 +58,20 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 지하철역_수정_요청(StationResponse response, StationRequest params) {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        TokenResponse tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
+
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().put("/api/stations/" + response.getId())
+                .then().log().all()
+                .extract();
+    }
+
     public static ExtractableResponse<Response> 지하철역_제거_요청(StationResponse stationResponse) {
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
         TokenResponse tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
@@ -80,6 +95,17 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철역_목록_응답됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 지하철역_수정됨(ExtractableResponse<Response> response, StationRequest params) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        StationResponse updatedStation = response.jsonPath().getObject(".", StationResponse.class);
+
+        assertThat(updatedStation)
+                .usingRecursiveComparison()
+                .ignoringFields("id")
+                .isEqualTo(params);
     }
 
     public static void 지하철역_삭제됨(ExtractableResponse<Response> response) {
@@ -139,6 +165,20 @@ public class StationAcceptanceTest extends AcceptanceTest {
         // then
         지하철역_목록_응답됨(response);
         지하철역_목록_포함됨(response, Arrays.asList(stationResponse1, stationResponse2));
+    }
+
+    @DisplayName("지하철역을 수정한다.")
+    @Test
+    void updateStation() {
+        // given
+        StationResponse 강남역 = 지하철역_등록되어_있음(StationAcceptanceTest.강남역);
+        StationRequest 역삼역 = new StationRequest("역삼역");
+
+        // when
+        ExtractableResponse<Response> response = 지하철역_수정_요청(강남역, 역삼역);
+
+        // then
+        지하철역_수정됨(response, 역삼역);
     }
 
     @DisplayName("지하철역을 제거한다.")
