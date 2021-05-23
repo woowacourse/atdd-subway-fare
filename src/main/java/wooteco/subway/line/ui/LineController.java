@@ -3,6 +3,7 @@ package wooteco.subway.line.ui;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.line.application.LineService;
+import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.ui.dto.LineRequest;
 import wooteco.subway.line.ui.dto.LineResponse;
 import wooteco.subway.line.ui.dto.SectionRequest;
@@ -48,6 +49,11 @@ public class LineController {
     public ResponseEntity deleteLine(@PathVariable Long id) {
         lineService.deleteLineById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{lineId}/sections")
+    public ResponseEntity<LineService.SectionsOfLineResponse> getSectionsOfLine(@PathVariable Long lineId) {
+        return ResponseEntity.ok(lineService.getSectionsResponseOfLine(lineId));
     }
 
     @PostMapping("/{lineId}/sections")
