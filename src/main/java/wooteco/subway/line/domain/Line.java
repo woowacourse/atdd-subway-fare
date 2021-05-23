@@ -71,4 +71,11 @@ public class Line {
     public List<Station> getStations() {
         return sections.getStations();
     }
+
+    public boolean isExistsStation(Station station) {
+        List<Station> stations = sections.getStations();
+        return stations
+            .stream()
+            .anyMatch(it -> it.equals(station));
+    }
 }

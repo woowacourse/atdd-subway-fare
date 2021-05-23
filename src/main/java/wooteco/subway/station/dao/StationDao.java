@@ -41,6 +41,11 @@ public class StationDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
+    public boolean existsByName(String name) {
+        String sql = "select exists (select * from STATION where name = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, name);
+    }
+
     public void deleteById(Long id) {
         String sql = "delete from STATION where id = ?";
         jdbcTemplate.update(sql, id);

@@ -25,6 +25,10 @@ public class AuthInterceptor implements HandlerInterceptor {
             return true;
         }
 
+        if (request.getMethod().equals(HttpMethod.GET.name())) {
+            return true;
+        }
+
         String credentials = AuthorizationExtractor.extract(request);
         LoginMember member = authService.findMemberByToken(credentials);
         if (member.getId() == null) {

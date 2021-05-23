@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class StationController {
     private StationService stationService;
