@@ -88,6 +88,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_노선_응답됨(response, lineResponse);
+        assertThat(response.as(LineResponse.class).getDistance()).isEqualTo(10);
     }
 
     @DisplayName("지하철 노선을 수정한다.")

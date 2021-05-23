@@ -11,19 +11,22 @@ public class LineResponse {
     private String name;
     private String color;
     private List<StationResponse> stations;
+    private Integer distance;
 
-    public LineResponse(Long id, String name, String color, List<StationResponse> stations) {
+    public LineResponse(Long id, String name, String color, List<StationResponse> stations, Integer distance) {
         this.id = id;
         this.name = name;
         this.color = color;
         this.stations = stations;
+        this.distance = distance;
     }
 
     public static LineResponse of(Line line) {
+        int distance = line.getDistance();
         List<StationResponse> stations = line.getStations().stream()
                 .map(it -> StationResponse.of(it))
                 .collect(Collectors.toList());
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), stations);
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), stations, distance);
     }
 
     public static List<LineResponse> listOf(List<Line> lines) {
@@ -46,5 +49,9 @@ public class LineResponse {
 
     public List<StationResponse> getStations() {
         return stations;
+    }
+
+    public Integer getDistance() {
+        return distance;
     }
 }

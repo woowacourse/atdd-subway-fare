@@ -75,4 +75,10 @@ public class Line {
     public Section findSectionByIds(Long upStationId, Long downStationId) {
         return sections.findSectionByIds(upStationId, downStationId);
     }
+
+    public int getDistance() {
+        return sections.getSections().stream()
+                .mapToInt(Section::getDistance)
+                .sum();
+    }
 }
