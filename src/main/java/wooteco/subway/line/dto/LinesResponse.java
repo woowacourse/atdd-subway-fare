@@ -14,6 +14,7 @@ public class LinesResponse {
     private List<StationResponse> stations;
     private List<SectionResponse> sections;
 
+
     public LinesResponse(final Long id, final String name, final String color, final int distance, final List<StationResponse> stations, final List<SectionResponse> sections) {
         this.id = id;
         this.name = name;
@@ -25,15 +26,16 @@ public class LinesResponse {
 
     public static LinesResponse of(Line line) {
         List<StationResponse> stations = line.getStations().stream()
-                .map(it -> StationResponse.of(it))
+                .map(StationResponse::of)
                 .collect(Collectors.toList());
 
         List<SectionResponse> sections = line.sections().stream()
-                .map(it -> SectionResponse.of(it))
+                .map(SectionResponse::of)
                 .collect(Collectors.toList());
 
         // TODO : 전체 거리를 구하는 메소드 호출
-        return new LinesResponse(line.getId(), line.getName(), line.getColor(), 0 , stations, sections);
+        // DONE
+        return new LinesResponse(line.getId(), line.getName(), line.getColor(), line.getDistance() , stations, sections);
     }
 
     public static List<LinesResponse> listOf(List<Line> lines) {
@@ -54,7 +56,15 @@ public class LinesResponse {
         return color;
     }
 
+    public int getDistance() {
+        return distance;
+    }
+
     public List<StationResponse> getStations() {
         return stations;
+    }
+
+    public List<SectionResponse> getSections() {
+        return sections;
     }
 }

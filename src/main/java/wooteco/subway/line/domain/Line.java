@@ -47,7 +47,13 @@ public class Line {
         return sections;
     }
 
-    public List<Section> sections(){
+    public int getDistance() {
+        return sections.getSections().stream()
+                .mapToInt(Section::getDistance)
+                .sum();
+    }
+
+    public List<Section> sections() {
         return sections.getSections();
     }
 
