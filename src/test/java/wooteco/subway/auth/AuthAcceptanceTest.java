@@ -18,9 +18,6 @@ import static wooteco.subway.member.MemberAcceptanceTest.회원_생성을_요청
 import static wooteco.subway.member.MemberAcceptanceTest.회원_정보_조회됨;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
-    private static final String EMAIL = "email@email.com";
-    private static final String PASSWORD = "password";
-    private static final Integer AGE = 20;
 
     @DisplayName("Bearer Auth")
     @Test
