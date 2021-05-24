@@ -1,7 +1,7 @@
 ## 노선별 추가 요금 기능 구현
-- [ ] 노선에 extraFare 추가
-- [ ] 최종 요금에 extraFare 계산
-- [ ] 여러 노선 환승 시 가장 높은 extraFare 적용
+- [x] 노선에 extraFare 추가
+- [x] 최종 요금에 extraFare 계산
+- [x] 여러 노선 환승 시 가장 높은 extraFare 적용
 
 ## 접근 제어 기능 구현
 - [ ] 경로 조회 시 비로그인 사용자 처리

@@ -11,3 +11,11 @@ public class SubwayApplication {
 	}
 
 }
+
+
+/**
+ stations의 리스트 -> 1 -> 4 -> 3
+ extraprice <-
+ 쿼리 1 -> 4 Section -> LineId -> extraprice (upstation, downstation 기반으로 해당 라인의 추가 요금)
+ max(extrapirce)
+ **/

@@ -31,6 +31,7 @@ public class PathService {
             List<Line> lines = lineService.findLines();
             Station sourceStation = stationService.findStationById(source);
             Station targetStation = stationService.findStationById(target);
+
             SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
 
             return PathResponseAssembler.assemble(subwayPath);

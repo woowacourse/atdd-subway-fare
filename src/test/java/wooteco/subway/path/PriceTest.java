@@ -2,10 +2,17 @@ package wooteco.subway.path;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import wooteco.subway.line.domain.Line;
+import wooteco.subway.line.domain.Section;
+import wooteco.subway.line.domain.Sections;
 import wooteco.subway.path.domain.Price;
+import wooteco.subway.station.domain.Station;
 
 public class PriceTest {
 
@@ -31,5 +38,15 @@ public class PriceTest {
         Price price = new Price(0);
         price.calculatePrice(49);
         assertThat(price.getPrice()).isEqualTo(2050);
+    }
+
+    @DisplayName("환승이 없는 경우에 요금이 추가되는 경우")
+    @Test
+    void oneLineExtraPrice(){
+        Section section = new Section(1L,new Station(), new Station(),10);
+        Sections sections = new Sections(Collections.singletonList(section));
+        new Line(1L,"testLine1","black",sections,900 );
+
+
     }
 }

@@ -35,4 +35,8 @@ public class Price {
     public int getPrice() {
         return price;
     }
+
+    public void addExtraPrice(int extraPrice) {
+        this.price += extraPrice;
+    }
 }

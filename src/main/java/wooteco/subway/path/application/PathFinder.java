@@ -34,6 +34,7 @@ public class PathFinder {
 
     private SubwayPath convertSubwayPath(GraphPath graphPath) {
         List<SectionEdge> edges = (List<SectionEdge>) graphPath.getEdgeList().stream().collect(Collectors.toList());
+        //SectionEdge -> Line, Section: line, extrafare, stations
         List<Station> stations = graphPath.getVertexList();
         return new SubwayPath(edges, stations);
     }
