@@ -28,7 +28,8 @@ public class StationService {
     }
 
     public Station findStationById(Long id) {
-        return stationDao.findById(id);
+        return stationDao.findById(id)
+                .orElseThrow(NotFoundStationException::new);
     }
 
     public List<StationResponse> findAllStationResponses() {
@@ -41,5 +42,20 @@ public class StationService {
 
     public void deleteStationById(Long id) {
         stationDao.deleteById(id);
+    }
+
+    public StationResponse updateStationById(Long id, StationRequest stationRequest) {
+       findStationById(id);
+
+        stationDao.findByName(stationRequest.getName())
+                .filter(station -> station.getName().equals(stationRequest.getName()) && !station.getId().equals(id))
+                .ifPresent(station -> {
+                    throw new DuplicateStationException();
+                });
+
+        Station newStation = new Station(id, stationRequest.getName());
+        stationDao.update(id, newStation);
+
+        return StationResponse.of(findStationById(id));
     }
 }

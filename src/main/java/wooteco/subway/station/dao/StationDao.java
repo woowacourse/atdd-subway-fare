@@ -48,9 +48,14 @@ public class StationDao {
         jdbcTemplate.update(sql, id);
     }
 
-    public Station findById(Long id) {
+    public Optional<Station> findById(Long id) {
         String sql = "select * from STATION where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, id));
+        } catch (DataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     public Optional<Station> findByName(String name) {
@@ -61,5 +66,10 @@ public class StationDao {
         } catch (DataAccessException e) {
             return Optional.empty();
         }
+    }
+
+    public void update(Long id, Station newStation) {
+        String sql = "update STATION set name = ? where id = ?";
+        jdbcTemplate.update(sql, newStation.getName(), id);
     }
 }
