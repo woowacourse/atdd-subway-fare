@@ -13,7 +13,6 @@ import wooteco.subway.station.ui.dto.LineResponse;
 import wooteco.subway.station.ui.dto.StationRequest;
 import wooteco.subway.station.ui.dto.StationResponse;
 
-import javax.print.attribute.standard.Media;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;

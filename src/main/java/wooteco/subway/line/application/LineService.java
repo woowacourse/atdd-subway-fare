@@ -2,6 +2,7 @@ package wooteco.subway.line.application;
 
 import static java.util.stream.Collectors.toList;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import wooteco.subway.line.domain.Line;
@@ -144,5 +145,13 @@ public class LineService {
         );
 
         sectionDao.update(line.getSections().getSections());
+    }
+
+    public List<LineWithTransferLineResponse> findMap() {
+        List<Line> lines = findLines();
+
+        return lines.stream()
+                .map(this::createLineResponse)
+                .collect(toList());
     }
 }
