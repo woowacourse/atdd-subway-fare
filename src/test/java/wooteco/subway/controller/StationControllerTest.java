@@ -15,8 +15,7 @@ import wooteco.subway.station.ui.StationController;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.hamcrest.Matchers.hasEntry;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
@@ -75,17 +74,12 @@ public class StationControllerTest extends ControllerTest {
 
         given(stationService.findAllStationResponses()).willReturn(stationResponses);
 
-        /*
-         * 수정 필요
-         */
         mockMvc.perform(get("/stations"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.*", hasSize(5)))
-                .andExpect(jsonPath("$.*", hasEntry("1L", "테스트1")))
-                .andExpect(jsonPath("$.*", hasEntry("2L", "테스트2")))
-                .andExpect(jsonPath("$.*", hasEntry("3L", "테스트3")))
-                .andExpect(jsonPath("$.*", hasEntry("4L", "테스트4")))
-                .andExpect(jsonPath("$.*", hasEntry("5L", "테스트5")))
+                .andExpect(jsonPath("$.*").isArray())
+                .andExpect(jsonPath("$.*.name").value(Matchers.containsInAnyOrder("테스트1", "테스트2", "테스트3", "테스트4",
+                        "테스트5")))
                 .andDo(print())
                 .andDo(document("station-find"));
     }
