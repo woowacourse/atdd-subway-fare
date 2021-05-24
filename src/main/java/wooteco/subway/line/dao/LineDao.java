@@ -108,4 +108,17 @@ public class LineDao {
     public void deleteById(Long id) {
         jdbcTemplate.update("delete from Line where id = ?", id);
     }
+
+    public List<Line> findIncludingStation(Long stationId, Long lineId) {
+        String sql = "select id, name, color from LINE where id in (" +
+                "select line_id from SECTION where up_station_id = ? or down_station_id = ?) " +
+                "and id != ?";
+
+        return jdbcTemplate.query(sql,
+                                    (rs, rowNum) -> new Line(
+                                            rs.getLong("id"),
+                                            rs.getString("name"),
+                                            rs.getString("color")),
+                                    stationId, stationId, lineId);
+    }
 }

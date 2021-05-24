@@ -5,15 +5,15 @@ import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
-import wooteco.subway.line.dto.LineRequest;
-import wooteco.subway.line.dto.LineResponse;
-import wooteco.subway.line.dto.SectionRequest;
-import wooteco.subway.line.dto.TotalLineResponse;
+import wooteco.subway.line.domain.Sections;
+import wooteco.subway.line.dto.*;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class LineService {
@@ -47,7 +47,7 @@ public class LineService {
         List<Line> persistLines = findLines();
         return persistLines.stream()
                 .map(TotalLineResponse::of)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     public List<Line> findLines() {
@@ -90,4 +90,29 @@ public class LineService {
         sectionDao.insertSections(line);
     }
 
+    public List<LineMapResponse> findLineMapResponses() {
+        List<LineMapResponse> lineMapResponses = new ArrayList<>();
+
+        for (Line line : lineDao.findAll()) {
+            Sections sections = line.getSections();
+            List<SectionResponse> sectionResponses = getSectionResponses(sections, line.getId());
+            LineMapResponse lineMapReponse = new LineMapResponse(line, sectionResponses);
+            lineMapResponses.add(lineMapReponse);
+        }
+        return lineMapResponses;
+    }
+
+    private List<SectionResponse> getSectionResponses(Sections sections, Long lineId) {
+        List<SectionResponse> sectionResponses = new ArrayList<>();
+
+        for (Section section : sections.getSections()) {
+            List<Line> transferLines = lineDao.findIncludingStation(section.getUpStation().getId(), lineId);
+            List<TransferLineResponse> transferLineResponses = transferLines.stream()
+                    .map(TransferLineResponse::new)
+                    .collect(toList());
+            SectionResponse sectionResponse = new SectionResponse(section, transferLineResponses);
+            sectionResponses.add(sectionResponse);
+        }
+        return sectionResponses;
+    }
 }
