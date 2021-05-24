@@ -5,26 +5,29 @@ import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
 
 public enum FarePolicy {
-    BASE_FARE(distance -> 1250, distance -> distance <= 10),
+    BASE(distance -> baseCalculate(),
+        distance -> distance <= 10
+    ),
     OVER_TEN_LESS_THAN_FIFTY(
-        distance -> 1250 + calculateOverFare(distance - 10, 5),
+        FarePolicy::overTenLessThanFiftyCalculate,
         distance -> distance > 10 && distance <= 50
     ),
     OVER_FIFTY(
-        distance -> 1250 + calculateOverFare(40, 5) + calculateOverFare(distance - 50, 8),
+        FarePolicy::overFiftyCalculate,
         distance -> distance > 50
     );
 
-    private IntFunction<Integer> fareFunction;
-    private IntPredicate distancePredicate;
+    private static final int BASE_FARE = 1250;
+    private static final int LESS_THAN_FIFTY_KM = 5;
+    private static final int OVER_FIFTY_KM = 8;
+    private static final int EXTRA_CHARGE_UNIT = 100;
+
+    private final IntFunction<Integer> fareFunction;
+    private final IntPredicate distancePredicate;
 
     FarePolicy(IntFunction<Integer> fareFunction, IntPredicate distancePredicate) {
         this.fareFunction = fareFunction;
         this.distancePredicate = distancePredicate;
-    }
-
-    private static int calculateOverFare(int distance, int km) {
-        return (int) ((Math.ceil((distance - 1) / km) + 1) * 100);
     }
 
     public static FarePolicy of(int distance) {
@@ -34,8 +37,23 @@ public enum FarePolicy {
             .orElseThrow(() -> new IllegalArgumentException("해당 거리에 해당하는 요금 정책이 없습니다."));
     }
 
+    private static int baseCalculate() {
+        return BASE_FARE;
+    }
+
+    private static int overTenLessThanFiftyCalculate(int distance) {
+        return baseCalculate() + calculateOverFare(distance - 10, LESS_THAN_FIFTY_KM);
+    }
+
+    private static int overFiftyCalculate(int distance) {
+        return overTenLessThanFiftyCalculate(50) + calculateOverFare(distance - 50, OVER_FIFTY_KM);
+    }
+
+    private static int calculateOverFare(int distance, int km) {
+        return ((distance - 1) / km + 1) * EXTRA_CHARGE_UNIT;
+    }
+
     public int calculateFare(int distance) {
         return fareFunction.apply(distance);
     }
-
 }
