@@ -3,6 +3,7 @@ package wooteco.subway.station.ui.dto;
 import java.util.List;
 
 public class StationWithLinesResponse {
+
     private final Long id;
     private final String name;
     private final List<LineResponse> lines;
@@ -24,4 +25,5 @@ public class StationWithLinesResponse {
     public List<LineResponse> getLines() {
         return lines;
     }
+
 }

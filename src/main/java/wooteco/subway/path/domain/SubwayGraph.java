@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class SubwayGraph extends WeightedMultigraph<Station, SectionEdge> {
+
     public SubwayGraph(Class edgeClass) {
         super(edgeClass);
     }
@@ -18,12 +19,12 @@ public class SubwayGraph extends WeightedMultigraph<Station, SectionEdge> {
                 .flatMap(it -> it.getStations().stream())
                 .distinct()
                 .collect(Collectors.toList())
-                .forEach(it -> addVertex(it));
+                .forEach(this::addVertex);
     }
 
     public void addEdge(List<Line> lines) {
         for (Line line : lines) {
-            line.getSections().getSections().stream()
+            line.getSections().getSections()
                     .forEach(it -> addEdge(it, line));
         }
     }
@@ -33,4 +34,5 @@ public class SubwayGraph extends WeightedMultigraph<Station, SectionEdge> {
         addEdge(section.getUpStation(), section.getDownStation(), sectionEdge);
         setEdgeWeight(sectionEdge, section.getDistance());
     }
+
 }

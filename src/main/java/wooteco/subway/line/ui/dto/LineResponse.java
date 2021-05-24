@@ -3,7 +3,6 @@ package wooteco.subway.line.ui.dto;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.station.ui.dto.StationResponse;
 
-import java.beans.ConstructorProperties;
 import java.util.List;
 import java.util.stream.Collectors;
 

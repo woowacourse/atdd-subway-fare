@@ -1,4 +1,4 @@
-package wooteco.subway.line.ui.dto;
+package wooteco.subway.line.ui.dto.sectionsofline;
 
 import java.util.ArrayList;
 import java.util.List;

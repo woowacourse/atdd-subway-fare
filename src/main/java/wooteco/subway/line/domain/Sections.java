@@ -2,24 +2,19 @@ package wooteco.subway.line.domain;
 
 import wooteco.subway.station.domain.Station;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Sections {
-    private List<Section> sections = new ArrayList<>();
 
-    public Sections() {
-    }
-
-    public List<Section> getSections() {
-        return sections;
-    }
+    private final List<Section> sections;
 
     public Sections(List<Section> sections) {
         this.sections = new ArrayList<>(sections);
+    }
+
+    public static Sections empty() {
+        return new Sections(new ArrayList<>());
     }
 
     public void addSection(Section section) {
@@ -84,7 +79,7 @@ public class Sections {
 
     public List<Station> getStations() {
         if (sections.isEmpty()) {
-            return Arrays.asList();
+            return Collections.emptyList();
         }
 
         List<Station> stations = new ArrayList<>();
@@ -102,7 +97,7 @@ public class Sections {
 
     private Section findUpEndSection() {
         List<Station> downStations = this.sections.stream()
-                .map(it -> it.getDownStation())
+                .map(Section::getDownStation)
                 .collect(Collectors.toList());
 
         return this.sections.stream()
@@ -137,8 +132,8 @@ public class Sections {
             sections.add(new Section(newUpStation, newDownStation, newDistance));
         }
 
-        upSection.ifPresent(it -> sections.remove(it));
-        downSection.ifPresent(it -> sections.remove(it));
+        upSection.ifPresent(sections::remove);
+        downSection.ifPresent(sections::remove);
     }
 
     public void updateDistance(Long upStationId, Long downStationId, Integer distance) {
@@ -169,4 +164,9 @@ public class Sections {
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 섹션을 찾을 수 없습니다."));
     }
+
+    public List<Section> getSections() {
+        return sections;
+    }
+
 }

@@ -1,7 +1,12 @@
 package wooteco.subway.auth.infrastructure;
 
+import wooteco.subway.auth.application.AuthorizationException;
+
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
+import java.util.stream.Stream;
 
 public class AuthorizationExtractor {
     public static final String AUTHORIZATION = "Authorization";
@@ -10,19 +15,42 @@ public class AuthorizationExtractor {
 
     public static String extract(HttpServletRequest request) {
         Enumeration<String> headers = request.getHeaders(AUTHORIZATION);
+
+        String token = streamOf(headers)
+                .filter(AuthorizationExtractor::isBearerType)
+                .map(AuthorizationExtractor::extractBearerTokenFromHeader)
+                .findAny()
+                .orElseThrow(AuthorizationException::new);
+
+        request.setAttribute(ACCESS_TOKEN_TYPE, BEARER_TYPE);
+
+        return token;
+    }
+
+    private static Stream<String> streamOf(Enumeration<String> headers) {
+        List<String> list = new ArrayList<>();
+
         while (headers.hasMoreElements()) {
-            String value = headers.nextElement();
-            if ((value.toLowerCase().startsWith(BEARER_TYPE.toLowerCase()))) {
-                String authHeaderValue = value.substring(BEARER_TYPE.length()).trim();
-                request.setAttribute(ACCESS_TOKEN_TYPE, value.substring(0, BEARER_TYPE.length()).trim());
-                int commaIndex = authHeaderValue.indexOf(',');
-                if (commaIndex > 0) {
-                    authHeaderValue = authHeaderValue.substring(0, commaIndex);
-                }
-                return authHeaderValue;
-            }
+            list.add(headers.nextElement());
         }
 
-        return null;
+        return list.stream();
     }
+
+    private static boolean isBearerType(String header) {
+        return header.toLowerCase().startsWith(BEARER_TYPE.toLowerCase());
+    }
+
+    private static String extractBearerTokenFromHeader(String header) {
+        String authHeaderValue = header.substring(BEARER_TYPE.length()).trim();
+
+        int commaIndex = authHeaderValue.indexOf(',');
+        if (commaIndex > 0) {
+            authHeaderValue = authHeaderValue.substring(0, commaIndex);
+        }
+
+        return authHeaderValue;
+    }
+
 }
+

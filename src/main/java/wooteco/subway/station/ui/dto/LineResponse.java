@@ -3,6 +3,7 @@ package wooteco.subway.station.ui.dto;
 import java.beans.ConstructorProperties;
 
 public class LineResponse {
+
     private final Long id;
     private final String name;
     private final String color;
@@ -25,4 +26,5 @@ public class LineResponse {
     public String getColor() {
         return color;
     }
+
 }

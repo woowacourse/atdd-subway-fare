@@ -1,11 +1,5 @@
 package wooteco.subway.station.application;
 
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
-
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 import org.springframework.stereotype.Service;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.infrastructure.dao.LineDao;
@@ -15,6 +9,13 @@ import wooteco.subway.station.ui.dto.LineResponse;
 import wooteco.subway.station.ui.dto.StationRequest;
 import wooteco.subway.station.ui.dto.StationResponse;
 import wooteco.subway.station.ui.dto.StationWithLinesResponse;
+
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 @Service
 public class StationService {
@@ -75,4 +76,5 @@ public class StationService {
             throw new IllegalArgumentException("이미 존재하는 이름입니다.");
         }
     }
+
 }

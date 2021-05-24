@@ -1,4 +1,4 @@
-package wooteco.subway.line.ui.dto;
+package wooteco.subway.line.ui.dto.sectionsofline;
 
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.station.domain.Station;
@@ -8,31 +8,27 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
-public class StationOfMapResponse {
+public class StationOfLineResponse {
 
     private final Long id;
     private final String name;
-    private final int distance;
     private final List<TransferLineResponse> transferLineResponses;
 
     @ConstructorProperties({"id", "name", "transferLineResponses"})
-    public StationOfMapResponse(Long id,
-                                String name,
-                                int distance,
-                                List<TransferLineResponse> transferLineResponses) {
+    public StationOfLineResponse(Long id, String name,
+        List<TransferLineResponse> transferLineResponses) {
         this.id = id;
         this.name = name;
-        this.distance = distance;
         this.transferLineResponses = transferLineResponses;
     }
 
-    public StationOfMapResponse(Station station, int distance, List<Line> lines) {
+    public StationOfLineResponse(Station station, List<Line> lines) {
         this.id = station.getId();
         this.name = station.getName();
-        this.distance = distance;
+
         this.transferLineResponses = lines.stream()
-                .map(TransferLineResponse::new)
-                .collect(toList());
+            .map(TransferLineResponse::new)
+            .collect(toList());
     }
 
     public Long getId() {
@@ -41,10 +37,6 @@ public class StationOfMapResponse {
 
     public String getName() {
         return name;
-    }
-
-    public int getDistance() {
-        return distance;
     }
 
     public List<TransferLineResponse> getTransferLineResponses() {

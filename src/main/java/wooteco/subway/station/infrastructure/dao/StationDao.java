@@ -13,26 +13,30 @@ import java.util.List;
 
 @Repository
 public class StationDao {
-    private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcInsert insertAction;
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<Station> rowMapper = (rs, rowNum) ->
-            new Station(
-                    rs.getLong("id"),
-                    rs.getString("name")
-            );
+    private final RowMapper<Station> rowMapper;
 
 
     public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
+
         this.insertAction = new SimpleJdbcInsert(dataSource)
                 .withTableName("station")
                 .usingGeneratedKeyColumns("id");
+
+        this.rowMapper = (rs, rowNum) ->
+                new Station(
+                        rs.getLong("id"),
+                        rs.getString("name")
+                );
     }
 
     public Station insert(Station station) {
         SqlParameterSource params = new BeanPropertySqlParameterSource(station);
         Long id = insertAction.executeAndReturnKey(params).longValue();
+
         return new Station(id, station.getName());
     }
 
@@ -58,6 +62,8 @@ public class StationDao {
 
     public boolean existsByNameExceptId(Long id, String name) {
         String sql = "select exists (select * from station where id <> ? and name = ?)";
+
         return jdbcTemplate.queryForObject(sql, boolean.class, id, name);
     }
+
 }

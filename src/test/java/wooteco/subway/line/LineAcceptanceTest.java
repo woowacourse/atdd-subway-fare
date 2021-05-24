@@ -1,15 +1,8 @@
 package wooteco.subway.line;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
-
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,10 +12,18 @@ import wooteco.subway.AcceptanceTest;
 import wooteco.subway.line.ui.dto.LineRequest;
 import wooteco.subway.line.ui.dto.LineResponse;
 import wooteco.subway.line.ui.dto.SectionResponse;
-import wooteco.subway.line.ui.dto.StationOfLineResponse;
-import wooteco.subway.line.ui.dto.StationOfSectionResponse;
+import wooteco.subway.line.ui.dto.map.StationOfSectionResponse;
+import wooteco.subway.line.ui.dto.sectionsofline.StationOfLineResponse;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.ui.dto.StationResponse;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineAcceptanceTest extends AcceptanceTest {

@@ -11,7 +11,8 @@ import wooteco.subway.path.ui.dto.PathResponse;
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class PathController {
-    private PathService pathService;
+
+    private final PathService pathService;
 
     public PathController(PathService pathService) {
         this.pathService = pathService;
@@ -21,4 +22,5 @@ public class PathController {
     public ResponseEntity<PathResponse> findPath(@RequestParam Long source, @RequestParam Long target) {
         return ResponseEntity.ok(pathService.findPath(source, target));
     }
+
 }

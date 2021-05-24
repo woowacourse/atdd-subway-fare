@@ -2,14 +2,15 @@ package wooteco.subway.member.ui.dto;
 
 import wooteco.subway.member.domain.Member;
 
+import java.beans.ConstructorProperties;
+
 public class MemberRequest {
-    private String email;
-    private String password;
-    private Integer age;
 
-    public MemberRequest() {
-    }
+    private final String email;
+    private final String password;
+    private final Integer age;
 
+    @ConstructorProperties({"email", "password", "age"})
     public MemberRequest(String email, String password, Integer age) {
         this.email = email;
         this.password = password;
@@ -31,4 +32,5 @@ public class MemberRequest {
     public Member toMember() {
         return new Member(email, password, age);
     }
+
 }

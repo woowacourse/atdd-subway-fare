@@ -5,8 +5,9 @@ import wooteco.subway.station.domain.Station;
 import java.util.List;
 
 public class SubwayPath {
-    private List<SectionEdge> sectionEdges;
-    private List<Station> stations;
+
+    private final List<SectionEdge> sectionEdges;
+    private final List<Station> stations;
 
     public SubwayPath(List<SectionEdge> sectionEdges, List<Station> stations) {
         this.sectionEdges = sectionEdges;
@@ -24,4 +25,5 @@ public class SubwayPath {
     public int calculateDistance() {
         return sectionEdges.stream().mapToInt(it -> it.getSection().getDistance()).sum();
     }
+
 }

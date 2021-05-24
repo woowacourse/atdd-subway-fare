@@ -9,16 +9,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.line.ui.dto.LineRequest;
-import wooteco.subway.line.ui.dto.StationOfLineResponse;
 import wooteco.subway.station.ui.dto.LineResponse;
 import wooteco.subway.station.ui.dto.StationRequest;
 import wooteco.subway.station.ui.dto.StationResponse;
+import wooteco.subway.station.ui.dto.StationWithLinesResponse;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import wooteco.subway.station.ui.dto.StationWithLinesResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

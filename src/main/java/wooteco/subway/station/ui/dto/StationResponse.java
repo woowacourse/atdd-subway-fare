@@ -1,15 +1,12 @@
 package wooteco.subway.station.ui.dto;
 
-import java.beans.ConstructorProperties;
-
-import java.util.ArrayList;
-import java.util.Collections;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class StationResponse {
+
     private final Long id;
     private final String name;
 
@@ -35,4 +32,5 @@ public class StationResponse {
     public String getName() {
         return name;
     }
+
 }

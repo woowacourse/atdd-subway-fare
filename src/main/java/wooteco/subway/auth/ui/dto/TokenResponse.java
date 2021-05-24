@@ -1,11 +1,11 @@
 package wooteco.subway.auth.ui.dto;
 
+import java.beans.ConstructorProperties;
+
 public class TokenResponse {
-    private String accessToken;
+    private final String accessToken;
 
-    public TokenResponse() {
-    }
-
+    @ConstructorProperties("accessToken")
     public TokenResponse(String accessToken) {
         this.accessToken = accessToken;
     }

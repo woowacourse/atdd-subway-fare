@@ -5,13 +5,11 @@ import wooteco.subway.station.domain.Station;
 import java.util.Objects;
 
 public class Section {
-    private Long id;
-    private Station upStation;
-    private Station downStation;
-    private int distance;
 
-    public Section() {
-    }
+    private final Long id;
+    private final Station upStation;
+    private final Station downStation;
+    private final int distance;
 
     public Section(Long id, Station upStation, Station downStation, int distance) {
         this.id = id;
@@ -21,9 +19,7 @@ public class Section {
     }
 
     public Section(Station upStation, Station downStation, int distance) {
-        this.upStation = upStation;
-        this.downStation = downStation;
-        this.distance = distance;
+        this(null, upStation, downStation, distance);
     }
 
     public boolean hasSameUpStationId(Long id) {

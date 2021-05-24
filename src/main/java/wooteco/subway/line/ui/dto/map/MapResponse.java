@@ -1,4 +1,4 @@
-package wooteco.subway.line.ui.dto;
+package wooteco.subway.line.ui.dto.map;
 
 import java.beans.ConstructorProperties;
 import java.util.List;
