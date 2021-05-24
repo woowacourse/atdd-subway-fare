@@ -49,9 +49,9 @@ include::{snippets}/line-findbyid/http-response.adoc[]
 
 === 노선 수정
 === Request
-include::{snippets}/lines-update/http-request.adoc[]
+include::{snippets}/line-update/http-request.adoc[]
 === Response
-include::{snippets}/lines-update/http-response.adoc[]
+include::{snippets}/line-update/http-response.adoc[]
 
 === 노선 삭제
 === Request

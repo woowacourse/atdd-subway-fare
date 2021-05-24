@@ -26,14 +26,14 @@ public class TestDataLoader {
         잠실역 = new Station(5L, "잠실역");
 
         신분당선 = new Line(1L, "신분당선", "red lighten-1");
-        강남판교 = new Section(강남역, 판교역, 10);
-        판교정자 = new Section(판교역, 정자역, 10);
+        강남판교 = new Section(1L, 강남역, 판교역, 10);
+        판교정자 = new Section(2L, 판교역, 정자역, 10);
         신분당선.addSection(강남판교);
         신분당선.addSection(판교정자);
 
         이호선 = new Line(2L, "2호선", "green lighten-1");
-        강남역삼 = new Section(강남역, 역삼역, 10);
-        역삼잠실 = new Section(역삼역, 잠실역, 10);
+        강남역삼 = new Section(3L, 강남역, 역삼역, 10);
+        역삼잠실 = new Section(4L, 역삼역, 잠실역, 10);
         이호선.addSection(강남역삼);
         이호선.addSection(역삼잠실);
     }
