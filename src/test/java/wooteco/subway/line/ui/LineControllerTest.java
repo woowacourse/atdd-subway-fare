@@ -96,6 +96,24 @@ class LineControllerTest {
     }
 
     @Test
+    @DisplayName("노선 전체 조회2 - 성공")
+    public void showAllLines() throws Exception{
+        TestDataLoader testDataLoader = new TestDataLoader();
+        List<LineResponse> lineResponses = LineResponse
+            .listOf(Arrays.asList(testDataLoader.신분당선(), testDataLoader.이호선()));
+
+        given(lineService.findLineResponses()).willReturn(lineResponses);
+
+        mockMvc.perform(get("/lines/all"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[*].name").value(containsInAnyOrder("신분당선", "2호선")))
+            .andExpect(jsonPath("$[*].stations[*].name")
+                .value(containsInAnyOrder("강남역", "판교역", "정자역", "강남역", "역삼역", "잠실역")))
+            .andDo(print())
+            .andDo(document("lines-all"));
+    }
+
+    @Test
     @DisplayName("노선 ID 조회 - 성공")
     public void showLineById() throws Exception{
         final TestDataLoader testDataLoader = new TestDataLoader();

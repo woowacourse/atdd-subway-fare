@@ -39,6 +39,12 @@ include::{snippets}/lines-find/http-request.adoc[]
 ==== Response
 include::{snippets}/lines-find/http-response.adoc[]
 
+=== 노선 전체 조회 (새로운 API)
+==== Request
+include::{snippets}/lines-all/http-request.adoc[]
+==== Response
+include::{snippets}/lines-all/http-response.adoc[]
+
 === 노선 ID 조회
 ==== Request
 include::{snippets}/line-findbyid/http-request.adoc[]
