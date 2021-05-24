@@ -1,6 +1,7 @@
 package wooteco.subway.station.application;
 
 import org.springframework.stereotype.Service;
+import wooteco.subway.exception.DuplicateNameException;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;
@@ -36,5 +37,14 @@ public class StationService {
 
     public void deleteStationById(Long id) {
         stationDao.deleteById(id);
+    }
+
+    public StationResponse updateStation(Long id, StationRequest updateStationRequest) {
+        String updateName = updateStationRequest.getName();
+        if (stationDao.findByName(updateName).isPresent()) {
+            throw new DuplicateNameException();
+        }
+        stationDao.update(id, updateName);
+        return new StationResponse(id, updateName);
     }
 }
