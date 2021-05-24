@@ -10,7 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.line.dto.LineResponse;
+import wooteco.subway.line.dto.SectionDistanceRequest;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.Arrays;
@@ -20,6 +22,8 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_조회_요청;
+import static wooteco.subway.path.PathAcceptanceTest.거리_경로_조회_요청;
+import static wooteco.subway.path.PathAcceptanceTest.총_거리가_응답됨;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
 @DisplayName("지하철 구간 관련 기능")
@@ -105,6 +109,34 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_노선에_지하철역_제외_실패됨(removeResponse);
+    }
+
+    @DisplayName("지하철 구간 ")
+    @Test
+    void updateDistance() {
+        SectionDistanceRequest sectionDistanceRequest = new SectionDistanceRequest(20);
+
+        지하철_노선에_구간_거리_수정_요청(신분당선.getId(), 강남역, 광교역, sectionDistanceRequest);
+
+        ExtractableResponse<Response> pathResponse = 거리_경로_조회_요청(강남역.getId(), 광교역.getId());
+        총_거리가_응답됨(pathResponse, sectionDistanceRequest.getDistance());
+    }
+
+    private static ExtractableResponse<Response> 지하철_노선에_구간_거리_수정_요청(
+            final Long id,
+            final StationResponse 강남역,
+            final StationResponse 광교역,
+            final SectionDistanceRequest sectionDistanceRequest) {
+
+        return RestAssured
+                .given().log().all()
+                .queryParam("upStationId", 강남역.getId())
+                .queryParam("downStationId", 광교역.getId())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(sectionDistanceRequest)
+                .when().put("/lines/{lineId}/sections", id)
+                .then().log().all()
+                .extract();
     }
 
     public static void 지하철_구간_등록되어_있음(LineResponse lineResponse, StationResponse upStation, StationResponse downStation, int distance) {

@@ -49,8 +49,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역");
 
         신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 500, 교대역, 강남역, 10);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 800, 교대역, 양재역, 5);
 
         지하철_구간_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
     }
@@ -99,7 +99,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 거리_경로_조회_요청(4L, 1L);
 
         PathResponse pathResponse = response.as(PathResponse.class);
-        System.out.println(pathResponse.getDistance());
-        assertThat(pathResponse.getFare()).isEqualTo(1350);
+        assertThat(pathResponse.getFare()).isEqualTo(2150);
     }
 }

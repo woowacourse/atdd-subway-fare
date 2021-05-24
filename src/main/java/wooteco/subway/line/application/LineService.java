@@ -88,4 +88,8 @@ public class LineService {
         sectionDao.deleteByLineId(lineId);
         sectionDao.insertSections(line);
     }
+
+    public void updateDistance(final long lineId, final long upStationId, final long downStationId, final Integer distance) {
+        sectionDao.updateDistance(lineId, upStationId, downStationId, distance);
+    }
 }

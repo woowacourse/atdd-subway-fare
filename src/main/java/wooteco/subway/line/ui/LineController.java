@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
+import wooteco.subway.line.dto.SectionDistanceRequest;
 import wooteco.subway.line.dto.SectionRequest;
 
 import java.net.URI;
@@ -23,7 +24,7 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity createLine(@RequestBody LineRequest lineRequest) {
+    public ResponseEntity createLine(@RequestBody LineRequest lineRequest){
         LineResponse line = lineService.saveLine(lineRequest);
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
@@ -48,6 +49,16 @@ public class LineController {
     public ResponseEntity deleteLine(@PathVariable Long id) {
         lineService.deleteLineById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{lineId}/sections")
+    public ResponseEntity<Void> updateDistance(
+            @PathVariable("lineId") long lineId,
+            long upStationId,
+            long downStationId,
+            @RequestBody SectionDistanceRequest sectionDistanceRequest) {
+        lineService.updateDistance(lineId, upStationId, downStationId, sectionDistanceRequest.getDistance());
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{lineId}/sections")

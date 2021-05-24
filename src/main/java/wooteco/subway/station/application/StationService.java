@@ -37,4 +37,11 @@ public class StationService {
     public void deleteStationById(Long id) {
         stationDao.deleteById(id);
     }
+
+    public void updateStationById(final Long id, final String name) {
+        if (stationDao.doesNameExist(name)) {
+            throw new DuplicateNameException();
+        }
+        stationDao.updateById(id, name);
+    }
 }
