@@ -43,7 +43,7 @@ public class LineDao {
                 "UST.id as up_station_id, UST.name as up_station_name, " +
                 "DST.id as down_station_id, DST.name as down_station_name " +
                 "from line L \n" +
-                "left outer join SECTION S on L.id = S.line_id " +
+                "left outer join section S on L.id = S.line_id " +
                 "left outer join station UST on S.up_station_id = UST.id " +
                 "left outer join station DST on S.down_station_id = DST.id " +
                 "WHERE L.id = ?";
@@ -53,7 +53,7 @@ public class LineDao {
     }
 
     public void update(Line newLine) {
-        String sql = "update LINE set name = ?, color = ? where id = ?";
+        String sql = "update line set name = ?, color = ? where id = ?";
         jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
     }
 
