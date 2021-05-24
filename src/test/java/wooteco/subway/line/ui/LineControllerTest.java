@@ -1,5 +1,6 @@
 package wooteco.subway.line.ui;
 
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -32,6 +33,7 @@ import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.LineUpdateRequest;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.line.dto.SectionResponse;
 import wooteco.subway.station.dto.StationResponse;
 
 @WebMvcTest(controllers = LineController.class)
@@ -53,13 +55,17 @@ class LineControllerTest {
     @Test
     public void createLine() throws Exception {
         //given
-        List<StationResponse> stations = Arrays.asList(
-            new StationResponse(1L, "잠실역"),
-            new StationResponse(2L, "강남역")
+        List<SectionResponse> sections = Arrays.asList(
+            new SectionResponse(
+                1L,
+                new StationResponse(1L, "강남역"),
+                new StationResponse(2L, "역삼역"),
+                5
+            )
         );
         LineRequest lineRequest = new LineRequest("2호선", "bg-green-200", 1L, 2L, 5);
         LineResponse lineResponse = new LineResponse(1L, "2호선", "bg-green-200",
-            stations
+            sections
         );
         given(lineService.saveLine(any(LineRequest.class))).willReturn(lineResponse);
 
@@ -73,8 +79,12 @@ class LineControllerTest {
             .andExpect(header().exists("Location"))
             .andExpect(jsonPath("name").value(lineResponse.getName()))
             .andExpect(jsonPath("color").value(lineResponse.getColor()))
-            .andExpect(jsonPath("stations[*].name")
-                .value(containsInAnyOrder("잠실역", "강남역")))
+            .andExpect(jsonPath("sections[*].upStation.name")
+                .value(contains("강남역")))
+            .andExpect(jsonPath("sections[*].downStation.name")
+                .value(contains("역삼역")))
+            .andExpect(jsonPath("sections[*].distance")
+                .value(contains(5)))
             .andDo(print())
             .andDo(document("line-create"));
     }
@@ -97,10 +107,12 @@ class LineControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$[*].name")
                 .value(containsInAnyOrder("신분당선", "2호선")))
-            .andExpect(jsonPath("$[*].stations[*].name")
-                .value(containsInAnyOrder("강남역", "강남역", "판교역", "정자역", "역삼역", "잠실역")))
+            .andExpect(jsonPath("$[*].sections[*].upStation.name")
+                .value(containsInAnyOrder("강남역", "강남역", "판교역", "역삼역")))
+            .andExpect(jsonPath("$[*].sections[*].downStation.name")
+                .value(containsInAnyOrder("정자역", "잠실역", "판교역", "역삼역")))
             .andDo(print())
-            .andDo(document("line-findALl"));
+            .andDo(document("line-findAll"));
     }
 
     @Test
@@ -120,8 +132,10 @@ class LineControllerTest {
             // then
             .andExpect(status().isOk())
             .andExpect(jsonPath("name").value("신분당선"))
-            .andExpect(jsonPath("stations[*].name")
-                .value(containsInAnyOrder("강남역", "판교역", "정자역")))
+            .andExpect(jsonPath("sections[*].upStation.name")
+                .value(containsInAnyOrder("강남역", "판교역")))
+            .andExpect(jsonPath("sections[*].downStation.name")
+                .value(containsInAnyOrder("판교역", "정자역")))
             .andDo(print())
             .andDo(document("line-findById"));
     }

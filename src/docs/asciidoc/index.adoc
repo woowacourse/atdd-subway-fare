@@ -33,9 +33,9 @@ include::{snippets}/line-create/http-request.adoc[]
 include::{snippets}/line-create/http-response.adoc[]
 === 조회
 ==== Request
-include::{snippets}/line-findALl/http-request.adoc[]
+include::{snippets}/line-findAll/http-request.adoc[]
 ==== Response
-include::{snippets}/line-findALl/http-response.adoc[]
+include::{snippets}/line-findAll/http-response.adoc[]
 === id 조회
 ==== Request
 include::{snippets}/line-findById/http-request.adoc[]

@@ -1,5 +1,7 @@
 package wooteco.subway.line.application;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
@@ -11,11 +13,9 @@ import wooteco.subway.line.dto.SectionRequest;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
 public class LineService {
+
     private LineDao lineDao;
     private SectionDao sectionDao;
     private StationService stationService;
@@ -45,8 +45,8 @@ public class LineService {
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
-                .map(line -> LineResponse.of(line))
-                .collect(Collectors.toList());
+            .map(line -> LineResponse.of(line))
+            .collect(Collectors.toList());
     }
 
     public List<Line> findLines() {
@@ -62,8 +62,10 @@ public class LineService {
         return lineDao.findById(id);
     }
 
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+    public LineResponse updateLine(Long id, LineRequest lineUpdateRequest) {
+        Line updatedLine = new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor());
+        lineDao.update(updatedLine);
+        return LineResponse.of(updatedLine);
     }
 
     public void deleteLineById(Long id) {
