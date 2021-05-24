@@ -5,6 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.dto.StationResponse;
 
@@ -20,6 +21,17 @@ public class PathTest {
         return RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/paths?source={sourceId}&target={targetId}", source, target)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 토큰인증하여_거리_경로_조회_요청(long source, long target, TokenResponse token) {
+        return RestAssured
+                .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+//                .header("Authorization", token.getAccessToken())
+                .auth().oauth2(token.getAccessToken())
                 .when().get("/paths?source={sourceId}&target={targetId}", source, target)
                 .then().log().all()
                 .extract();

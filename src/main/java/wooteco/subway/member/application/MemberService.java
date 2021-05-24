@@ -1,6 +1,7 @@
 package wooteco.subway.member.application;
 
 import org.springframework.stereotype.Service;
+import wooteco.subway.auth.application.AuthorizationException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
@@ -21,6 +22,7 @@ public class MemberService {
     }
 
     public MemberResponse findMember(LoginMember loginMember) {
+        checkAuthorizedMember(loginMember);
         Member member = memberDao.findByEmail(loginMember.getEmail());
         return MemberResponse.of(member);
     }
@@ -33,5 +35,11 @@ public class MemberService {
     public void deleteMember(LoginMember loginMember) {
         Member member = memberDao.findByEmail(loginMember.getEmail());
         memberDao.deleteById(member.getId());
+    }
+
+    private void checkAuthorizedMember(LoginMember loginMember) {
+        if (!loginMember.isLoggedIn()) {
+            throw new AuthorizationException("로그인 ");
+        }
     }
 }
