@@ -1,5 +1,6 @@
 package wooteco.subway.line.domain;
 
+import java.util.LinkedList;
 import wooteco.subway.station.domain.Station;
 
 import java.util.ArrayList;
@@ -20,6 +21,45 @@ public class Sections {
 
     public Sections(List<Section> sections) {
         this.sections = sections;
+    }
+
+    public List<Section> sortedSections() {
+        LinkedList<Section> sortedSection = new LinkedList<>();
+        final Section pivotSection = sections.get(0);
+        sortedSection.add(pivotSection);
+        sortPreviousSections(sortedSection, pivotSection);
+        sortFollowingSections(sortedSection, pivotSection);
+        return sortedSection;
+    }
+
+    private void sortPreviousSections(LinkedList<Section> sortedSections, Section section) {
+        final Station upStation = section.getUpStation();
+        findSectionByDownStation(upStation)
+            .ifPresent(sec -> {
+                sortedSections.addFirst(sec);
+                sortPreviousSections(sortedSections, sec);
+            });
+    }
+
+    private Optional<Section> findSectionByDownStation(Station targetStation) {
+        return sections.stream()
+            .filter(section -> section.isDownStation(targetStation))
+            .findAny();
+    }
+
+    private void sortFollowingSections(LinkedList<Section> sortedSections, Section section) {
+        final Station downStation = section.getDownStation();
+        findSectionByUpStation(downStation)
+            .ifPresent(sec -> {
+                sortedSections.addLast(sec);
+                sortFollowingSections(sortedSections, sec);
+            });
+    }
+
+    private Optional<Section> findSectionByUpStation(Station targetStation) {
+        return sections.stream()
+            .filter(section -> section.isUpStation(targetStation))
+            .findAny();
     }
 
     public void addSection(Section section) {

@@ -39,4 +39,12 @@ public class Section {
     public int getDistance() {
         return distance;
     }
+
+    public boolean isDownStation(Station targetStation) {
+        return downStation.isSameId(targetStation.getId());
+    }
+
+    public boolean isUpStation(Station targetStation) {
+        return upStation.isSameId(targetStation.getId());
+    }
 }
