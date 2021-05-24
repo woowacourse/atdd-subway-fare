@@ -18,6 +18,11 @@ public class StationService {
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
+        stationDao.findByName(stationRequest.getName())
+                .ifPresent(station -> {
+                    throw new DuplicateStationException();
+                });
+
         Station station = stationDao.insert(stationRequest.toStation());
         return StationResponse.of(station);
     }
