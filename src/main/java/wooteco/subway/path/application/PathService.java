@@ -45,7 +45,7 @@ public class PathService {
         final int basicFare = FareCalculator.calculateFare(subwayPath.calculateDistance());
         final int extraFareWithLine = FareCalculator.calculateFareWithLine(basicFare, subwayPath.getLines());
         if (loginMember.isLogin()) {
-            return FareCalculator.discount(loginMember.getAge(), extraFareWithLine);
+            return FareCalculator.discountFareByAge(extraFareWithLine, loginMember.getAge());
         }
         return extraFareWithLine;
     }

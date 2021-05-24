@@ -39,23 +39,15 @@ public class FareCalculator {
         return (int) ((Math.ceil((distance - 1) / overDistance) + 1) * overFare);
     }
 
-    public static int discount(int age, int fare) {
-        if (age >= 19) {
-            return fare;
-        }
-        if (age >= 13) {
-            return (int) ((fare - 350) * 0.8);
-        }
-        if (age >= 6) {
-            return (int) ((fare - 350) * 0.5);
-        }
-        return 0;
-    }
-
     public static int calculateFareWithLine(int basicFare, List<Line> lines) {
         return basicFare + lines.stream()
                 .mapToInt(Line::getFare)
                 .max()
                 .orElseThrow(() -> new IllegalArgumentException("노선이 존재하지 않습니다."));
+    }
+
+    public static int discountFareByAge(int fare, int age) {
+        final Discount discount = Discount.of(age);
+        return discount.getDiscountedFare(fare);
     }
 }
