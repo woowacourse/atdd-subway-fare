@@ -146,6 +146,10 @@ public class Sections {
     }
 
     public List<Section> getSortedSections() {
+        if (sections.isEmpty()) {
+            return Arrays.asList();
+        }
+
         List<Section> sections = new ArrayList<>();
         Section nextSection = findUpEndSection();
         while (nextSection != null) {
