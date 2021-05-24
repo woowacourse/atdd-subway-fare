@@ -10,6 +10,9 @@ public class SectionResponse {
     private int distanceToNextStation;
     private List<TransferLineResponse> transferLines;
 
+    public SectionResponse() {
+    }
+
     public SectionResponse(Long id, String name, int distanceToNextStation, List<TransferLineResponse> transferLines) {
         this.id = id;
         this.name = name;

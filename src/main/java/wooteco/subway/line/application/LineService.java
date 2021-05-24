@@ -104,8 +104,9 @@ public class LineService {
 
     private List<SectionResponse> getSectionResponses(Sections sections, Long lineId) {
         List<SectionResponse> sectionResponses = new ArrayList<>();
+        List<Section> sectionList = sections.getSections();
 
-        for (Section section : sections.getSections()) {
+        for (Section section : sectionList) {
             List<Line> transferLines = lineDao.findIncludingStation(section.getUpStation().getId(), lineId);
             List<TransferLineResponse> transferLineResponses = transferLines.stream()
                     .map(TransferLineResponse::new)
@@ -113,6 +114,17 @@ public class LineService {
             SectionResponse sectionResponse = new SectionResponse(section, transferLineResponses);
             sectionResponses.add(sectionResponse);
         }
+        Section lastSection = sectionList.get(sectionList.size() - 1);
+        sectionResponses.add(getLastSectionResponses(lastSection, lineId));
         return sectionResponses;
+    }
+
+    private SectionResponse getLastSectionResponses(Section section, Long lineId) {
+        List<Line> transferLines = lineDao.findIncludingStation(section.getDownStation().getId(), lineId);
+        List<TransferLineResponse> transferLineResponses = transferLines.stream()
+                .map(TransferLineResponse::new)
+                .collect(toList());
+        return new SectionResponse(section.getId(), section.getDownStation().getName(),
+                0, transferLineResponses);
     }
 }

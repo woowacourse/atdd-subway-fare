@@ -11,6 +11,9 @@ public class TotalLineResponse {
     private Station endStation;
     private int distance;
 
+    public TotalLineResponse() {
+    }
+
     public TotalLineResponse(Long id, String name, String color,
                              Station startStation, Station endStation, int distance) {
         this.id = id;

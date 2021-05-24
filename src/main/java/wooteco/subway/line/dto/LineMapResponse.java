@@ -11,6 +11,9 @@ public class LineMapResponse {
     private int distance;
     private List<SectionResponse> sections;
 
+    public LineMapResponse() {
+    }
+
     public LineMapResponse(Long id, String name, String color, int distance, List<SectionResponse> sections) {
         this.id = id;
         this.name = name;
