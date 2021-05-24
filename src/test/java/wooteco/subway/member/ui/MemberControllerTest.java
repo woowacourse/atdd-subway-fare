@@ -3,6 +3,9 @@ package wooteco.subway.member.ui;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -63,7 +66,10 @@ public class MemberControllerTest {
             // then
             .andExpect(status().isCreated())
             .andExpect(header().exists("Location"))
-            .andDo(document("member-create"));
+            .andDo(document("member-create",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint())
+            ));
     }
 
     @DisplayName("현재 유저 조회 - 성공")
@@ -90,7 +96,10 @@ public class MemberControllerTest {
             .andExpect(jsonPath("age").value(age))
             .andExpect(jsonPath("email").value(email))
             .andDo(print())
-            .andDo(document("member-find"));
+            .andDo(document("member-find",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint())
+            ));
     }
 
     @DisplayName("현재 유저 수정 - 성공")
@@ -123,7 +132,10 @@ public class MemberControllerTest {
             .andExpect(jsonPath("email").value(email))
             .andExpect(jsonPath("age").value(newAge))
             .andDo(print())
-            .andDo(document("member-update"));
+            .andDo(document("member-update",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint())
+            ));
     }
 
     @DisplayName("현재 유저 삭제 - 성공")
@@ -144,7 +156,10 @@ public class MemberControllerTest {
             // then
             .andExpect(status().isNoContent())
             .andDo(print())
-            .andDo(document("member-delete"));
+            .andDo(document("member-delete",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint())
+            ));
     }
 
     @Test
@@ -155,7 +170,10 @@ public class MemberControllerTest {
         mockMvc.perform(get("/api/members?email="+email))
             .andExpect(status().isOk())
             .andExpect(content().string("true"))
-            .andDo(document("member-duplicate"));
+            .andDo(document("member-duplicate",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint())
+            ));
     }
 
     @Test
@@ -166,6 +184,9 @@ public class MemberControllerTest {
         mockMvc.perform(get("/api/members?email="+email))
             .andExpect(status().isOk())
             .andExpect(content().string("false"))
-            .andDo(document("member-duplicate-fail"));
+            .andDo(document("member-duplicate-fail",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint())
+            ));
     }
 }
