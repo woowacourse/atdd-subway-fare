@@ -23,12 +23,9 @@ public class AuthService {
     }
 
     public TokenResponse login(TokenRequest request) {
-        try {
-            Member member = memberDao.findByEmail(request.getEmail());
-            member.checkPassword(request.getPassword());
-        } catch (Exception e) {
-            throw new AuthorizationException();
-        }
+        Member member = memberDao.findByEmail(request.getEmail());
+        member.checkPassword(request.getPassword());
+
         String token = jwtTokenProvider.createToken(request.getEmail());
         return new TokenResponse(token);
     }

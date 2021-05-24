@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import wooteco.subway.auth.application.AuthorizationException;
 import wooteco.subway.member.domain.Member;
 
 import javax.sql.DataSource;
@@ -53,7 +54,11 @@ public class MemberDao {
     }
 
     public Member findByEmail(String email) {
-        String sql = "select * from MEMBER where email = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, email);
+        try{
+            String sql = "select * from MEMBER where email = ?";
+            return jdbcTemplate.queryForObject(sql, rowMapper, email);
+        } catch (Exception e){
+            throw new AuthorizationException("존재하지 않는 이메일 정보입니다.");
+        }
     }
 }

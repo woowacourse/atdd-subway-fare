@@ -1,6 +1,5 @@
 package wooteco.subway.path.ui;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,15 +20,14 @@ import java.util.Optional;
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class PathController {
-    @Autowired
-    AuthService authService;
-
     private PathService pathService;
     private FareService fareService;
+    private AuthService authService;
 
-    public PathController(PathService pathService, FareService fareService) {
+    public PathController(PathService pathService, FareService fareService, AuthService authService) {
         this.pathService = pathService;
         this.fareService = fareService;
+        this.authService = authService;
     }
 
     @GetMapping("/paths")

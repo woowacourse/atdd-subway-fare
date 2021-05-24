@@ -31,6 +31,6 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
         Optional<LoginMember> memberByToken = authService.findMemberByToken(credentials);
 
-        return memberByToken.orElseThrow(()-> new AuthorizationException("올바른 회원이 아닙니다."));
+        return memberByToken.orElseThrow(()-> new AuthorizationException("유효하지 않은 토큰 정보입니다."));
     }
 }

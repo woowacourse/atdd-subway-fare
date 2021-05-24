@@ -17,11 +17,8 @@ public class FareService {
     private static final int SECOND_ADDITIONAL_FARE_UNIT_DISTANCE = 8;
 
     public int calculate(int distance, int extraFare, MemberType memberType) {
-        return FareType.of(memberType).price(fareByDistance(distance) + extraFare);
-    }
-
-    public int fareByPath(int distance, int extraFare) {
-        return fareByDistance(distance) + extraFare;
+        int fareByPath = fareByDistance(distance) + extraFare;
+        return FareType.of(memberType).price(fareByPath);
     }
 
     private int fareByDistance(int distance) {
@@ -32,6 +29,7 @@ public class FareService {
         if (distance < FIRST_ADDITIONAL_FARE_SECTION) {
             return 0;
         }
+
         int firstSectionDistance = Math.min(distance, SECOND_ADDITIONAL_FARE_SECTION) - FIRST_ADDITIONAL_FARE_SECTION;
         return calculateAdditionalFare(firstSectionDistance, FIRST_ADDITIONAL_FARE_UNIT_DISTANCE);
     }
@@ -47,8 +45,5 @@ public class FareService {
 
     private int calculateAdditionalFare(int additionalDistance, int unitDistance) {
         return (int) ((Math.ceil((additionalDistance - 1) / unitDistance) + 1) * FARE_PER_UNIT_DISTANCE);
-    }
-
-    public static void main(String[] args) {
     }
 }
