@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
+import wooteco.subway.line.dto.LinesResponse;
 import wooteco.subway.line.dto.SectionRequest;
 
 import java.net.URI;
@@ -60,6 +61,11 @@ public class LineController {
     public ResponseEntity removeLineStation(@PathVariable Long lineId, @RequestParam Long stationId) {
         lineService.removeLineStation(lineId, stationId);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<LinesResponse>> findAllInfo() {
+        return ResponseEntity.ok(lineService.findAllInfo());
     }
 
     @ExceptionHandler(SQLException.class)

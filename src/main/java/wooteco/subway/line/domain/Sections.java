@@ -2,6 +2,7 @@ package wooteco.subway.line.domain;
 
 import wooteco.subway.station.domain.Station;
 
+import javax.sound.midi.Soundbank;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -12,7 +13,18 @@ public class Sections {
     private List<Section> sections = new ArrayList<>();
 
     public List<Section> getSections() {
-        return sections;
+        return orderSections();
+    }
+
+    private List<Section> orderSections() {
+        List<Section> orderedSections = new ArrayList<>();
+
+        Section nextSection = findUpEndSection();
+        while (nextSection != null) {
+            orderedSections.add(nextSection);
+            nextSection = findSectionByNextUpStation(nextSection.getDownStation());
+        }
+        return orderedSections;
     }
 
     public Sections() {
