@@ -43,4 +43,10 @@ public class MemberController {
         memberService.deleteMember(loginMember);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping
+    public ResponseEntity<Boolean> isDuplicatedEmail(@RequestParam String email) {
+        return ResponseEntity.ok(memberService.isExistMember(email));
+    }
+
 }

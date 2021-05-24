@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -144,5 +145,27 @@ public class MemberControllerTest {
             .andExpect(status().isNoContent())
             .andDo(print())
             .andDo(document("member-delete"));
+    }
+
+    @Test
+    @DisplayName("유저 중복 확인 - 성공")
+    void duplicateMember() throws Exception {
+        final String email = "test@email.com";
+        given(memberService.isExistMember(email)).willReturn(true);
+        mockMvc.perform(get("/api/members?email="+email))
+            .andExpect(status().isOk())
+            .andExpect(content().string("true"))
+            .andDo(document("member-duplicate"));
+    }
+
+    @Test
+    @DisplayName("유저 중복 확인 - 실패")
+    void duplicateMemberFail() throws Exception {
+        final String email = "test@email.com";
+        given(memberService.isExistMember(email)).willReturn(false);
+        mockMvc.perform(get("/api/members?email="+email))
+            .andExpect(status().isOk())
+            .andExpect(content().string("false"))
+            .andDo(document("member-duplicate-fail"));
     }
 }

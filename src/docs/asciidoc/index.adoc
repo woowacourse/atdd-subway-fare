@@ -8,7 +8,7 @@ endif::[]
 :toc: left
 :toclevels: 2
 
-== 역Station 관리
+== Station
 === 생성
 ==== Request
 include::{snippets}/station-create/http-request.adoc[]
@@ -25,7 +25,7 @@ include::{snippets}/station-delete/http-request.adoc[]
 ==== Response
 include::{snippets}/station-delete/http-response.adoc[]
 
-== 노선Line 관리
+== Line
 === 생성
 ==== Request
 include::{snippets}/line-create/http-request.adoc[]
@@ -52,7 +52,7 @@ include::{snippets}/line-delete/http-request.adoc[]
 ==== Response
 include::{snippets}/line-delete/http-response.adoc[]
 
-== 구간Section 관리
+== Section
 === 생성
 ==== Request
 include::{snippets}/section-create/http-request.adoc[]
@@ -64,26 +64,36 @@ include::{snippets}/section-delete/http-request.adoc[]
 ==== Response
 include::{snippets}/section-delete/http-response.adoc[]
 
-== 경로Path 관리
+== Path
 === 조회
 ==== Request
 include::{snippets}/path-find/http-request.adoc[]
 ==== Response
 include::{snippets}/path-find/http-response.adoc[]
 
-== 인증Auth 관리
+== Auth
 === 로그인
 ==== Request
 include::{snippets}/auth-login/http-request.adoc[]
 ==== Response
 include::{snippets}/auth-login/http-response.adoc[]
 
-== 유저Member 관리
+== Member
 === 유저 생성
 ==== Request
 include::{snippets}/member-create/http-request.adoc[]
 ==== Response
 include::{snippets}/member-create/http-response.adoc[]
+=== 유저 중복 X
+==== Request
+include::{snippets}/member-duplicate/http-request.adoc[]
+==== Response
+include::{snippets}/member-duplicate/http-response.adoc[]
+=== 유저 중복 O
+==== Request
+include::{snippets}/member-duplicate-fail/http-request.adoc[]
+==== Response
+include::{snippets}/member-duplicate-fail/http-response.adoc[]
 === 유저 조회
 ==== Request
 include::{snippets}/member-find/http-request.adoc[]
