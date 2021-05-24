@@ -8,7 +8,7 @@ import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
-import wooteco.subway.member.exception.NoMemberException;
+import wooteco.subway.member.application.NoMemberException;
 
 @Service
 @Transactional

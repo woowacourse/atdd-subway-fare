@@ -6,8 +6,6 @@ import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
-import wooteco.subway.member.exception.DuplicateEmailException;
-import wooteco.subway.member.exception.NoMemberException;
 
 @Service
 public class MemberService {
