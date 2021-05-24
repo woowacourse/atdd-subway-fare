@@ -1,6 +1,6 @@
 package wooteco.subway.auth.infrastructure;
 
-import wooteco.subway.auth.application.AuthorizationException;
+import wooteco.subway.exception.AuthorizationException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;

@@ -2,6 +2,7 @@ package wooteco.subway.station.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.exception.DuplicateException;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.infrastructure.dao.LineDao;
 import wooteco.subway.station.domain.Station;
@@ -73,12 +74,13 @@ public class StationService {
         validateStationRequest(id, stationRequest);
         Station station = findStationById(id);
         Station newStation = new Station(station.getId(), stationRequest.getName());
+
         stationDao.updateStation(newStation);
     }
 
     private void validateStationRequest(Long id, StationRequest stationRequest) {
         if (stationDao.existsByNameExceptId(id, stationRequest.getName())) {
-            throw new IllegalArgumentException("이미 존재하는 이름입니다.");
+            throw new DuplicateException("이미 존재하는 역 이름입니다.");
         }
     }
 

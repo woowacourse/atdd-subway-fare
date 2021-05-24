@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.auth.ui.dto.TokenRequest;
 import wooteco.subway.auth.ui.dto.TokenResponse;
+import wooteco.subway.exception.AuthorizationException;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.infrastructure.dao.MemberDao;

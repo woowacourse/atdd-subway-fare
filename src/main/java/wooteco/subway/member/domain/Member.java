@@ -1,6 +1,6 @@
 package wooteco.subway.member.domain;
 
-import wooteco.subway.auth.application.AuthorizationException;
+import wooteco.subway.exception.AuthorizationException;
 
 import java.util.Objects;
 

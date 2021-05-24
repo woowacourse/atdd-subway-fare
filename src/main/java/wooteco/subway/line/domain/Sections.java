@@ -1,5 +1,7 @@
 package wooteco.subway.line.domain;
 
+import wooteco.subway.exception.NotFoundException;
+import wooteco.subway.exception.SubwayException;
 import wooteco.subway.station.domain.Station;
 
 import java.util.*;
@@ -153,7 +155,7 @@ public class Sections {
 
     private void validateDistance(Integer distance) {
         if(distance <= 0) {
-            throw new IllegalArgumentException("구간 사이 거리는 0보다 작거나 같을 수 없습니다.");
+            throw new SubwayException("구간 사이 거리는 0보다 작거나 같을 수 없습니다.");
         }
     }
 
@@ -162,7 +164,7 @@ public class Sections {
                 .filter(section -> section.hasSameDownStationId(downStationId))
                 .filter(section -> section.hasSameUpStationId(upStationId))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("일치하는 섹션을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("일치하는 섹션을 찾을 수 없습니다."));
     }
 
     public List<Section> getSections() {
