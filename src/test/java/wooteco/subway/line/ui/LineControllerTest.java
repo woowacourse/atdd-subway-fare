@@ -20,6 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import wooteco.subway.TestDataLoader;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.line.application.LineService;
+import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.LineUpdateRequest;
@@ -157,16 +159,31 @@ class LineControllerTest {
     @DisplayName("노선 수정 - 성공")
     public void updateLines() throws Exception {
         // given
+        TestDataLoader testDataLoader = new TestDataLoader();
+        Line line = testDataLoader.이호선();
         LineUpdateRequest lineUpdateRequest = new LineUpdateRequest("2호선", "bg-red-200");
+        LineResponse lineResponse = new LineResponse(
+            line.getId(),
+            line.getName(),
+            "bg-red-200",
+            line.getSortedSections().stream()
+                .map(SectionResponse::of)
+                .collect(Collectors.toList())
+        );
+
+        given(lineService.updateLine(any(Long.class), any(LineUpdateRequest.class)))
+            .willReturn(lineResponse);
 
         // when
         mockMvc.perform(
-            put("/api/lines/1")
+            put("/api/lines/2")
                 .content(objectMapper.writeValueAsString(lineUpdateRequest))
                 .contentType(MediaType.APPLICATION_JSON)
         )
             // then
             .andExpect(status().isOk())
+            .andExpect(jsonPath("name").value(lineResponse.getName()))
+            .andExpect(jsonPath("color").value(lineResponse.getColor()))
             .andDo(print())
             .andDo(document("line-update",
                 preprocessRequest(prettyPrint()),
