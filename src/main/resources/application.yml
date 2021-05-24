@@ -35,6 +35,10 @@ spring:
     url: jdbc:mysql://localhost:3306/subway?useSSL=true&serverTimezone=Asia/Seoul
     username: root
     password: root
+    # TODO 배포시 지우기
+    initialization-mode: always
+    schema: schema.sql
+    # 여기까지
   h2:
     console:
       enabled: true
