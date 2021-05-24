@@ -7,10 +7,11 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.path.domain.fare.Fare;
 import wooteco.subway.path.domain.fare.FareCalculator;
+import wooteco.subway.path.domain.fare.age.AgeFare;
 import wooteco.subway.path.domain.fare.distance.DistanceFare;
-import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.path.dto.PathResponseAssembler;
 import wooteco.subway.station.application.StationService;
@@ -46,28 +47,24 @@ public class PathService {
         }
     }
 
-//    private Fare getTotalFareNew(Optional<LoginMember> loginMemberOptional, SubwayPath subwayPath) {
-//        int distance = subwayPath.calculateDistance();
-//        FareDistance fareDistance = FareDistance.of(distance);
-//        Fare fareByDistance = fareDistance.getFare(new Fare(DEFAULT_FARE));
-//        Fare fareWithLineExtraFare = fareCalculator.getFareWithLineExtraFare(fareByDistance, subwayPath.getLines());
-//        if (!loginMemberOptional.isPresent()) {
-//            return fareWithLineExtraFare;
-//        }
-//        LoginMember loginMember = loginMemberOptional.get();
-//        FareAge fareAge = FareAge.of(loginMember.getAge());
-//        return fareCalculator.getFareByAge(fareWithLineExtraFare, fareAge);
-//    }
-
     private Fare getTotalFare(Optional<LoginMember> loginMemberOptional, SubwayPath subwayPath) {
-        int distance = subwayPath.calculateDistance();
-        DistanceFare distanceFare = DistanceFare.of(distance);
-        Fare fareByDistance = distanceFare.getFare(new Fare(DEFAULT_FARE));
+        Fare fareByDistance = getFareByDistance(subwayPath);
         Fare fareWithLineExtraFare = fareCalculator.getFareWithLineExtraFare(fareByDistance, subwayPath.getLines());
         if (!loginMemberOptional.isPresent()) {
             return fareWithLineExtraFare;
         }
         LoginMember loginMember = loginMemberOptional.get();
-        return fareCalculator.getFareByAge(loginMember.getAge(), fareWithLineExtraFare);
+        return getFareByAge(fareWithLineExtraFare, loginMember);
+    }
+
+    private Fare getFareByAge(Fare fareWithLineExtraFare, LoginMember loginMember) {
+        AgeFare ageFare = AgeFare.of(loginMember.getAge());
+        return ageFare.getFare(fareWithLineExtraFare);
+    }
+
+    private Fare getFareByDistance(SubwayPath subwayPath) {
+        int distance = subwayPath.calculateDistance();
+        DistanceFare distanceFare = DistanceFare.of(distance);
+        return distanceFare.getFare(new Fare(DEFAULT_FARE));
     }
 }
