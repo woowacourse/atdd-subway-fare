@@ -13,6 +13,7 @@ import java.net.URI;
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class MemberController {
+
     private MemberService memberService;
 
     public MemberController(MemberService memberService) {

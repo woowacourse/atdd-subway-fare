@@ -1,8 +1,6 @@
 package wooteco.subway.member.application;
 
-import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
@@ -18,6 +16,9 @@ public class MemberService {
     }
 
     public MemberResponse createMember(MemberRequest request) {
+        if (memberDao.exists(request.getEmail())) {
+            throw new MemberException("이미 사용되고 있는 이메일입니다.");
+        }
         Member member = memberDao.insert(request.toMember());
         return MemberResponse.of(member);
     }
