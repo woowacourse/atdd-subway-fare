@@ -10,7 +10,7 @@ import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.infrastructure.dao.MemberDao;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class AuthService {
 
     private final MemberDao memberDao;
