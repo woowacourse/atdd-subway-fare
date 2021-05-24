@@ -37,7 +37,7 @@ public class MemberController {
     public ResponseEntity<MemberResponse> findMemberOfMine(
         @AuthenticationPrincipal AuthMember authMember) {
         if (!authMember.isLoggedIn()) {
-            throw new AuthorizationException();
+            throw new AuthorizationException("로그인을 해야합니다.");
         }
         MemberResponse member = memberService.findMember((LoginMember) authMember);
         return ResponseEntity.ok().body(member);
@@ -47,7 +47,7 @@ public class MemberController {
     public ResponseEntity<MemberResponse> updateMemberOfMine(
         @AuthenticationPrincipal AuthMember authMember, @RequestBody MemberRequest param) {
         if (!authMember.isLoggedIn()) {
-            throw new AuthorizationException();
+            throw new AuthorizationException("로그인을 해야합니다.");
         }
         memberService.updateMember((LoginMember) authMember, param);
         return ResponseEntity.ok().build();
@@ -57,7 +57,7 @@ public class MemberController {
     public ResponseEntity<MemberResponse> deleteMemberOfMine(
         @AuthenticationPrincipal AuthMember authMember) {
         if (!authMember.isLoggedIn()) {
-            throw new AuthorizationException();
+            throw new AuthorizationException("로그인을 해야합니다.");
         }
         memberService.deleteMember((LoginMember) authMember);
         return ResponseEntity.noContent().build();

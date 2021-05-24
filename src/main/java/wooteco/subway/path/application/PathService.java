@@ -36,7 +36,7 @@ public class PathService {
 
             return PathResponseAssembler.assemble(subwayPath, authMember);
         } catch (Exception e) {
-            throw new InvalidPathException();
+            throw new InvalidPathException("잘못된 경로 조회입니다.");
         }
     }
 }

@@ -41,7 +41,7 @@ public class Sections {
         List<Station> stations = getStations();
         if (!stations.contains(section.getUpStation()) && !stations
             .contains(section.getDownStation())) {
-            throw new RuntimeException();
+            throw new RuntimeException("이미 존재하는 구간입니다.");
         }
     }
 
@@ -50,7 +50,7 @@ public class Sections {
         List<Station> stationsOfNewSection = Arrays
             .asList(section.getUpStation(), section.getDownStation());
         if (stations.containsAll(stationsOfNewSection)) {
-            throw new RuntimeException();
+            throw new RuntimeException("이미 존재하는 구간입니다.");
         }
     }
 
@@ -70,7 +70,7 @@ public class Sections {
 
     private void replaceSectionWithUpStation(Section newSection, Section existSection) {
         if (existSection.getDistance() <= newSection.getDistance()) {
-            throw new RuntimeException();
+            throw new RuntimeException("새로 끼워넣는 구간이 기존의 구간보다 길이가 같거나 더 길면 안 됩니다.");
         }
         this.sections.add(new Section(existSection.getUpStation(), newSection.getUpStation(),
             existSection.getDistance() - newSection.getDistance()));
@@ -79,7 +79,7 @@ public class Sections {
 
     private void replaceSectionWithDownStation(Section newSection, Section existSection) {
         if (existSection.getDistance() <= newSection.getDistance()) {
-            throw new RuntimeException();
+            throw new RuntimeException("새로 끼워넣는 구간이 기존의 구간보다 길이가 같거나 더 길면 안 됩니다.");
         }
         this.sections.add(new Section(newSection.getDownStation(), existSection.getDownStation(),
             existSection.getDistance() - newSection.getDistance()));
@@ -124,7 +124,7 @@ public class Sections {
 
     public void removeStation(Station station) {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new RuntimeException("라인에 구간이 하나만 있을 때에는 구간을 삭제할 수 없습니다.");
         }
 
         Optional<Section> upSection = sections.stream()

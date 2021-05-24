@@ -16,7 +16,7 @@ public class PathFinder {
 
     public SubwayPath findPath(List<Line> lines, Station source, Station target) {
         if (source.equals(target)) {
-            throw new InvalidPathException();
+            throw new InvalidPathException("출발점과 도착점을 같게 설정하시면 안 됩니다.");
         }
         SubwayGraph graph = new SubwayGraph(SectionEdge.class);
         graph.addVertexWith(lines);
@@ -26,7 +26,7 @@ public class PathFinder {
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
         GraphPath<Station, SectionEdge> path = dijkstraShortestPath.getPath(source, target);
         if (path == null) {
-            throw new InvalidPathException();
+            throw new InvalidPathException("출발점으로부터 도착점까지 갈 수 있는 경로가 없습니다.");
         }
 
         return convertSubwayPath(path);

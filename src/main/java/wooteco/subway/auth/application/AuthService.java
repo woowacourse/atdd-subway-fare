@@ -26,7 +26,7 @@ public class AuthService {
             Member member = memberDao.findByEmail(request.getEmail());
             member.checkPassword(request.getPassword());
         } catch (Exception e) {
-            throw new AuthorizationException();
+            throw new AuthorizationException("로그인에 실패하였습니다.");
         }
         String token = jwtTokenProvider.createToken(request.getEmail());
         return new TokenResponse(token);

@@ -84,7 +84,7 @@ public class LineDao {
 
     private Line mapLine(List<Map<String, Object>> result) {
         if (result.size() == 0) {
-            throw new RuntimeException();
+            throw new RuntimeException("해당하는 라인이 없습니다.");
         }
 
         List<Section> sections = extractSections(result);

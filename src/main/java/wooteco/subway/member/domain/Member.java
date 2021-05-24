@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import wooteco.subway.auth.application.AuthorizationException;
 
 public class Member {
+
     private Long id;
     private String email;
     private String password;
@@ -49,7 +50,7 @@ public class Member {
 
     public void checkPassword(String password) {
         if (!StringUtils.equals(this.password, password)) {
-            throw new AuthorizationException();
+            throw new AuthorizationException("로그인에 실패하였습니다.");
         }
     }
 }
