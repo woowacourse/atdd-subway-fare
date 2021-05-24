@@ -4,8 +4,8 @@ import java.util.Comparator;
 import java.util.List;
 import wooteco.subway.line.domain.Line;
 
-public class FareCalculator {
-    public Fare getFareWithLineExtraFare(Fare currentFare, List<Line> lines) {
+public class LineExtraFareCalculator {
+    public Fare getFare(Fare currentFare, List<Line> lines) {
         return lines.stream()
             .map(Line::getExtraFare)
             .max(Comparator.comparingInt(Fare::getFare))

@@ -10,25 +10,24 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.path.domain.fare.Fare;
-import wooteco.subway.path.domain.fare.FareCalculator;
+import wooteco.subway.path.domain.fare.LineExtraFareCalculator;
 
-class FareCalculatorTest {
-    private FareCalculator fareCalculator;
+class LineExtraFareCalculatorTest {
+    private LineExtraFareCalculator lineExtraFareCalculator;
 
     @BeforeEach
     void setUp() {
-        this.fareCalculator = new FareCalculator();
+        this.lineExtraFareCalculator = new LineExtraFareCalculator();
     }
 
     @DisplayName("경로상 노선들의 추가 요금에 따른 총 요금을 계산한다.")
     @ParameterizedTest
     @MethodSource
     void getFareWithLineExtraFare(Fare currentFare, Fare expectedFare, List<Line> lines) {
-        Fare actualFare = fareCalculator.getFareWithLineExtraFare(currentFare, lines);
+        Fare actualFare = lineExtraFareCalculator.getFare(currentFare, lines);
         assertThat(actualFare).isEqualTo(expectedFare);
     }
 
