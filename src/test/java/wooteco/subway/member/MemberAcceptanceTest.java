@@ -25,6 +25,13 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String NEW_PASSWORD = "new_password";
     public static final int NEW_AGE = 30;
 
+    @DisplayName("회원 가입")
+    @Test
+    void registerMember() {
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성됨(createResponse);
+    }
+
     @DisplayName("회원 정보 조회")
     @Test
     void manageMember() {

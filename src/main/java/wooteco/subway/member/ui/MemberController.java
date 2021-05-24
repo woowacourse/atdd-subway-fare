@@ -28,7 +28,7 @@ public class MemberController {
     @PostMapping("/members")
     public ResponseEntity createMember(@RequestBody MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
-        return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
+        return ResponseEntity.created(URI.create("/members/" + member.getId())).body(member);
     }
 
     @PostMapping("/members/exists")
