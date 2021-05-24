@@ -4,7 +4,7 @@ public enum DiscountRate {
     TWENTIES(19, 0, 0),
     TEENAGERS(13, 350, 0.2),
     PRESCHOOLER(6, 350, 0.5),
-    BABIES(0, 0, 0);
+    BABIES(0, 0, 1);
 
     private final int ageBaseline;
     private final int deductionFare;
