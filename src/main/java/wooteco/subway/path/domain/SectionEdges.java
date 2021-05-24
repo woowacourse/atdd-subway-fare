@@ -1,7 +1,9 @@
 package wooteco.subway.path.domain;
 
-import java.util.List;
 import wooteco.subway.line.domain.Line;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class SectionEdges {
     private final List<SectionEdge> sectionEdgeGroup;
@@ -14,16 +16,10 @@ public class SectionEdges {
         return sectionEdgeGroup.stream().mapToInt(it -> it.getSection().getDistance()).sum();
     }
 
-    public int calculateMaxLineFare() {
-        int maxLineFare = 0;
-        for (final SectionEdge sectionEdge : sectionEdgeGroup) {
-            final Line line = sectionEdge.getLine();
-            maxLineFare = Math.max(maxLineFare, line.getFare());
-        }
-        return maxLineFare;
-    }
-
-    public List<SectionEdge> getSectionEdgeGroup() {
-        return sectionEdgeGroup;
+    public List<Line> getLines() {
+        return sectionEdgeGroup.stream()
+                .map(SectionEdge::getLine)
+                .distinct()
+                .collect(Collectors.toList());
     }
 }
