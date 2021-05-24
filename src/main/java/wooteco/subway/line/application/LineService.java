@@ -9,13 +9,7 @@ import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.infrastructure.dao.LineDao;
 import wooteco.subway.line.infrastructure.dao.SectionDao;
-import wooteco.subway.line.ui.dto.LineRequest;
-import wooteco.subway.line.ui.dto.LineResponse;
-import wooteco.subway.line.ui.dto.LineWithTransferLineResponse;
-import wooteco.subway.line.ui.dto.SectionRequest;
-import wooteco.subway.line.ui.dto.SectionsOfLineResponse;
-import wooteco.subway.line.ui.dto.SectionsResponse;
-import wooteco.subway.line.ui.dto.StationOfLineResponse;
+import wooteco.subway.line.ui.dto.*;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
@@ -147,11 +141,34 @@ public class LineService {
         sectionDao.update(line.getSections().getSections());
     }
 
-    public List<LineWithTransferLineResponse> findMap() {
+    public List<MapResponse> findMap() {
         List<Line> lines = findLines();
 
-        return lines.stream()
-                .map(this::createLineResponse)
+        List<SectionsOfLineResponse> collect = lines.stream()
+                .map(Line::getId)
+                .map(this::getSectionsResponseOfLine)
                 .collect(toList());
+
+        SectionsOfLineResponse sectionsOfLineResponse = collect.get(1);
+
+
+        return lines.stream()
+                .map(line -> {
+                    SectionsOfLineResponse sectionsResponseOfLine = getSectionsResponseOfLine(line.getId());
+                    List<StationOfMapResponse> stations = sectionsOfLineResponse.getStations().stream()
+                            .map(stationOfLineResponse -> new StationOfMapResponse(stationOfLineResponse.getId(),
+                                    stationOfLineResponse.getName(),
+                                    getDistance(sectionsResponseOfLine, stationOfLineResponse),
+                                    stationOfLineResponse.getTransferLineResponses())).collect(toList());
+                    return new MapResponse(line.getId(), line.getName(), line.getColor(), stations);
+                }).collect(toList());
+    }
+
+    private Integer getDistance(SectionsOfLineResponse sectionsResponseOfLine, StationOfLineResponse w) {
+        return sectionsResponseOfLine.getSections().stream()
+                .filter(section -> section.getUpStation().getId().equals(w.getId()))
+                .map(SectionResponse::getDistance)
+                .findAny()
+                .orElse(-1);
     }
 }

@@ -1,12 +1,11 @@
 package wooteco.subway.line.ui;
 
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.line.application.LineService;
-import wooteco.subway.line.ui.dto.LineWithTransferLineResponse;
+import wooteco.subway.line.ui.dto.MapResponse;
 
 import java.util.List;
 
@@ -21,7 +20,7 @@ public class MapController {
     }
 
     @GetMapping
-    public ResponseEntity<List<LineWithTransferLineResponse>> showMap() {
+    public ResponseEntity<List<MapResponse>> showMap() {
         return ResponseEntity.ok(lineService.findMap());
     }
 
