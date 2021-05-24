@@ -35,6 +35,9 @@ dependencies {
 	// jwt
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
 
+	// javax
+	implementation 'javax.xml.bind:jaxb-api:2.3.1'
+
 	// mysql
 	implementation 'mysql:mysql-connector-java'
 }
