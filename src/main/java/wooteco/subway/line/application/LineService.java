@@ -181,7 +181,7 @@ public class LineService {
                 stationOfLineResponse.getId(),
                 stationOfLineResponse.getName(),
                 getDistance(sectionsResponseOfLine, stationOfLineResponse),
-                stationOfLineResponse.getTransferLineResponses()
+                stationOfLineResponse.getTransferLines()
         );
     }
 

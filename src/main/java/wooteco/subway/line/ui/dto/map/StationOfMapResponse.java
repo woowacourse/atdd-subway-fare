@@ -14,24 +14,24 @@ public class StationOfMapResponse {
     private final Long id;
     private final String name;
     private final int distance;
-    private final List<TransferLineResponse> transferLineResponses;
+    private final List<TransferLineResponse> transferLines;
 
-    @ConstructorProperties({"id", "name", "transferLineResponses"})
+    @ConstructorProperties({"id", "name", "transferLines"})
     public StationOfMapResponse(Long id,
                                 String name,
                                 int distance,
-                                List<TransferLineResponse> transferLineResponses) {
+                                List<TransferLineResponse> transferLines) {
         this.id = id;
         this.name = name;
         this.distance = distance;
-        this.transferLineResponses = transferLineResponses;
+        this.transferLines = transferLines;
     }
 
     public StationOfMapResponse(Station station, int distance, List<Line> lines) {
         this.id = station.getId();
         this.name = station.getName();
         this.distance = distance;
-        this.transferLineResponses = lines.stream()
+        this.transferLines = lines.stream()
                 .map(TransferLineResponse::new)
                 .collect(toList());
     }
@@ -48,8 +48,8 @@ public class StationOfMapResponse {
         return distance;
     }
 
-    public List<TransferLineResponse> getTransferLineResponses() {
-        return transferLineResponses;
+    public List<TransferLineResponse> getTransferLines() {
+        return transferLines;
     }
 
 }
