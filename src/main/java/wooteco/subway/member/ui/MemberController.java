@@ -29,7 +29,7 @@ public class MemberController {
         return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
     }
 
-    @PostMapping
+    @PostMapping("/exists")
     public ResponseEntity checkExistsMember(@RequestBody @Valid EmailCheckRequest emailReq) {
         memberService.checkExistEmail(emailReq);
         return ResponseEntity.noContent().build();
