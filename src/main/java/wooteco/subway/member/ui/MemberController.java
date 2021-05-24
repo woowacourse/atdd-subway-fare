@@ -29,6 +29,12 @@ public class MemberController {
         return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
     }
 
+    @PostMapping
+    public ResponseEntity checkExistsMember(@RequestBody @Valid EmailCheckRequest emailReq) {
+        memberService.checkExistEmail(emailReq);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         MemberResponse member = memberService.findMember(loginMember);

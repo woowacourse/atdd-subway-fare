@@ -1,12 +1,12 @@
 spring:
   profiles:
-    active: "local"
+    active: local
 ---
 
 spring:
   config:
     activate:
-      on-profile: "local"
+      on-profile: local
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:testdb
@@ -29,16 +29,15 @@ security:
 spring:
   config:
     activate:
-      on-profile: "prod"
+      on-profile: prod
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/subway?useSSL=true&serverTimezone=Asia/Seoul
     username: root
     password: root
-    # TODO 배포시 지우기
     initialization-mode: always
-    schema: schema.sql
-    # 여기까지
+    schema:
+      - classpath:schema.sql
   h2:
     console:
       enabled: true
@@ -56,7 +55,7 @@ security:
 spring:
   config:
     activate:
-      on-profile: "test"
+      on-profile: test
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:testdb
