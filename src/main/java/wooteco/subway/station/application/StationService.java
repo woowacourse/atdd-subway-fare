@@ -5,6 +5,7 @@ import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
+import wooteco.subway.station.dto.StationTransferResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,5 +44,9 @@ public class StationService {
             throw new DuplicateNameException();
         }
         stationDao.updateById(id, name);
+    }
+
+    public List<StationTransferResponse> getStationsWithTransferLines(final long lineId) {
+        return stationDao.getStationsWithTransferLines(lineId);
     }
 }

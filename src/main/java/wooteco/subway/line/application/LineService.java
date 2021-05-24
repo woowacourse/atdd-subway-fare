@@ -5,11 +5,10 @@ import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
-import wooteco.subway.line.dto.LineRequest;
-import wooteco.subway.line.dto.LineResponse;
-import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.line.dto.*;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
+import wooteco.subway.station.dto.StationTransferResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -91,5 +90,21 @@ public class LineService {
 
     public void updateDistance(final long lineId, final long upStationId, final long downStationId, final Integer distance) {
         sectionDao.updateDistance(lineId, upStationId, downStationId, distance);
+    }
+
+    public LineSectionResponse findSectionsById(final long lineId) {
+        Line line = lineDao.findById(lineId);
+
+        List<StationTransferResponse> stations = stationService.getStationsWithTransferLines(lineId);
+
+        List<SectionResponse> sections = SectionResponse.listOf(line.getSections());
+
+        return LineSectionResponse.of(
+                line.getId(),
+                line.getName(),
+                line.getColor(),
+                stations,
+                sections
+        );
     }
 }

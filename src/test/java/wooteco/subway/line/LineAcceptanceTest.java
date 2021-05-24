@@ -9,9 +9,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
-import wooteco.subway.line.dto.LineRequest;
-import wooteco.subway.line.dto.LineResponse;
+import wooteco.subway.line.domain.Section;
+import wooteco.subway.line.dto.*;
+import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationResponse;
+import wooteco.subway.station.dto.StationTransferResponse;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,9 +25,12 @@ import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록�
 @DisplayName("지하철 노선 관련 기능")
 public class LineAcceptanceTest extends AcceptanceTest {
     private StationResponse 강남역;
+    private StationResponse 역삼역;
+    private StationResponse 몽촌토성역;
     private StationResponse downStation;
     private LineRequest lineRequest1;
     private LineRequest lineRequest2;
+    private LineRequest lineRequest3;
 
     @BeforeEach
     public void setUp() {
@@ -33,10 +38,13 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // given
         강남역 = 지하철역_등록되어_있음("강남역");
+        역삼역 = 지하철역_등록되어_있음("역삼역");
+        몽촌토성역 = 지하철역_등록되어_있음("몽촌토성역");
         downStation = 지하철역_등록되어_있음("광교역");
 
         lineRequest1 = new LineRequest("신분당선", "bg-red-600", 100,  강남역.getId(), downStation.getId(), 10);
         lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 15);
+        lineRequest3 = new LineRequest("2호선", "bg-red-600", 강남역.getId(), 역삼역.getId(), 20);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -114,6 +122,72 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_노선_삭제됨(response);
+    }
+
+    @DisplayName("구간 정보 조회 기능")
+    @Test
+    void findSections() {
+        지하철_노선_생성_요청(lineRequest1);
+        지하철_노선_생성_요청(lineRequest2);
+        지하철_노선_생성_요청(lineRequest3);
+
+        ExtractableResponse<Response> response = 구간_정보_조회(1L);
+
+        LineSectionResponse lineSectionResponse = response.as(LineSectionResponse.class);
+
+        List<StationTransferResponse> stationTransferResponses = Arrays.asList(
+                new StationTransferResponse(
+                        강남역.getId(),
+                        강남역.getName(),
+                        Arrays.asList(
+                                new TransferLineResponse(
+                                        2L,
+                                        lineRequest2.getName(),
+                                        lineRequest2.getColor()
+                                ),
+                                new TransferLineResponse(
+                                        3L,
+                                        lineRequest3.getName(),
+                                        lineRequest3.getColor()
+                                )
+                        )
+                ),
+                new StationTransferResponse(
+                        downStation.getId(),
+                        downStation.getName(),
+                        Arrays.asList(
+                                new TransferLineResponse(
+                                        2L,
+                                        lineRequest2.getName(),
+                                        lineRequest2.getColor()
+                                )
+                        )
+                )
+        );
+
+        List<SectionResponse> sectionResponses = Arrays.asList(
+                SectionResponse.of(
+                        new Section(
+                                new Station(강남역.getId(), 강남역.getName()),
+                                new Station(downStation.getId(), downStation.getName()),
+                                10
+                        )
+                )
+        );
+
+        assertThat(lineSectionResponse.getId()).isEqualTo(1L);
+        assertThat(lineSectionResponse.getName()).isEqualTo(lineRequest1.getName());
+        assertThat(lineSectionResponse.getColor()).isEqualTo(lineRequest1.getColor());
+        assertThat(lineSectionResponse.getStations()).usingRecursiveComparison().isEqualTo(stationTransferResponses);
+        assertThat(lineSectionResponse.getSections()).usingRecursiveComparison().isEqualTo(sectionResponses);
+    }
+
+    private static ExtractableResponse<Response> 구간_정보_조회(long lineId) {
+        return RestAssured
+                .given().log().all()
+                .when().get("/lines/" + lineId + "/sections")
+                .then().log().all()
+                .extract();
     }
 
     public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
