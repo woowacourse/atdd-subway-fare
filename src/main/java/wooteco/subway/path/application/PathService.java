@@ -2,6 +2,7 @@ package wooteco.subway.path.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.line.application.LineException;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.path.domain.SubwayPath;
@@ -30,7 +31,7 @@ public class PathService {
             Station targetStation = stationService.findStationById(target);
             return pathFinder.findPath(lines, sourceStation, targetStation);
         } catch (Exception e) {
-            throw new InvalidPathException();
+            throw new LineException("검색된 경로가 없습니다.");
         }
     }
 }
