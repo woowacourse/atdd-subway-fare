@@ -30,7 +30,6 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
         Optional<LoginMember> memberByToken = authService.findMemberByToken(credentials);
-
         return memberByToken.orElseThrow(()-> new AuthorizationException("유효하지 않은 토큰 정보입니다."));
     }
 }

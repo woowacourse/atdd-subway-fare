@@ -61,4 +61,9 @@ public class MemberDao {
             throw new AuthorizationException("존재하지 않는 이메일 정보입니다.");
         }
     }
+
+    public boolean isExistEmail(String email){
+        String sql = "SELECT EXISTS (SELECT id FROM MEMBER where email = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, email);
+    }
 }

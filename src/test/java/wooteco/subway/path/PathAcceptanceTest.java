@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
+import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_조회_요청;
 import static wooteco.subway.line.SectionAcceptanceTest.지하철_구간_등록되어_있음;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
@@ -28,13 +29,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
+    private LineResponse 사호선;
     private StationResponse 강남역;
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
     private StationResponse 다른노선위의역1;
     private StationResponse 다른노선위의역2;
-    private StationResponse 노선밖의역;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -53,12 +54,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역");
         다른노선위의역1 = 지하철역_등록되어_있음("다른노선위의역1");
         다른노선위의역2 = 지하철역_등록되어_있음("다른노선위의역2");
-        노선밖의역 = 지하철역_등록되어_있음("노선밖의역");
 
         신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10, 0);
         이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10, 500);
         삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5, 900);
-        삼호선 = 지하철_노선_등록되어_있음("사호선", "bg-red-600", 다른노선위의역2, 다른노선위의역1, 5, 900);
+        사호선 = 지하철_노선_등록되어_있음("사호선", "bg-red-600", 다른노선위의역2, 다른노선위의역1, 5, 900);
 
         지하철_구간_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
     }
