@@ -5,10 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.LoginMember;
-import wooteco.subway.member.dto.MemberInfoUpdateRequest;
-import wooteco.subway.member.dto.MemberPasswordUpdateRequest;
-import wooteco.subway.member.dto.MemberRequest;
-import wooteco.subway.member.dto.MemberResponse;
+import wooteco.subway.member.dto.*;
 
 import java.net.URI;
 
@@ -29,8 +26,8 @@ public class MemberController {
     }
 
     @PostMapping("/exists")
-    public ResponseEntity<Void> checkDuplicateEmail(@RequestBody String email) {
-        memberService.checkDuplicateEmail(email);
+    public ResponseEntity<Void> checkDuplicateEmail(@RequestBody DuplicateEmailCheckRequest request) {
+        memberService.checkDuplicateEmail(request);
         return ResponseEntity.noContent().build();
     }
 

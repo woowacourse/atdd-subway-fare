@@ -9,10 +9,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
-import wooteco.subway.member.dto.MemberInfoUpdateRequest;
-import wooteco.subway.member.dto.MemberPasswordUpdateRequest;
-import wooteco.subway.member.dto.MemberRequest;
-import wooteco.subway.member.dto.MemberResponse;
+import wooteco.subway.member.dto.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
@@ -61,10 +61,11 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 유효한_이메일로_중복체크(String email) {
+        DuplicateEmailCheckRequest request = new DuplicateEmailCheckRequest(email);
         ExtractableResponse<Response> checkDuplicateResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(email)
+                .body(request)
                 .when().log().all().post("/api/members/exists")
                 .then().log().all()
                 .extract();
@@ -73,10 +74,11 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 중복된_이메일로_중복체크(String email) {
+        DuplicateEmailCheckRequest request = new DuplicateEmailCheckRequest(email);
         ExtractableResponse<Response> checkDuplicateResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(email)
+                .body(request)
                 .when().post("/api/members/exists")
                 .then().log().all()
                 .extract();
