@@ -3,9 +3,13 @@ package wooteco.subway.station.ui;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -25,6 +29,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import wooteco.subway.auth.application.AuthService;
+import wooteco.subway.exception.DuplicatedStationNameException;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
@@ -62,7 +67,10 @@ public class StationControllerTest {
             .andExpect(header().exists("Location"))
             .andExpect(jsonPath("name").value(stationResponse.getName()))
             .andDo(print())
-            .andDo(document("station-create"));
+            .andDo(document("station-create",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint())
+            ));
     }
 
     @DisplayName("역 조회 - 성공")
@@ -87,7 +95,10 @@ public class StationControllerTest {
                 .value(Matchers.containsInAnyOrder("잠실역", "잠실새내역", "종합운동장역", "삼성역", "선릉역"))
             )
             .andDo(print())
-            .andDo(document("station-show"));
+            .andDo(document("station-show",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint())
+            ));
     }
 
     @DisplayName("역 삭제 - 성공")
@@ -96,6 +107,56 @@ public class StationControllerTest {
         mockMvc.perform(delete("/api/stations/1"))
             .andExpect(status().isNoContent())
             .andDo(print())
-            .andDo(document("station-delete"));
+            .andDo(document("station-delete",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint())
+            ));
+    }
+
+    @DisplayName("역 수정 - 성공")
+    @Test
+    public void updateStationSuccess() throws Exception {
+        // given
+        StationRequest stationRequest = new StationRequest("잠실역");
+        StationResponse stationResponse = new StationResponse(1L, "잠실역");
+        given(stationService.updateStation(any(Long.class), any(StationRequest.class)))
+            .willReturn(stationResponse);
+
+        //when
+        mockMvc.perform(put("/api/stations/1")
+            .content(objectMapper.writeValueAsString(stationRequest))
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+        )
+            // then
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("id").value(stationResponse.getId()))
+            .andExpect(jsonPath("name").value(stationResponse.getName()))
+            .andDo(print())
+            .andDo(document("station-update",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint())
+            ));
+    }
+
+    @DisplayName("역 수정 - 실패(중복 이름)")
+    @Test
+    public void updateStations() throws Exception {
+        // given
+        StationRequest stationRequest = new StationRequest("잠실역");
+        given(stationService.updateStation(any(Long.class), any(StationRequest.class)))
+            .willThrow(new DuplicatedStationNameException());
+
+        // when
+        mockMvc.perform(put("/api/stations/1")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(stationRequest))
+        )
+            // then
+            .andExpect(status().isBadRequest())
+            .andDo(print())
+            .andDo(document("station-update-fail",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint())
+            ));
     }
 }

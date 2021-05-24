@@ -1,16 +1,17 @@
 package wooteco.subway.station.application;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import wooteco.subway.exception.DuplicatedStationNameException;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
 public class StationService {
+
     private StationDao stationDao;
 
     public StationService(StationDao stationDao) {
@@ -30,11 +31,22 @@ public class StationService {
         List<Station> stations = stationDao.findAll();
 
         return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+            .map(StationResponse::of)
+            .collect(Collectors.toList());
     }
 
     public void deleteStationById(Long id) {
         stationDao.deleteById(id);
+    }
+
+    public StationResponse updateStation(Long id, StationRequest stationRequest) {
+        String name = stationRequest.getName();
+        if (stationDao.findByName(name).isPresent()) {
+            throw new DuplicatedStationNameException();
+        }
+
+        Station station = new Station(id, name);
+        stationDao.update(station);
+        return StationResponse.of(station);
     }
 }
