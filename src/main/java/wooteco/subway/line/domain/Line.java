@@ -1,5 +1,6 @@
 package wooteco.subway.line.domain;
 
+import wooteco.subway.exception.SubwayException;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
@@ -33,7 +34,9 @@ public class Line {
     }
 
     public void addSection(Section section) {
-        Objects.requireNonNull(section, "섹션 추가에 실패했습니다");
+        if(Objects.isNull(section)) {
+            throw new SubwayException("구간 추가에 실패했습니다");
+        }
 
         sections.addSection(section);
     }

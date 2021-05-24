@@ -33,6 +33,11 @@ public class SubwayAdvice {
         return ResponseEntity.badRequest().body(new MessageDto(e.getMessage()));
     }
 
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<MessageDto> handleRuntimeException(RuntimeException e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+
     public static class MessageDto {
 
         private final String message;
