@@ -75,13 +75,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //when
         ExtractableResponse<Response> response = 거리_경로_조회_요청(3L, 2L);
         ExtractableResponse<Response> response2 = 거리_경로_조회_요청(4L, 6L);
+        ExtractableResponse<Response> response3 = 거리_경로_조회_요청(3L, 8L);
 
         //then
         적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
         총_거리가_응답됨(response, 5);
+        총_요금이_응답됨(response, 1250);
 
         적절한_경로_응답됨(response2, Lists.newArrayList(남부터미널역, 양재역, 강남역, 판교역, 정자역));
         총_거리가_응답됨(response2, 77);
+        총_요금이_응답됨(response2, 2450);
+
+        적절한_경로_응답됨(response3, Lists.newArrayList(교대역, 강남역, 역삼역, 잠실역));
+        총_거리가_응답됨(response3, 46);
+        총_요금이_응답됨(response3, 2050);
     }
 
     public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
@@ -110,5 +117,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public static void 총_거리가_응답됨(ExtractableResponse<Response> response, int totalDistance) {
         PathResponse pathResponse = response.as(PathResponse.class);
         assertThat(pathResponse.getDistance()).isEqualTo(totalDistance);
+    }
+
+    public static void 총_요금이_응답됨(ExtractableResponse<Response> response, int totalFare) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getFare()).isEqualTo(totalFare);
     }
 }
