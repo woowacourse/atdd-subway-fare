@@ -71,4 +71,16 @@ public class Line {
     public List<Station> getStations() {
         return sections.getStations();
     }
+
+    public Station startStation() {
+        return sections.startStation();
+    }
+
+    public Station endStation() {
+        return sections.endStation();
+    }
+
+    public int totalDistance() {
+        return sections.totalDistance();
+    }
 }

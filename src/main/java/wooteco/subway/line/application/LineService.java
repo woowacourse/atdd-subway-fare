@@ -8,6 +8,7 @@ import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.line.dto.TotalLineResponse;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
@@ -42,10 +43,10 @@ public class LineService {
         return null;
     }
 
-    public List<LineResponse> findLineResponses() {
+    public List<TotalLineResponse> findTotalLineResponses() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
-                .map(line -> LineResponse.of(line))
+                .map(TotalLineResponse::of)
                 .collect(Collectors.toList());
     }
 
