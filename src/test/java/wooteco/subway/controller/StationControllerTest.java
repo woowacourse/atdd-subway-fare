@@ -50,7 +50,7 @@ public class StationControllerTest extends ControllerTest {
     }
 
     @Test
-    @DisplayName("생성 - 실패")
+    @DisplayName("삭제 - 성공")
     public void deleteStation() throws Exception {
         willDoNothing().given(stationService).deleteStationById(1L);
 

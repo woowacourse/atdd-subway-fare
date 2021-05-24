@@ -120,4 +120,5 @@ include::{snippets}/members-updateme/http-response.adoc[]
 
 - Request
 include::{snippets}/members-deleteme/http-request.adoc[]
-- Response include::{snippets}/members-deleteme/http-response.adoc[]
+- Response
+include::{snippets}/members-deleteme/http-response.adoc[]
