@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.dto.StationResponse;
@@ -18,8 +19,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
 import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static wooteco.subway.line.SectionAcceptanceTest.지하철_구간_등록되어_있음;
+import static wooteco.subway.member.MemberAcceptanceTest.AGE;
+import static wooteco.subway.member.MemberAcceptanceTest.EMAIL;
+import static wooteco.subway.member.MemberAcceptanceTest.PASSWORD;
+import static wooteco.subway.member.MemberAcceptanceTest.회원_생성됨;
+import static wooteco.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
 @DisplayName("지하철 경로 조회")
@@ -64,6 +71,28 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //then
         적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
         총_거리가_응답됨(response, 5);
+        총_요금이_응답됨(response, 1250);
+    }
+
+    @DisplayName("경로에 따른 요금 정책을 적용한다.")
+    @Test
+    void findFareByDistance() {
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(4L, 1L);
+
+        총_거리가_응답됨(response, 12);
+        총_요금이_응답됨(response, 1350);
+    }
+
+    @DisplayName("노선 추가요금 + 경로에 따른 요금 정책을 적용한다.")
+    @Test
+    void findFareByDistanceWithLineExtraFare() {
+        // 프론트랑 얘기해봐야 하는 거 아닌가 이거...
+    }
+
+    @DisplayName("로그인 - 나이 할인 + 경로에 따른 요금 정책을 적용한다.")
+    @Test
+    void findFareByDistanceWithAgeDiscount() {
+
     }
 
     public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
@@ -94,12 +123,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(pathResponse.getDistance()).isEqualTo(totalDistance);
     }
 
-    @Test
-    void fare() {
-        ExtractableResponse<Response> response = 거리_경로_조회_요청(4L, 1L);
-
+    public static void 총_요금이_응답됨(ExtractableResponse<Response> response, int totalFare) {
         PathResponse pathResponse = response.as(PathResponse.class);
-        System.out.println(pathResponse.getDistance());
-        assertThat(pathResponse.getFare()).isEqualTo(1350);
+        assertThat(pathResponse.getFare()).isEqualTo(totalFare);
     }
 }

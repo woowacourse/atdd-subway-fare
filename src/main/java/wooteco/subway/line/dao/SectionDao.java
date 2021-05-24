@@ -53,4 +53,9 @@ public class SectionDao {
 
         simpleJdbcInsert.executeBatch(batchValues.toArray(new Map[sections.size()]));
     }
+
+    public void updateByLineId(Long lineId, Long stationId, Long downStationId, int distance) {
+        String sql = "update SECTION set distance = ? where line_id = ? and up_station_id = ? and down_station_id =?";
+        jdbcTemplate.update(sql, distance, lineId, stationId, downStationId);
+    }
 }

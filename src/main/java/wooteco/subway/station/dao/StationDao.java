@@ -50,4 +50,14 @@ public class StationDao {
         String sql = "select * from STATION where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
+
+    public boolean findStationByName(String name) {
+        String sql = "select exists (select count(*) from STATION where name = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, name);
+    }
+
+    public void updateById(Long id, String name) {
+        String sql = "update STATION set name = ? where id = ?";
+        jdbcTemplate.update(sql, name, id);
+    }
 }
