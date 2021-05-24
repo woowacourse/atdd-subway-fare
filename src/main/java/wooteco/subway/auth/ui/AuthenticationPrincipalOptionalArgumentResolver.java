@@ -28,7 +28,7 @@ public class AuthenticationPrincipalOptionalArgumentResolver implements HandlerM
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
         LoginMember loginMember = authService.findMemberByToken(credentials);
-        if (loginMember.getId() == null) {
+        if (loginMember.isEmpty()) {
             return Optional.empty();
         }
         return Optional.of(loginMember);
