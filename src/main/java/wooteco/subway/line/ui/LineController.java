@@ -8,12 +8,10 @@ import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
 
 import java.net.URI;
-import java.sql.SQLException;
 import java.util.List;
 
 @RestController
 @RequestMapping("/lines")
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class LineController {
 
     private final LineService lineService;
@@ -60,10 +58,5 @@ public class LineController {
     public ResponseEntity<Void> removeLineStation(@PathVariable Long lineId, @RequestParam Long stationId) {
         lineService.removeLineStation(lineId, stationId);
         return ResponseEntity.ok().build();
-    }
-
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException() {
-        return ResponseEntity.badRequest().build();
     }
 }
