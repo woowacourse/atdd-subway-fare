@@ -73,6 +73,19 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_삭제됨(response);
     }
 
+    @DisplayName("존재하지 않는 지하철역을 제거하려고 하면 예외가 발생한다.")
+    @Test
+    void deleteStationWithWrongId() {
+        // given
+        StationResponse stationResponse = 지하철역_등록되어_있음(강남역);
+
+        // when
+        ExtractableResponse<Response> response = 지하철역_제거_요청(new StationResponse(2L, 역삼역));
+
+        // then
+        지하철역_삭제되지_않음(response);
+    }
+
     @DisplayName("지하철역을 수정한다.")
     @Test
     void updateStation() {
@@ -111,6 +124,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철역_수정되지_않음(response);
+    }
+
+    private void 지하철역_삭제되지_않음(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     private void 지하철역_수정되지_않음(ExtractableResponse<Response> response) {
