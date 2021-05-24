@@ -1,6 +1,7 @@
 package wooteco.subway.member.application;
 
 import org.apache.commons.logging.Log;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.member.dao.MemberDao;
@@ -35,5 +36,13 @@ public class MemberService {
     public void deleteMember(LoginMember loginMember) {
         Member member = memberDao.findByEmail(loginMember.getEmail());
         memberDao.deleteById(member.getId());
+    }
+
+    public void checkEmail(String email) {
+        try {
+            memberDao.findByEmail(email);
+        } catch (EmptyResultDataAccessException e) {
+            throw new RuntimeException();
+        }
     }
 }
