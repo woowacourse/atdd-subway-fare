@@ -25,6 +25,10 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
+        if (lineDao.findByName(request.getName()).isPresent()) {
+            throw new DuplicateLineException();
+        }
+
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);
@@ -61,10 +65,24 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
+        validateExistLine(id);
+
+        lineDao.findByName(lineUpdateRequest.getName())
+                .filter(line -> line.getName().equals(lineUpdateRequest.getName()) && !line.getId().equals(id))
+                .ifPresent(station -> {
+                    throw new DuplicateLineException();
+                });
+
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
+    private void validateExistLine(Long id) {
+        lineDao.findLineExceptSectionById(id)
+                .orElseThrow(NoLineException::new);
+    }
+
     public void deleteLineById(Long id) {
+        validateExistLine(id);
         lineDao.deleteById(id);
     }
 
@@ -89,7 +107,6 @@ public class LineService {
 
     public List<LinesResponse> findAllInfo() {
         List<Line> lines = lineDao.findAll();
-        System.out.println(lines.get(0).getSections().getSections());
         return lines.stream()
                 .map(line ->
                         new LinesResponse(

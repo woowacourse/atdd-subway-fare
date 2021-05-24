@@ -9,7 +9,6 @@ import wooteco.subway.line.dto.LinesResponse;
 import wooteco.subway.line.dto.SectionRequest;
 
 import java.net.URI;
-import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -66,10 +65,5 @@ public class LineController {
     @GetMapping("/map")
     public ResponseEntity<List<LinesResponse>> findAllInfo() {
         return ResponseEntity.ok(lineService.findAllInfo());
-    }
-
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity handleSQLException() {
-        return ResponseEntity.badRequest().build();
     }
 }

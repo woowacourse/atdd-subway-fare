@@ -1,18 +1,18 @@
 package wooteco.subway.line.dao;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import wooteco.subway.line.application.NoLineException;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.domain.Sections;
 import wooteco.subway.station.domain.Station;
 
 import javax.sql.DataSource;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
@@ -76,7 +76,7 @@ public class LineDao {
 
     private Line mapLine(List<Map<String, Object>> result) {
         if (result.size() == 0) {
-            throw new RuntimeException();
+            throw new NoLineException();
         }
 
         List<Section> sections = extractSections(result);
@@ -107,5 +107,34 @@ public class LineDao {
 
     public void deleteById(Long id) {
         jdbcTemplate.update("delete from Line where id = ?", id);
+    }
+
+    public Optional<Line> findByName(String name) {
+        String sql = "select * from Line where name = ?";
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(sql, getLineRowMapper(), name));
+        } catch (DataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+    public Optional<Line> findLineExceptSectionById(Long id) {
+        String sql = "select * from Line where id = ?";
+
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(sql,
+                    getLineRowMapper(), id));
+        } catch (DataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+    private RowMapper<Line> getLineRowMapper() {
+        return (rs, rowNum) -> {
+            Long lineId = rs.getLong(1);
+            String name = rs.getString(2);
+            String color = rs.getString(3);
+            return new Line(lineId, name, color);
+        };
     }
 }

@@ -16,6 +16,7 @@ import wooteco.subway.line.dto.SectionResponse;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,7 +58,21 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_생성됨(response);
     }
 
-    @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
+    @DisplayName("존재하는 노선을 생성하는 경우 예외 처리한다.")
+    @Test
+    void cannotCreateExistLine() {
+        // given
+        지하철_노선_생성_요청(lineRequest1);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1);
+
+        // then
+        지하철_노선_생성_실패됨(response);
+        assertThat((String) response.jsonPath().get("message")).isEqualTo("중복된 지하철 노선입니다.");
+    }
+
+    @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성할 경우 예외처리한다.")
     @Test
     void createLineWithDuplicateName() {
         // given
@@ -68,6 +83,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_노선_생성_실패됨(response);
+        assertThat((String) response.jsonPath().get("message")).isEqualTo("중복된 지하철 노선입니다.");
     }
 
     @DisplayName("지하철 노선 목록을 조회한다.")
@@ -111,6 +127,21 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_수정됨(response);
     }
 
+    @DisplayName("이미 존재하는 노선의 이름으로 수정할 경우 예외 처리한다.")
+    @Test
+    void updateWhenExistLineName() {
+        // given
+        LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1);
+        LineResponse lineResponse2 = 지하철_노선_등록되어_있음(lineRequest2);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse, lineRequest2);
+
+        // then
+        지하철_노선_생성_실패됨(response);
+        assertThat((String) response.jsonPath().get("message")).isEqualTo("중복된 지하철 노선입니다.");
+    }
+
     @DisplayName("지하철 노선을 제거한다.")
     @Test
     void deleteLine() {
@@ -123,6 +154,20 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // then
         지하철_노선_삭제됨(response);
     }
+
+    @DisplayName("존재하지 않는 지하철 노선을 제거할 경우 예외 처리한다.")
+    @Test
+    void cannotDeleteWhenLineNotExist() {
+        // given
+        LineResponse lineResponse = new LineResponse(11L, "존재하지 않는 지하철역", "color", Collections.emptyList());
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_제거_요청(lineResponse);
+
+        // then
+        지하철_노선_생성_실패됨(response);
+        assertThat((String) response.jsonPath().get("message")).isEqualTo("존재하지 않는 노선입니다.");
+   }
 
     @DisplayName("구간이 순서대로 들어오지 않아도 정렬된 지하철 전체 노선이 조회된다.")
     @Test
