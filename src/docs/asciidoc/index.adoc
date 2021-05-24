@@ -115,5 +115,8 @@ include::{snippets}/members-deleteme/http-request.adoc[]
 === Response
 include::{snippets}//members-deleteme/http-response.adoc[]
 
-
-
+=== 유저 중복 확인
+=== Request
+include::{snippets}/member-duplicate/http-request.adoc[]
+=== Response
+include::{snippets}//member-duplicate/http-response.adoc[]

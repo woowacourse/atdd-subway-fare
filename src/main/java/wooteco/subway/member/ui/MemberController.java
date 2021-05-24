@@ -26,6 +26,11 @@ public class MemberController {
         return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
     }
 
+    @GetMapping
+    public ResponseEntity<Boolean> duplicateEmail(@RequestParam(name = "email") String email) {
+        return ResponseEntity.ok(memberService.isExistMember(email));
+    }
+
     @GetMapping("/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         MemberResponse member = memberService.findMember(loginMember);
