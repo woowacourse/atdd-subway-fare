@@ -21,6 +21,18 @@ include::{snippets}/station-find/http-request.adoc[]
 === Response
 include::{snippets}/station-find/http-response.adoc[]
 
+=== 역 수정
+=== Request
+include::{snippets}/station-update/http-request.adoc[]
+=== Response
+include::{snippets}/station-update/http-response.adoc[]
+
+=== 역 수정 실패(중복 이름)
+=== Request
+include::{snippets}/station-update-duplicate/http-request.adoc[]
+=== Response
+include::{snippets}/station-update-duplicate/http-response.adoc[]
+
 === 역 삭제
 === Request
 include::{snippets}/station-delete/http-request.adoc[]

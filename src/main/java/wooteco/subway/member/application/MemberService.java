@@ -42,7 +42,7 @@ public class MemberService {
         memberDao.deleteById(member.getId());
     }
 
-    public boolean isExistMember(String email){
+    public boolean isExistMember(String email) {
         return memberDao.findByEmail(email)
                 .isPresent();
     }

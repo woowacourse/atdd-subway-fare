@@ -11,7 +11,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import wooteco.subway.ExceptionAdvice;
 import wooteco.subway.auth.application.AuthService;
+import wooteco.subway.exception.badrequest.StationDuplicateNameException;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
@@ -23,11 +25,12 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(controllers = StationController.class)
+@WebMvcTest(controllers = {StationController.class, ExceptionAdvice.class})
 @ActiveProfiles("test")
 @AutoConfigureRestDocs
 public class StationControllerTest {
@@ -86,7 +89,52 @@ public class StationControllerTest {
                 .andExpect(jsonPath("$.*.name")
                         .value(Matchers.containsInAnyOrder("잠실역", "강남역", "사당역", "잠실새내역", "종합운동장역")))
                 .andDo(print())
-                .andDo(document("station-find"));
+                .andDo(document("station-find",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())
+                ));
+    }
+
+    @DisplayName("역 수정 - 성공")
+    @Test
+    public void updateStationSuccess() throws Exception {
+        // given
+        String name = "잠실역";
+        StationResponse stationResponse = new StationResponse(1L, "잠실역");
+        given(stationService.updateStation(any(Long.class), any(String.class)))
+                .willReturn(stationResponse);
+        //when
+        mockMvc.perform(put("/api/stations/1")
+                .content(objectMapper.writeValueAsString(name))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+        )
+                // then
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("id").value(stationResponse.getId()))
+                .andExpect(jsonPath("name").value(stationResponse.getName()))
+                .andDo(print())
+                .andDo(document("station-update",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())
+                ));
+    }
+
+    @Test
+    @DisplayName("역 수정 - 실패(중복 이름)")
+    public void updateStations() throws Exception {
+        given(stationService.updateStation(any(), any()))
+                .willThrow(new StationDuplicateNameException("newName"));
+        final StationRequest stationRequest = new StationRequest("newName");
+        mockMvc.perform(put("/api/stations/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(stationRequest))
+        )
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("newName은 이미 존재하는 역 이름입니다."))
+                .andDo(document("station-update-duplicate",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())
+                ));
     }
 
     @Test
@@ -97,6 +145,9 @@ public class StationControllerTest {
         )
                 .andExpect(status().isNoContent())
                 .andDo(print())
-                .andDo(document("station-delete"));
+                .andDo(document("station-delete",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())
+                ));
     }
 }

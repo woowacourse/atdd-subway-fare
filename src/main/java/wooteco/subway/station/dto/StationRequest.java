@@ -19,4 +19,8 @@ public class StationRequest {
     public Station toStation() {
         return new Station(name);
     }
+
+    public Station toStation(Long id) {
+        return new Station(id, name);
+    }
 }
