@@ -26,19 +26,20 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
-        persistLine.addSection(addInitSection(persistLine, request));
+        Section initSection = getInitSection(request);
+        Line newLine = new Line(request.getName(), request.getColor(), request.getExtraFare(), initSection);
+        Line persistLine = lineDao.insert(newLine);
+        sectionDao.insert(persistLine, initSection);
         return LineResponse.of(persistLine);
     }
 
-    private Section addInitSection(Line line, LineRequest request) {
+    private Section getInitSection(LineRequest request) {
         if (request.getUpStationId() != null && request.getDownStationId() != null) {
             Station upStation = stationService.findStationById(request.getUpStationId());
             Station downStation = stationService.findStationById(request.getDownStationId());
-            Section section = new Section(upStation, downStation, request.getDistance());
-            return sectionDao.insert(line, section);
+            return new Section(upStation, downStation, request.getDistance());
         }
-        return null;
+        throw new IllegalArgumentException("라인 생성 시, 초기 구간의 상행역, 하행역이 모두 존재해야 합니다.");
     }
 
     public List<LineResponse> findLineResponses() {

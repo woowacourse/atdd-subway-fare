@@ -10,11 +10,11 @@ import wooteco.subway.station.domain.Station;
 public class Sections {
     private List<Section> sections = new ArrayList<>();
 
-    public List<Section> getSections() {
-        return sections;
+    public Sections() {
     }
 
-    public Sections() {
+    public Sections(Section section) {
+        sections.add(section);
     }
 
     public Sections(List<Section> sections) {
@@ -34,6 +34,10 @@ public class Sections {
         addSectionDownToDown(section);
 
         this.sections.add(section);
+    }
+
+    public List<Section> getSections() {
+        return sections;
     }
 
     private void checkAlreadyExisted(Section section) {

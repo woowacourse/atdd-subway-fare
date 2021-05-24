@@ -63,6 +63,13 @@ public class Line {
         this.sections = sections;
     }
 
+    public Line(String name, String color, int extraFare, Section initSection) {
+        this.name = name;
+        this.color = color;
+        this.extraFare = new Fare(extraFare);
+        this.sections = new Sections(initSection);
+    }
+
     public Long getId() {
         return id;
     }
