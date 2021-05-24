@@ -13,10 +13,6 @@ public class LineResponse {
     private List<StationResponse> stations;
 
     public LineResponse() {
-<<<<<<< HEAD
-=======
-
->>>>>>> f51684d... feat: station 예외 로직 구현
     }
 
     public LineResponse(Long id, String name, String color, List<StationResponse> stations) {
