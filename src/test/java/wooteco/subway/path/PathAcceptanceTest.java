@@ -59,7 +59,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         잠실역 = 지하철역_등록되어_있음("잠실역");
 
         신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10, 1200);
         삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5);
 
         지하철_구간_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
@@ -88,7 +88,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         적절한_경로_응답됨(response3, Lists.newArrayList(교대역, 강남역, 역삼역, 잠실역));
         총_거리가_응답됨(response3, 46);
-        총_요금이_응답됨(response3, 2050);
+        총_요금이_응답됨(response3, 2050 + 1200);
     }
 
     public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
