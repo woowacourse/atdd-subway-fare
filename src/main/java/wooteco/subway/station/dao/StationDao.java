@@ -26,7 +26,7 @@ public class StationDao {
     public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("station")
+                .withTableName("STATION")
                 .usingGeneratedKeyColumns("id");
     }
 
