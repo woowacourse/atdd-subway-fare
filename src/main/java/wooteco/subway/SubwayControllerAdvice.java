@@ -10,10 +10,10 @@ import wooteco.subway.exception.dto.ExceptionResponse;
 @RestControllerAdvice
 public class SubwayControllerAdvice {
     @ExceptionHandler(SubwayException.class)
-    public ResponseEntity<ExceptionResponse> subwayException(SubwayException subwayException) {
+    public ResponseEntity<ExceptionResponse> subwayException(SubwayException e) {
         return ResponseEntity
-                .status(subwayException.getHttpStatus())
-                .body(new ExceptionResponse(subwayException.getMessage(), subwayException.getHttpStatus().value()));
+                .status(e.getHttpStatus())
+                .body(e.body());
     }
 
     @ExceptionHandler(Exception.class)
