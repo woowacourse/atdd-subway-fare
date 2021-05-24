@@ -52,10 +52,4 @@ public class MemberController {
         memberService.deleteMember(loginMember);
         return ResponseEntity.noContent().build();
     }
-
-    @PostMapping("/exists")
-    public ResponseEntity checkExistsMember(@RequestBody @Valid EmailCheckRequest email) {
-        memberService.checkExistEmail(email);
-        return ResponseEntity.noContent().build();
-    }
 }
