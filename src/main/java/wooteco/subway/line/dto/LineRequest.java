@@ -7,7 +7,7 @@ import javax.validation.constraints.NotBlank;
 public class LineRequest {
 
     @NotBlank(message = "이름에 공백이 있을 수 없습니다.")
-    @Length(min = 3 ,max = 20,  message = "노선 이름은 3이상 20이하 합니다.")
+    @Length(min = 3, max = 20, message = "노선 이름은 3이상 20이하 합니다.")
     private String name;
     private String color;
     private Long upStationId;

@@ -31,6 +31,12 @@ public class Member {
         this.age = age;
     }
 
+    public void checkPassword(String password) {
+        if (!StringUtils.equals(this.password, password)) {
+            throw new AuthorizationException();
+        }
+    }
+
     public Long getId() {
         return id;
     }
@@ -45,11 +51,5 @@ public class Member {
 
     public Integer getAge() {
         return age;
-    }
-
-    public void checkPassword(String password) {
-        if (!StringUtils.equals(this.password, password)) {
-            throw new AuthorizationException();
-        }
     }
 }

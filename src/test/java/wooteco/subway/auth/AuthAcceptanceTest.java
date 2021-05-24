@@ -35,14 +35,32 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         회원_정보_조회됨(response, EMAIL, AGE);
     }
 
-    @DisplayName("Bearer Auth 로그인 실패")
+    @DisplayName("Bearer Auth 로그인 실패 - 잘못된 이메일")
     @Test
-    void myInfoWithBadBearerAuth() {
+    void myInfoWithBadBearerAuthWrongEmail() {
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
 
         Map<String, String> params = new HashMap<>();
         params.put("email", EMAIL + "OTHER");
         params.put("password", PASSWORD);
+
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @DisplayName("Bearer Auth 로그인 실패 - 잘못된 비밀번호")
+    @Test
+    void myInfoWithBadBearerAuthWrongPassword() {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("email", EMAIL);
+        params.put("password", PASSWORD + "OTHER");
 
         RestAssured
                 .given().log().all()

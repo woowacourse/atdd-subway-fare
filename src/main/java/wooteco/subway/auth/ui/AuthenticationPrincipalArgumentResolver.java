@@ -30,7 +30,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
         LoginMember member = authService.findMemberByToken(credentials);
         if (member.getId() == null) {
-            throw new AuthorizationException();
+            throw new AuthorizationException("유효하지 않은 토큰입니다.");
         }
         return member;
     }
