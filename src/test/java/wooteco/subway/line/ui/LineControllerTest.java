@@ -4,6 +4,8 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -84,7 +86,10 @@ class LineControllerTest {
                 .andExpect(jsonPath("sections[*].distance")
                         .value(contains(5)))
                 .andDo(print())
-                .andDo(document("line-create"));
+                .andDo(document("line-create",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())
+                ));
     }
     @DisplayName("전체 노선 조회 - 성공")
     @Test
@@ -108,7 +113,10 @@ class LineControllerTest {
                 .andExpect(jsonPath("$[*].sections[*].downStation.name")
                         .value(containsInAnyOrder("정자역", "잠실역", "판교역", "역삼역")))
                 .andDo(print())
-                .andDo(document("line-findAll"));
+                .andDo(document("line-findAll",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())
+                ));
     }
     @Test
     @DisplayName("노선 ID 조회 - 성공")
@@ -130,7 +138,10 @@ class LineControllerTest {
                 .andExpect(jsonPath("sections[*].downStation.name")
                         .value(containsInAnyOrder("판교역", "정자역")))
                 .andDo(print())
-                .andDo(document("line-findById"));
+                .andDo(document("line-findById",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())
+                ));
     }
     @Test
     @DisplayName("노선 수정 - 성공")
@@ -146,7 +157,10 @@ class LineControllerTest {
                 // then
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andDo(document("line-update"));
+                .andDo(document("line-update",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())
+                ));
     }
     @Test
     @DisplayName("노선 삭제 - 성공")
@@ -158,7 +172,10 @@ class LineControllerTest {
                 // then
                 .andExpect(status().isNoContent())
                 .andDo(print())
-                .andDo(document("line-delete"));
+                .andDo(document("line-delete",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())
+                ));
     }
     @Test
     @DisplayName("구간 추가 - 성공")
@@ -174,7 +191,10 @@ class LineControllerTest {
                 // then
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andDo(document("section-create"));
+                .andDo(document("section-create",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())
+                ));
     }
     @DisplayName("구간 삭제 - 성공")
     @Test
@@ -186,6 +206,9 @@ class LineControllerTest {
                 // then
                 .andExpect(status().isNoContent())
                 .andDo(print())
-                .andDo(document("section-delete"));
+                .andDo(document("section-delete",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())
+                ));
     }
 }

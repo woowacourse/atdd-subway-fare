@@ -20,6 +20,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = MemberController.class)
@@ -56,7 +58,10 @@ class MemberControllerTest {
         )
                 .andExpect(status().isCreated())
                 .andExpect(header().exists("Location"))
-                .andDo(document("member-create"));
+                .andDo(document("member-create",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())
+                ));
     }
 
     @Test
@@ -78,7 +83,10 @@ class MemberControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("email").value(email))
                 .andExpect(jsonPath("age").value(age))
-                .andDo(document("members-findme"));
+                .andDo(document("members-findme",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())
+                ));
     }
 
     @Test
@@ -104,7 +112,10 @@ class MemberControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("email").value(email))
                 .andExpect(jsonPath("age").value(newAge))
-                .andDo(document("members-updateme"));
+                .andDo(document("members-updateme",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())
+                ));
     }
 
     @Test
@@ -123,7 +134,10 @@ class MemberControllerTest {
                         .header("Authorization", "Bearer " + token)
         )
                 .andExpect(status().isNoContent())
-                .andDo(document("members-deleteme"));
+                .andDo(document("members-deleteme",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())
+                ));
     }
 
     @Test
@@ -135,6 +149,9 @@ class MemberControllerTest {
         mockMvc.perform(get("/api/members?email="+email))
                 .andExpect(status().isOk())
                 .andExpect(content().string("true"))
-                .andDo(document("member-duplicate"));
+                .andDo(document("member-duplicate",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())
+                ));
     }
 }

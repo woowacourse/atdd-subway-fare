@@ -21,6 +21,18 @@ include::{snippets}/station-find/http-request.adoc[]
 ==== Response
 include::{snippets}/station-find/http-response.adoc[]
 
+=== 역 수정
+==== Request
+include::{snippets}/station-update/http-request.adoc[]
+==== Response
+include::{snippets}/station-update/http-response.adoc[]
+
+=== 역 수정 (실패)
+==== Request
+include::{snippets}/station-update-duplicate/http-request.adoc[]
+==== Response
+include::{snippets}/station-update-duplicate/http-response.adoc[]
+
 === 역 삭제
 ==== Request
 include::{snippets}/station-delete/http-request.adoc[]
@@ -42,9 +54,9 @@ include::{snippets}/line-findAll/http-response.adoc[]
 
 === 노선 ID 조회
 ==== Request
-include::{snippets}/line-findbyid/http-request.adoc[]
+include::{snippets}/line-findById/http-request.adoc[]
 ==== Response
-include::{snippets}/line-findbyid/http-response.adoc[]
+include::{snippets}/line-findById/http-response.adoc[]
 
 === 노선 수정
 ==== Request
