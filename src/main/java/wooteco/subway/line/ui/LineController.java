@@ -63,7 +63,7 @@ public class LineController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/all")
+    @GetMapping("/map")
     public ResponseEntity<List<LinesResponse>> findAllInfo() {
         return ResponseEntity.ok(lineService.findAllInfo());
     }
