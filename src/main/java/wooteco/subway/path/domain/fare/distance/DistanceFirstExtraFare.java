@@ -2,12 +2,12 @@ package wooteco.subway.path.domain.fare.distance;
 
 import wooteco.subway.path.domain.fare.Fare;
 
-public class FirstExtraFareDistance implements FareDistance {
+public class DistanceFirstExtraFare implements DistanceFare {
     private static final double DISTANCE_STANDARD = 5.0;
 
     private final int distance;
 
-    public FirstExtraFareDistance(int distance) {
+    public DistanceFirstExtraFare(int distance) {
         this.distance = distance;
     }
 

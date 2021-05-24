@@ -9,7 +9,7 @@ import wooteco.subway.line.domain.Line;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.path.domain.fare.Fare;
 import wooteco.subway.path.domain.fare.FareCalculator;
-import wooteco.subway.path.domain.fare.distance.FareDistance;
+import wooteco.subway.path.domain.fare.distance.DistanceFare;
 import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.path.dto.PathResponseAssembler;
@@ -61,8 +61,8 @@ public class PathService {
 
     private Fare getTotalFare(Optional<LoginMember> loginMemberOptional, SubwayPath subwayPath) {
         int distance = subwayPath.calculateDistance();
-        FareDistance fareDistance = FareDistance.of(distance);
-        Fare fareByDistance = fareDistance.getFare(new Fare(DEFAULT_FARE));
+        DistanceFare distanceFare = DistanceFare.of(distance);
+        Fare fareByDistance = distanceFare.getFare(new Fare(DEFAULT_FARE));
         Fare fareWithLineExtraFare = fareCalculator.getFareWithLineExtraFare(fareByDistance, subwayPath.getLines());
         if (!loginMemberOptional.isPresent()) {
             return fareWithLineExtraFare;

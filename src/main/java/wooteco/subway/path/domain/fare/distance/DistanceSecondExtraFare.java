@@ -2,12 +2,12 @@ package wooteco.subway.path.domain.fare.distance;
 
 import wooteco.subway.path.domain.fare.Fare;
 
-public class SecondExtraFareDistance implements FareDistance {
+public class DistanceSecondExtraFare implements DistanceFare {
     private static final double DISTANCE_STANDARD = 8.0;
 
     private final int distance;
 
-    public SecondExtraFareDistance(int distance) {
+    public DistanceSecondExtraFare(int distance) {
         this.distance = distance;
     }
 
@@ -21,6 +21,6 @@ public class SecondExtraFareDistance implements FareDistance {
     }
 
     public Fare getBeforeDistanceFare() {
-        return new FirstExtraFareDistance(FIRST_EXTRA_FARE_DISTANCE_RANGE_END_DISTANCE).getFullDistanceFareOfRange();
+        return new DistanceFirstExtraFare(FIRST_EXTRA_FARE_DISTANCE_RANGE_END_DISTANCE).getFullDistanceFareOfRange();
     }
 }

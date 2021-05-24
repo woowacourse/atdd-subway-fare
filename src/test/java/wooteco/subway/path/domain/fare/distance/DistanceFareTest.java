@@ -6,9 +6,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import wooteco.subway.path.domain.fare.Fare;
-import wooteco.subway.path.domain.fare.distance.FareDistance;
 
-class FareDistanceTest {
+class DistanceFareTest {
     @DisplayName("거리에 따라 부가되는 추가요금을 계산한다.")
     @ParameterizedTest
     @CsvSource({
@@ -23,8 +22,8 @@ class FareDistanceTest {
         Fare currentFare = new Fare(1_250);
 
         // when
-        FareDistance fareDistance = FareDistance.of(distance);
-        Fare fareWithDistanceExtraFare = fareDistance.getFare(currentFare);
+        DistanceFare distanceFare = DistanceFare.of(distance);
+        Fare fareWithDistanceExtraFare = distanceFare.getFare(currentFare);
 
         // then
         assertThat(fareWithDistanceExtraFare).isEqualTo(new Fare(fareExpected));

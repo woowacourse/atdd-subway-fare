@@ -2,19 +2,19 @@ package wooteco.subway.path.domain.fare.distance;
 
 import wooteco.subway.path.domain.fare.Fare;
 
-public interface FareDistance {
+public interface DistanceFare {
     int DEFAULT_FARE_DISTANCE = 10;
     int FIRST_EXTRA_FARE_DISTANCE_RANGE_END_DISTANCE = 50;
     int EXTRA_FARE_BY_DISTANCE = 100;
 
-    static FareDistance of(int distance) {
+    static DistanceFare of(int distance) {
         if (distance <= DEFAULT_FARE_DISTANCE) {
-            return new DefaultFareDistance();
+            return new DistanceDefaultFare();
         }
         if (distance <= FIRST_EXTRA_FARE_DISTANCE_RANGE_END_DISTANCE) {
-            return new FirstExtraFareDistance(distance);
+            return new DistanceFirstExtraFare(distance);
         }
-        return new SecondExtraFareDistance(distance);
+        return new DistanceSecondExtraFare(distance);
     }
 
     Fare getFare(Fare currentFare);
