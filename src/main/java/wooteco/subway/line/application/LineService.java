@@ -144,18 +144,10 @@ public class LineService {
     public List<MapResponse> findMap() {
         List<Line> lines = findLines();
 
-        List<SectionsOfLineResponse> collect = lines.stream()
-                .map(Line::getId)
-                .map(this::getSectionsResponseOfLine)
-                .collect(toList());
-
-        SectionsOfLineResponse sectionsOfLineResponse = collect.get(1);
-
-
         return lines.stream()
                 .map(line -> {
                     SectionsOfLineResponse sectionsResponseOfLine = getSectionsResponseOfLine(line.getId());
-                    List<StationOfMapResponse> stations = sectionsOfLineResponse.getStations().stream()
+                    List<StationOfMapResponse> stations = sectionsResponseOfLine.getStations().stream()
                             .map(stationOfLineResponse -> new StationOfMapResponse(stationOfLineResponse.getId(),
                                     stationOfLineResponse.getName(),
                                     getDistance(sectionsResponseOfLine, stationOfLineResponse),

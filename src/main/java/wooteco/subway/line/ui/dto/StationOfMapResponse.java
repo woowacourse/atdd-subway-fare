@@ -43,6 +43,10 @@ public class StationOfMapResponse {
         return name;
     }
 
+    public int getDistance() {
+        return distance;
+    }
+
     public List<TransferLineResponse> getTransferLineResponses() {
         return transferLineResponses;
     }
