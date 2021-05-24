@@ -25,7 +25,7 @@ public enum ExtraFare {
 
     public static int calculateFare(int distance) {
         final ExtraFare extraFare = Arrays.stream(values())
-            .filter(element -> element.minRange < distance && element.maxRange > distance)
+            .filter(element -> element.minRange < distance && element.maxRange >= distance)
             .findAny()
             .orElseThrow(() -> new IllegalArgumentException("해당하는 FareForDistance 객체가 없습니다."));
 
