@@ -4,6 +4,9 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -73,7 +76,9 @@ class LineControllerTest {
             .andExpect(jsonPath("name").value(lineResponse.getName()))
             .andExpect(jsonPath("color").value(lineResponse.getColor()))
             .andDo(print())
-            .andDo(document("line-create"));
+            .andDo(document("line-create",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint())));
     }
 
     @Test
@@ -87,7 +92,9 @@ class LineControllerTest {
         mockMvc.perform(get("/api/lines"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$[*].name").value(containsInAnyOrder("신분당선", "2호선")))
-            .andDo(document("line-find"));
+            .andDo(document("line-find",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint())));
     }
 
     @Test
@@ -101,7 +108,9 @@ class LineControllerTest {
         )
             .andExpect(status().isOk())
             .andDo(print())
-            .andDo(document("lines-update"));
+            .andDo(document("lines-update",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint())));
     }
 
     @Test
@@ -112,7 +121,9 @@ class LineControllerTest {
         )
             .andExpect(status().isNoContent())
             .andDo(print())
-            .andDo(document("line-delete"));
+            .andDo(document("line-delete",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint())));
     }
 
     @DisplayName("구간 삭제 - 성공")
@@ -121,7 +132,9 @@ class LineControllerTest {
         mockMvc.perform(delete("/api/lines/1/sections?stationId=1"))
             .andExpect(status().isNoContent())
             .andDo(print())
-            .andDo(document("section-delete"));
+            .andDo(document("section-delete",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint())));
     }
 
     @Test
@@ -135,7 +148,9 @@ class LineControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("name").value("신분당선"))
             .andDo(print())
-            .andDo(document("line-findbyid"));
+            .andDo(document("line-findbyid",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint())));
     }
 
     @Test
@@ -147,7 +162,9 @@ class LineControllerTest {
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andDo(print())
-            .andDo(document("section-create"));
+            .andDo(document("section-create",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint())));
     }
 
 }

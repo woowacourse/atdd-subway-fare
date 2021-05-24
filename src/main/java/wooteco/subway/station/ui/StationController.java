@@ -33,9 +33,14 @@ public class StationController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteStation(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
         stationService.deleteStationById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<StationResponse> updateStation(@PathVariable Long id, @RequestBody StationRequest stationRequest) {
+        return ResponseEntity.ok(stationService.updateStation(id, stationRequest.getName()));
     }
 
     @ExceptionHandler(SQLException.class)

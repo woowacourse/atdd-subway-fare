@@ -2,6 +2,9 @@ package wooteco.subway.controller;
 
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -68,6 +71,8 @@ class PathControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("stations[*].name").value(
                 Matchers.containsInRelativeOrder("강남역","판교역","정자역")))
-            .andDo(document("path-find"));
+            .andDo(document("path-find",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint())));
     }
 }

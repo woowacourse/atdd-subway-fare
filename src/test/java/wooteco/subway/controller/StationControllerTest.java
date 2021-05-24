@@ -3,6 +3,9 @@ package wooteco.subway.controller;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -20,13 +23,15 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import wooteco.subway.ExceptionAdviceController;
 import wooteco.subway.auth.application.AuthService;
+import wooteco.subway.common.exception.badrequest.StationNameExistsException;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 import wooteco.subway.station.ui.StationController;
 
-@WebMvcTest(controllers = StationController.class)
+@WebMvcTest(controllers = {StationController.class, ExceptionAdviceController.class})
 @ActiveProfiles("test")
 @AutoConfigureRestDocs
 class StationControllerTest {
@@ -60,7 +65,9 @@ class StationControllerTest {
             .andExpect(header().exists("Location"))
             .andExpect(jsonPath("name").value(stationRequest.getName()))
             .andDo(print())
-            .andDo(document("station-create"));
+            .andDo(document("station-create",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint())));
     }
 
     @Test
@@ -85,7 +92,9 @@ class StationControllerTest {
             .andExpect(jsonPath("$.*.name")
                 .value(Matchers.containsInAnyOrder("잠실역", "강남역", "사당역", "잠실새내역", "종합운동장역")))
             .andDo(print())
-            .andDo(document("station-find"));
+            .andDo(document("station-find",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint())));
     }
 
     @Test
@@ -95,6 +104,46 @@ class StationControllerTest {
             delete("/api/stations/1")
         )
             .andExpect(status().isNoContent())
-            .andDo(document("station-delete"));
+            .andDo(document("station-delete",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint())));
+    }
+
+    @Test
+    @DisplayName("역 수정 - 실패(중복 이름)")
+    public void updateStations_fail() throws Exception {
+        given(stationService.updateStation(any(), any()))
+            .willThrow(new StationNameExistsException());
+
+        final StationRequest stationRequest = new StationRequest("newName");
+
+        mockMvc.perform(put("/api/stations/1")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(stationRequest))
+        )
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string("이미 존재하는 역 이름입니다."))
+            .andDo(document("station-update-duplicate",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint())));
+    }
+
+    @Test
+    @DisplayName("역 수정 - 성공")
+    public void updateStations() throws Exception {
+        final String newName = "newName";
+        given(stationService.updateStation(any(), any()))
+            .willReturn(new StationResponse(1L, newName));
+
+        final StationRequest stationRequest = new StationRequest(newName);
+
+        mockMvc.perform(put("/api/stations/1")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(stationRequest))
+        )
+            .andExpect(status().isOk())
+            .andDo(document("station-update",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint())));
     }
 }

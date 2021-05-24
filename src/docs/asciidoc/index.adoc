@@ -27,6 +27,20 @@ include::{snippets}/station-delete/http-request.adoc[]
 ==== Response
 include::{snippets}/station-delete/http-response.adoc[]
 
+=== 역 수정
+==== Request
+include::{snippets}/station-update/http-request.adoc[]
+==== Response
+include::{snippets}/station-update/http-response.adoc[]
+
+=== 역 수정 실패 - 존재하는 이름으로 변경시
+==== Request
+include::{snippets}/station-update-duplicate/http-request.adoc[]
+==== Response
+include::{snippets}/station-update-duplicate/http-response.adoc[]
+
+
+
 == Lines (노선)
 === 노선 생성
 ==== Request

@@ -1,6 +1,7 @@
 package wooteco.subway.station.application;
 
 import org.springframework.stereotype.Service;
+import wooteco.subway.common.exception.badrequest.StationNameExistsException;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;
@@ -36,5 +37,13 @@ public class StationService {
 
     public void deleteStationById(Long id) {
         stationDao.deleteById(id);
+    }
+
+    public StationResponse updateStation(Long id, String name) {
+        if (stationDao.findByName(name).isPresent()) {
+            throw new StationNameExistsException();
+        }
+        stationDao.updateName(id, name);
+        return new StationResponse(id, name);
     }
 }
