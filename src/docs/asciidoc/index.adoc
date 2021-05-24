@@ -55,9 +55,9 @@ include::{snippets}/line-find/http-response.adoc[]
 
 === 노선 ID 조회
 === Request
-include::{snippets}/line-findbyid/http-request.adoc[]
+include::{snippets}/line-findById/http-request.adoc[]
 === Response
-include::{snippets}/line-findbyid/http-response.adoc[]
+include::{snippets}/line-findById/http-response.adoc[]
 
 === 노선 수정
 === Request
