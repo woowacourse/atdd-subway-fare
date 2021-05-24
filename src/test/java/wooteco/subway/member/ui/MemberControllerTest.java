@@ -117,11 +117,24 @@ class MemberControllerTest {
         int age = 20;
         given(authService.findMemberByToken(token))
                 .willReturn(new LoginMember(id, email, age));
+
         mockMvc.perform(
                 delete("/api/members/me")
                         .header("Authorization", "Bearer " + token)
         )
                 .andExpect(status().isNoContent())
                 .andDo(document("members-deleteme"));
+    }
+
+    @Test
+    @DisplayName("유저 중복 확인 - 성공")
+    void duplicateMember() throws Exception {
+        final String email = "test@email.com";
+        given(memberService.existsMember(email)).willReturn(true);
+
+        mockMvc.perform(get("/api/members?email="+email))
+                .andExpect(status().isOk())
+                .andExpect(content().string("true"))
+                .andDo(document("member-duplicate"));
     }
 }
