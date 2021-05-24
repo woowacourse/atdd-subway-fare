@@ -1,8 +1,11 @@
 package wooteco.subway.exception.dto;
 
 public class ExceptionResponse {
-    private final String message;
-    private final int status;
+    private String message;
+    private int status;
+
+    public ExceptionResponse() {
+    }
 
     public ExceptionResponse(String message, int status) {
         this.message = message;
