@@ -32,6 +32,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
 
+    private StationResponse 판교역;
+    private StationResponse 정자역;
+    private StationResponse 역삼역;
+    private StationResponse 잠실역;
+
     /**
      * 교대역    --- *2호선* ---   강남역
      * |                        |
@@ -48,11 +53,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
         교대역 = 지하철역_등록되어_있음("교대역");
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역");
 
+        판교역 = 지하철역_등록되어_있음("판교역");
+        정자역 = 지하철역_등록되어_있음("정자역");
+        역삼역 = 지하철역_등록되어_있음("역삼역");
+        잠실역 = 지하철역_등록되어_있음("잠실역");
+
         신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
         이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
         삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5);
 
         지하철_구간_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
+        지하철_구간_등록되어_있음(신분당선, 판교역, 강남역, 18);
+        지하철_구간_등록되어_있음(신분당선, 정자역, 판교역, 47);
+        지하철_구간_등록되어_있음(이호선, 강남역, 역삼역, 22);
+        지하철_구간_등록되어_있음(이호선, 역삼역, 잠실역, 14);
     }
 
     @DisplayName("두 역의 최단 거리 경로를 조회한다.")
@@ -60,10 +74,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void findPathByDistance() {
         //when
         ExtractableResponse<Response> response = 거리_경로_조회_요청(3L, 2L);
+        ExtractableResponse<Response> response2 = 거리_경로_조회_요청(4L, 6L);
 
         //then
         적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
         총_거리가_응답됨(response, 5);
+
+        적절한_경로_응답됨(response2, Lists.newArrayList(남부터미널역, 양재역, 강남역, 판교역, 정자역));
+        총_거리가_응답됨(response2, 77);
     }
 
     public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
