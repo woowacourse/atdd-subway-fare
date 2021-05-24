@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
+import wooteco.subway.line.dto.LineSectionResponse;
 import wooteco.subway.line.dto.SectionDistanceRequest;
 import wooteco.subway.line.dto.SectionRequest;
 
@@ -26,7 +27,7 @@ import wooteco.subway.line.dto.SectionRequest;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class LineController {
 
-    private LineService lineService;
+    private final LineService lineService;
 
     public LineController(LineService lineService) {
         this.lineService = lineService;
@@ -61,6 +62,11 @@ public class LineController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/{lineId}/sections")
+    public ResponseEntity<LineSectionResponse> findSections(@PathVariable Long lineId) {
+        return ResponseEntity.ok(lineService.findSectionsById(lineId));
+    }
+
     @PostMapping("/{lineId}/sections")
     public ResponseEntity addLineStation(@PathVariable Long lineId,
         @RequestBody SectionRequest sectionRequest) {
@@ -70,7 +76,8 @@ public class LineController {
 
     @PutMapping("/{lineId}/sections")
     public ResponseEntity<Void> updateLineStation(@PathVariable Long lineId,
-        @RequestBody SectionDistanceRequest sectionDistanceRequest, Long upStationId, Long downStationId) {
+        @RequestBody SectionDistanceRequest sectionDistanceRequest, Long upStationId,
+        Long downStationId) {
         lineService.updateLineStation(lineId, upStationId, downStationId, sectionDistanceRequest);
         return ResponseEntity.ok().build();
     }
