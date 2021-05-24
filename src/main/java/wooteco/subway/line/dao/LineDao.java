@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.domain.Sections;
-import wooteco.subway.path.domain.Fare;
+import wooteco.subway.path.domain.fare.Fare;
 import wooteco.subway.station.domain.Station;
 
 @Repository

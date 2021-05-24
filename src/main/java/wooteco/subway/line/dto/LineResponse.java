@@ -3,7 +3,7 @@ package wooteco.subway.line.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 import wooteco.subway.line.domain.Line;
-import wooteco.subway.path.domain.Fare;
+import wooteco.subway.path.domain.fare.Fare;
 import wooteco.subway.station.dto.StationResponse;
 
 public class LineResponse {

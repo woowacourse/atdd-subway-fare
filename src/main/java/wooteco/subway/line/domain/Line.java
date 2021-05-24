@@ -2,7 +2,7 @@ package wooteco.subway.line.domain;
 
 import java.util.List;
 import java.util.Objects;
-import wooteco.subway.path.domain.Fare;
+import wooteco.subway.path.domain.fare.Fare;
 import wooteco.subway.station.domain.Station;
 
 public class Line {
