@@ -42,4 +42,10 @@ public class MemberController {
         memberService.deleteMember(loginMember);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/members/check-validation")
+    public ResponseEntity<Void> checkValidation(@RequestParam String email) {
+        memberService.checkValidation(email);
+        return ResponseEntity.ok().build();
+    }
 }

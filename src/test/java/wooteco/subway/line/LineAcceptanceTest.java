@@ -160,7 +160,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines/all")
+                .when().get("/lines/map")
                 .then().log().all()
                 .extract();
     }

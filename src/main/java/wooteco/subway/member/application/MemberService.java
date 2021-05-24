@@ -1,13 +1,13 @@
 package wooteco.subway.member.application;
 
-import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
+import wooteco.subway.member.exception.DuplicateEmailException;
+import wooteco.subway.member.exception.NoMemberException;
 
 @Service
 public class MemberService {
@@ -23,17 +23,27 @@ public class MemberService {
     }
 
     public MemberResponse findMember(LoginMember loginMember) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
+        Member member = memberDao.findByEmail(loginMember.getEmail())
+                .orElseThrow(NoMemberException::new);
         return MemberResponse.of(member);
     }
 
     public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
+        Member member = memberDao.findByEmail(loginMember.getEmail())
+                .orElseThrow(NoMemberException::new);
         memberDao.update(new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
     }
 
     public void deleteMember(LoginMember loginMember) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
+        Member member = memberDao.findByEmail(loginMember.getEmail())
+                .orElseThrow(NoMemberException::new);
         memberDao.deleteById(member.getId());
+    }
+
+    public void checkValidation(String email) {
+        memberDao.findByEmail(email)
+                .ifPresent(member -> {
+                    throw new DuplicateEmailException();
+                });
     }
 }
