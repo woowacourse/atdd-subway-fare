@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import wooteco.subway.auth.application.AuthorizationException;
+import wooteco.subway.line.application.LineException;
 import wooteco.subway.station.application.StationException;
 
 @ControllerAdvice
@@ -18,6 +19,12 @@ public class GlobalControllerAdvice {
 
     @ExceptionHandler(StationException.class)
     public ResponseEntity<ExceptionResponse> handleStationException(StationException e){
+        ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
+    }
+
+    @ExceptionHandler(LineException.class)
+    public ResponseEntity<ExceptionResponse> handleLineException(LineException e){
         ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
     }

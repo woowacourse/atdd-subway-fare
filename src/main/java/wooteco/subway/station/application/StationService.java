@@ -29,7 +29,8 @@ public class StationService {
     }
 
     public Station findStationById(Long id) {
-        return stationDao.findById(id).orElseThrow(()->new StationException("존재하지 않는 역입니다."));
+        return stationDao.findById(id)
+                .orElseThrow(()->new StationException("존재하지 않는 역입니다."));
     }
 
     public List<StationResponse> findAllStationResponses() {
