@@ -39,13 +39,9 @@ public class MemberDao {
         return new Member(id, member.getEmail(), member.getPassword(), member.getAge());
     }
 
-    public Optional<Member> existEmail(String email) {
-        String sql = "select * from MEMBER where exists(select * from MEMBER where email = ?) limit 1";
-        try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, email));
-        } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
-        }
+    public boolean exists(String email) {
+        String sql = "select exists (select * from MEMBER where email = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, email);
     }
 
     public void update(Member member) {

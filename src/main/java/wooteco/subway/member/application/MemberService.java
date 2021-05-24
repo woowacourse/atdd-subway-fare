@@ -24,9 +24,8 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public void existMember(String email) {
-        Optional<Member> member = memberDao.existEmail(email);
-        if (member.isPresent()) {
+    public void checkEmailDuplication(MemberEmailRequest request) {
+        if (memberDao.exists(request.getEmail())) {
             throw new DuplicateEmailException();
         }
     }

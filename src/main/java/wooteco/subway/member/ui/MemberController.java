@@ -8,7 +8,6 @@ import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.dto.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Email;
 import java.net.URI;
 
 @RestController
@@ -28,8 +27,8 @@ public class MemberController {
     }
 
     @PostMapping("/exists")
-    public ResponseEntity<Void> existMember(@Email @RequestBody String email) {
-        memberService.existMember(email);
+    public ResponseEntity<Void> checkEmailDuplication(@Valid @RequestBody MemberEmailRequest request) {
+        memberService.checkEmailDuplication(request);
         return ResponseEntity.noContent().build();
     }
 
