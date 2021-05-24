@@ -3,6 +3,7 @@ package wooteco.subway.station.dto;
 import wooteco.subway.station.domain.Station;
 
 public class StationRequest {
+
     private String name;
 
     public StationRequest() {

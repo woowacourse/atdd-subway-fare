@@ -1,11 +1,11 @@
 package wooteco.subway.path.domain;
 
-import wooteco.subway.line.domain.Line;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import wooteco.subway.line.domain.Line;
 
 public class SectionEdges {
+
     private final List<SectionEdge> sectionEdgeGroup;
 
     public SectionEdges(List<SectionEdge> sectionEdgeGroup) {
@@ -18,8 +18,8 @@ public class SectionEdges {
 
     public List<Line> getLines() {
         return sectionEdgeGroup.stream()
-                .map(SectionEdge::getLine)
-                .distinct()
-                .collect(Collectors.toList());
+            .map(SectionEdge::getLine)
+            .distinct()
+            .collect(Collectors.toList());
     }
 }

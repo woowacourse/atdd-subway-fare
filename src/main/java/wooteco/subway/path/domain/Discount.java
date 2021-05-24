@@ -1,6 +1,7 @@
 package wooteco.subway.path.domain;
 
 public class Discount {
+
     private final DiscountRate discountRate;
 
     private Discount(DiscountRate discountRate) {

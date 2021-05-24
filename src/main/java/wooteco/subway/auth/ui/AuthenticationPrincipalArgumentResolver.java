@@ -1,6 +1,7 @@
 package wooteco.subway.auth.ui;
 
 import java.util.Objects;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -12,10 +13,9 @@ import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
 import wooteco.subway.member.domain.LoginMember;
 
-import javax.servlet.http.HttpServletRequest;
-
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
-    private AuthService authService;
+
+    private final AuthService authService;
 
     public AuthenticationPrincipalArgumentResolver(AuthService authService) {
         this.authService = authService;
@@ -27,7 +27,8 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest,
+        WebDataBinderFactory binderFactory) {
         String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
         if (Objects.isNull(credentials)) {
             return new LoginMember(false);
