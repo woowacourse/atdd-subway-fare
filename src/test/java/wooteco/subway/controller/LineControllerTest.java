@@ -32,6 +32,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import wooteco.subway.TestDataLoader;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.line.application.LineService;
+import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.LineUpdateRequest;
@@ -100,7 +101,12 @@ class LineControllerTest {
     @Test
     @DisplayName("노선 수정 - 성공")
     public void updateLines() throws Exception{
-        LineUpdateRequest lineUpdateRequest = new LineUpdateRequest("2호선", "bg-red-200");
+        final TestDataLoader testDataLoader = new TestDataLoader();
+        final Line 신분당선 = testDataLoader.신분당선();
+        LineUpdateRequest lineUpdateRequest = new LineUpdateRequest(신분당선.getName(), 신분당선.getColor());
+        given(lineService.findLineResponseById(any()))
+            .willReturn(LineResponse.of(신분당선));
+
         mockMvc.perform(
             put("/api/lines/1")
                 .content(objectMapper.writeValueAsString(lineUpdateRequest))
