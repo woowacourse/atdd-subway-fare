@@ -90,10 +90,11 @@ public class Sections {
         Section upEndSection = findUpEndSection();
         stations.add(upEndSection.getUpStation());
 
-        Section nextSection = upEndSection;
-        while (nextSection != null) {
+        Optional<Section> nextSectionOptional = Optional.of(upEndSection);
+        while (nextSectionOptional.isPresent()) {
+            Section nextSection = nextSectionOptional.get();
             stations.add(nextSection.getDownStation());
-            nextSection = findSectionByNextUpStation(nextSection.getDownStation());
+            nextSectionOptional = findSectionByNextUpStation(nextSection.getDownStation());
         }
 
         return stations;
@@ -110,11 +111,10 @@ public class Sections {
             .orElseThrow(RuntimeException::new);
     }
 
-    private Section findSectionByNextUpStation(Station station) {
+    private Optional<Section> findSectionByNextUpStation(Station station) {
         return this.sections.stream()
             .filter(it -> it.getUpStation().equals(station))
-            .findFirst()
-            .orElse(null);
+            .findFirst();
     }
 
     public void removeStation(Station station) {
