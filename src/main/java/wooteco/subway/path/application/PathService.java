@@ -9,6 +9,7 @@ import wooteco.subway.line.domain.Line;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.path.domain.Fare;
 import wooteco.subway.path.domain.FareCalculator;
+import wooteco.subway.path.domain.FareDistance;
 import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.path.dto.PathResponseAssembler;
@@ -45,8 +46,23 @@ public class PathService {
         }
     }
 
+//    private Fare getTotalFareNew(Optional<LoginMember> loginMemberOptional, SubwayPath subwayPath) {
+//        int distance = subwayPath.calculateDistance();
+//        FareDistance fareDistance = FareDistance.of(distance);
+//        Fare fareByDistance = fareDistance.getFare(new Fare(DEFAULT_FARE));
+//        Fare fareWithLineExtraFare = fareCalculator.getFareWithLineExtraFare(fareByDistance, subwayPath.getLines());
+//        if (!loginMemberOptional.isPresent()) {
+//            return fareWithLineExtraFare;
+//        }
+//        LoginMember loginMember = loginMemberOptional.get();
+//        FareAge fareAge = FareAge.of(loginMember.getAge());
+//        return fareCalculator.getFareByAge(fareWithLineExtraFare, fareAge);
+//    }
+
     private Fare getTotalFare(Optional<LoginMember> loginMemberOptional, SubwayPath subwayPath) {
-        Fare fareByDistance = fareCalculator.getFareByDistance(new Fare(DEFAULT_FARE), subwayPath.calculateDistance());
+        int distance = subwayPath.calculateDistance();
+        FareDistance fareDistance = FareDistance.of(distance);
+        Fare fareByDistance = fareDistance.getFare(new Fare(DEFAULT_FARE));
         Fare fareWithLineExtraFare = fareCalculator.getFareWithLineExtraFare(fareByDistance, subwayPath.getLines());
         if (!loginMemberOptional.isPresent()) {
             return fareWithLineExtraFare;

@@ -22,23 +22,6 @@ class FareCalculatorTest {
         this.fareCalculator = new FareCalculator();
     }
 
-    @DisplayName("거리에 따라 부가되는 추가요금을 계산한다.")
-    @ParameterizedTest
-    @CsvSource({
-        "1250, 9, 1250",
-        "1250, 12, 1350",
-        "1250, 16, 1450",
-        "1250, 58, 2150",
-        "1250, 66, 2250"
-    })
-    void getFareByDistance(int fareRaw, int distance, int fareExpected) {
-        Fare fare = new Fare(fareRaw);
-
-        Fare actual = fareCalculator.getFareByDistance(fare, distance);
-
-        assertThat(actual).isEqualTo(new Fare(fareExpected));
-    }
-
     @DisplayName("경로상 노선들의 추가 요금에 따른 총 요금을 계산한다.")
     @ParameterizedTest
     @MethodSource

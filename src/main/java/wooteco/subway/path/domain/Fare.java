@@ -10,6 +10,12 @@ public class Fare {
         this.fare = fare;
     }
 
+    public Fare(double fare) {
+        int castedFare = (int) fare;
+        validate(castedFare);
+        this.fare = (castedFare);
+    }
+
     private void validate(int fare) {
         if (fare < 0) {
             throw new IllegalArgumentException("음수 값은 요금이 될 수 없습니다.");
