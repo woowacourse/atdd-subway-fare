@@ -77,7 +77,7 @@ class LineControllerTest {
 
     @Test
     @DisplayName("노선 전체 조회 - 성공")
-    public void showLines() throws Exception{
+    public void showLines() throws Exception {
         TestDataLoader testDataLoader = new TestDataLoader();
         List<LineResponse> lineResponses = LineResponse
             .listOf(Arrays.asList(testDataLoader.신분당선(), testDataLoader.이호선()));
@@ -95,7 +95,7 @@ class LineControllerTest {
 
     @Test
     @DisplayName("노선 전체 조회2 - 성공")
-    public void showAllLines() throws Exception{
+    public void showAllLines() throws Exception {
         TestDataLoader testDataLoader = new TestDataLoader();
         List<LineResponse> lineResponses = LineResponse
             .listOf(Arrays.asList(testDataLoader.신분당선(), testDataLoader.이호선()));
@@ -113,7 +113,7 @@ class LineControllerTest {
 
     @Test
     @DisplayName("노선 ID 조회 - 성공")
-    public void showLineById() throws Exception{
+    public void showLineById() throws Exception {
         final TestDataLoader testDataLoader = new TestDataLoader();
         final LineResponse lineResponse = LineResponse.of(testDataLoader.신분당선());
         Long id = testDataLoader.신분당선().getId();
@@ -129,13 +129,13 @@ class LineControllerTest {
 
     @Test
     @DisplayName("노선 수정 - 성공")
-    public void updateLines() throws Exception{
+    public void updateLines() throws Exception {
         LineUpdateRequest lineUpdateRequest = new LineUpdateRequest("2호선", "bg-red-200", 0);
 
         mockMvc.perform(
             put("/lines/1")
-            .content(objectMapper.writeValueAsString(lineUpdateRequest))
-            .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(lineUpdateRequest))
+                .contentType(MediaType.APPLICATION_JSON)
         )
             .andExpect(status().isOk())
             .andDo(print())

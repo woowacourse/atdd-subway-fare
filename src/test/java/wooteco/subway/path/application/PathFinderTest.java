@@ -18,8 +18,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class PathFinderTest {
 
-    private PathFinder pathFinder = new PathFinder();
-    private static TestDataLoader testDataLoader = new TestDataLoader();
+    private static final TestDataLoader testDataLoader = new TestDataLoader();
+    private final PathFinder pathFinder = new PathFinder();
+
+    private static Stream<Arguments> calculateFareWithDistance() {
+        return Stream.of(
+            Arguments.of(testDataLoader.강남역(), testDataLoader.정자역(), 1250),
+            Arguments.of(testDataLoader.강남역(), testDataLoader.잠실역(), 2050),
+            Arguments.of(testDataLoader.산본역(), testDataLoader.범계역(), 2750)
+        );
+    }
 
     @DisplayName("거리별로 요금이 계산된다")
     @ParameterizedTest
@@ -34,13 +42,5 @@ class PathFinderTest {
 
         // then
         assertThat(fare).isEqualTo(expectedFare);
-    }
-
-    private static Stream<Arguments> calculateFareWithDistance() {
-        return Stream.of(
-            Arguments.of(testDataLoader.강남역(), testDataLoader.정자역(), 1250),
-            Arguments.of(testDataLoader.강남역(), testDataLoader.잠실역(), 2050),
-            Arguments.of(testDataLoader.산본역(), testDataLoader.범계역(), 2750)
-        );
     }
 }

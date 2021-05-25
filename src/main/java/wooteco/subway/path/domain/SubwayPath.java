@@ -5,7 +5,6 @@ import wooteco.subway.path.application.InvalidPathException;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 public class SubwayPath {
     private List<SectionEdge> sectionEdges;

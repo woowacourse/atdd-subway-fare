@@ -30,14 +30,12 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
     public static final int AGE = 20;
-
+    private static TokenResponse tokenResponse;
     private LineResponse 신분당선;
     private StationResponse 강남역;
     private StationResponse 양재역;
     private StationResponse 정자역;
     private StationResponse 광교역;
-
-    private static TokenResponse tokenResponse;
 
     public static ExtractableResponse<Response> 지하철_구간_생성_요청_내부토큰(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
         SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
@@ -45,11 +43,11 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         return RestAssured
             .given().log().all()
             .auth().oauth2(tokenResponse.getAccessToken())
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(sectionRequest)
-                .when().post("/lines/{lineId}/sections", line.getId())
-                .then().log().all()
-                .extract();
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(sectionRequest)
+            .when().post("/lines/{lineId}/sections", line.getId())
+            .then().log().all()
+            .extract();
     }
 
     public static ExtractableResponse<Response> 지하철_구간_생성_요청_외부토큰(TokenResponse tokenResponse, LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
@@ -63,6 +61,50 @@ public class SectionAcceptanceTest extends AcceptanceTest {
             .when().post("/lines/{lineId}/sections", line.getId())
             .then().log().all()
             .extract();
+    }
+
+    public static void 지하철_구간_등록되어_있음_외부토큰(TokenResponse tokenResponse, LineResponse lineResponse, StationResponse upStation, StationResponse downStation, int distance) {
+        지하철_구간_생성_요청_외부토큰(tokenResponse, lineResponse, upStation, downStation, distance);
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(LineResponse line, StationResponse station) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(tokenResponse.getAccessToken())
+            .when().delete("/lines/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
+            .then().log().all()
+            .extract();
+    }
+
+    public static void 지하철_노선에_지하철역_순서_정렬됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
+        LineResponse line = response.as(LineResponse.class);
+        List<Long> stationIds = line.getStations().stream()
+            .map(StationResponse::getId)
+            .collect(Collectors.toList());
+
+        List<Long> expectedStationIds = expectedStations.stream()
+            .map(StationResponse::getId)
+            .collect(Collectors.toList());
+
+        assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
+    }
+
+    public static void 지하철_노선에_지하철역_제외됨(ExtractableResponse<Response> result, LineResponse lineResponse, List<StationResponse> stationResponses) {
+        assertThat(result.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        ExtractableResponse<Response> response = 지하철_노선_조회_요청_외부토큰(tokenResponse, lineResponse);
+        지하철_노선에_지하철역_순서_정렬됨(response, stationResponses);
+    }
+
+    public static void 지하철_구간_생성됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 지하철_구간_등록_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    public static void 지하철_노선에_지하철역_제외_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     @DisplayName("지하철 구간을 등록한다.")
@@ -130,42 +172,6 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_제외_실패됨(removeResponse);
     }
 
-    public static void 지하철_구간_등록되어_있음_외부토큰(TokenResponse tokenResponse, LineResponse lineResponse, StationResponse upStation, StationResponse downStation, int distance) {
-        지하철_구간_생성_요청_외부토큰(tokenResponse, lineResponse, upStation, downStation, distance);
-    }
-
-    public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(LineResponse line, StationResponse station) {
-        return RestAssured
-            .given().log().all()
-            .auth().oauth2(tokenResponse.getAccessToken())
-                .when().delete("/lines/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
-                .then().log().all()
-                .extract();
-    }
-
-    public static void 지하철_노선에_지하철역_순서_정렬됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
-        LineResponse line = response.as(LineResponse.class);
-        List<Long> stationIds = line.getStations().stream()
-                .map(StationResponse::getId)
-                .collect(Collectors.toList());
-
-        List<Long> expectedStationIds = expectedStations.stream()
-                .map(StationResponse::getId)
-                .collect(Collectors.toList());
-
-        assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
-    }
-
-    public static void 지하철_노선에_지하철역_제외됨(ExtractableResponse<Response> result, LineResponse lineResponse, List<StationResponse> stationResponses) {
-        assertThat(result.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-        ExtractableResponse<Response> response = 지하철_노선_조회_요청_외부토큰(tokenResponse, lineResponse);
-        지하철_노선에_지하철역_순서_정렬됨(response, stationResponses);
-    }
-
-    public static void 지하철_구간_생성됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
     @BeforeEach
     public void setUp() {
         super.setUp();
@@ -189,13 +195,5 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         assertThat(result.statusCode()).isEqualTo(HttpStatus.OK.value());
         ExtractableResponse<Response> response = 지하철_노선_조회_요청_외부토큰(tokenResponse, lineResponse);
         지하철_노선에_지하철역_순서_정렬됨(response, stationResponses);
-    }
-
-    public static void 지하철_구간_등록_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
-    }
-
-    public static void 지하철_노선에_지하철역_제외_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }

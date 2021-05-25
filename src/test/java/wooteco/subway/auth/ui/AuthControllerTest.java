@@ -14,7 +14,6 @@ import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -47,8 +46,8 @@ class AuthControllerTest {
         TokenRequest tokenRequest = new TokenRequest("test@test.com", "1234");
 
         mockMvc.perform(post("/login/token")
-        .content(objectMapper.writeValueAsString(tokenRequest))
-        .contentType(MediaType.APPLICATION_JSON))
+            .content(objectMapper.writeValueAsString(tokenRequest))
+            .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("accessToken").value(tokenResponse.getAccessToken()))
             .andDo(document("auth-login"));
