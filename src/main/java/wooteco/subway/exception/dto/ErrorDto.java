@@ -1,4 +1,4 @@
-package wooteco.subway.exception;
+package wooteco.subway.exception.dto;
 
 public class ErrorDto {
     String message;

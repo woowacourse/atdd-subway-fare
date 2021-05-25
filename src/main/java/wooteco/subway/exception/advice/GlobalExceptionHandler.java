@@ -1,4 +1,4 @@
-package wooteco.subway.exception;
+package wooteco.subway.exception.advice;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -6,6 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import wooteco.subway.auth.application.AuthorizationException;
+import wooteco.subway.exception.NotFoundException;
+import wooteco.subway.exception.SubwayException;
+import wooteco.subway.exception.dto.ErrorDto;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -20,7 +23,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(new ErrorDto(e.getMessage()), HttpStatus.UNAUTHORIZED);
     }
 
-    // TODO : 구간이 존재하지 않을 때
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ErrorDto> handleNotFoundException(NotFoundException e) {
         return new ResponseEntity<>(new ErrorDto(e.getMessage()), HttpStatus.BAD_REQUEST);
