@@ -86,6 +86,32 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_생성되지_않음(response);
     }
 
+    @DisplayName("지하철 역 이름을 수정한다.")
+    @Test
+    void updateStationName_success() throws Exception {
+        //given
+        StationResponse stationResponse = 지하철역_등록되어_있음(강남역);
+
+        //when
+        ExtractableResponse<Response> response = 지하철역_수정_요청(stationResponse.getId(), "송파나루역");
+
+        //then
+        지하철역_수정됨(response);
+    }
+
+    @DisplayName("지하철 역 이름을 실패한다. - 이름 중복")
+    @Test
+    void updateStationName_fail_duplicated() throws Exception {
+        //given
+        StationResponse stationResponse = 지하철역_등록되어_있음(강남역);
+
+        //when
+        ExtractableResponse<Response> response = 지하철역_수정_요청(stationResponse.getId(), "강남역");
+
+        //then
+        지하철역_수정_실패(response);
+    }
+
     public static StationResponse 지하철역_등록되어_있음(String name) {
         return 지하철역_생성_요청(name).as(StationResponse.class);
     }
@@ -148,6 +174,25 @@ public class StationAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 지하철역_생성되지_않음(ExtractableResponse response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    public static ExtractableResponse<Response> 지하철역_수정_요청(Long id, String name) {
+        StationRequest stationRequest = new StationRequest(name);
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(stationRequest)
+                .when().put("/stations/" + id)
+                .then().log().all()
+                .extract();
+    }
+
+    public static void 지하철역_수정됨(ExtractableResponse response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 지하철역_수정_실패(ExtractableResponse response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
