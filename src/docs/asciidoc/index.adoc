@@ -9,7 +9,7 @@
 [[introduction]]
 == 소개
 
-우아한테크코스 3기 Level2 FrontEnd & BackEnd 협업 지하철 미션 인비의 Rest Docs API Document 입니다.
+우아한테크코스 3기 Level2 FrontEnd & BackEnd 협업 지하철 미션 백엔드 인비의 Rest Docs API Document 입니다.
 
 [[common]]
 == 공통 사항
@@ -34,6 +34,7 @@ API에 관계없이 아래 사항을 지켜주셔야 합니다.
 | `Authorization`
 | 로그인이 필요한 API를 사용하기 위한 JWT 토큰 (Bearer ${token} 형식)
 |===
+
 
 [[Member]]
 = 유저 관리
@@ -60,6 +61,7 @@ include::{snippets}/delete-my-account/http-request.adoc[]
 
 === Response
 include::{snippets}/delete-my-account/http-response.adoc[]
+
 
 
 [[Auth]]
@@ -96,9 +98,58 @@ include::{snippets}/not-valid-login-token-when-get-login-user-my-info/http-reque
 === Response
 include::{snippets}/not-valid-login-token-when-get-login-user-my-info/http-response.adoc[]
 
+
+
+[[Station]]
+= 역
+
+== 역 생성
+=== Request
+include::{snippets}/create-station/http-request.adoc[]
+
+=== Response
+include::{snippets}/create-station/http-response.adoc[]
+
+
+== 전체 역 목록 조회
+=== Request
+include::{snippets}/get-all-stations/http-request.adoc[]
+
+=== Response
+include::{snippets}/get-all-stations/http-response.adoc[]
+
+
+== 역 삭제
+=== Request
+include::{snippets}/delete-station/http-request.adoc[]
+
+=== Response
+include::{snippets}/delete-station/http-response.adoc[]
+
+
+
+[[Section]]
+= 구간
+
+== 구간 생성
+=== Request
+include::{snippets}/create-section/http-request.adoc[]
+
+=== Response
+include::{snippets}/create-section/http-response.adoc[]
+
+
+== 구간 삭제
+=== Request
+include::{snippets}/delete-section/http-request.adoc[]
+
+=== Response
+include::{snippets}/delete-section/http-response.adoc[]
+
+
+
 [[Line]]
 = 노선
-
 
 == 노선 생성
 === Request
@@ -138,6 +189,7 @@ include::{snippets}/delete-line/http-request.adoc[]
 
 === Response
 include::{snippets}/delete-line/http-response.adoc[]
+
 
 
 [[Path]]
