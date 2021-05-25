@@ -2,75 +2,11 @@
 
 ## 🚀 1단계 - 배포하기
 
-배포 URI : `https://inbi-subway.kro.kr`
+배포 URL : `https://inbi-subway.kro.kr`
 
 ## **🚀 2단계 - 전체 조회 기능**
 
-Request
-
-```json
-GET /lines HTTP/1.1
-Accept: application/json
-Host: localhost:58561
-```
-
-Response
-
-```json
-HTTP/1.1 200 OK
-Vary: Origin
-Vary: Access-Control-Request-Method
-Vary: Access-Control-Request-Headers
-Content-Type: application/json
-Transfer-Encoding: chunked
-Date: Wed, 19 May 2021 00:31:17 GMT
-Keep-Alive: timeout=60
-Connection: keep-alive
-Content-Length: 900
-
-[
-    {
-        "id": 1,
-        "name": "신분당선",
-        "color": "red lighten-1",
-        "extraFare": 100,
-        "stations": [
-            {
-                "id": 1,
-                "name": "강남역"
-            },
-            {
-                "id": 2,
-                "name": "판교역"
-            },
-            {
-                "id": 3,
-                "name": "정자역"
-            }
-        ]
-    },
-    {
-        "id": 2,
-        "name": "2호선",
-        "color": "green lighten-1",
-        "extraFare": 200,
-        "stations": [
-            {
-                "id": 1,
-                "name": "강남역"
-            },
-            {
-                "id": 4,
-                "name": "역삼역"
-            },
-            {
-                "id": 5,
-                "name": "잠실역"
-            }
-        ]
-    }
-]
-```
+Rest Docs API Document URL : `https://inbi-subway.kro.kr/docs/index.html`
 
 ## 🚀 3단계 - 요금 조회 기능
 
