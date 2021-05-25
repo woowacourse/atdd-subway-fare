@@ -3,7 +3,7 @@ package wooteco.subway.path.domain;
 import java.util.Arrays;
 import java.util.function.Function;
 
-public enum Fare {
+public enum FareByDistance {
     DEFAULT_FARE(0, 10, distance -> {
         return Constants.DEFAULT_FARE;
     }),
@@ -44,24 +44,24 @@ public enum Fare {
     private final int to;
     private final Function<Integer, Integer> farePolicy;
 
-    Fare(int from, int to, Function<Integer, Integer> farePolicy) {
+    FareByDistance(int from, int to, Function<Integer, Integer> farePolicy) {
         this.from = from;
         this.to = to;
         this.farePolicy = farePolicy;
     }
 
-    Fare(int from, Function<Integer, Integer> farePolicy) {
+    FareByDistance(int from, Function<Integer, Integer> farePolicy) {
         this.from = from;
         this.to = Constants.MAX_DISTANCE_OF_SUBWAY_PATH;
         this.farePolicy = farePolicy;
     }
 
     public static int calculate(int distance) {
-        final Fare chosenFare = Arrays.stream(Fare.values())
-                .filter(fare -> fare.from < distance && distance <= fare.to)
+        final FareByDistance chosenFareByDistance = Arrays.stream(FareByDistance.values())
+                .filter(fareByDistance -> fareByDistance.from < distance && distance <= fareByDistance.to)
                 .findAny()
                 .orElseThrow(IllegalStateException::new);
 
-        return chosenFare.farePolicy.apply(distance);
+        return chosenFareByDistance.farePolicy.apply(distance);
     }
 }
