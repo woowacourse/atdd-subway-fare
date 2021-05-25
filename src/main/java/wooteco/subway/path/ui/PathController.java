@@ -10,9 +10,7 @@ import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.MemberType;
-import wooteco.subway.path.application.FareService;
 import wooteco.subway.path.application.PathService;
-import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.path.dto.PathResponse;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,12 +22,10 @@ import java.util.Optional;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class PathController {
     private PathService pathService;
-    private FareService fareService;
     private AuthService authService;
 
-    public PathController(PathService pathService, FareService fareService, AuthService authService) {
+    public PathController(PathService pathService, AuthService authService) {
         this.pathService = pathService;
-        this.fareService = fareService;
         this.authService = authService;
     }
 
@@ -40,9 +36,7 @@ public class PathController {
         String token = AuthorizationExtractor.extract(httpServletRequest);
         Optional<LoginMember> optionalMember = authService.findMemberByToken(token);
 
-        SubwayPath path = pathService.findPath(source, target);
-        int fare = fareService.calculate(path.distance(), path.extraFare(), MemberType.of(optionalMember));
-
-        return ResponseEntity.ok(PathResponse.of(path, fare));
+        PathResponse body = pathService.findPath(source, target, MemberType.of(optionalMember));
+        return ResponseEntity.ok(body);
     }
 }

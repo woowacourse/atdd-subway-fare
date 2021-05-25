@@ -34,7 +34,8 @@ public class MemberDao {
 
     public Member insert(Member member) {
         SqlParameterSource params = new BeanPropertySqlParameterSource(member);
-        Long id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
+        Long id = simpleJdbcInsert.executeAndReturnKey(params)
+                                  .longValue();
         return new Member(id, member.getEmail(), member.getPassword(), member.getAge());
     }
 
@@ -54,15 +55,15 @@ public class MemberDao {
     }
 
     public Member findByEmail(String email) {
-        try{
+        try {
             String sql = "select * from MEMBER where email = ?";
             return jdbcTemplate.queryForObject(sql, rowMapper, email);
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new AuthorizationException("존재하지 않는 이메일 정보입니다.");
         }
     }
 
-    public boolean isExistEmail(String email){
+    public boolean isExistEmail(String email) {
         String sql = "SELECT EXISTS (SELECT id FROM MEMBER where email = ?)";
         return jdbcTemplate.queryForObject(sql, Boolean.class, email);
     }

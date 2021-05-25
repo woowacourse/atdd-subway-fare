@@ -13,7 +13,7 @@ public class Section {
     }
 
     public Section(Long id, Station upStation, Station downStation, int distance) {
-        if(distance <= 0){
+        if (distance <= 0) {
             throw new LineException("구간의 간격은 0 또는 음수가 될 수 없습니다.");
         }
 

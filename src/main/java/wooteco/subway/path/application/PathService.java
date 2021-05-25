@@ -5,9 +5,12 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.line.application.LineException;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
-import wooteco.subway.path.domain.SubwayPath;
+import wooteco.subway.member.domain.MemberType;
+import wooteco.subway.path.domain.SubwayRoute;
+import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
+import wooteco.subway.station.dto.StationResponse;
 
 import java.util.List;
 
@@ -16,20 +19,31 @@ import java.util.List;
 public class PathService {
     private LineService lineService;
     private StationService stationService;
-    private PathFinder pathFinder;
+    private RouteFinder routeFinder;
+    private FareService fareService;
 
-    public PathService(LineService lineService, StationService stationService, PathFinder pathFinder, FareService fareService) {
+    public PathService(LineService lineService, StationService stationService, RouteFinder routeFinder, FareService fareService) {
         this.lineService = lineService;
         this.stationService = stationService;
-        this.pathFinder = pathFinder;
+        this.routeFinder = routeFinder;
+        this.fareService = fareService;
     }
 
-    public SubwayPath findPath(Long source, Long target) {
+    public PathResponse findPath(Long source, Long target, MemberType memberType) {
+        SubwayRoute route = findRoute(source, target);
+
+        List<StationResponse> stationResponses = stationService.stationResponses(route.stations());
+        int fare = fareService.calculate(route.distance(), route.extraFare(), memberType);
+
+        return new PathResponse(stationResponses, route.distance(), fare);
+    }
+
+    private SubwayRoute findRoute(Long source, Long target) {
         try {
             List<Line> lines = lineService.findLines();
             Station sourceStation = stationService.findStationById(source);
             Station targetStation = stationService.findStationById(target);
-            return pathFinder.findPath(lines, sourceStation, targetStation);
+            return routeFinder.find(lines, sourceStation, targetStation);
         } catch (Exception e) {
             throw new LineException("검색된 경로가 없습니다.");
         }

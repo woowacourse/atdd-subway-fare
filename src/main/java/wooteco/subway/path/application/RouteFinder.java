@@ -6,15 +6,15 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.path.domain.SectionEdge;
 import wooteco.subway.path.domain.SubwayGraph;
-import wooteco.subway.path.domain.SubwayPath;
+import wooteco.subway.path.domain.SubwayRoute;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class PathFinder {
-    public SubwayPath findPath(List<Line> lines, Station source, Station target) {
+public class RouteFinder {
+    public SubwayRoute find(List<Line> lines, Station source, Station target) {
         if (source.equals(target)) {
             throw new InvalidPathException();
         }
@@ -32,10 +32,12 @@ public class PathFinder {
         return convertSubwayPath(path);
     }
 
-    private SubwayPath convertSubwayPath(GraphPath graphPath) {
-        List<SectionEdge> edges = (List<SectionEdge>) graphPath.getEdgeList().stream().collect(Collectors.toList());
+    private SubwayRoute convertSubwayPath(GraphPath graphPath) {
+        List<SectionEdge> edges = (List<SectionEdge>) graphPath.getEdgeList()
+                                                               .stream()
+                                                               .collect(Collectors.toList());
         List<Station> stations = graphPath.getVertexList();
 
-        return new SubwayPath(edges, stations);
+        return new SubwayRoute(edges, stations);
     }
 }
