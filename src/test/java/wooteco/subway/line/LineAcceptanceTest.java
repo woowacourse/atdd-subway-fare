@@ -28,8 +28,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     public void setUp() {
-        super.setUp();
-
         // given
         강남역 = 지하철역_등록되어_있음("강남역");
         downStation = 지하철역_등록되어_있음("광교역");

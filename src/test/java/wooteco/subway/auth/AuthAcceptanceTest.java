@@ -1,5 +1,6 @@
 package wooteco.subway.auth;
 
+import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 import static wooteco.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static wooteco.subway.member.MemberAcceptanceTest.회원_정보_조회됨;
 
@@ -44,8 +45,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         params.put("password", PASSWORD);
 
         RestAssured
-            .given().log().all()
+            .given(spec).log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .filter(document("login-fail"))
             .body(params)
             .when().post("/login/token")
             .then().log().all()
@@ -58,9 +60,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         TokenResponse tokenResponse = new TokenResponse("accesstoken");
 
         RestAssured
-            .given().log().all()
+            .given(spec).log().all()
             .auth().oauth2(tokenResponse.getAccessToken())
             .accept(MediaType.APPLICATION_JSON_VALUE)
+            .filter(document("not-valid-login-token-when-get-login-user-my-info"))
             .when().get("/members/me")
             .then().log().all()
             .statusCode(HttpStatus.UNAUTHORIZED.value());
@@ -80,9 +83,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         params.put("email", email);
         params.put("password", password);
 
-        return RestAssured.given().log().all().
+        return RestAssured.given(spec).log().all().
             contentType(MediaType.APPLICATION_JSON_VALUE).
             body(params).
+            filter(document("login")).
             when().
             post("/login/token").
             then().
@@ -92,9 +96,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {
-        return RestAssured.given().log().all().
+        return RestAssured.given(spec).log().all().
             auth().oauth2(tokenResponse.getAccessToken()).
             accept(MediaType.APPLICATION_JSON_VALUE).
+            filter(document("get-login-user-my-info")).
             when().
             get("/members/me").
             then().
