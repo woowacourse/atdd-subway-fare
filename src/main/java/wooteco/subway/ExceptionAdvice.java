@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import wooteco.subway.exception.DuplicatedStationNameException;
+import wooteco.subway.exception.InvalidPathException;
 import wooteco.subway.exception.NotFoundException;
 
 @ControllerAdvice
@@ -18,6 +19,11 @@ public class ExceptionAdvice {
     public ResponseEntity<String> handleDuplicatedStationNameException(
         DuplicatedStationNameException e
     ) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler(InvalidPathException.class)
+    public ResponseEntity<String> handleInvalidPathException(InvalidPathException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 }
