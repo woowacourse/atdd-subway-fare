@@ -25,7 +25,7 @@ public class Fare {
     }
 
     private int calculateFareByDistance(int distance) {
-        if (distance < BASIC_DISTANCE) {
+        if (distance <= BASIC_DISTANCE) {
             return BASIC_FARE;
         }
         return BASIC_FARE + calculateOverFare(distance);
