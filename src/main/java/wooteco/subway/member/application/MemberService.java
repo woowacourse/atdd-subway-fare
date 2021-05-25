@@ -1,13 +1,13 @@
 package wooteco.subway.member.application;
 
-import org.apache.commons.logging.Log;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
+import wooteco.subway.member.exception.EmailAddressNotFoundException;
 
 @Service
 public class MemberService {
@@ -35,5 +35,13 @@ public class MemberService {
     public void deleteMember(LoginMember loginMember) {
         Member member = memberDao.findByEmail(loginMember.getEmail());
         memberDao.deleteById(member.getId());
+    }
+
+    public void checkEmail(String email) {
+        try {
+            memberDao.findByEmail(email);
+        } catch (DataAccessException e) {
+            throw new EmailAddressNotFoundException(email);
+        }
     }
 }
