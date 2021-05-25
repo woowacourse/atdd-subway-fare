@@ -60,5 +60,5 @@ public class MemberDao {
     public boolean existsEmail(String email) {
         String sql = "select exists(select email from member where email = ?)";
         return jdbcTemplate.queryForObject(sql, Boolean.class, email);
-    }
+    } 
 }
