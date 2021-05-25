@@ -20,6 +20,10 @@ public class SectionResponse {
         this.distance = distance;
     }
 
+    public SectionResponse(Section section) {
+        this(section.getUpStation(), section.getDownStation(), section.getDistance());
+    }
+
     public static List<SectionResponse> of(List<Section> sections) {
         return sections.stream()
             .map(section -> new SectionResponse(section.getUpStation(), section.getDownStation(), section.getDistance()))

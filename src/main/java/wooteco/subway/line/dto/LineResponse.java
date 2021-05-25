@@ -1,8 +1,11 @@
 package wooteco.subway.line.dto;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import wooteco.subway.line.domain.Line;
+import wooteco.subway.line.domain.Section;
 import wooteco.subway.path.domain.fare.Fare;
 import wooteco.subway.station.dto.StationResponse;
 
@@ -29,6 +32,12 @@ public class LineResponse {
     public static LineResponse of(Line line) {
         List<StationResponse> stationResponses = getStationResponses(line);
         List<SectionResponse> sectionResponses = SectionResponse.of(line.getSections().getSections());
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), line.getExtraFare(), stationResponses, sectionResponses);
+    }
+
+    public static LineResponse of(Line line, Section initSection) {
+        List<StationResponse> stationResponses = Arrays.asList(StationResponse.of(initSection.getUpStation()), StationResponse.of(initSection.getDownStation()));
+        List<SectionResponse> sectionResponses = Collections.singletonList(new SectionResponse(initSection));
         return new LineResponse(line.getId(), line.getName(), line.getColor(), line.getExtraFare(), stationResponses, sectionResponses);
     }
 

@@ -29,8 +29,8 @@ public class LineService {
         Section initSection = getInitSection(request);
         Line newLine = new Line(request.getName(), request.getColor(), request.getExtraFare(), initSection);
         Line persistLine = lineDao.insert(newLine);
-        sectionDao.insert(persistLine, initSection);
-        return LineResponse.of(persistLine);
+        Section persistSection = sectionDao.insert(persistLine, initSection);
+        return LineResponse.of(persistLine, persistSection);
     }
 
     private Section getInitSection(LineRequest request) {
