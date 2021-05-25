@@ -34,7 +34,7 @@ public class Sections {
         this.sections = sections;
     }
 
-    public void addSection(Section section) { // TODO : 예외 잡기
+    public void addSection(Section section) {
         if (this.sections.isEmpty()) {
             this.sections.add(section);
             return;

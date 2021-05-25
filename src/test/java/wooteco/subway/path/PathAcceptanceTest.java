@@ -7,6 +7,7 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.line.dto.LineResponse;
@@ -70,6 +71,17 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //then
         적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
         총_거리가_응답됨(response, 5);
+    }
+
+    @DisplayName("도달할 수 없는 최단 경로는 예외 처리한다.")
+    @Test
+    void invalidPath() {
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(1L, 6L);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat((String) response.body().jsonPath().get("message")).isEqualTo("해당되는 최단 경로를 찾을 수 없습니다.");
     }
 
     public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
