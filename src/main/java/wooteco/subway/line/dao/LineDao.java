@@ -72,7 +72,7 @@ public class LineDao {
     }
 
     public void update(Line newLine) {
-        String sql = "update LINE set name = ?, color = ?, fare = ? where id = ?";
+        String sql = "update LINE set name = ?, color = ?, extra_fare = ? where id = ?";
         jdbcTemplate.update(sql, newLine.getName(), newLine.getColor(), newLine.getFare(), newLine.getId());
     }
 
