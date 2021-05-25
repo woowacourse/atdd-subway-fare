@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
+import wooteco.subway.line.dto.LineDetailResponse;
 import wooteco.subway.line.dto.SectionRequest;
 
 import javax.validation.Valid;
@@ -43,6 +44,18 @@ public class LineController {
     public ResponseEntity updateLine(@PathVariable Long id, @RequestBody LineRequest lineUpdateRequest) {
         lineService.updateLine(id, lineUpdateRequest);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/lines/detail")
+    public ResponseEntity<List<LineDetailResponse>> findAllLineDetails() {
+        List<LineDetailResponse> lineDetailResponses = lineService.findLineDetails();
+        return ResponseEntity.ok(lineDetailResponses);
+    }
+
+    @GetMapping("/lines/detail/{id}")
+    public ResponseEntity<LineDetailResponse> findLineDetailById(@PathVariable Long id) {
+        LineDetailResponse lineDetailResponses = lineService.findLineDetail(id);
+        return ResponseEntity.ok(lineDetailResponses);
     }
 
     @DeleteMapping("/{id}")

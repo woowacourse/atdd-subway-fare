@@ -6,7 +6,7 @@ import wooteco.subway.station.dto.StationResponse;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class LinesResponse {
+public class LineDetailResponse {
     private Long id;
     private String name;
     private String color;
@@ -14,10 +14,10 @@ public class LinesResponse {
     private List<StationResponse> stations;
     private List<SectionResponse> sections;
 
-    public LinesResponse() {
+    public LineDetailResponse() {
     }
 
-    public LinesResponse(final Long id, final String name, final String color, final int distance, final List<StationResponse> stations, final List<SectionResponse> sections) {
+    public LineDetailResponse(final Long id, final String name, final String color, final int distance, final List<StationResponse> stations, final List<SectionResponse> sections) {
         this.id = id;
         this.name = name;
         this.color = color;
@@ -26,7 +26,7 @@ public class LinesResponse {
         this.sections = sections;
     }
 
-    public static LinesResponse of(Line line) {
+    public static LineDetailResponse of(Line line) {
         List<StationResponse> stations = line.getStations().stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
@@ -37,12 +37,12 @@ public class LinesResponse {
 
         // TODO : 전체 거리를 구하는 메소드 호출
         // DONE
-        return new LinesResponse(line.getId(), line.getName(), line.getColor(), line.getDistance() , stations, sections);
+        return new LineDetailResponse(line.getId(), line.getName(), line.getColor(), line.getDistance() , stations, sections);
     }
 
-    public static List<LinesResponse> listOf(List<Line> lines) {
+    public static List<LineDetailResponse> listOf(List<Line> lines) {
         return lines.stream()
-                .map(LinesResponse::of)
+                .map(LineDetailResponse::of)
                 .collect(Collectors.toList());
     }
 

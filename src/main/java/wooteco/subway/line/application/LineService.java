@@ -6,6 +6,7 @@ import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
+import wooteco.subway.line.dto.LineDetailResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
@@ -96,4 +97,15 @@ public class LineService {
         sectionDao.insertSections(line);
     }
 
+    public List<LineDetailResponse> findLineDetails() {
+        List<Line> lines = findLines();
+        return lines.stream()
+                .map(LineDetailResponse::of)
+                .collect(Collectors.toList());
+    }
+
+    public LineDetailResponse findLineDetail(Long id) {
+        Line line = findLineById(id);
+        return LineDetailResponse.of(line);
+    }
 }
