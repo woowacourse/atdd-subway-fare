@@ -1,8 +1,10 @@
 package wooteco.subway.auth.application;
 
-import wooteco.subway.exception.BadRequestException;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-public class AuthorizationException extends BadRequestException {
+@ResponseStatus(HttpStatus.UNAUTHORIZED)
+public class AuthorizationException extends RuntimeException {
     private static final String message = "인증에 에러가 발생했습니다.";
 
     public AuthorizationException() {

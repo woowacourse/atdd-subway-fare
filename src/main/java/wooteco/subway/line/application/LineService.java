@@ -1,6 +1,8 @@
 package wooteco.subway.line.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.exception.SubwayException;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
@@ -25,6 +27,7 @@ public class LineService {
         this.stationService = stationService;
     }
 
+    @Transactional
     public LineResponse saveLine(LineRequest request) {
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
         persistLine.addSection(addInitSection(persistLine, request));
@@ -58,18 +61,26 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
+        validateLineExistence(id);
         return lineDao.findById(id);
     }
 
+    @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
+        validateLineExistence(id);
+        //TODO: 중복 이름 검사?
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
+    @Transactional
     public void deleteLineById(Long id) {
+        validateLineExistence(id);
         lineDao.deleteById(id);
     }
 
+    @Transactional
     public void addLineStation(Long lineId, SectionRequest request) {
+        validateLineExistence(lineId);
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
@@ -79,7 +90,9 @@ public class LineService {
         sectionDao.insertSections(line);
     }
 
+    @Transactional
     public void removeLineStation(Long lineId, Long stationId) {
+        validateLineExistence(lineId);
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
         line.removeSection(station);
@@ -88,11 +101,16 @@ public class LineService {
         sectionDao.insertSections(line);
     }
 
+    @Transactional
     public void updateDistance(final long lineId, final long upStationId, final long downStationId, final Integer distance) {
+        if (sectionDao.doesSectionNotExists(lineId, upStationId, downStationId)) {
+            throw new NoSuchSectionException();
+        }
         sectionDao.updateDistance(lineId, upStationId, downStationId, distance);
     }
 
     public LineSectionResponse findSectionsById(final long lineId) {
+        validateLineExistence(lineId);
         Line line = lineDao.findById(lineId);
 
         List<StationTransferResponse> stations = stationService.getStationsWithTransferLines(lineId);
@@ -106,5 +124,11 @@ public class LineService {
                 stations,
                 sections
         );
+    }
+
+    public void validateLineExistence(final Long id) {
+        if (lineDao.doesIdNotExist(id)) {
+            throw new NoSuchLineException();
+        }
     }
 }

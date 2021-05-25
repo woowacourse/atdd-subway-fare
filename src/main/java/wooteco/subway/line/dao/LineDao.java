@@ -110,4 +110,9 @@ public class LineDao {
     public void deleteById(Long id) {
         jdbcTemplate.update("delete from Line where id = ?", id);
     }
+
+    public boolean doesIdNotExist(final Long id) {
+        String query = "SELECT NOT EXISTS (SELECT * FROM LINE WHERE id = ?)";
+        return jdbcTemplate.queryForObject(query, Boolean.class, id);
+    }
 }

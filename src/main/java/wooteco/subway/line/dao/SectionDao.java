@@ -74,4 +74,9 @@ public class SectionDao {
 //           new Sections()
 //        });
     }
+
+    public boolean doesSectionNotExists(final long lineId, final long upStationId, final long downStationId) {
+        String query = "SELECT NOT EXISTS (SELECT * FROM SECTION WHERE (id = ? AND up_station_id = ? AND down_station_id = ?))";
+        return jdbcTemplate.queryForObject(query, Boolean.class, lineId, upStationId, downStationId);
+    }
 }
