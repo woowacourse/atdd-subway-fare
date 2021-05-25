@@ -1,8 +1,11 @@
 package wooteco.subway.path.domain;
 
+import wooteco.subway.line.domain.Line;
+import wooteco.subway.path.application.InvalidPathException;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class SubwayPath {
     private List<SectionEdge> sectionEdges;
@@ -28,6 +31,15 @@ public class SubwayPath {
     public int calculateFare() {
         int totalDistance = calculateDistance();
         FarePolicy farePolicy = FarePolicy.of(totalDistance);
-        return farePolicy.calculateFare(totalDistance);
+
+        int fare = farePolicy.calculateFare(totalDistance);
+
+        fare += sectionEdges.stream()
+            .map(SectionEdge::getLine)
+            .mapToInt(Line::getExtraFare)
+            .max()
+            .orElseThrow(() -> new InvalidPathException("빈 구간 그래프입니다."));
+
+        return fare;
     }
 }

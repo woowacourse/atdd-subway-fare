@@ -39,6 +39,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
+    private StationResponse 정자역;
 
     private static TokenResponse tokenResponse;
 
@@ -47,8 +48,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * |                        |
      * *3호선*                   *신분당선*
      * |                        |
-     * 남부터미널역  --- *3호선* ---   양재
-     */
+     * 남부터미널역  --- *3호선* --- 양재역
+     * |                        |
+     * |                        정자역
+     * |                        |
+     * |---------------------- */
     @BeforeEach
     public void setUp() {
         super.setUp();
@@ -63,15 +67,17 @@ public class PathAcceptanceTest extends AcceptanceTest {
         양재역 = 지하철역_등록되어_있음_외부토큰(tokenResponse, "양재역");
         교대역 = 지하철역_등록되어_있음_외부토큰(tokenResponse, "교대역");
         남부터미널역 = 지하철역_등록되어_있음_외부토큰(tokenResponse, "남부터미널역");
+        정자역 = 지하철역_등록되어_있음_외부토큰(tokenResponse, "정자역");
 
-        신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음_외부토큰(tokenResponse, "신분당선", "bg-red-600", 강남역, 양재역, 10);
-        이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음_외부토큰(tokenResponse, "이호선", "bg-red-600", 교대역, 강남역, 10);
-        삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음_외부토큰(tokenResponse, "삼호선", "bg-red-600", 교대역, 양재역, 5);
+        신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음_외부토큰(tokenResponse, "신분당선", "bg-red-600", 강남역, 정자역, 300, 10);
+        이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음_외부토큰(tokenResponse, "이호선", "bg-red-600", 교대역, 강남역, 500, 10);
+        삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음_외부토큰(tokenResponse, "삼호선", "bg-red-600", 교대역, 양재역, 0, 5);
 
         지하철_구간_등록되어_있음_외부토큰(tokenResponse, 삼호선, 교대역, 남부터미널역, 3);
+        지하철_구간_등록되어_있음_외부토큰(tokenResponse, 신분당선, 강남역, 양재역, 8);
     }
 
-    @DisplayName("두 역의 최단 거리 경로를 조회한다.")
+    @DisplayName("두 역의 최단 거리 경로를 조회한다 - 3호선 경유")
     @Test
     void findPathByDistance() {
         //when
@@ -81,6 +87,18 @@ public class PathAcceptanceTest extends AcceptanceTest {
         적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
         총_거리가_응답됨(response, 5);
         적절한_요금_응답됨(response, 1250);
+    }
+
+    @DisplayName("두 역의 최단 거리 경로를 조회한다 - 신분당선 경유")
+    @Test
+    void findPathByDistanceWithExtraFare() {
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(3L, 5L);
+
+        //then
+        적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역, 정자역));
+        총_거리가_응답됨(response, 7);
+        적절한_요금_응답됨(response, 1550);
     }
 
     private void 적절한_요금_응답됨(ExtractableResponse<Response> response, int fare) {

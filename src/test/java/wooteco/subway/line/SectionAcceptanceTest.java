@@ -181,7 +181,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         정자역 = 지하철역_등록되어_있음_외부토큰(tokenResponse, "정자역");
         광교역 = 지하철역_등록되어_있음_외부토큰(tokenResponse, "광교역");
 
-        신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음_외부토큰(tokenResponse, "신분당선", "bg-red-600", 강남역, 광교역, 10);
+        int extraFare = 300;
+        신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음_외부토큰(tokenResponse, "신분당선", "bg-red-600", 강남역, 광교역, extraFare, 10);
     }
 
     private void 지하철_구간_생성됨(ExtractableResponse<Response> result, LineResponse lineResponse, List<StationResponse> stationResponses) {

@@ -52,8 +52,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 extract();
     }
 
-    public static LineResponse 지하철_노선_등록되어_있음_외부토큰(TokenResponse tokenResponse, String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
-        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance, 0);
+    public static LineResponse 지하철_노선_등록되어_있음_외부토큰(TokenResponse tokenResponse, String name, String color, StationResponse upStation, StationResponse downStation, int extraFare,int distance) {
+        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance, extraFare);
         return 지하철_노선_등록되어_있음_외부토큰(tokenResponse, lineRequest);
     }
 
