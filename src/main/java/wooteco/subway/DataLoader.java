@@ -1,8 +1,6 @@
 package wooteco.subway;
 
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Component;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
@@ -12,8 +10,6 @@ import wooteco.subway.member.domain.Member;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 
-@Component
-@Profile("!test")
 public class DataLoader implements CommandLineRunner {
     private StationDao stationDao;
     private LineDao lineDao;
