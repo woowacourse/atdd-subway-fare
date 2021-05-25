@@ -109,7 +109,7 @@ public class Sections {
         return this.sections.stream()
                 .filter(it -> !downStations.contains(it.getUpStation()))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new SectionException("노선에 구간이 존재하지 않습니다."));
     }
 
     private Section findSectionByNextUpStation(Station station) {
