@@ -8,8 +8,6 @@ import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.*;
 
-import java.util.Optional;
-
 @Service
 @Transactional
 public class MemberService {

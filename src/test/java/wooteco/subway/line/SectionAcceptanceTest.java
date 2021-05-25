@@ -10,7 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
-import wooteco.subway.line.dto.*;
+import wooteco.subway.line.dto.LineResponse;
+import wooteco.subway.line.dto.SectionAddResponse;
+import wooteco.subway.line.dto.SectionRequest;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.Arrays;

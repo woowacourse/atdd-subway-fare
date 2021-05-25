@@ -6,7 +6,6 @@ import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.path.dto.PathResponse;
-import wooteco.subway.path.dto.PathResponseAssembler;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
@@ -32,7 +31,7 @@ public class PathService {
             Station targetStation = stationService.findStationById(target);
             SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
 
-            return PathResponseAssembler.assemble(subwayPath);
+            return PathResponse.of(subwayPath);
         } catch (Exception e) {
             throw new InvalidPathException();
         }
