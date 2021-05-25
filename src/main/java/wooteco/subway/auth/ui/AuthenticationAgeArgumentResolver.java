@@ -9,7 +9,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import wooteco.subway.auth.application.AuthService;
-import wooteco.subway.auth.application.AuthorizationException;
+import wooteco.subway.exception.AuthorizationException;
 import wooteco.subway.auth.domain.AuthenticationAge;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
 import wooteco.subway.member.domain.LoginMember;
@@ -35,7 +35,7 @@ public class AuthenticationAgeArgumentResolver implements HandlerMethodArgumentR
 
         LoginMember member = authService.findMemberByToken(credentials);
         if (member.getId() == null) {
-            throw new AuthorizationException();
+            throw new AuthorizationException("유효하지 않은 토큰 정보입니다.");
         }
         return member.getAge();
     }
