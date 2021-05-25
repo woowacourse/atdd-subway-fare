@@ -1,6 +1,7 @@
 package wooteco.subway.member;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 import static wooteco.subway.auth.AuthAcceptanceTest.내_회원_정보_조회_요청;
 import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
 
@@ -46,8 +47,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
         return RestAssured
-            .given().log().all()
+            .given(spec).log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .filter(document("sign-up"))
             .body(memberRequest)
             .when().post("/members")
             .then().log().all()
@@ -58,9 +60,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
         return RestAssured
-            .given().log().all()
+            .given(spec).log().all()
             .auth().oauth2(tokenResponse.getAccessToken())
             .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .filter(document("modify-my-info"))
             .body(memberRequest)
             .when().put("/members/me")
             .then().log().all()
@@ -69,8 +72,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 내_회원_삭제_요청(TokenResponse tokenResponse) {
         return RestAssured
-            .given().log().all()
+            .given(spec).log().all()
             .auth().oauth2(tokenResponse.getAccessToken())
+            .filter(document("delete-my-account"))
             .when().delete("/members/me")
             .then().log().all()
             .extract();
