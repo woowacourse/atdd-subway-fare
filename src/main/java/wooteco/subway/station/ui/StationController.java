@@ -19,7 +19,7 @@ public class StationController {
     public StationController(StationService stationService) {
         this.stationService = stationService;
     }
-// eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QG5hdmVyLmNvbSIsImlhdCI6MTYyMTkyNDgxOCwiZXhwIjoxNjIxOTI4NDE4fQ.sMR3X7qAeihJiOOsNi2soauu-Vrg1D4-R_YeJi0BRmg
+
     @PostMapping("/stations")
     public ResponseEntity<StationResponse> createStation(@RequestBody StationRequest stationRequest) {
         StationResponse station = stationService.saveStation(stationRequest);
