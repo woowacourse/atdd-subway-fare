@@ -1,6 +1,5 @@
 package wooteco.subway;
 
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -13,25 +12,37 @@ import wooteco.subway.line.application.LineException;
 import wooteco.subway.member.application.MemberException;
 import wooteco.subway.station.application.StationException;
 
+import javax.validation.ConstraintViolationException;
+
 @ControllerAdvice
 public class GlobalControllerAdvice {
 
     @ExceptionHandler(AuthorizationException.class)
     public ResponseEntity<ExceptionResponse> handleAuthorizationException(AuthorizationException e) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(exceptionResponse);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                             .body(exceptionResponse);
     }
 
     @ExceptionHandler({StationException.class, LineException.class, MemberException.class})
     public ResponseEntity<ExceptionResponse> handleException(RuntimeException e) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                             .body(exceptionResponse);
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ExceptionHandler({MethodArgumentNotValidException.class})
     public ResponseEntity<ExceptionResponse> handleMethodArgumentNotValidException(BindingResult bindingResult) {
         FieldError fieldError = bindingResult.getFieldError();
         ExceptionResponse exceptionResponse = new ExceptionResponse(fieldError.getDefaultMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                             .body(exceptionResponse);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ExceptionResponse> handleConstraintViolationException(RuntimeException e) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                             .body(exceptionResponse);
     }
 }
