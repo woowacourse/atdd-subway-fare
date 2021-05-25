@@ -1,7 +1,6 @@
 package wooteco.subway.line.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,15 +17,12 @@ import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.LineUpdateRequest;
 import wooteco.subway.line.dto.SectionRequest;
-import wooteco.subway.station.domain.Station;
-import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -51,15 +47,16 @@ class LineControllerTest {
 
     @Test
     @DisplayName("노선 생성 - 성공")
-    public void createLine() throws Exception{
+    public void createLine() throws Exception {
         //given
-        LineRequest lineRequest = new LineRequest("2호선", "bg-red-200", 1L, 2L, 5);
+        int extraFare = 300;
+        LineRequest lineRequest = new LineRequest("2호선", "bg-red-200", 1L, 2L, 5, extraFare);
         final List<StationResponse> stations = Arrays.asList(
             new StationResponse(1L, "강남역"),
             new StationResponse(2L, "잠실역")
         );
 
-        final LineResponse lineResponse = new LineResponse(1L, "2호선", "bg-red-200", stations);
+        final LineResponse lineResponse = new LineResponse(1L, "2호선", "bg-red-200", extraFare, stations);
 
         given(lineService.saveLine(any(LineRequest.class)))
             .willReturn(lineResponse);
@@ -72,6 +69,7 @@ class LineControllerTest {
             .andExpect(header().exists("Location"))
             .andExpect(jsonPath("name").value(lineResponse.getName()))
             .andExpect(jsonPath("color").value(lineResponse.getColor()))
+            .andExpect(jsonPath("extraFare").value(lineResponse.getExtraFare()))
             .andExpect(jsonPath("stations[*].name").value(containsInAnyOrder("강남역", "잠실역")))
             .andDo(print())
             .andDo(document("line-create"));
@@ -132,7 +130,7 @@ class LineControllerTest {
     @Test
     @DisplayName("노선 수정 - 성공")
     public void updateLines() throws Exception{
-        LineUpdateRequest lineUpdateRequest = new LineUpdateRequest("2호선", "bg-red-200");
+        LineUpdateRequest lineUpdateRequest = new LineUpdateRequest("2호선", "bg-red-200", 0);
 
         mockMvc.perform(
             put("/lines/1")

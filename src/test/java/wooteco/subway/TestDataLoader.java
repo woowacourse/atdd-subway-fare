@@ -29,15 +29,16 @@ public class TestDataLoader {
         금정역 = new Station(7L, "금정역");
         범계역 = new Station(8L, "범계역");
 
-        신분당선 = new Line(1L, "신분당선", "red lighten-1");
+        int zeroExtraFare = 0;
+        신분당선 = new Line(1L, "신분당선", "red lighten-1", zeroExtraFare);
         신분당선.addSection(new Section(강남역, 판교역, 5));
         신분당선.addSection(new Section(판교역, 정자역, 5));
 
-        이호선 = new Line(2L, "2호선", "green lighten-1");
+        이호선 = new Line(2L, "2호선", "green lighten-1", zeroExtraFare);
         이호선.addSection(new Section(강남역, 역삼역, 25));
         이호선.addSection(new Section(역삼역, 잠실역, 25));
 
-        사호선 = new Line(3L, "4호선", "blue lighten-1");
+        사호선 = new Line(3L, "4호선", "blue lighten-1", zeroExtraFare);
         사호선.addSection(new Section(산본역, 금정역, 50));
         사호선.addSection(new Section(금정역, 범계역, 50));
     }

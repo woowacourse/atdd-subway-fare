@@ -53,7 +53,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     }
 
     public static LineResponse 지하철_노선_등록되어_있음_외부토큰(TokenResponse tokenResponse, String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
-        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance);
+        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance, 0);
         return 지하철_노선_등록되어_있음_외부토큰(tokenResponse, lineRequest);
     }
 
@@ -137,8 +137,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
         강남역 = 지하철역_등록되어_있음_외부토큰(tokenResponse, "강남역");
         downStation = 지하철역_등록되어_있음_외부토큰(tokenResponse, "광교역");
 
-        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 10);
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 15);
+        int zeroExtraFare = 0;
+        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 10, zeroExtraFare);
+        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 15, zeroExtraFare);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
