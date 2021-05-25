@@ -14,8 +14,9 @@ public class PathResponseAssembler {
                 .collect(Collectors.toList());
 
         int distance = subwayPath.calculateDistance();
+        int fare = subwayPath.fare().intValue();
 
-        return new PathResponse(stationResponses, distance);
+        return new PathResponse(stationResponses, distance, fare);
     }
 
 }
