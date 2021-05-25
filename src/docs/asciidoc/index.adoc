@@ -68,7 +68,7 @@ include::{snippets}/line-update/http-response.adoc[]
 
 == Section (구간)
 
-=== 삭제
+=== 구간 삭제
 
 - Request
 include::{snippets}/section-delete/http-request.adoc[]
