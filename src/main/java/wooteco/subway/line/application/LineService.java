@@ -61,6 +61,7 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
+        validateExistLine(id);
         return lineDao.findById(id);
     }
 

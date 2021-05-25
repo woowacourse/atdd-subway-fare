@@ -1,8 +1,8 @@
 package wooteco.subway.line.domain;
 
+import wooteco.subway.line.application.InvalidSectionException;
 import wooteco.subway.station.domain.Station;
 
-import javax.sound.midi.Soundbank;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -34,7 +34,7 @@ public class Sections {
         this.sections = sections;
     }
 
-    public void addSection(Section section) {
+    public void addSection(Section section) { // TODO : 예외 잡기
         if (this.sections.isEmpty()) {
             this.sections.add(section);
             return;
@@ -52,7 +52,7 @@ public class Sections {
     private void checkAlreadyExisted(Section section) {
         List<Station> stations = getStations();
         if (!stations.contains(section.getUpStation()) && !stations.contains(section.getDownStation())) {
-            throw new RuntimeException();
+            throw new InvalidSectionException();
         }
     }
 
@@ -60,7 +60,7 @@ public class Sections {
         List<Station> stations = getStations();
         List<Station> stationsOfNewSection = Arrays.asList(section.getUpStation(), section.getDownStation());
         if (stations.containsAll(stationsOfNewSection)) {
-            throw new RuntimeException();
+            throw new InvalidSectionException();
         }
     }
 
@@ -80,7 +80,7 @@ public class Sections {
 
     private void replaceSectionWithUpStation(Section newSection, Section existSection) {
         if (existSection.getDistance() <= newSection.getDistance()) {
-            throw new RuntimeException();
+            throw new InvalidSectionException();
         }
         this.sections.add(new Section(existSection.getUpStation(), newSection.getUpStation(), existSection.getDistance() - newSection.getDistance()));
         this.sections.remove(existSection);
@@ -88,7 +88,7 @@ public class Sections {
 
     private void replaceSectionWithDownStation(Section newSection, Section existSection) {
         if (existSection.getDistance() <= newSection.getDistance()) {
-            throw new RuntimeException();
+            throw new InvalidSectionException();
         }
         this.sections.add(new Section(newSection.getDownStation(), existSection.getDownStation(), existSection.getDistance() - newSection.getDistance()));
         this.sections.remove(existSection);
@@ -120,7 +120,7 @@ public class Sections {
         return this.sections.stream()
                 .filter(it -> !downStations.contains(it.getUpStation()))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(InvalidSectionException::new);
     }
 
     private Section findSectionByNextUpStation(Station station) {
@@ -132,7 +132,7 @@ public class Sections {
 
     public void removeStation(Station station) {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new InvalidSectionException();
         }
 
         Optional<Section> upSection = sections.stream()
