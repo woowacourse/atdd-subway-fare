@@ -3,7 +3,6 @@ package wooteco.subway.path.domain;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.station.domain.Station;
 
-import java.util.Comparator;
 import java.util.List;
 
 public class SubwayPath {
@@ -29,8 +28,8 @@ public class SubwayPath {
 
     public Fare calculateFare(int distance, LoginMember loginMember) {
         Fare defaultFare = Fare.createDefaultFare();
-        Fare totalFare = defaultFare.getTotalFare(sectionEdges, distance);
+        Fare totalFare = defaultFare.calculateTotalFare(sectionEdges, distance);
 
-        return totalFare.getFareAfterDiscount(loginMember);
+        return totalFare.calculateFareAfterDiscount(loginMember);
     }
 }

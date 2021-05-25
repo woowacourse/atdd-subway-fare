@@ -10,8 +10,8 @@ public enum Discount {
 
     public static final int DEFAULT_DISCOUNT_AMOUNT = 350;
 
-    private double discountRate;
-    private IntPredicate discountCriteria;
+    private final double discountRate;
+    private final IntPredicate discountCriteria;
 
     Discount(final double discountRate, final IntPredicate discountCriteria) {
         this.discountRate = discountRate;

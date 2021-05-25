@@ -25,21 +25,11 @@ public class Fare {
         return fare;
     }
 
-    public Fare getTotalFare(final List<SectionEdge> sectionEdges, final int distance) {
+    public Fare calculateTotalFare(final List<SectionEdge> sectionEdges, final int distance) {
         int lineExtraFare = getLineExtraFare(sectionEdges);
-        int distanceFare = getDistanceFare(distance);
+        int distanceFare = DistanceCharge.getDistanceCharge(distance);
 
         return new Fare(this.fare + lineExtraFare + distanceFare);
-    }
-
-    private int getDistanceFare(final int distance) {
-        if (distance > 10 && distance <= 50) {
-            return (int) ((Math.ceil((distance - 10) / 5) + 1) * 100);
-        }
-        if (distance > 50) {
-            return 800 + (int) ((Math.ceil((distance - 50) / 8) + 1) * 100);
-        }
-        return 0;
     }
 
     private int getLineExtraFare(final List<SectionEdge> sectionEdges) {
@@ -49,10 +39,11 @@ public class Fare {
                 .getAsInt();
     }
 
-    public Fare getFareAfterDiscount(final LoginMember loginMember) {
+    public Fare calculateFareAfterDiscount(final LoginMember loginMember) {
         if (loginMember.getId() == null) {
             return this;
         }
-        return new Fare(this.fare - Discount.getDiscountAmount(loginMember.getAge(), this.fare));
+        int discountAmount = Discount.getDiscountAmount(loginMember.getAge(), this.fare);
+        return new Fare(this.fare - discountAmount);
     }
 }
