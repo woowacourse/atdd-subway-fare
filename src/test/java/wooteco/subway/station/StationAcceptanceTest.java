@@ -73,6 +73,19 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_삭제됨(response);
     }
 
+    @DisplayName("예외 - 중복된 지하철 역을 생성한다.")
+    @Test
+    void createDuplicateStation() {
+        //given
+        StationResponse stationResponse = 지하철역_등록되어_있음(강남역);
+
+        //when
+        ExtractableResponse<Response> response = 지하철역_생성_요청(stationResponse.getName());
+
+        //then
+        지하철역_생성되지_않음(response);
+    }
+
     public static StationResponse 지하철역_등록되어_있음(String name) {
         return 지하철역_생성_요청(name).as(StationResponse.class);
     }
@@ -132,5 +145,9 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 .collect(Collectors.toList());
 
         assertThat(resultLineIds).containsAll(expectedLineIds);
+    }
+
+    public static void 지하철역_생성되지_않음(ExtractableResponse response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }

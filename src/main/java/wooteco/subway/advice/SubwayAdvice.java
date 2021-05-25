@@ -9,8 +9,9 @@ import wooteco.subway.exception.duplicate.DuplicatedException;
 
 @RestControllerAdvice
 public class SubwayAdvice {
-    @ExceptionHandler(DuplicatedException.class)
-    public ResponseEntity<ErrorResponse> handle(DuplicatedException e) {
-        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(new ErrorResponse(e.getMessage()));
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleApplicationException(Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ErrorResponse(e.getMessage()));
     }
 }
