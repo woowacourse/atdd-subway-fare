@@ -11,8 +11,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import wooteco.subway.auth.application.AuthorizationException;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
+import wooteco.subway.exception.AuthorizationException;
+import wooteco.subway.exception.NotLoginException;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.AuthMember;
 import wooteco.subway.member.domain.LoginMember;
@@ -39,11 +40,17 @@ public class MemberController {
         }
     }
 
+//    @PostMapping("/members/email-check")
+//    public ResponseEntity validateEmailDuplicate(@RequestBody MemberRequest request) {
+////        MemberResponse member = memberService.createMember(request);
+////        return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
+//    }
+
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(
         @AuthenticationPrincipal AuthMember authMember) {
         if (!authMember.isLoggedIn()) {
-            throw new AuthorizationException("로그인을 해야합니다.");
+            throw new AuthorizationException();
         }
         MemberResponse member = memberService.findMember((LoginMember) authMember);
         return ResponseEntity.ok().body(member);
@@ -53,7 +60,7 @@ public class MemberController {
     public ResponseEntity<MemberResponse> updateMemberOfMine(
         @AuthenticationPrincipal AuthMember authMember, @RequestBody MemberRequest param) {
         if (!authMember.isLoggedIn()) {
-            throw new AuthorizationException("로그인을 해야합니다.");
+            throw new NotLoginException();
         }
         memberService.updateMember((LoginMember) authMember, param);
         return ResponseEntity.ok().build();
@@ -63,7 +70,7 @@ public class MemberController {
     public ResponseEntity<MemberResponse> deleteMemberOfMine(
         @AuthenticationPrincipal AuthMember authMember) {
         if (!authMember.isLoggedIn()) {
-            throw new AuthorizationException("로그인을 해야합니다.");
+            throw new NotLoginException();
         }
         memberService.deleteMember((LoginMember) authMember);
         return ResponseEntity.noContent().build();
