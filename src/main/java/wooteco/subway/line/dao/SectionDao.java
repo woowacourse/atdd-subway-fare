@@ -58,4 +58,20 @@ public class SectionDao {
         String query = "UPDATE SECTION SET distance = ? WHERE id = ? AND up_station_id = ? AND down_station_id = ?";
         jdbcTemplate.update(query, distance, lineId, upStationId, downStationId);
     }
+
+    public List<Line> getMap() {
+        String query = "SELECT SE.line_id AS line_id, SE.up_station_id AS up_station_id, " +
+                "SE.down_station_id AS down_station_id, " +
+                "SE.distance AS distance, US.name AS up_station_name, " +
+                "DS.name AS down_station_name, L.name AS line_name, L.color AS line_color " +
+                "FROM SECTION AS SE" +
+                "LEFT OUTER JOIN LINE AS L ON LINE.id = SE.line_id " +
+                "LEFT OUTER JOIN STATION AS US ON US.id = SE.up_station_id " +
+                "LEFT OUTER JOIN STATION AS DS ON DS.id = SE.down_station_id";
+
+        return null;
+//        return jdbcTemplate.query(query, (result, rowNum) -> {
+//           new Sections()
+//        });
+    }
 }
