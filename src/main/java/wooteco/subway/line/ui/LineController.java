@@ -1,5 +1,6 @@
 package wooteco.subway.line.ui;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -45,7 +46,7 @@ public class LineController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity updateLine(@PathVariable Long id, @Valid @RequestBody LineRequest lineUpdateRequest) {
+    public ResponseEntity updateLine(@PathVariable @DateTimeFormat Long id, @Valid @RequestBody LineRequest lineUpdateRequest) {
         lineService.updateLine(id, lineUpdateRequest);
         return ResponseEntity.ok()
                              .build();

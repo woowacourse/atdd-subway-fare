@@ -77,7 +77,7 @@ public class StationDao {
 
     public List<Line> findLinesPassing(Station station) {
         String sql = "SELECT DISTINCT L.id as line_id, L.name as line_name, L.color as line_color, L.extra_fare as extra_fare FROM LINE L " +
-                "left outer join SECTION S WHERE S.up_station_id =? OR S.down_station_id = ?";
+                "left outer join SECTION S WHERE L.id = S.line_id AND (S.up_station_id =? OR S.down_station_id = ?)";
         return jdbcTemplate.query(sql, lineInfoRowMapper, station.getId(), station.getId());
     }
 }
