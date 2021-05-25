@@ -2,10 +2,28 @@ package wooteco.subway.path.application;
 
 import java.util.Comparator;
 import java.util.List;
-import wooteco.subway.line.domain.Line;
-import wooteco.subway.path.domain.Fare;
+import java.util.Optional;
 
-public class FareCalculator {
+import org.springframework.stereotype.Component;
+import wooteco.subway.line.domain.Line;
+import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.path.domain.Fare;
+import wooteco.subway.path.domain.SubwayPath;
+
+@Component
+public class FareCalculator implements FarePolicy {
+    private static final int DEFAULT_FARE = 1250;
+
+    public Fare getTotalFare(SubwayPath subwayPath, Optional<LoginMember> loginMember) {
+        Fare fareByDistance = getFareByDistance(new Fare(DEFAULT_FARE), subwayPath.calculateDistance());
+        Fare fareWithLineExtraFare = getFareWithLineExtraFare(fareByDistance, subwayPath.getLines());
+
+        if (!loginMember.isPresent()) {
+            return fareWithLineExtraFare;
+        }
+        return getFareByAge(loginMember.get().getAge(), fareWithLineExtraFare);
+    }
+
     public Fare getFareByDistance(Fare currentFare, int distance) {
         if (distance <= 10) {
             return currentFare;
