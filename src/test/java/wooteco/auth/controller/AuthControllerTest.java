@@ -11,6 +11,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import wooteco.auth.service.AuthService;
+import wooteco.auth.util.JwtTokenProvider;
+import wooteco.auth.web.api.LoginInterceptor;
 import wooteco.auth.web.dto.request.TokenRequest;
 import wooteco.auth.web.dto.response.TokenResponse;
 import wooteco.auth.web.api.AuthController;
@@ -37,6 +39,12 @@ public class AuthControllerTest {
 
     @MockBean
     private AuthService authService;
+
+    @MockBean
+    private LoginInterceptor loginInterceptor;
+
+    @MockBean
+    private JwtTokenProvider jwtTokenProvider;
 
     @Test
     @DisplayName("로그인 - 성공")

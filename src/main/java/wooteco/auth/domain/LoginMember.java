@@ -8,7 +8,11 @@ public class LoginMember {
     }
 
     public LoginMember(Long id) {
-        this.id = id;
+        this(id, null);
+    }
+
+    public LoginMember(Authority authority) {
+        this(null, authority);
     }
 
     public LoginMember(Long id, Authority authority) {
@@ -18,5 +22,9 @@ public class LoginMember {
 
     public Long getId() {
         return id;
+    }
+
+    public Authority getAuthority() {
+        return authority;
     }
 }

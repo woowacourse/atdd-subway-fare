@@ -10,12 +10,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import wooteco.auth.service.AuthService;
-import wooteco.auth.service.MemberService;
 import wooteco.auth.domain.LoginMember;
+import wooteco.auth.service.MemberService;
+import wooteco.auth.util.JwtTokenProvider;
+import wooteco.auth.web.api.LoginInterceptor;
+import wooteco.auth.web.api.MemberController;
 import wooteco.auth.web.dto.request.MemberRequest;
 import wooteco.auth.web.dto.response.MemberResponse;
-import wooteco.auth.web.api.MemberController;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -38,7 +39,10 @@ public class MemberControllerTest {
     private MemberService memberService;
 
     @MockBean
-    private AuthService authService;
+    private LoginInterceptor loginInterceptor;
+
+    @MockBean
+    private JwtTokenProvider jwtTokenProvider;
 
     @Test
     @DisplayName("유저 생성 - 성공")
@@ -71,8 +75,9 @@ public class MemberControllerTest {
         long id = 1L;
         String email = "test@email.com";
         int age = 20;
-        given(authService.findMemberByToken(token))
-                .willReturn(new LoginMember(id));
+
+        given(loginInterceptor.preHandle(any(), any(), any()))
+                .willReturn(true);
 
         given(memberService.findMember(any(LoginMember.class)))
                 .willReturn(new MemberResponse(id, email, age));
@@ -95,10 +100,10 @@ public class MemberControllerTest {
         String token = "이것은토큰입니다";
         final long id = 1L;
         final String email = "test@email.com";
-        final int age = 20;
         final int newAge = 29;
-        given(authService.findMemberByToken(token))
-                .willReturn(new LoginMember(id));
+
+        given(loginInterceptor.preHandle(any(), any(), any()))
+                .willReturn(true);
 
         given(memberService.updateMember(any(LoginMember.class), any(MemberRequest.class)))
                 .willReturn(new MemberResponse(id, email, newAge));
@@ -121,11 +126,10 @@ public class MemberControllerTest {
     @DisplayName("현재 유저 삭제 - 성공")
     void deleteMe() throws Exception {
         String token = "이것은토큰입니다";
-        long id = 1L;
-        String email = "test@email.com";
-        int age = 20;
-        given(authService.findMemberByToken(token))
-                .willReturn(new LoginMember(id));
+
+        given(loginInterceptor.preHandle(any(), any(), any()))
+                .willReturn(true);
+
         mockMvc.perform(
                 delete("/api/members/me")
                         .header("Authorization", "Bearer " + token)

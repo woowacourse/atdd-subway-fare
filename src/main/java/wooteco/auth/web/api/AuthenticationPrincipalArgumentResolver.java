@@ -6,18 +6,18 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import wooteco.auth.domain.AuthenticationPrincipal;
+import wooteco.auth.domain.Authority;
 import wooteco.auth.domain.LoginMember;
-import wooteco.auth.service.AuthService;
 import wooteco.auth.util.AuthorizationExtractor;
-import wooteco.common.exception.forbidden.AuthorizationException;
+import wooteco.auth.util.JwtTokenProvider;
 
 import javax.servlet.http.HttpServletRequest;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
-    private AuthService authService;
+    private JwtTokenProvider jwtTokenProvider;
 
-    public AuthenticationPrincipalArgumentResolver(AuthService authService) {
-        this.authService = authService;
+    public AuthenticationPrincipalArgumentResolver(JwtTokenProvider jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
@@ -28,10 +28,12 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
-        LoginMember member = authService.findMemberByToken(credentials);
-        if (member.getId() == null) {
-            throw new AuthorizationException();
+        if (!jwtTokenProvider.validateToken(credentials)) {
+            return new LoginMember(Authority.ANONYMOUS);
         }
-        return member;
+
+        Long id = Long.parseLong(jwtTokenProvider.getPayload(credentials));
+
+        return new LoginMember(id, Authority.USER);
     }
 }

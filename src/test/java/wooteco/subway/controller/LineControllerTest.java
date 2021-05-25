@@ -10,16 +10,17 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import wooteco.auth.util.JwtTokenProvider;
+import wooteco.auth.web.api.LoginInterceptor;
 import wooteco.subway.TestDataLoader;
-import wooteco.auth.service.AuthService;
 import wooteco.subway.service.LineService;
 import wooteco.subway.web.api.LineController;
-import wooteco.subway.web.dto.response.LineResponse;
-import wooteco.subway.web.dto.response.SectionResponse;
-import wooteco.subway.web.dto.response.StationResponse;
 import wooteco.subway.web.dto.request.LineRequest;
 import wooteco.subway.web.dto.request.LineUpdateRequest;
 import wooteco.subway.web.dto.request.SectionRequest;
+import wooteco.subway.web.dto.response.LineResponse;
+import wooteco.subway.web.dto.response.SectionResponse;
+import wooteco.subway.web.dto.response.StationResponse;
 
 import java.util.Arrays;
 import java.util.List;
@@ -38,10 +39,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @AutoConfigureRestDocs
 class LineControllerTest {
+
     @MockBean
     private LineService lineService;
     @MockBean
-    private AuthService authService;
+    private LoginInterceptor loginInterceptor;
+    @MockBean
+    private JwtTokenProvider jwtTokenProvider;
+
     @Autowired
     private MockMvc mockMvc;
     @Autowired

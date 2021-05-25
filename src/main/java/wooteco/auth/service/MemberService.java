@@ -6,7 +6,8 @@ import wooteco.auth.domain.LoginMember;
 import wooteco.auth.domain.Member;
 import wooteco.auth.web.dto.request.MemberRequest;
 import wooteco.auth.web.dto.response.MemberResponse;
-import wooteco.common.exception.notfound.MemberNotFoundException;
+import wooteco.common.exception.badrequest.MemberNotFoundException;
+import wooteco.common.exception.unauthorizationexception.UnAuthorizationException;
 
 @Service
 public class MemberService {
@@ -23,7 +24,7 @@ public class MemberService {
 
     public MemberResponse findMember(LoginMember loginMember) {
         Member member = memberDao.findById(loginMember.getId())
-                .orElseThrow(MemberNotFoundException::new);
+                .orElseThrow(UnAuthorizationException::new);
         return MemberResponse.of(member);
     }
 

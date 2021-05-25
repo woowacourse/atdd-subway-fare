@@ -1,7 +1,7 @@
 package wooteco.auth.domain;
 
 import org.apache.commons.lang3.StringUtils;
-import wooteco.common.exception.forbidden.AuthorizationException;
+import wooteco.common.exception.unauthorizationexception.AuthorizationException;
 
 public class Member {
     private Long id;
