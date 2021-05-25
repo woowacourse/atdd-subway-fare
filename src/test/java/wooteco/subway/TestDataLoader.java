@@ -1,8 +1,8 @@
 package wooteco.subway;
 
-import wooteco.subway.line.domain.Line;
-import wooteco.subway.line.domain.Section;
-import wooteco.subway.station.domain.Station;
+import wooteco.subway.domain.Line;
+import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Station;
 
 public class TestDataLoader {
 
