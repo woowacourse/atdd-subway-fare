@@ -37,6 +37,7 @@ public class StationService {
 
         return stations.stream()
                 .map(StationResponse::of)
+                .sorted(Comparator.comparing(StationResponse::getId))
                 .collect(Collectors.toList());
     }
 
