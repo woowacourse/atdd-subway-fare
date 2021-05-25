@@ -1,21 +1,30 @@
 package wooteco.subway.station.domain;
 
 import java.util.Objects;
+import java.util.regex.Pattern;
+import org.springframework.http.HttpStatus;
+import wooteco.subway.exception.HttpException;
 
 public class Station {
-    private Long id;
-    private String name;
+    private static final String NAME_PATTERN = "^[가-힣0-9]{2,20}$";
 
-    public Station() {
-    }
+    private final Long id;
+    private final String name;
 
     public Station(Long id, String name) {
+        validate(name);
         this.id = id;
         this.name = name;
     }
 
     public Station(String name) {
-        this.name = name;
+        this(null, name);
+    }
+
+    private void validate(String name) {
+        if (!Pattern.matches(NAME_PATTERN, name)) {
+            throw new HttpException(HttpStatus.BAD_REQUEST, "역 이름은 " + NAME_PATTERN + " 형식이어야 합니다.");
+        }
     }
 
     public Long getId() {

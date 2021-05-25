@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
@@ -22,14 +24,26 @@ public class StationAcceptanceTest extends AcceptanceTest {
     private static final String 강남역 = "강남역";
     private static final String 역삼역 = "역삼역";
 
-    @DisplayName("지하철역을 생성한다.")
-    @Test
-    void createStation() {
+    @DisplayName("지하철역 생성 - 역 이름: 2자 이상 20자 이하의 한글 (숫자, 공백 허용 X) - 생성 성공")
+    @ParameterizedTest
+    @ValueSource(strings = {"하나", "11", "하나2역", "일이삼사오육칠팔구십일이삼사오육칠팔구십"})
+    void createStation(String name) {
         // when
-        ExtractableResponse<Response> response = 지하철역_생성_요청(강남역);
+        ExtractableResponse<Response> response = 지하철역_생성_요청(name);
 
         // then
         지하철역_생성됨(response);
+    }
+
+    @DisplayName("지하철역 생성 - 역 이름: 2자 이상 20자 이하의 한글 (숫자, 공백 허용 X) - 예외상황 400 에러")
+    @ParameterizedTest
+    @ValueSource(strings = {"", " ", "일", "asdf", "일 ", "하나 역", "하나a역", "하나,역", "하나\t역", "일이삼사오육칠팔구십일이삼사오육칠팔구십일"})
+    void createStationWithNotValidName(String name) {
+        // when
+        ExtractableResponse<Response> response = 지하철역_생성_요청(name);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     @DisplayName("기존에 존재하는 지하철역 이름으로 지하철역을 생성한다.")
