@@ -37,7 +37,21 @@ public class Sections {
     }
 
     public List<Section> getSections() {
+        List<Station> stations = getStations();
+        List<Section> sections = new ArrayList<>();
+        for (int i = 0; i < stations.size() - 1; i++) {
+            Station station = stations.get(i);
+            Section section = getSectionByUpStationId(station.getId());
+            sections.add(section);
+        }
         return sections;
+    }
+
+    private Section getSectionByUpStationId(Long upStationId) {
+        return sections.stream()
+            .filter(section -> section.getUpStationId().equals(upStationId))
+            .findAny()
+            .orElseThrow(() -> new IllegalStateException("노선의 역 정보와 구간 정보가 서로 일치하지 않습니다."));
     }
 
     private void checkAlreadyExisted(Section section) {
