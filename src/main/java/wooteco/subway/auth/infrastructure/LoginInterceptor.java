@@ -9,8 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class LoginInterceptor implements HandlerInterceptor {
-    private Logger logger = LoggerFactory.getLogger(LoginInterceptor.class);
     private final AuthService authService;
+    private Logger logger = LoggerFactory.getLogger(LoginInterceptor.class);
 
     public LoginInterceptor(AuthService authService) {
         this.authService = authService;
@@ -18,7 +18,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if ("OPTIONS".equals(request.getMethod()) || "GET".equals(request.getMethod()) ) {
+        if ("OPTIONS".equals(request.getMethod()) || "GET".equals(request.getMethod())) {
             return true;
         }
         String token = AuthorizationExtractor.extract(request);
