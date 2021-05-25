@@ -65,4 +65,9 @@ public class StationDao {
             return Optional.empty();
         }
     }
+
+    public void update(final Long id, final Station station) {
+        String sql = "update STATION set name = ? where id = ?";
+        jdbcTemplate.update(sql, id, station.getName());
+    }
 }

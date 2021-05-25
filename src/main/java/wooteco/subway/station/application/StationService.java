@@ -59,4 +59,8 @@ public class StationService {
                 .orElseThrow(StationDuplicatedException::new)
                 .getId();
     }
+
+    public void updateStation(final Long id, final StationRequest stationRequest) {
+        stationDao.update(id, stationRequest.toStation());
+    }
 }
