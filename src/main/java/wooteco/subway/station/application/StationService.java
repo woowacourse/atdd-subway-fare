@@ -1,6 +1,7 @@
 package wooteco.subway.station.application;
 
 import org.springframework.stereotype.Service;
+import wooteco.subway.line.dto.SimpleLineResponse;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;
@@ -24,27 +25,35 @@ public class StationService {
         }
 
         Station station = stationDao.insert(stationRequest.toStation());
-        return StationResponse.of(station);
+        return toStationResponse(station);
     }
 
     public Station findStationById(Long id) {
         return stationDao.findById(id)
-                .orElseThrow(() -> new StationException("존재하지 않는 역입니다."));
+                         .orElseThrow(() -> new StationException("존재하지 않는 역입니다."));
     }
 
     public List<StationResponse> findAllStationResponses() {
         List<Station> stations = stationDao.findAll();
+        stations.sort(Comparator.comparing(Station::getId));
 
-        return stations.stream()
-                .map(StationResponse::of)
-                .sorted(Comparator.comparing(StationResponse::getId))
-                .collect(Collectors.toList());
+        return stationResponses(stations);
     }
 
     public void deleteStationById(Long id) {
         stationDao.findById(id)
-                .orElseThrow(() -> new StationException("존재하지 않는 역입니다."));
+                  .orElseThrow(() -> new StationException("존재하지 않는 역입니다."));
 
         stationDao.deleteById(id);
+    }
+
+    public List<StationResponse> stationResponses(List<Station> stations) {
+        return stations.stream()
+                       .map(this::toStationResponse)
+                       .collect(Collectors.toList());
+    }
+
+    public StationResponse toStationResponse(Station station) {
+        return StationResponse.of(station, SimpleLineResponse.listOf(stationDao.findLinesPassing(station)));
     }
 }

@@ -28,16 +28,16 @@ public class Member {
         this(null, email, password, age);
     }
 
-    private void validate(String email, String password, Integer age){
-        if(Objects.isNull(age) || age < 0){
+    private void validate(String email, String password, Integer age) {
+        if (Objects.isNull(age) || age < 0) {
             throw new MemberException("나이는 음수가 될 수 없습니다.");
         }
 
-        if(Objects.isNull(email) || email.isEmpty()){
+        if (Objects.isNull(email) || email.isEmpty()) {
             throw new MemberException("회원 이메일은 빈 문자열일 수 없습니다.");
         }
 
-        if(Objects.isNull(password) || password.isEmpty()){
+        if (Objects.isNull(password) || password.isEmpty()) {
             throw new MemberException("회원 비밀번호는 빈 문자열일 수 없습니다.");
         }
     }

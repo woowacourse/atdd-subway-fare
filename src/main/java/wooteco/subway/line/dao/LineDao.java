@@ -25,6 +25,7 @@ public class LineDao {
                 .usingGeneratedKeyColumns("id");
     }
 
+
     public Line insert(Line line) {
         Map<String, Object> params = new HashMap<>();
         params.put("id", line.getId());
@@ -32,7 +33,8 @@ public class LineDao {
         params.put("color", line.getColor());
         params.put("extra_fare", line.getExtraFare());
 
-        Long lineId = insertAction.executeAndReturnKey(params).longValue();
+        Long lineId = insertAction.executeAndReturnKey(params)
+                                  .longValue();
         return new Line(lineId, line.getName(), line.getColor(), line.getExtraFare());
     }
 
@@ -69,10 +71,12 @@ public class LineDao {
                 "left outer join STATION DST on S.down_station_id = DST.id ";
 
         List<Map<String, Object>> result = jdbcTemplate.queryForList(sql);
-        Map<Long, List<Map<String, Object>>> resultByLine = result.stream().collect(Collectors.groupingBy(it -> (Long) it.get("line_id")));
-        return resultByLine.entrySet().stream()
-                .map(it -> mapLine(it.getValue()).orElseThrow(()-> new LineException("존재하지 않는 노선입니다.")))
-                .collect(Collectors.toList());
+        Map<Long, List<Map<String, Object>>> resultByLine = result.stream()
+                                                                  .collect(Collectors.groupingBy(it -> (Long) it.get("line_id")));
+        return resultByLine.entrySet()
+                           .stream()
+                           .map(it -> mapLine(it.getValue()).orElseThrow(() -> new LineException("존재하지 않는 노선입니다.")))
+                           .collect(Collectors.toList());
     }
 
     private Optional<Line> mapLine(List<Map<String, Object>> result) {
@@ -83,28 +87,43 @@ public class LineDao {
         List<Section> sections = extractSections(result);
 
         return Optional.of(new Line(
-                (Long) result.get(0).get("LINE_ID"),
-                (String) result.get(0).get("LINE_NAME"),
-                (String) result.get(0).get("LINE_COLOR"),
-                (int) result.get(0).get("LINE_EXTRA_FARE"),
+                (Long) result.get(0)
+                             .get("LINE_ID"),
+                (String) result.get(0)
+                               .get("LINE_NAME"),
+                (String) result.get(0)
+                               .get("LINE_COLOR"),
+                (int) result.get(0)
+                            .get("LINE_EXTRA_FARE"),
                 new Sections(sections)));
     }
 
     private List<Section> extractSections(List<Map<String, Object>> result) {
-        if (result.isEmpty() || result.get(0).get("SECTION_ID") == null) {
+        if (result.isEmpty() || result.get(0)
+                                      .get("SECTION_ID") == null) {
             return Collections.EMPTY_LIST;
         }
         return result.stream()
-                .collect(Collectors.groupingBy(it -> it.get("SECTION_ID")))
-                .entrySet()
-                .stream()
-                .map(it ->
-                        new Section(
-                                (Long) it.getKey(),
-                                new Station((Long) it.getValue().get(0).get("UP_STATION_ID"), (String) it.getValue().get(0).get("UP_STATION_Name")),
-                                new Station((Long) it.getValue().get(0).get("DOWN_STATION_ID"), (String) it.getValue().get(0).get("DOWN_STATION_Name")),
-                                (int) it.getValue().get(0).get("SECTION_DISTANCE")))
-                .collect(Collectors.toList());
+                     .collect(Collectors.groupingBy(it -> it.get("SECTION_ID")))
+                     .entrySet()
+                     .stream()
+                     .map(it ->
+                             new Section(
+                                     (Long) it.getKey(),
+                                     new Station((Long) it.getValue()
+                                                          .get(0)
+                                                          .get("UP_STATION_ID"), (String) it.getValue()
+                                                                                            .get(0)
+                                                                                            .get("UP_STATION_Name")),
+                                     new Station((Long) it.getValue()
+                                                          .get(0)
+                                                          .get("DOWN_STATION_ID"), (String) it.getValue()
+                                                                                              .get(0)
+                                                                                              .get("DOWN_STATION_Name")),
+                                     (int) it.getValue()
+                                             .get(0)
+                                             .get("SECTION_DISTANCE")))
+                     .collect(Collectors.toList());
     }
 
     public void deleteById(Long id) {
@@ -120,4 +139,6 @@ public class LineDao {
         String sql = "SELECT EXISTS (SELECT id FROM LINE WHERE color = ?)";
         return jdbcTemplate.queryForObject(sql, Boolean.class, color);
     }
+
+
 }

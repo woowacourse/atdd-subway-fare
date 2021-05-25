@@ -14,19 +14,19 @@ public enum FareType {
     private List<MemberType> memberTypes;
     private double discountRate;
 
-    FareType(double discountRate, MemberType... memberTypes){
+    FareType(double discountRate, MemberType... memberTypes) {
         this.discountRate = discountRate;
         this.memberTypes = Arrays.asList(memberTypes);
     }
 
-    public static FareType of(MemberType memberType){
+    public static FareType of(MemberType memberType) {
         return Arrays.stream(values())
-                .filter(fareType -> fareType.memberTypes.contains(memberType))
-                .findFirst()
-                .orElse(ZERO);
+                     .filter(fareType -> fareType.memberTypes.contains(memberType))
+                     .findFirst()
+                     .orElse(ZERO);
     }
 
-    public int price(int fare){
-        return (int)(fare * (1-discountRate));
+    public int price(int fare) {
+        return (int) (fare * (1 - discountRate));
     }
 }

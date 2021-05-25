@@ -2,7 +2,6 @@ package wooteco.subway.line.domain;
 
 import wooteco.subway.station.domain.Station;
 
-import java.util.Collections;
 import java.util.List;
 
 public class Line {
@@ -24,7 +23,7 @@ public class Line {
     }
 
     public Line(Long id, String name, String color) {
-        this(id, name, color, 0,  new Sections());
+        this(id, name, color, 0, new Sections());
     }
 
     public Line(Long id, String name, String color, Sections sections) {
@@ -59,11 +58,11 @@ public class Line {
         return sections;
     }
 
-    public boolean isSameName(String name){
+    public boolean isSameName(String name) {
         return this.name.equals(name);
     }
 
-    public boolean isSameColor(String color){
+    public boolean isSameColor(String color) {
         return this.color.equals(color);
     }
 

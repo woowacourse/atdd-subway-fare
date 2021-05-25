@@ -55,16 +55,18 @@ public class Sections {
 
     private void addSectionUpToUp(Section section) {
         this.sections.stream()
-                .filter(it -> it.getUpStation().equals(section.getUpStation()))
-                .findFirst()
-                .ifPresent(it -> replaceSectionWithDownStation(section, it));
+                     .filter(it -> it.getUpStation()
+                                     .equals(section.getUpStation()))
+                     .findFirst()
+                     .ifPresent(it -> replaceSectionWithDownStation(section, it));
     }
 
     private void addSectionDownToDown(Section section) {
         this.sections.stream()
-                .filter(it -> it.getDownStation().equals(section.getDownStation()))
-                .findFirst()
-                .ifPresent(it -> replaceSectionWithUpStation(section, it));
+                     .filter(it -> it.getDownStation()
+                                     .equals(section.getDownStation()))
+                     .findFirst()
+                     .ifPresent(it -> replaceSectionWithUpStation(section, it));
     }
 
     private void replaceSectionWithUpStation(Section newSection, Section existSection) {
@@ -103,20 +105,21 @@ public class Sections {
 
     private Section findUpEndSection() {
         List<Station> downStations = this.sections.stream()
-                .map(it -> it.getDownStation())
-                .collect(Collectors.toList());
+                                                  .map(it -> it.getDownStation())
+                                                  .collect(Collectors.toList());
 
         return this.sections.stream()
-                .filter(it -> !downStations.contains(it.getUpStation()))
-                .findFirst()
-                .orElseThrow(()-> new LineException("잘못된 구간 정보입니다."));
+                            .filter(it -> !downStations.contains(it.getUpStation()))
+                            .findFirst()
+                            .orElseThrow(() -> new LineException("잘못된 구간 정보입니다."));
     }
 
     private Section findSectionByNextUpStation(Station station) {
         return this.sections.stream()
-                .filter(it -> it.getUpStation().equals(station))
-                .findFirst()
-                .orElse(null);
+                            .filter(it -> it.getUpStation()
+                                            .equals(station))
+                            .findFirst()
+                            .orElse(null);
     }
 
     public void removeStation(Station station) {
@@ -125,16 +128,22 @@ public class Sections {
         }
 
         Optional<Section> upSection = sections.stream()
-                .filter(it -> it.getUpStation().equals(station))
-                .findFirst();
+                                              .filter(it -> it.getUpStation()
+                                                              .equals(station))
+                                              .findFirst();
         Optional<Section> downSection = sections.stream()
-                .filter(it -> it.getDownStation().equals(station))
-                .findFirst();
+                                                .filter(it -> it.getDownStation()
+                                                                .equals(station))
+                                                .findFirst();
 
         if (upSection.isPresent() && downSection.isPresent()) {
-            Station newUpStation = downSection.get().getUpStation();
-            Station newDownStation = upSection.get().getDownStation();
-            int newDistance = upSection.get().getDistance() + downSection.get().getDistance();
+            Station newUpStation = downSection.get()
+                                              .getUpStation();
+            Station newDownStation = upSection.get()
+                                              .getDownStation();
+            int newDistance = upSection.get()
+                                       .getDistance() + downSection.get()
+                                                                   .getDistance();
             sections.add(new Section(newUpStation, newDownStation, newDistance));
         }
 

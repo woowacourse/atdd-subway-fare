@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import wooteco.subway.line.domain.Line;
 import wooteco.subway.station.application.StationException;
 import wooteco.subway.station.domain.Station;
 
@@ -24,6 +25,13 @@ public class StationDao {
                     rs.getString("name")
             );
 
+    private RowMapper<Line> lineInfoRowMapper = (rs, rowNum) ->
+            new Line(
+                    rs.getLong("id"),
+                    rs.getString("name"),
+                    rs.getString("color"),
+                    rs.getInt("extra_fare")
+            );
 
     public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
@@ -34,7 +42,8 @@ public class StationDao {
 
     public Station insert(Station station) {
         SqlParameterSource params = new BeanPropertySqlParameterSource(station);
-        Long id = insertAction.executeAndReturnKey(params).longValue();
+        Long id = insertAction.executeAndReturnKey(params)
+                              .longValue();
         return new Station(id, station.getName());
     }
 
@@ -64,5 +73,11 @@ public class StationDao {
     public boolean isExistName(String name) {
         String sql = "SELECT EXISTS (SELECT id FROM STATION WHERE name = ?)";
         return jdbcTemplate.queryForObject(sql, Boolean.class, name);
+    }
+
+    public List<Line> findLinesPassing(Station station) {
+        String sql = "SELECT DISTINCT L.id as line_id, L.name as line_name, L.color as line_color, L.extra_fare as extra_fare FROM LINE L " +
+                "left outer join SECTION S WHERE S.up_station_id =? OR S.down_station_id = ?";
+        return jdbcTemplate.query(sql, lineInfoRowMapper, station.getId(), station.getId());
     }
 }

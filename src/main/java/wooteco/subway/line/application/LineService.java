@@ -8,9 +8,9 @@ import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
-import wooteco.subway.station.application.StationException;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
+import wooteco.subway.station.dto.StationResponse;
 
 import java.util.Comparator;
 import java.util.List;
@@ -34,7 +34,7 @@ public class LineService {
 
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
         persistLine.addSection(addInitSection(persistLine, request));
-        return LineResponse.of(persistLine);
+        return toLineResponse(persistLine);
     }
 
     private Section addInitSection(Line line, LineRequest request) {
@@ -50,9 +50,9 @@ public class LineService {
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
-                .map(line -> LineResponse.of(line))
-                .sorted(Comparator.comparing(LineResponse::getName))
-                .collect(Collectors.toList());
+                           .map(this::toLineResponse)
+                           .sorted(Comparator.comparing(LineResponse::getName))
+                           .collect(Collectors.toList());
     }
 
     public List<Line> findLines() {
@@ -61,21 +61,22 @@ public class LineService {
 
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
+        return toLineResponse(persistLine);
     }
 
     public Line findLineById(Long id) {
-        return lineDao.findById(id).orElseThrow(() -> new LineException("존재하지 않는 노선입니다."));
+        return lineDao.findById(id)
+                      .orElseThrow(() -> new LineException("존재하지 않는 노선입니다."));
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line oldLine = findLineById(id);
 
-        if(!oldLine.isSameName(lineUpdateRequest.getName())){
+        if (!oldLine.isSameName(lineUpdateRequest.getName())) {
             validateDuplicatedName(lineUpdateRequest);
         }
 
-        if(!oldLine.isSameColor(lineUpdateRequest.getColor())){
+        if (!oldLine.isSameColor(lineUpdateRequest.getColor())) {
             validateDuplicatedColor(lineUpdateRequest);
         }
 
@@ -117,5 +118,13 @@ public class LineService {
 
         sectionDao.deleteByLineId(lineId);
         sectionDao.insertSections(line);
+    }
+
+    private LineResponse toLineResponse(Line line) {
+        List<StationResponse> stations = line.getStations()
+                                             .stream()
+                                             .map(stationService::toStationResponse)
+                                             .collect(Collectors.toList());
+        return LineResponse.of(line, stations);
     }
 }
