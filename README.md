@@ -32,6 +32,22 @@
 
 <br>
 
+## Requirements
+
+> 3단계
+
+- [ ] 경로 조회 결과에 요금 정보를 포함하기
+
+```
+💸 요금 계산 방법
+
+기본운임(10㎞ 이내) : 기본운임 1,250원
+추가운임(10km 초과 ~ 50km 이내) : 5km마다 100원
+추가운임(50km 초과) : 8km마다 100원
+```
+
+<br>
+
 ## 📝 License
 
 This project is [MIT](https://github.com/woowacourse/atdd-subway-map/blob/master/LICENSE) licensed.
