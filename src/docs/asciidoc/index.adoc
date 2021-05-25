@@ -48,10 +48,10 @@ include::{snippets}/sign-up/http-response.adoc[]
 
 == 내 정보 수정
 === Request
-include::{snippets}/modify-my-info/http-request.adoc[]
+include::{snippets}/update-my-info/http-request.adoc[]
 
 === Response
-include::{snippets}/modify-my-info/http-response.adoc[]
+include::{snippets}/update-my-info/http-response.adoc[]
 
 
 == 회원 탈퇴
@@ -95,3 +95,46 @@ include::{snippets}/not-valid-login-token-when-get-login-user-my-info/http-reque
 
 === Response
 include::{snippets}/not-valid-login-token-when-get-login-user-my-info/http-response.adoc[]
+
+[[Line]]
+= 노선
+
+
+== 노선 생성
+=== Request
+include::{snippets}/create-line/http-request.adoc[]
+
+=== Response
+include::{snippets}/create-line/http-response.adoc[]
+
+
+== 전체 노선 목록 조회
+=== Request
+include::{snippets}/get-all-lines/http-request.adoc[]
+
+=== Response
+include::{snippets}/get-all-lines/http-response.adoc[]
+
+
+== 한 개의 노선 조회
+=== Request
+include::{snippets}/get-line/http-request.adoc[]
+
+=== Response
+include::{snippets}/get-line/http-response.adoc[]
+
+
+== 노선 수정
+=== Request
+include::{snippets}/update-line/http-request.adoc[]
+
+=== Response
+include::{snippets}/update-line/http-response.adoc[]
+
+
+== 노선 제거
+=== Request
+include::{snippets}/delete-line/http-request.adoc[]
+
+=== Response
+include::{snippets}/delete-line/http-response.adoc[]
