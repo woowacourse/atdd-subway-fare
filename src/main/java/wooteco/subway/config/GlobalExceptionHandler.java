@@ -12,11 +12,15 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(SQLException.class)
     public ResponseEntity<String> handle(SQLException e) {
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity
+                .badRequest()
+                .body("SQLException: " + e.getMessage());
     }
 
     @ExceptionHandler(InvalidPathException.class)
     public ResponseEntity<String> handle(InvalidPathException e) {
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity
+                .badRequest()
+                .body("InvalidPathException: " + e.getMessage());
     }
 }
