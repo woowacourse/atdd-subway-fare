@@ -40,7 +40,7 @@ public class PathService {
 
             return PathResponseAssembler.assemble(subwayPath, distance, fare);
         } catch (Exception e) {
-            throw new InvalidPathException();
+            throw new InvalidPathException(e.getMessage());
         }
     }
 }
