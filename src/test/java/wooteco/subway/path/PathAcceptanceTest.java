@@ -1,6 +1,7 @@
 package wooteco.subway.path;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
 import static wooteco.subway.auth.AuthAcceptanceTest.회원_등록되어_있음;
 import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
@@ -102,7 +103,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
         return RestAssured
-            .given().log().all()
+            .given(spec).log().all()
+            .filter(document("find-path"))
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .when().get("/paths?source={sourceId}&target={targetId}", source, target)
             .then().log().all()
