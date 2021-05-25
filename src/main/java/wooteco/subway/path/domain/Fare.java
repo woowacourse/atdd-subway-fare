@@ -14,10 +14,6 @@ public class Fare {
 
     private final int value;
 
-    public Fare(int distance) {
-        this.value = calculateFareByDistance(distance);
-    }
-
     public Fare(int distance, Member member, int extraFare) {
         this.value = calculateFare(distance, member, extraFare);
     }
