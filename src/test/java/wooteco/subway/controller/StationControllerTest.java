@@ -23,13 +23,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import wooteco.subway.ExceptionAdviceController;
-import wooteco.subway.auth.application.AuthService;
-import wooteco.subway.common.exception.badrequest.StationNameExistsException;
-import wooteco.subway.station.application.StationService;
-import wooteco.subway.station.dto.StationRequest;
-import wooteco.subway.station.dto.StationResponse;
-import wooteco.subway.station.ui.StationController;
+import wooteco.common.ExceptionAdviceController;
+import wooteco.auth.service.AuthService;
+import wooteco.common.exception.badrequest.StationNameExistsException;
+import wooteco.subway.service.StationService;
+import wooteco.subway.web.dto.request.StationRequest;
+import wooteco.subway.web.dto.response.StationResponse;
+import wooteco.subway.web.api.StationController;
 
 @WebMvcTest(controllers = {StationController.class, ExceptionAdviceController.class})
 @ActiveProfiles("test")

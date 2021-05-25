@@ -30,16 +30,16 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import wooteco.subway.TestDataLoader;
-import wooteco.subway.auth.application.AuthService;
-import wooteco.subway.line.application.LineService;
-import wooteco.subway.line.domain.Line;
-import wooteco.subway.line.dto.LineRequest;
-import wooteco.subway.line.dto.LineResponse;
-import wooteco.subway.line.dto.LineUpdateRequest;
-import wooteco.subway.line.dto.SectionRequest;
-import wooteco.subway.line.dto.SectionResponse;
-import wooteco.subway.line.ui.LineController;
-import wooteco.subway.station.dto.StationResponse;
+import wooteco.auth.service.AuthService;
+import wooteco.subway.service.LineService;
+import wooteco.subway.domain.Line;
+import wooteco.subway.web.dto.request.LineRequest;
+import wooteco.subway.web.dto.response.LineResponse;
+import wooteco.subway.web.dto.request.LineUpdateRequest;
+import wooteco.subway.web.dto.request.SectionRequest;
+import wooteco.subway.web.dto.response.SectionResponse;
+import wooteco.subway.web.api.LineController;
+import wooteco.subway.web.dto.response.StationResponse;
 
 @WebMvcTest(controllers = LineController.class)
 @ActiveProfiles("test")

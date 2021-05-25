@@ -21,14 +21,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import wooteco.subway.TestDataLoader;
-import wooteco.subway.auth.application.AuthService;
-import wooteco.subway.line.domain.Line;
-import wooteco.subway.line.domain.Section;
-import wooteco.subway.path.application.PathService;
-import wooteco.subway.path.dto.PathResponse;
-import wooteco.subway.path.ui.PathController;
-import wooteco.subway.station.domain.Station;
-import wooteco.subway.station.dto.StationResponse;
+import wooteco.auth.service.AuthService;
+import wooteco.subway.domain.Line;
+import wooteco.subway.domain.Section;
+import wooteco.subway.service.PathService;
+import wooteco.subway.web.dto.response.PathResponse;
+import wooteco.subway.web.api.PathController;
+import wooteco.subway.domain.Station;
+import wooteco.subway.web.dto.response.StationResponse;
 
 @WebMvcTest(controllers = PathController.class)
 @ActiveProfiles("test")
