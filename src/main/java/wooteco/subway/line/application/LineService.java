@@ -48,11 +48,10 @@ public class LineService {
     }
 
     public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
-        return persistLines.stream()
-                           .map(this::toLineResponse)
-                           .sorted(Comparator.comparing(LineResponse::getName))
-                           .collect(Collectors.toList());
+        return findLines().stream()
+                          .map(this::toLineResponse)
+                          .sorted(Comparator.comparing(LineResponse::getName))
+                          .collect(Collectors.toList());
     }
 
     public List<Line> findLines() {
@@ -60,8 +59,7 @@ public class LineService {
     }
 
     public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
-        return toLineResponse(persistLine);
+        return toLineResponse(findLineById(id));
     }
 
     public Line findLineById(Long id) {
