@@ -1,5 +1,6 @@
 package wooteco.subway.member.dao;
 
+import java.util.List;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -56,5 +57,10 @@ public class MemberDao {
     public Member findByEmail(String email) {
         String sql = "select * from MEMBER where email = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, email);
+    }
+
+    public List<Member> findAllByEmail(String email) {
+        String sql = "select * from MEMBER where email = ?";
+        return jdbcTemplate.query(sql, rowMapper, email);
     }
 }

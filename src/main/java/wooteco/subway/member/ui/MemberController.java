@@ -17,6 +17,7 @@ import wooteco.subway.exception.NotLoginException;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.AuthMember;
 import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.dto.MemberEmailCheckRequest;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
@@ -40,11 +41,11 @@ public class MemberController {
         }
     }
 
-//    @PostMapping("/members/email-check")
-//    public ResponseEntity validateEmailDuplicate(@RequestBody MemberRequest request) {
-////        MemberResponse member = memberService.createMember(request);
-////        return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
-//    }
+    @PostMapping("/members/email-check")
+    public ResponseEntity validateEmailDuplicate(@RequestBody MemberEmailCheckRequest request) {
+        memberService.validateDuplicateEmail(request);
+        return ResponseEntity.ok().build();
+    }
 
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(
