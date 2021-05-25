@@ -1,4 +1,4 @@
-package wooteco.subway.line;
+package wooteco.subway.section;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
