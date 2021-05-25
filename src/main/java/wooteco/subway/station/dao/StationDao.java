@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import wooteco.subway.station.application.StationException;
 import wooteco.subway.station.domain.Station;
 
 import javax.sql.DataSource;
@@ -43,15 +44,19 @@ public class StationDao {
     }
 
     public void deleteById(Long id) {
-        String sql = "delete from STATION where id = ?";
-        jdbcTemplate.update(sql, id);
+        try {
+            String sql = "delete from STATION where id = ?";
+            jdbcTemplate.update(sql, id);
+        } catch (Exception e) {
+            throw new StationException("이미 구간에 포함된 역을 삭제할 수 없습니다.");
+        }
     }
 
     public Optional<Station> findById(Long id) {
-        try{
+        try {
             String sql = "select * from STATION where id = ?";
             return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, id));
-        }catch (Exception e){
+        } catch (Exception e) {
             return Optional.empty();
         }
     }
