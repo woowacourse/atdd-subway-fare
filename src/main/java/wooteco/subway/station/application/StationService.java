@@ -61,6 +61,8 @@ public class StationService {
     }
 
     public void updateStation(final Long id, final StationRequest stationRequest) {
-        stationDao.update(id, stationRequest.toStation());
+        Long validatedId = validateStationExistAndGetId(id);
+        validateInsert(stationRequest);
+        stationDao.update(validatedId, stationRequest.toStation());
     }
 }
