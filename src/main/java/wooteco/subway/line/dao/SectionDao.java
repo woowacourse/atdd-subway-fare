@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
+import wooteco.subway.station.domain.Station;
 
 @Repository
 public class SectionDao {
@@ -22,6 +23,27 @@ public class SectionDao {
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
             .withTableName("SECTION")
             .usingGeneratedKeyColumns("id");
+    }
+
+    public List<Section> findByLineId(Long lineId) {
+        String sql = "SELECT se.id, se.line_id, se.up_station_id, \n"
+            + "st1.name as \"up_station_name\", \n"
+            + "se.down_station_id, \n"
+            + "st2.name as \"down_station_name\", \n"
+            + "se.distance\n"
+            + "FROM SECTION se\n"
+            + "LEFT OUTER JOIN STATION st1\n"
+            + "ON se.up_station_id = st1.id\n"
+            + "LEFT OUTER JOIN STATION st2\n"
+            + "ON se.down_station_id = st2.id\n"
+            + "WHERE se.line_id = ?";
+        return jdbcTemplate.query(sql, (rs, rowNum) ->
+            new Section(
+                rs.getLong("id"),
+                new Station(rs.getLong("up_station_id"), rs.getString("up_station_name")),
+                new Station(rs.getLong("down_station_id"), rs.getString("down_station_name")),
+                rs.getInt("distance")
+            ), lineId);
     }
 
     public Section insert(Line line, Section section) {
