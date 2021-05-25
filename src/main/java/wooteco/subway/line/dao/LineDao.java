@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.domain.Sections;
+import wooteco.subway.path.domain.Fare;
 import wooteco.subway.station.domain.Station;
 
 import javax.sql.DataSource;
@@ -32,10 +33,10 @@ public class LineDao {
         params.put("id", line.getId());
         params.put("name", line.getName());
         params.put("color", line.getColor());
-        params.put("extra_fare", line.getExtraFare());
+        params.put("extra_fare", line.getExtraFareAsInt());
 
         Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new Line(lineId, line.getName(), line.getColor(), line.getExtraFare());
+        return new Line(lineId, line.getName(), line.getColor(), new Fare(line.getExtraFareAsInt()));
     }
 
     public Line findById(Long id) {
@@ -86,7 +87,7 @@ public class LineDao {
                 (Long) result.get(0).get("LINE_ID"),
                 (String) result.get(0).get("LINE_NAME"),
                 (String) result.get(0).get("LINE_COLOR"),
-                (Integer) result.get(0).get("EXTRA_FARE"),
+                new Fare((Integer) result.get(0).get("EXTRA_FARE")),
                 new Sections(sections));
     }
 
