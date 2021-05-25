@@ -21,7 +21,8 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LoginInterceptor(authService))
-            .addPathPatterns(Arrays.asList("/lines/**", "/stations/**", "/members/**"));
+            .addPathPatterns(Arrays.asList("/lines/**", "/stations/**", "/members/**"))
+            .excludePathPatterns(Arrays.asList("/paths", "/login/token", "/members", "/"));
     }
 
     @Override
