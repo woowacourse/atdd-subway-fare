@@ -8,14 +8,20 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.line.dto.LineRequest;
+import wooteco.subway.line.dto.LineResponse;
+import wooteco.subway.line.dto.TransferLineResponse;
+import wooteco.subway.station.dto.StationLineResponse;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_생성_요청;
 
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {
@@ -51,13 +57,30 @@ public class StationAcceptanceTest extends AcceptanceTest {
         // given
         StationResponse stationResponse1 = 지하철역_등록되어_있음(강남역);
         StationResponse stationResponse2 = 지하철역_등록되어_있음(역삼역);
+        LineRequest lineRequest1 = new LineRequest("신분당선", "bg-red-600", 100,  stationResponse1.getId(), stationResponse2.getId(), 10);
+        LineRequest lineRequest2 = new LineRequest("구신분당선", "bg-red-600", stationResponse1.getId(), stationResponse2.getId(), 15);
+        지하철_노선_생성_요청(lineRequest1);
+        지하철_노선_생성_요청(lineRequest2);
+
+        StationLineResponse stationLineResponse1 = new StationLineResponse(stationResponse1.getId(), stationResponse1.getName(),
+                Arrays.asList(new TransferLineResponse(1L, lineRequest1.getName(), lineRequest1.getColor()),
+                        new TransferLineResponse(2L, lineRequest2.getName(), lineRequest2.getColor())));
+        StationLineResponse stationLineResponse2 = new StationLineResponse(stationResponse2.getId(), stationResponse2.getName(),
+                Arrays.asList(new TransferLineResponse(1L, lineRequest1.getName(), lineRequest1.getColor()),
+                        new TransferLineResponse(2L, lineRequest2.getName(), lineRequest2.getColor())));
 
         // when
         ExtractableResponse<Response> response = 지하철역_목록_조회_요청();
 
         // then
         지하철역_목록_응답됨(response);
-        지하철역_목록_포함됨(response, Arrays.asList(stationResponse1, stationResponse2));
+        지하철역_목록_노선_포함_조회(response, Arrays.asList(stationLineResponse1, stationLineResponse2));
+    }
+
+    private void 지하철역_목록_노선_포함_조회(ExtractableResponse<Response> response, List<StationLineResponse> expectedResponse) {
+        assertThat(Arrays.asList(response.as(StationLineResponse[].class)))
+                .usingRecursiveComparison()
+                .isEqualTo(expectedResponse);
     }
 
     @DisplayName("지하철역을 제거한다.")

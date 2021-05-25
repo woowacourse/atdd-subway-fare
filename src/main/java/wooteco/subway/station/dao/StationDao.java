@@ -1,15 +1,14 @@
 package wooteco.subway.station.dao;
 
-import org.springframework.http.converter.json.GsonBuilderUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.dto.TransferLineResponse;
 import wooteco.subway.station.domain.Station;
+import wooteco.subway.station.dto.StationLineResponse;
 import wooteco.subway.station.dto.StationTransferResponse;
 
 import javax.sql.DataSource;
@@ -43,9 +42,51 @@ public class StationDao {
         return new Station(id, station.getName());
     }
 
-    public List<Station> findAll() {
-        String sql = "select * from STATION";
-        return jdbcTemplate.query(sql, rowMapper);
+    public List<StationLineResponse> findAll() {
+        String sql = "select S.id AS station_id, S.name AS station_name, L.id AS line_id, L.name AS line_name, L.color AS line_color " +
+                "FROM STATION AS S " +
+                "LEFT JOIN SECTION AS SE ON (SE.up_station_id = S.id OR SE.down_station_id = S.id) " +
+                "LEFT JOIN LINE AS L ON L.id = SE.line_id";
+
+        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql);
+        Map<Long, List<Map<String, Object>>> resultByStation = result.stream()
+                .collect(Collectors.groupingBy(it -> (Long) it.get("station_id")));
+
+        return resultByStation.entrySet()
+                .stream()
+                .map(it -> mapStationLineResponse(it.getValue()))
+                .collect(Collectors.toList());
+    }
+
+    private StationLineResponse mapStationLineResponse(final List<Map<String, Object>> result) {
+        if (result.size() == 0) {
+            throw new RuntimeException();
+        }
+
+        List<TransferLineResponse> transferLineResponses = extractTransferLine(result);
+
+        return new StationLineResponse(
+                (Long) result.get(0).get("station_id"),
+                (String) result.get(0).get("station_name"),
+                transferLineResponses
+        );
+    }
+
+    private List<TransferLineResponse> extractTransferLine(List<Map<String, Object>> result) {
+        if (result.isEmpty() || result.get(0).get("line_id") == null) {
+            return Collections.EMPTY_LIST;
+        }
+        return result.stream()
+                .collect(Collectors.groupingBy(it -> it.get("line_id")))
+                .entrySet()
+                .stream()
+                .map(it ->
+                        new TransferLineResponse(
+                                (Long) it.getKey(),
+                                (String) it.getValue().get(0).get("line_name"),
+                                (String) it.getValue().get(0).get("line_color")
+                        ))
+                .collect(Collectors.toList());
     }
 
     public void deleteById(Long id) {
@@ -93,7 +134,7 @@ public class StationDao {
             throw new RuntimeException();
         }
 
-        List<TransferLineResponse> transferLineResponses = extractTransferLine(result, lineId);
+        List<TransferLineResponse> transferLineResponses = extractTransferLineExceptCurrentLine(result, lineId);
 
         return new StationTransferResponse(
                 (Long) result.get(0).get("station_id"),
@@ -102,7 +143,7 @@ public class StationDao {
         );
     }
 
-    private List<TransferLineResponse> extractTransferLine(List<Map<String, Object>> result, long lineId) {
+    private List<TransferLineResponse> extractTransferLineExceptCurrentLine(List<Map<String, Object>> result, long lineId) {
         if (result.isEmpty() || result.get(0).get("line_id") == null) {
             return Collections.EMPTY_LIST;
         }

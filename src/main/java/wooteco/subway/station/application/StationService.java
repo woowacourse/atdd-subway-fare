@@ -3,6 +3,7 @@ package wooteco.subway.station.application;
 import org.springframework.stereotype.Service;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
+import wooteco.subway.station.dto.StationLineResponse;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 import wooteco.subway.station.dto.StationTransferResponse;
@@ -27,12 +28,8 @@ public class StationService {
         return stationDao.findById(id);
     }
 
-    public List<StationResponse> findAllStationResponses() {
-        List<Station> stations = stationDao.findAll();
-
-        return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+    public List<StationLineResponse> findAllStationResponses() {
+        return stationDao.findAll();
     }
 
     public void deleteStationById(Long id) {
