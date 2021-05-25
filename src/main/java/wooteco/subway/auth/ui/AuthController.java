@@ -10,7 +10,6 @@ import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 
 @RestController
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class AuthController {
     private AuthService authService;
 
