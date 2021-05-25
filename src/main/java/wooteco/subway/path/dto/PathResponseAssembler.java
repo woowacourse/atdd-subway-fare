@@ -4,6 +4,7 @@ import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class PathResponseAssembler {
@@ -13,6 +14,7 @@ public class PathResponseAssembler {
                 .collect(Collectors.toList());
 
         int distance = subwayPath.calculateDistance();
-        return new PathResponse(stationResponses, distance);
+        int fare = subwayPath.calculateFare(distance);
+        return new PathResponse(stationResponses, distance, fare);
     }
 }
