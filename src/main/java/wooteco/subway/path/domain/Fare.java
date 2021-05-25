@@ -3,6 +3,7 @@ package wooteco.subway.path.domain;
 import wooteco.subway.member.domain.LoginMember;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Fare {
     private static final int DEFAULT_FARE_AMOUNT = 1250;
@@ -25,7 +26,7 @@ public class Fare {
         return fare;
     }
 
-    public Fare calculateTotalFare(final List<SectionEdge> sectionEdges, final int distance) {
+    public Fare calculateTotalFare(final List<SectionEdge> sectionEdges, final Distance distance) {
         int lineExtraFare = getLineExtraFare(sectionEdges);
         int distanceFare = DistanceCharge.getDistanceCharge(distance);
 
@@ -45,5 +46,18 @@ public class Fare {
         }
         int discountAmount = Discount.getDiscountAmount(loginMember.getAge(), this.fare);
         return new Fare(this.fare - discountAmount);
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final Fare fare1 = (Fare) o;
+        return fare == fare1.fare;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(fare);
     }
 }

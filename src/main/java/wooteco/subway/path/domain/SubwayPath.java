@@ -22,11 +22,11 @@ public class SubwayPath {
         return stations;
     }
 
-    public int calculateDistance() {
-        return sectionEdges.stream().mapToInt(it -> it.getSection().getDistance()).sum();
+    public Distance calculateTotalDistance() {
+        return Distance.calculateDistance(sectionEdges);
     }
 
-    public Fare calculateFare(int distance, LoginMember loginMember) {
+    public Fare calculateFare(Distance distance, LoginMember loginMember) {
         Fare defaultFare = Fare.createDefaultFare();
         Fare totalFare = defaultFare.calculateTotalFare(sectionEdges, distance);
 

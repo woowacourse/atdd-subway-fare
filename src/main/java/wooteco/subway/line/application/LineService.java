@@ -2,20 +2,19 @@ package wooteco.subway.line.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.exception.SubwayException;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.domain.Sections;
 import wooteco.subway.line.dto.*;
+import wooteco.subway.path.domain.Distance;
 import wooteco.subway.path.domain.Fare;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationMapResponse;
 import wooteco.subway.station.dto.StationTransferResponse;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,7 +41,7 @@ public class LineService {
         if (request.getUpStationId() != null && request.getDownStationId() != null) {
             Station upStation = stationService.findStationById(request.getUpStationId());
             Station downStation = stationService.findStationById(request.getDownStationId());
-            Section section = new Section(upStation, downStation, request.getDistance());
+            Section section = new Section(upStation, downStation, new Distance(request.getDistance()));
             return sectionDao.insert(line, section);
         }
         return null;
@@ -88,7 +87,7 @@ public class LineService {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
-        line.addSection(upStation, downStation, request.getDistance());
+        line.addSection(upStation, downStation, new Distance(request.getDistance()));
 
         sectionDao.deleteByLineId(lineId);
         sectionDao.insertSections(line);
@@ -153,9 +152,9 @@ public class LineService {
 
         return stations.stream()
                 .map(station -> {
-                    Integer distanceToNextStation = sections.getDistanceToNextStation(station);
+                    Distance distanceToNextStation = sections.getDistanceToNextStation(station);
                     List<TransferLineResponse> transferLineResponses = getTransferLineResponses(lines, line, station);
-                    return new StationMapResponse(station.getId(), station.getName(), distanceToNextStation, transferLineResponses);
+                    return new StationMapResponse(station.getId(), station.getName(), distanceToNextStation.getDistance(), transferLineResponses);
                 })
                 .collect(Collectors.toList());
     }

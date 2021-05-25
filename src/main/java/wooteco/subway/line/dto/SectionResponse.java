@@ -32,7 +32,7 @@ public class SectionResponse {
         StationResponse upStation = StationResponse.of(section.getUpStation());
         StationResponse downStation = StationResponse.of(section.getDownStation());
 
-        return new SectionResponse(upStation, downStation, section.getDistance());
+        return new SectionResponse(upStation, downStation, section.getDistanceASInt());
     }
 
     public StationResponse getUpStation() {

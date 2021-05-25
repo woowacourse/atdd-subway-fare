@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.dto.*;
+import wooteco.subway.path.domain.Distance;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationMapResponse;
 import wooteco.subway.station.dto.StationResponse;
@@ -173,7 +174,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                         new Section(
                                 new Station(강남역.getId(), 강남역.getName()),
                                 new Station(downStation.getId(), downStation.getName()),
-                                10
+                                new Distance(10)
                         )
                 )
         );

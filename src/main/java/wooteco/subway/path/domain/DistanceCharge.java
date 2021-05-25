@@ -1,23 +1,23 @@
 package wooteco.subway.path.domain;
 
 import java.util.Arrays;
-import java.util.function.IntFunction;
-import java.util.function.IntPredicate;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 public enum DistanceCharge {
-    FIRST_OVER_CHARGE((distance) -> (int) ((Math.ceil((distance - 10) / 5) + 1) * 100), (distance) -> distance > 10 && distance <= 50),
-    SECOND_OVER_CHARGE((distance) -> 800 + (int) ((Math.ceil((distance - 50) / 8) + 1) * 100), (distance) -> 50 < distance),
+    FIRST_OVER_CHARGE(Distance::calculateFirstOverCharge, Distance::isFirstOverCharge),
+    SECOND_OVER_CHARGE(Distance::calculateSecondOverCharge, Distance::isSecondOverCharge),
     NO_OVER_CHARGE((distance) -> 0, (distance) -> true);
 
-    private final IntFunction<Integer> calculateOverCharge;
-    private final IntPredicate chargeScheme;
+    private final Function<Distance, Integer> calculateOverCharge;
+    private Predicate<Distance> chargeScheme;
 
-    DistanceCharge(final IntFunction<Integer> calculateOverCharge, final IntPredicate chargeScheme) {
+    DistanceCharge(final Function<Distance, Integer> calculateOverCharge, final Predicate<Distance> chargeScheme) {
         this.calculateOverCharge = calculateOverCharge;
         this.chargeScheme = chargeScheme;
     }
 
-    public static int getDistanceCharge(final int distance) {
+    public static int getDistanceCharge(final Distance distance) {
         return Arrays.stream(values())
                 .filter(it -> it.chargeScheme.test(distance))
                 .findFirst()

@@ -29,7 +29,7 @@ public class SectionDao {
         params.put("line_id", line.getId());
         params.put("up_station_id", section.getUpStation().getId());
         params.put("down_station_id", section.getDownStation().getId());
-        params.put("distance", section.getDistance());
+        params.put("distance", section.getDistanceASInt());
         Long sectionId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
         return new Section(sectionId, section.getUpStation(), section.getDownStation(), section.getDistance());
     }
@@ -46,7 +46,7 @@ public class SectionDao {
                     params.put("line_id", line.getId());
                     params.put("up_station_id", section.getUpStation().getId());
                     params.put("down_station_id", section.getDownStation().getId());
-                    params.put("distance", section.getDistance());
+                    params.put("distance", section.getDistanceASInt());
                     return params;
                 })
                 .collect(Collectors.toList());

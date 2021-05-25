@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.domain.Sections;
+import wooteco.subway.path.domain.Distance;
 import wooteco.subway.path.domain.Fare;
 import wooteco.subway.station.domain.Station;
 
@@ -104,7 +105,7 @@ public class LineDao {
                                 (Long) it.getKey(),
                                 new Station((Long) it.getValue().get(0).get("UP_STATION_ID"), (String) it.getValue().get(0).get("UP_STATION_Name")),
                                 new Station((Long) it.getValue().get(0).get("DOWN_STATION_ID"), (String) it.getValue().get(0).get("DOWN_STATION_Name")),
-                                (int) it.getValue().get(0).get("SECTION_DISTANCE")))
+                                new Distance((int) it.getValue().get(0).get("SECTION_DISTANCE"))))
                 .collect(Collectors.toList());
     }
 

@@ -1,5 +1,6 @@
 package wooteco.subway.line.domain;
 
+import wooteco.subway.path.domain.Distance;
 import wooteco.subway.station.application.NoSuchStationException;
 import wooteco.subway.station.domain.Station;
 
@@ -13,15 +14,15 @@ public class Sections {
     public static final int DISTANCE_FOR_DOWN_END_STATION = -1;
     private List<Section> sections = new ArrayList<>();
 
-    public List<Section> getSections() {
-        return sections;
-    }
-
     public Sections() {
     }
 
     public Sections(List<Section> sections) {
         this.sections = sections;
+    }
+
+    public List<Section> getSections() {
+        return sections;
     }
 
     public void addSection(Section section) {
@@ -69,18 +70,18 @@ public class Sections {
     }
 
     private void replaceSectionWithUpStation(Section newSection, Section existSection) {
-        if (existSection.getDistance() <= newSection.getDistance()) {
+        if (existSection.isShorterOrEqualTo(newSection)) {
             throw new RuntimeException();
         }
-        this.sections.add(new Section(existSection.getUpStation(), newSection.getUpStation(), existSection.getDistance() - newSection.getDistance()));
+        this.sections.add(new Section(existSection.getUpStation(), newSection.getUpStation(), existSection.getRemainingDistance(newSection)));
         this.sections.remove(existSection);
     }
 
     private void replaceSectionWithDownStation(Section newSection, Section existSection) {
-        if (existSection.getDistance() <= newSection.getDistance()) {
+        if (existSection.isShorterOrEqualTo(newSection)) {
             throw new RuntimeException();
         }
-        this.sections.add(new Section(newSection.getDownStation(), existSection.getDownStation(), existSection.getDistance() - newSection.getDistance()));
+        this.sections.add(new Section(newSection.getDownStation(), existSection.getDownStation(), existSection.getRemainingDistance(newSection)));
         this.sections.remove(existSection);
     }
 
@@ -135,7 +136,7 @@ public class Sections {
         if (upSection.isPresent() && downSection.isPresent()) {
             Station newUpStation = downSection.get().getUpStation();
             Station newDownStation = upSection.get().getDownStation();
-            int newDistance = upSection.get().getDistance() + downSection.get().getDistance();
+            Distance newDistance = upSection.get().getDistance().add(downSection.get().getDistance());
             sections.add(new Section(newUpStation, newDownStation, newDistance));
         }
 
@@ -143,7 +144,7 @@ public class Sections {
         downSection.ifPresent(it -> sections.remove(it));
     }
 
-    public Integer getDistanceToNextStation(final Station station) {
+    public Distance getDistanceToNextStation(final Station station) {
         try {
             Section section = sections.stream()
                     .filter(it -> it.hasUpStation(station))
@@ -151,7 +152,7 @@ public class Sections {
                     .orElseThrow(NoSuchStationException::new);
             return section.getDistance();
         } catch (NoSuchStationException e) {
-            return DISTANCE_FOR_DOWN_END_STATION;
+            return new Distance(DISTANCE_FOR_DOWN_END_STATION);
         }
     }
 

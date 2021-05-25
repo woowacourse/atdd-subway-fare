@@ -1,5 +1,6 @@
 package wooteco.subway.line.domain;
 
+import wooteco.subway.path.domain.Distance;
 import wooteco.subway.path.domain.Fare;
 import wooteco.subway.station.domain.Station;
 
@@ -76,7 +77,7 @@ public class Line {
         this.color = line.getColor();
     }
 
-    public void addSection(Station upStation, Station downStation, int distance) {
+    public void addSection(Station upStation, Station downStation, Distance distance) {
         Section section = new Section(upStation, downStation, distance);
         sections.addSection(section);
     }
