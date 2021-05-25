@@ -28,7 +28,7 @@ public class PathService {
         this.pathFinder = pathFinder;
     }
 
-    public PathResponse findPath(Long source, Long target, Member member) {
+    public PathResponse findPath(Long source, Long target, LoginMember member) {
         try {
             List<Line> lines = lineService.findLines();
             Station sourceStation = stationService.findStationById(source);

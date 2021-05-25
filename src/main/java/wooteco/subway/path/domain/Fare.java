@@ -1,6 +1,6 @@
 package wooteco.subway.path.domain;
 
-import wooteco.subway.member.domain.Member;
+import wooteco.subway.member.domain.LoginMember;
 
 public class Fare {
 
@@ -14,11 +14,11 @@ public class Fare {
 
     private final int value;
 
-    public Fare(int distance, Member member, int extraFare) {
+    public Fare(int distance, LoginMember member, int extraFare) {
         this.value = calculateFare(distance, member, extraFare);
     }
 
-    private int calculateFare(int distance, Member member, int extraFare) {
+    private int calculateFare(int distance, LoginMember member, int extraFare) {
         int basicFare = calculateFareByDistance(distance) + extraFare;
         AgeAppliedRule ageAppliedRule = AgeAppliedRule.matchRule(member.getAge());
         return (int) ((basicFare - ageAppliedRule.getDeductedFare()) * ageAppliedRule.getAppliedRate());
