@@ -31,7 +31,7 @@ public class Line {
     }
 
     public Line(Long id, String name, String color) {
-        this(null, name, color, new Fare(0), new Sections());
+        this(id, name, color, new Fare(0), new Sections());
     }
 
     public Line(Long id, String name, String color, Sections sections) {
