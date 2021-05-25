@@ -52,6 +52,11 @@ public class MemberDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
+    public int countByEmail(String email) {
+        String sql = "select count(*) from MEMBER where email = ?";
+        return jdbcTemplate.queryForObject(sql, Integer.class, email);
+    }
+
     public Member findByEmail(String email) {
         String sql = "select * from MEMBER where email = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, email);
