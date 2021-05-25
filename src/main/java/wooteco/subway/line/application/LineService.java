@@ -12,6 +12,7 @@ import wooteco.subway.station.application.StationException;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,6 +51,7 @@ public class LineService {
         List<Line> persistLines = findLines();
         return persistLines.stream()
                 .map(line -> LineResponse.of(line))
+                .sorted(Comparator.comparing(LineResponse::getName))
                 .collect(Collectors.toList());
     }
 
