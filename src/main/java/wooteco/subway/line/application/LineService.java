@@ -41,7 +41,7 @@ public class LineService {
     private void validateInsert(final LineRequest lineRequest) {
         final Optional<Line> foundLine = lineDao.findByName(lineRequest.getName());
         if (foundLine.isPresent()) {
-            throw new RuntimeException();
+            throw new LineDuplicatedException();
         }
     }
 
