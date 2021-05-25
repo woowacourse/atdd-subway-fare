@@ -1,4 +1,4 @@
-package wooteco.subway.section;
+package wooteco.subway.line;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
