@@ -87,6 +87,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
+    @DisplayName("도달 할 수 없는 두 역의 최단 거리 경로를 조회한다. :: 음의 역 id")
+    @Test
+    void findNonExistPath3() {
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(-1, 강남역.getId());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
     public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
         return RestAssured
                 .given().log().all()
