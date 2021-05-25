@@ -1,6 +1,7 @@
 package wooteco.subway.line;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
 import io.restassured.RestAssured;
@@ -144,7 +145,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest params) {
         return RestAssured
-            .given().log().all()
+            .given(spec).log().all()
+            .filter(document("create-line"))
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(params)
             .when().post("/lines")
@@ -154,7 +156,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     private static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {
         return RestAssured
-            .given().log().all()
+            .given(spec).log().all()
+            .filter(document("get-all-lines"))
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .when().get("/lines")
             .then().log().all()
@@ -163,7 +166,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     private static ExtractableResponse<Response> 지하철_노선_목록_API_LINES_로_조회_요청() {
         return RestAssured
-            .given().log().all()
+            .given(spec).log().all()
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .when().get("/api/lines")
             .then().log().all()
@@ -172,7 +175,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 지하철_노선_조회_요청(LineResponse response) {
         return RestAssured
-            .given().log().all()
+            .given(spec).log().all()
+            .filter(document("get-line"))
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .when().get("/lines/{lineId}", response.getId())
             .then().log().all()
@@ -182,7 +186,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철_노선_수정_요청(LineResponse response, LineRequest params) {
 
         return RestAssured
-            .given().log().all()
+            .given(spec).log().all()
+            .filter(document("update-line"))
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(params)
             .when().put("/lines/" + response.getId())
@@ -192,7 +197,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 지하철_노선_제거_요청(LineResponse lineResponse) {
         return RestAssured
-            .given().log().all()
+            .given(spec).log().all()
+            .filter(document("delete-line"))
             .when().delete("/lines/" + lineResponse.getId())
             .then().log().all()
             .extract();
