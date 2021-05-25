@@ -35,7 +35,7 @@ spring:
     activate:
       on-profile: local
   datasource:
-    driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:13306/subway_local?useSSL=false&serverTimezone=UTC&characterEncoding=utf8
     username: air
     password: air
@@ -47,7 +47,7 @@ spring:
     activate:
       on-profile: prod
   datasource:
-    driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://192.168.0.220:3306/subway?useSSL=false&serverTimezone=UTC&characterEncoding=utf8
     username: air
     password: 1234
