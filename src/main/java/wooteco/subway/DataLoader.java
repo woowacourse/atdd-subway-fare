@@ -13,7 +13,7 @@ import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 
 @Component
-@Profile("local")
+@Profile("test")
 public class DataLoader implements CommandLineRunner {
     private StationDao stationDao;
     private LineDao lineDao;
