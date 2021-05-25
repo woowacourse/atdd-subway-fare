@@ -20,7 +20,7 @@ public class AuthenticationPrincipalArgumentResolver extends AuthenticationArgum
     @Override
     public LoginMember validMember(LoginMember member) {
         if (member.getId() == null) {
-            throw new AuthorizationException();
+            throw new AuthorizationException("토큰 검증에 실패했습니다.");
         }
         return member;
     }
