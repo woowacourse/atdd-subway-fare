@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
@@ -45,6 +47,34 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_노선_생성됨(response);
+    }
+
+    @DisplayName("지하철역 생성 - 역 이름: 2자 이상 10자 이하의 한글, 숫자로만 이루어져 있다.(공백 허용 X) - 생성 성공")
+    @ParameterizedTest
+    @ValueSource(strings = {"하나", "11", "하나2선", "일이삼사오육칠팔구십"})
+    void createLine(String name) {
+        // given
+        lineRequest1 = new LineRequest(name, "bg-red-600", 강남역.getId(), downStation.getId(), 10);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1);
+
+        // then
+        지하철_노선_생성됨(response);
+    }
+
+    @DisplayName("지하철역 생성 - 역 이름: 2자 이상 10자 이하의 한글, 숫자로만 이루어져 있다.(공백 허용 X) - 예외상황 400 에러")
+    @ParameterizedTest
+    @ValueSource(strings = {"", " ", "일", "asdf", "일 ", "하나 선", "하나a선", "하나,선", "하나\t선", "일이삼사오육칠팔구십일"})
+    void createStationWithNotValidName(String name) {
+        // given
+        lineRequest1 = new LineRequest(name, "bg-red-600", 강남역.getId(), downStation.getId(), 10);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
