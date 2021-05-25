@@ -6,4 +6,8 @@ public class ErrorDto {
     public ErrorDto(final String message) {
         this.message = message;
     }
+
+    public String getMessage() {
+        return message;
+    }
 }
