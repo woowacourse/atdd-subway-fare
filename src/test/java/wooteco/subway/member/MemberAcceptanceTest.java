@@ -1,6 +1,7 @@
 package wooteco.subway.member;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.auth.AuthAcceptanceTest.내_회원_정보_조회_요청;
 import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
 
 import io.restassured.RestAssured;
@@ -50,17 +51,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .body(memberRequest)
             .when().post("/members")
             .then().log().all()
-            .extract();
-    }
-
-    public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {
-        return RestAssured
-            .given().log().all()
-            .auth().oauth2(tokenResponse.getAccessToken())
-            .accept(MediaType.APPLICATION_JSON_VALUE)
-            .when().get("/members/me")
-            .then().log().all()
-            .statusCode(HttpStatus.OK.value())
             .extract();
     }
 
