@@ -7,11 +7,14 @@ import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
+import wooteco.subway.line.domain.Sections;
 import wooteco.subway.line.dto.*;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
+import wooteco.subway.station.dto.StationMapResponse;
 import wooteco.subway.station.dto.StationTransferResponse;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -130,5 +133,36 @@ public class LineService {
         if (lineDao.doesIdNotExist(id)) {
             throw new NoSuchLineException();
         }
+    }
+
+    public List<LineMapResponse> findLinesForMap() {
+        List<Line> lines = lineDao.findAll();
+
+        return lines.stream()
+                .map(line -> {
+                    List<StationMapResponse> stationMapResponses = getStationMapResponses(line, lines);
+                    return new LineMapResponse(line.getId(), line.getName(), line.getColor(), stationMapResponses);
+                })
+                .collect(Collectors.toList());
+    }
+
+    private List<StationMapResponse> getStationMapResponses(final Line line, final List<Line> lines) {
+        Sections sections = line.getSections();
+        List<Station> stations = sections.getStations();
+
+        return stations.stream()
+                .map(station -> {
+                    Integer distanceToNextStation = sections.getDistanceToNextStation(station);
+                    List<TransferLineResponse> transferLineResponses = getTransferLineResponses(lines, line, station);
+                    return new StationMapResponse(station.getId(), station.getName(), distanceToNextStation, transferLineResponses);
+                })
+                .collect(Collectors.toList());
+    }
+
+    private List<TransferLineResponse> getTransferLineResponses(final List<Line> lines, final Line currentLine, final Station station) {
+        return lines.stream()
+                .filter(it -> it.contains(station) && !it.equals(currentLine))
+                .map(it -> new TransferLineResponse(it.getId(), it.getName(), it.getColor()))
+                .collect(Collectors.toList());
     }
 }

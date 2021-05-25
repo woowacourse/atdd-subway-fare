@@ -39,4 +39,12 @@ public class Section {
     public int getDistance() {
         return distance;
     }
+
+    public boolean hasUpStation(final Station station) {
+        return this.upStation.equals(station);
+    }
+
+    public boolean contains(final Station station) {
+        return this.upStation.equals(station) || this.downStation.equals(station);
+    }
 }

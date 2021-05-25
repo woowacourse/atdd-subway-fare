@@ -12,14 +12,17 @@ import wooteco.subway.AcceptanceTest;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.dto.*;
 import wooteco.subway.station.domain.Station;
+import wooteco.subway.station.dto.StationMapResponse;
 import wooteco.subway.station.dto.StationResponse;
 import wooteco.subway.station.dto.StationTransferResponse;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.line.domain.Sections.DISTANCE_FOR_DOWN_END_STATION;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
 @DisplayName("지하철 노선 관련 기능")
@@ -180,6 +183,100 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(lineSectionResponse.getColor()).isEqualTo(lineRequest1.getColor());
         assertThat(lineSectionResponse.getStations()).usingRecursiveComparison().isEqualTo(stationTransferResponses);
         assertThat(lineSectionResponse.getSections()).usingRecursiveComparison().isEqualTo(sectionResponses);
+    }
+
+    @DisplayName("지도를 위한 전체 라인 조회 기능")
+    @Test
+    void findAllLinesForMap() {
+        지하철_노선_생성_요청(lineRequest1);
+        지하철_노선_생성_요청(lineRequest2);
+        지하철_노선_생성_요청(lineRequest3);
+
+        ExtractableResponse<Response> response = 지하철_지도를_위한_전체_노선_조회();
+        List<LineMapResponse> lineMapResponses = Arrays.asList(response.as(LineMapResponse[].class));
+
+        List<LineMapResponse> expectedLineMapResponses = Arrays.asList(
+                new LineMapResponse(
+                        1L,
+                        lineRequest1.getName(),
+                        lineRequest1.getColor(),
+                        Arrays.asList(
+                                new StationMapResponse(
+                                        강남역.getId(),
+                                        강남역.getName(),
+                                        lineRequest1.getDistance(),
+                                        Arrays.asList(
+                                                new TransferLineResponse(2L, lineRequest2.getName(), lineRequest2.getColor()),
+                                                new TransferLineResponse(3L, lineRequest3.getName(), lineRequest3.getColor())
+                                        )
+                                ),
+                                new StationMapResponse(
+                                        downStation.getId(),
+                                        downStation.getName(),
+                                        DISTANCE_FOR_DOWN_END_STATION,
+                                        Arrays.asList(
+                                                new TransferLineResponse(2L, lineRequest2.getName(), lineRequest2.getColor())
+                                        )
+                                )
+                        )
+                ),
+                new LineMapResponse(
+                        2L,
+                        lineRequest2.getName(),
+                        lineRequest2.getColor(),
+                        Arrays.asList(
+                                new StationMapResponse(
+                                        강남역.getId(),
+                                        강남역.getName(),
+                                        lineRequest2.getDistance(),
+                                        Arrays.asList(
+                                                new TransferLineResponse(1L, lineRequest1.getName(), lineRequest1.getColor()),
+                                                new TransferLineResponse(3L, lineRequest3.getName(), lineRequest3.getColor())
+                                        )
+                                ),
+                                new StationMapResponse(
+                                        downStation.getId(),
+                                        downStation.getName(),
+                                        DISTANCE_FOR_DOWN_END_STATION,
+                                        Arrays.asList(
+                                                new TransferLineResponse(1L, lineRequest1.getName(), lineRequest1.getColor())
+                                        )
+                                )
+                        )
+                ),
+                new LineMapResponse(
+                        3L,
+                        lineRequest3.getName(),
+                        lineRequest3.getColor(),
+                        Arrays.asList(
+                                new StationMapResponse(
+                                        강남역.getId(),
+                                        강남역.getName(),
+                                        lineRequest3.getDistance(),
+                                        Arrays.asList(
+                                                new TransferLineResponse(1L, lineRequest1.getName(), lineRequest1.getColor()),
+                                                new TransferLineResponse(2L, lineRequest2.getName(), lineRequest2.getColor())
+                                        )
+                                ),
+                                new StationMapResponse(
+                                        역삼역.getId(),
+                                        역삼역.getName(),
+                                        DISTANCE_FOR_DOWN_END_STATION,
+                                        new ArrayList<>()
+                                )
+                        )
+                )
+        );
+
+        assertThat(lineMapResponses).usingRecursiveComparison().isEqualTo(expectedLineMapResponses);
+    }
+
+    private static ExtractableResponse<Response> 지하철_지도를_위한_전체_노선_조회() {
+        return RestAssured
+                .given().log().all()
+                .when().get("/map")
+                .then().log().all()
+                .extract();
     }
 
     private static ExtractableResponse<Response> 구간_정보_조회(long lineId) {

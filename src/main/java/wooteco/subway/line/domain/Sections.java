@@ -1,5 +1,6 @@
 package wooteco.subway.line.domain;
 
+import wooteco.subway.station.application.NoSuchStationException;
 import wooteco.subway.station.domain.Station;
 
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Sections {
+    public static final int DISTANCE_FOR_DOWN_END_STATION = -1;
     private List<Section> sections = new ArrayList<>();
 
     public List<Section> getSections() {
@@ -139,5 +141,21 @@ public class Sections {
 
         upSection.ifPresent(it -> sections.remove(it));
         downSection.ifPresent(it -> sections.remove(it));
+    }
+
+    public Integer getDistanceToNextStation(final Station station) {
+        try {
+            Section section = sections.stream()
+                    .filter(it -> it.hasUpStation(station))
+                    .findAny()
+                    .orElseThrow(NoSuchStationException::new);
+            return section.getDistance();
+        } catch (NoSuchStationException e) {
+            return DISTANCE_FOR_DOWN_END_STATION;
+        }
+    }
+
+    public boolean contains(final Station station) {
+        return sections.stream().anyMatch(it -> it.contains(station));
     }
 }
