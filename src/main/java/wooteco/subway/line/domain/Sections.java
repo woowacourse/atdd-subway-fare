@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.springframework.http.HttpStatus;
+import wooteco.subway.exception.HttpException;
 import wooteco.subway.station.domain.Station;
 
 public class Sections {
@@ -57,7 +59,7 @@ public class Sections {
     private void checkAlreadyExisted(Section section) {
         List<Station> stations = getStations();
         if (!stations.contains(section.getUpStation()) && !stations.contains(section.getDownStation())) {
-            throw new RuntimeException();
+            throw new HttpException(HttpStatus.BAD_REQUEST, "추가할 구간의 모든 역이 노선에 존재하지 않습니다.");
         }
     }
 
@@ -65,7 +67,7 @@ public class Sections {
         List<Station> stations = getStations();
         List<Station> stationsOfNewSection = Arrays.asList(section.getUpStation(), section.getDownStation());
         if (stations.containsAll(stationsOfNewSection)) {
-            throw new RuntimeException();
+            throw new HttpException(HttpStatus.BAD_REQUEST, "추가할 구간의 모든 역이 이미 노선에 존재합니다.");
         }
     }
 
@@ -137,7 +139,7 @@ public class Sections {
 
     public void removeStation(Station station) {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new HttpException(HttpStatus.BAD_REQUEST, "노선에 구간이 한 개만 존재할 때는 구간을 삭제할 수 없습니다.");
         }
 
         Optional<Section> upSection = sections.stream()
