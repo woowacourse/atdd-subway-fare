@@ -21,7 +21,7 @@ public class MemberService {
     }
 
     public MemberResponse createMember(MemberRequest request) {
-        memberDao.findByEmail(request.getEmail());
+        checkDuplicatedEmail(request.getEmail());
         Member member = memberDao.insert(request.toMember());
         return MemberResponse.of(member);
     }
