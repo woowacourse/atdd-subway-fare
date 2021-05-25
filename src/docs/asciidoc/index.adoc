@@ -1,0 +1,70 @@
+= 인비 지하철 협업 미션 Rest Docs API Document
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 3
+:sectlinks:
+
+[[introduction]]
+== 소개
+
+우아한테크코스 3기 Level2 FrontEnd & BackEnd 협업 지하철 미션 인비의 Rest Docs API Document 입니다.
+
+[[common]]
+== 공통 사항
+
+API에 관계없이 아래 사항을 지켜주셔야 합니다.
+
+=== Domain
+
+|===
+| 환경 | domain
+
+| 운영서버
+| `https://inbi-subway.kro.kr`
+|===
+
+
+=== Header
+
+|===
+| name | 설명
+
+| `Authorization`
+| 로그인이 필요한 API를 사용하기 위한 JWT 토큰 (Bearer ${token} 형식)
+|===
+
+[[Auth]]
+= 회원 인증
+
+== 로그인
+=== Request
+include::{snippets}/login/http-request.adoc[]
+
+=== Response
+include::{snippets}/login/http-response.adoc[]
+
+
+== 로그인 실패
+=== Request
+include::{snippets}/login-fail/http-request.adoc[]
+
+=== Response
+include::{snippets}/login-fail/http-response.adoc[]
+
+
+== 내 회원 정보 조회
+=== Request
+include::{snippets}/get-login-user-my-info/http-request.adoc[]
+
+=== Response
+include::{snippets}/get-login-user-my-info/http-response.adoc[]
+
+
+== 내 회원 정보 조회 실패 (유효하지 않은 토큰)
+=== Request
+include::{snippets}/not-valid-login-token-when-get-login-user-my-info/http-request.adoc[]
+
+=== Response
+include::{snippets}/not-valid-login-token-when-get-login-user-my-info/http-response.adoc[]
