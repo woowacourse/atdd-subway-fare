@@ -63,7 +63,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .given(spec).log().all()
             .auth().oauth2(tokenResponse.getAccessToken())
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .filter(document("modify-my-info"))
+            .filter(document("update-my-info"))
             .body(memberRequest)
             .when().put("/members/me")
             .then().log().all()
