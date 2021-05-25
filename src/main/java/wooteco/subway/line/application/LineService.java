@@ -7,7 +7,9 @@ import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
+import wooteco.subway.line.dto.MapResponse;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.line.dto.SectionResponse;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
@@ -89,4 +91,10 @@ public class LineService {
         sectionDao.insertSections(line);
     }
 
+    public List<MapResponse> findMapResponse() {
+        List<Line> persistLines = findLines();
+        return persistLines.stream()
+            .map(MapResponse::of)
+            .collect(Collectors.toList());
+    }
 }
