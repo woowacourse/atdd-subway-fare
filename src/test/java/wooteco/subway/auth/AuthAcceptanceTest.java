@@ -1,5 +1,8 @@
 package wooteco.subway.auth;
 
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 import static wooteco.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static wooteco.subway.member.MemberAcceptanceTest.회원_정보_조회됨;
@@ -47,7 +50,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         RestAssured
             .given(spec).log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .filter(document("login-fail"))
+            .filter(document("login-fail", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())))
             .body(params)
             .when().post("/login/token")
             .then().log().all()
@@ -63,7 +66,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
             .given(spec).log().all()
             .auth().oauth2(tokenResponse.getAccessToken())
             .accept(MediaType.APPLICATION_JSON_VALUE)
-            .filter(document("not-valid-login-token-when-get-login-user-my-info"))
+            .filter(document("not-valid-login-token-when-get-login-user-my-info", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())))
             .when().get("/members/me")
             .then().log().all()
             .statusCode(HttpStatus.UNAUTHORIZED.value());
@@ -86,7 +89,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         return RestAssured.given(spec).log().all().
             contentType(MediaType.APPLICATION_JSON_VALUE).
             body(params).
-            filter(document("login")).
+            filter(document("login", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()))).
             when().
             post("/login/token").
             then().
@@ -99,7 +102,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         return RestAssured.given(spec).log().all().
             auth().oauth2(tokenResponse.getAccessToken()).
             accept(MediaType.APPLICATION_JSON_VALUE).
-            filter(document("get-login-user-my-info")).
+            filter(document("get-login-user-my-info", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()))).
             when().
             get("/members/me").
             then().

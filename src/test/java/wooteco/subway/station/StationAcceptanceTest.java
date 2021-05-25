@@ -1,6 +1,9 @@
 package wooteco.subway.station;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 import io.restassured.RestAssured;
@@ -91,7 +94,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteStationNotExists() {
         // given
-        Long stationIdNotExists = -1L;
+        Long stationIdNotExists = 100L;
 
         // when
         ExtractableResponse<Response> response = 지하철역_제거_요청_Id로(stationIdNotExists);
@@ -109,7 +112,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         return RestAssured
             .given(spec).log().all()
-            .filter(document("create-station"))
+            .filter(document("create-station", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())))
             .body(stationRequest)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when().post("/stations")
@@ -120,7 +123,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철역_목록_조회_요청() {
         return RestAssured
             .given(spec).log().all()
-            .filter(document("get-all-stations"))
+            .filter(document("get-all-stations", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())))
             .when().get("/stations")
             .then().log().all()
             .extract();
@@ -129,7 +132,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철역_제거_요청(StationResponse stationResponse) {
         return RestAssured
             .given(spec).log().all()
-            .filter(document("delete-station"))
+            .filter(document("delete-station", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())))
             .when().delete("/stations/" + stationResponse.getId())
             .then().log().all()
             .extract();
@@ -138,7 +141,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철역_제거_요청_Id로(Long id) {
         return RestAssured
             .given(spec).log().all()
-            .filter(document("delete-station"))
+            .filter(document("delete-station", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())))
             .when().delete("/stations/" + id)
             .then().log().all()
             .extract();

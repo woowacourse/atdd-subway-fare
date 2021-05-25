@@ -1,6 +1,9 @@
 package wooteco.subway.line;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_조회_요청;
@@ -115,7 +118,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         return RestAssured
             .given(spec).log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .filter(document("create-section"))
+            .filter(document("create-section", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())))
             .body(sectionRequest)
             .when().post("/lines/{lineId}/sections", line.getId())
             .then().log().all()
@@ -138,7 +141,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(LineResponse line, StationResponse station) {
         return RestAssured
             .given(spec).log().all()
-            .filter(document("delete-section"))
+            .filter(document("delete-section", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())))
             .when().delete("/lines/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
             .then().log().all()
             .extract();

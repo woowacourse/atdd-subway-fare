@@ -1,6 +1,9 @@
 package wooteco.subway.member;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 import static wooteco.subway.auth.AuthAcceptanceTest.내_회원_정보_조회_요청;
 import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
@@ -49,7 +52,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         return RestAssured
             .given(spec).log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .filter(document("sign-up"))
+            .filter(document("sign-up", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())))
             .body(memberRequest)
             .when().post("/members")
             .then().log().all()
@@ -63,7 +66,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .given(spec).log().all()
             .auth().oauth2(tokenResponse.getAccessToken())
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .filter(document("update-my-info"))
+            .filter(document("update-my-info", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())))
             .body(memberRequest)
             .when().put("/members/me")
             .then().log().all()
@@ -74,7 +77,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         return RestAssured
             .given(spec).log().all()
             .auth().oauth2(tokenResponse.getAccessToken())
-            .filter(document("delete-my-account"))
+            .filter(document("delete-my-account", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())))
             .when().delete("/members/me")
             .then().log().all()
             .extract();
