@@ -23,7 +23,7 @@ public class LineDao {
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("line")
+                .withTableName("LINE")
                 .usingGeneratedKeyColumns("id");
     }
 
