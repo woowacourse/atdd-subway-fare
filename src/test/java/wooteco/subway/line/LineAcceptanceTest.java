@@ -116,6 +116,32 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_삭제됨(response);
     }
 
+    @DisplayName("존재하지 않는 지하철 노선을 수정한다.")
+    @Test
+    void updateNotExistLine() throws Exception {
+        //given
+        LineResponse lineResponse = new LineResponse(Long.MAX_VALUE, null, null, null, null);
+
+        //when
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse, lineRequest1);
+
+        //then
+        지하철_노선_수정_실패(response);
+    }
+
+    @DisplayName("존재하지 않는 지하철 노선을 삭제한다.")
+    @Test
+    void deleteNotExistLine() throws Exception {
+        //given
+        LineResponse lineResponse = new LineResponse(Long.MAX_VALUE, null, null, null, null);
+
+        //when
+        ExtractableResponse<Response> response = 지하철_노선_제거_요청(lineResponse);
+
+        //then
+        지하철_노선_삭제_실패(response);
+    }
+
     public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance, Long extraFare) {
         LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance, extraFare);
         return 지하철_노선_등록되어_있음(lineRequest);
@@ -207,7 +233,15 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
+    public static void 지하철_노선_수정_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
     public static void 지하철_노선_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static void 지하철_노선_삭제_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }

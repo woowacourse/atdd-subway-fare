@@ -76,11 +76,13 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        Line savedLine = findLineById(id);
+        lineDao.update(new Line(savedLine.getId(), lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
     public void deleteLineById(Long id) {
-        lineDao.deleteById(id);
+        Line saved = findLineById(id);
+        lineDao.deleteById(saved.getId());
     }
 
     public void addLineStation(Long lineId, SectionRequest request) {
