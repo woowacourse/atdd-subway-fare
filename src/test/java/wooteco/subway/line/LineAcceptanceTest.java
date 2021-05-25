@@ -30,10 +30,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     private StationResponse 강남역;
     private StationResponse 역삼역;
-    private StationResponse downStation;
-    private LineRequest lineRequest1;
-    private LineRequest lineRequest2;
-    private LineRequest lineRequest3;
+    private StationResponse 광교역;
+    private LineRequest 신분당선;
+    private LineRequest 구신분당선;
+    private LineRequest 경의중앙선;
 
     private static ExtractableResponse<Response> 구간_정보_조회(long lineId) {
         return RestAssured
@@ -150,18 +150,18 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // given
         강남역 = 지하철역_등록되어_있음("강남역");
         역삼역 = 지하철역_등록되어_있음("역삼역");
-        downStation = 지하철역_등록되어_있음("광교역");
+        광교역 = 지하철역_등록되어_있음("광교역");
 
-        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 10);
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 15);
-        lineRequest3 = new LineRequest("2호선", "bg-red-600", 강남역.getId(), 역삼역.getId(), 20);
+        신분당선 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
+        구신분당선 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15);
+        경의중앙선 = new LineRequest("경의중앙선", "bg-red-600", 강남역.getId(), 역삼역.getId(), 20);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
     @Test
     void createLine() {
         // when
-        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1);
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(신분당선);
 
         // then
         지하철_노선_생성됨(response);
@@ -171,10 +171,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void createLineWithDuplicateName() {
         // given
-        지하철_노선_등록되어_있음(lineRequest1);
+        지하철_노선_등록되어_있음(신분당선);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1);
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(신분당선);
 
         // then
         지하철_노선_생성_실패됨(response);
@@ -184,8 +184,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void getLines() {
         // given
-        LineResponse lineResponse1 = 지하철_노선_등록되어_있음(lineRequest1);
-        LineResponse lineResponse2 = 지하철_노선_등록되어_있음(lineRequest2);
+        LineResponse lineResponse1 = 지하철_노선_등록되어_있음(신분당선);
+        LineResponse lineResponse2 = 지하철_노선_등록되어_있음(구신분당선);
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청();
@@ -199,7 +199,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void getLine() {
         // given
-        LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1);
+        LineResponse lineResponse = 지하철_노선_등록되어_있음(신분당선);
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(lineResponse);
@@ -212,10 +212,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void updateLine() {
         // given
-        LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1);
+        LineResponse lineResponse = 지하철_노선_등록되어_있음(신분당선);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse, lineRequest2);
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse, 구신분당선);
 
         // then
         지하철_노선_수정됨(response);
@@ -225,7 +225,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteLine() {
         // given
-        LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1);
+        LineResponse lineResponse = 지하철_노선_등록되어_있음(신분당선);
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_제거_요청(lineResponse);
@@ -237,57 +237,38 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("구간 정보 조회 기능")
     @Test
     void findSections() {
-        지하철_노선_생성_요청(lineRequest1);
-        지하철_노선_생성_요청(lineRequest2);
-        지하철_노선_생성_요청(lineRequest3);
+        // given
+        지하철_노선_생성_요청(신분당선);
+        지하철_노선_생성_요청(구신분당선);
+        지하철_노선_생성_요청(경의중앙선);
 
-        ExtractableResponse<Response> response = 구간_정보_조회(1L);
-
-        LineSectionResponse lineSectionResponse = response.as(LineSectionResponse.class);
+        List<TransferLineResponse> 강남역_환승노선들 = Arrays.asList(
+            new TransferLineResponse(2L, 구신분당선.getName(), 구신분당선.getColor()),
+            new TransferLineResponse(3L, 경의중앙선.getName(), 경의중앙선.getColor())
+        );
+        List<TransferLineResponse> 광교역_환승노선들 = Arrays.asList(
+            new TransferLineResponse(2L, 구신분당선.getName(), 구신분당선.getColor())
+        );
 
         List<StationTransferResponse> stationTransferResponses = Arrays.asList(
-            new StationTransferResponse(
-                강남역.getId(),
-                강남역.getName(),
-                Arrays.asList(
-                    new TransferLineResponse(
-                        2L,
-                        lineRequest2.getName(),
-                        lineRequest2.getColor()
-                    ),
-                    new TransferLineResponse(
-                        3L,
-                        lineRequest3.getName(),
-                        lineRequest3.getColor()
-                    )
-                )
-            ),
-            new StationTransferResponse(
-                downStation.getId(),
-                downStation.getName(),
-                Arrays.asList(
-                    new TransferLineResponse(
-                        2L,
-                        lineRequest2.getName(),
-                        lineRequest2.getColor()
-                    )
-                )
-            )
-        );
+            new StationTransferResponse(강남역.getId(), 강남역.getName(), 강남역_환승노선들),
+            new StationTransferResponse(광교역.getId(), 광교역.getName(), 광교역_환승노선들));
 
         List<SectionResponse> sectionResponses = Arrays.asList(
             SectionResponse.of(
-                new Section(
-                    new Station(강남역.getId(), 강남역.getName()),
-                    new Station(downStation.getId(), downStation.getName()),
-                    10
-                )
+                new Section(new Station(강남역.getId(), 강남역.getName()),
+                    new Station(광교역.getId(), 광교역.getName()), 10)
             )
         );
 
+        // when
+        ExtractableResponse<Response> response = 구간_정보_조회(1L);
+        LineSectionResponse lineSectionResponse = response.as(LineSectionResponse.class);
+
+        // then
         assertThat(lineSectionResponse.getId()).isEqualTo(1L);
-        assertThat(lineSectionResponse.getName()).isEqualTo(lineRequest1.getName());
-        assertThat(lineSectionResponse.getColor()).isEqualTo(lineRequest1.getColor());
+        assertThat(lineSectionResponse.getName()).isEqualTo(신분당선.getName());
+        assertThat(lineSectionResponse.getColor()).isEqualTo(신분당선.getColor());
         assertThat(lineSectionResponse.getStations()).usingRecursiveComparison()
             .isEqualTo(stationTransferResponses);
         assertThat(lineSectionResponse.getSections()).usingRecursiveComparison()

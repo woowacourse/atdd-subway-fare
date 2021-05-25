@@ -3,6 +3,8 @@ package wooteco.subway.line.application;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import wooteco.subway.exception.InvalidLineException;
+import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
@@ -50,7 +52,7 @@ public class LineService {
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
-            .map(line -> LineResponse.of(line))
+            .map(LineResponse::of)
             .collect(Collectors.toList());
     }
 
@@ -64,14 +66,17 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
+        checkLineExist(id);
         return lineDao.findById(id);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
+        checkLineExist(id);
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
     public void deleteLineById(Long id) {
+        checkLineExist(id);
         lineDao.deleteById(id);
     }
 
@@ -96,6 +101,8 @@ public class LineService {
 
     public void updateLineStation(Long lineId, Long stationId, Long downStationId,
         SectionDistanceRequest request) {
+        checkLineExist(lineId);
+        checkSectionExist(lineId, stationId, downStationId);
         int distance = request.getDistance();
         sectionDao.updateByLineId(lineId, stationId, downStationId, distance);
     }
@@ -114,5 +121,17 @@ public class LineService {
         return sections.getSections().stream()
             .map(SectionResponse::of)
             .collect(Collectors.toList());
+    }
+
+    private void checkLineExist(Long id) {
+        if(!lineDao.findExistingLineById(id)) {
+            throw new InvalidLineException();
+        }
+    }
+
+    private void checkSectionExist(Long lineId, Long stationId, Long downStationId) {
+        if(!sectionDao.findExistingSection(lineId, stationId, downStationId)){
+            throw new NotFoundException("존재하지 않는 구간입니다.");
+        }
     }
 }

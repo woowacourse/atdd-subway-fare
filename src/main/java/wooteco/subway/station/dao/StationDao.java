@@ -56,6 +56,11 @@ public class StationDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
+    public boolean findExistingStationById(Long id) {
+        String sql = "select exists (select count(*) from STATION where id = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, id);
+    }
+
     public boolean findStationByName(String name) {
         String sql = "select exists (select count(*) from STATION where name = ?)";
         return jdbcTemplate.queryForObject(sql, Boolean.class, name);

@@ -3,11 +3,13 @@ package wooteco.subway.station.application;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import wooteco.subway.exception.InvalidStationException;
 import wooteco.subway.line.dto.StationTransferResponse;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
+import wooteco.subway.exception.AlreadyExistingStationException;
 
 @Service
 public class StationService {
@@ -24,6 +26,7 @@ public class StationService {
     }
 
     public Station findStationById(Long id) {
+        checkStationExist(id);
         return stationDao.findById(id);
     }
 
@@ -36,10 +39,12 @@ public class StationService {
     }
 
     public void deleteStationById(Long id) {
+        checkStationExist(id);
         stationDao.deleteById(id);
     }
 
     public void updateStationById(Long id, String name) {
+        checkStationExist(id);
         if (isExistingName(name)) {
             throw new AlreadyExistingStationException();
         }
@@ -48,6 +53,12 @@ public class StationService {
 
     private boolean isExistingName(String name) {
         return stationDao.findStationByName(name);
+    }
+
+    private void checkStationExist(Long id) {
+        if(!stationDao.findExistingStationById(id)) {
+            throw new InvalidStationException();
+        }
     }
 
     public List<StationTransferResponse> findStationsWithTransferLine(Long lineId) {
