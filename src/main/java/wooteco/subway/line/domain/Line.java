@@ -59,6 +59,14 @@ public class Line {
         return sections;
     }
 
+    public boolean isSameName(String name){
+        return this.name.equals(name);
+    }
+
+    public boolean isSameColor(String color){
+        return this.color.equals(color);
+    }
+
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();

@@ -60,4 +60,9 @@ public class StationDao {
             return Optional.empty();
         }
     }
+
+    public boolean isExistName(String name) {
+        String sql = "SELECT EXISTS (SELECT id FROM STATION WHERE name = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, name);
+    }
 }
