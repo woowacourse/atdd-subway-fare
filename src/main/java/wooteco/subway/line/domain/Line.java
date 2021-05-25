@@ -9,6 +9,7 @@ public class Line {
     private String name;
     private String color;
     private Sections sections = new Sections();
+    private int extraFare;
 
     public Line() {
     }
@@ -31,6 +32,14 @@ public class Line {
         this.sections = sections;
     }
 
+    public Line(Long id, String name, String color, Sections sections, int extraFare) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
+        this.sections = sections;
+        this.extraFare = extraFare;
+    }
+
     public Long getId() {
         return id;
     }
@@ -45,6 +54,10 @@ public class Line {
 
     public Sections getSections() {
         return sections;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 
     public void update(Line line) {

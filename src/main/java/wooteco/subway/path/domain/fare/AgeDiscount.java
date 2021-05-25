@@ -5,8 +5,8 @@ import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 public enum AgeDiscount {
-    TEENAGER(age -> age >= 13 && age < 19, teenagerDistanceDiscountPolicy()),
-    KID(age -> age >= 6 && age < 13, kidDiscountPolicy()),
+    TEENAGER(age -> age >= 13 && age < 19, fare -> fare - (int) Math.ceil((fare - 350) * 0.5)),
+    KID(age -> age >= 6 && age < 13, fare -> fare - (int) Math.ceil((fare - 350) * 0.2)),
     NOT_APPLICABLE(age -> false, fare -> fare);
 
     AgeDiscount(Predicate<Integer> figureOutDiscount, UnaryOperator<Integer> discountPolicy) {
@@ -17,20 +17,12 @@ public enum AgeDiscount {
     Predicate<Integer> figureOutDiscount;
     UnaryOperator<Integer> discountPolicy;
 
-    public static int calculateFareAfterDiscount(int distance) {
+    public static int calculateFareAfterDiscount(int fare, int age) {
         AgeDiscount findAge = Arrays.stream(AgeDiscount.values())
-                .filter(value -> value.figureOutDiscount.test(distance))
+                .filter(value -> value.figureOutDiscount.test(age))
                 .findAny()
                 .orElse(NOT_APPLICABLE);
 
-        return findAge.discountPolicy.apply(distance);
-    }
-
-    static UnaryOperator<Integer> kidDiscountPolicy() {
-        return fare -> fare - (int) Math.ceil((fare - 350) * 0.2);
-    }
-
-    static UnaryOperator<Integer> teenagerDistanceDiscountPolicy() {
-        return fare -> fare - (int) Math.ceil((fare - 350) * 0.5);
+        return findAge.discountPolicy.apply(fare);
     }
 }
