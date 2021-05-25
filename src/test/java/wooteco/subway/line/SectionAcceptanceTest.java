@@ -125,8 +125,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_제외_실패됨(removeResponse);
     }
 
-    public static void 지하철_구간_등록되어_있음(LineResponse lineResponse, StationResponse upStation, StationResponse downStation, int distance) {
-        지하철_구간_생성_요청(lineResponse, upStation, downStation, distance);
+    public static void 지하철_구간_등록되어_있음(TokenResponse tokenResponse, LineResponse lineResponse, StationResponse upStation, StationResponse downStation, int distance) {
+        지하철_구간_생성_요청_withToken(tokenResponse, lineResponse, upStation, downStation, distance);
     }
 
     public static ExtractableResponse<Response> 지하철_구간_생성_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
