@@ -3,6 +3,8 @@ package wooteco.subway.station.application;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.line.application.LineService;
+import wooteco.subway.line.application.NoSuchLineException;
+import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationLineResponse;
@@ -15,11 +17,11 @@ import java.util.List;
 @Service
 public class StationService {
     private StationDao stationDao;
-    private LineService lineService;
+    private LineDao lineDao;
 
-    public StationService(final StationDao stationDao, final LineService lineService) {
+    public StationService(final StationDao stationDao, final LineDao lineDao) {
         this.stationDao = stationDao;
-        this.lineService = lineService;
+        this.lineDao = lineDao;
     }
 
     @Transactional
@@ -50,7 +52,9 @@ public class StationService {
     }
 
     public List<StationTransferResponse> getStationsWithTransferLines(final long lineId) {
-        lineService.validateLineExistence(lineId);
+        if (lineDao.doesIdNotExist(lineId)) {
+            throw new NoSuchLineException();
+        }
         return stationDao.getStationsWithTransferLines(lineId);
     }
 }
