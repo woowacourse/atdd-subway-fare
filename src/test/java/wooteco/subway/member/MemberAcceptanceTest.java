@@ -41,6 +41,19 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_삭제됨(deleteResponse);
     }
 
+    @DisplayName("중복된 이메일로 가입하는 경우")
+    @Test
+    void joinDuplicatedEmail() {
+        // given
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+
+        // when
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD + "OTHER", AGE + 1);
+
+        // then
+        회원_가입_실패함(createResponse);
+    }
+
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
@@ -103,5 +116,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static void 회원_가입_실패함(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
