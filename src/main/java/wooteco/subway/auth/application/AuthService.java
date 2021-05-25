@@ -44,4 +44,10 @@ public class AuthService {
             return new LoginMember();
         }
     }
+
+    public void validateToken(String credentials) {
+        if (!jwtTokenProvider.validateToken(credentials)) {
+            throw new AuthorizationException("jwt 토큰이 유효하지 않습니다.");
+        }
+    }
 }

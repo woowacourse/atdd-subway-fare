@@ -28,6 +28,16 @@ public class SubwayPath {
     public int calculateFare() {
         int totalDistance = calculateDistance();
         FarePolicy farePolicy = FarePolicy.of(totalDistance);
+
+        //TODO 추가 운임
+
+        // int fare = farePolicy.calculateFare(totalDistance);
+
+//        fare + sectionEdges.stream()
+//            .line -> alskdjf
+//            . max
+
+            //enum age, +
         return farePolicy.calculateFare(totalDistance);
     }
 
