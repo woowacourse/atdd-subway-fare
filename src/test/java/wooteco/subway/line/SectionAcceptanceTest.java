@@ -39,7 +39,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
     private static TokenResponse tokenResponse;
 
-    public static ExtractableResponse<Response> 지하철_구간_생성_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
+    public static ExtractableResponse<Response> 지하철_구간_생성_요청_내부토큰(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
         SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
 
         return RestAssured
@@ -52,11 +52,24 @@ public class SectionAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 지하철_구간_생성_요청_외부토큰(TokenResponse tokenResponse, LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
+        SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
+
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(tokenResponse.getAccessToken())
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(sectionRequest)
+            .when().post("/lines/{lineId}/sections", line.getId())
+            .then().log().all()
+            .extract();
+    }
+
     @DisplayName("지하철 구간을 등록한다.")
     @Test
     void addLineSection() {
         // when
-        ExtractableResponse<Response> response = 지하철_구간_생성_요청(신분당선, 강남역, 양재역, 3);
+        ExtractableResponse<Response> response = 지하철_구간_생성_요청_내부토큰(신분당선, 강남역, 양재역, 3);
 
         // then
         지하철_구간_생성됨(response, 신분당선, Arrays.asList(강남역, 양재역, 광교역));
@@ -66,8 +79,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void addLineSection2() {
         // when
-        지하철_구간_생성_요청(신분당선, 강남역, 양재역, 2);
-        ExtractableResponse<Response> response = 지하철_구간_생성_요청(신분당선, 정자역, 강남역, 5);
+        지하철_구간_생성_요청_내부토큰(신분당선, 강남역, 양재역, 2);
+        ExtractableResponse<Response> response = 지하철_구간_생성_요청_내부토큰(신분당선, 정자역, 강남역, 5);
 
         // then
         지하철_구간_생성됨(response, 신분당선, Arrays.asList(정자역, 강남역, 양재역, 광교역));
@@ -77,7 +90,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void addLineSectionWithSameStation() {
         // when
-        ExtractableResponse<Response> response = 지하철_구간_생성_요청(신분당선, 강남역, 광교역, 3);
+        ExtractableResponse<Response> response = 지하철_구간_생성_요청_내부토큰(신분당선, 강남역, 광교역, 3);
 
         // then
         지하철_구간_등록_실패됨(response);
@@ -87,7 +100,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void addLineSectionWithNoStation() {
         // when
-        ExtractableResponse<Response> response = 지하철_구간_생성_요청(신분당선, 정자역, 양재역, 3);
+        ExtractableResponse<Response> response = 지하철_구간_생성_요청_내부토큰(신분당선, 정자역, 양재역, 3);
 
         // then
         지하철_구간_등록_실패됨(response);
@@ -97,8 +110,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void removeLineSection1() {
         // given
-        지하철_구간_생성_요청(신분당선, 강남역, 양재역, 2);
-        지하철_구간_생성_요청(신분당선, 양재역, 정자역, 2);
+        지하철_구간_생성_요청_내부토큰(신분당선, 강남역, 양재역, 2);
+        지하철_구간_생성_요청_내부토큰(신분당선, 양재역, 정자역, 2);
 
         // when
         ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
@@ -117,8 +130,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_제외_실패됨(removeResponse);
     }
 
-    public static void 지하철_구간_등록되어_있음(LineResponse lineResponse, StationResponse upStation, StationResponse downStation, int distance) {
-        지하철_구간_생성_요청(lineResponse, upStation, downStation, distance);
+    public static void 지하철_구간_등록되어_있음_외부토큰(TokenResponse tokenResponse, LineResponse lineResponse, StationResponse upStation, StationResponse downStation, int distance) {
+        지하철_구간_생성_요청_외부토큰(tokenResponse, lineResponse, upStation, downStation, distance);
     }
 
     public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(LineResponse line, StationResponse station) {

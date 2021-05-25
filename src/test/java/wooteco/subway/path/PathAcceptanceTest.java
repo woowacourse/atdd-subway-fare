@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
-import static wooteco.subway.line.SectionAcceptanceTest.지하철_구간_등록되어_있음;
+import static wooteco.subway.line.SectionAcceptanceTest.지하철_구간_등록되어_있음_외부토큰;
 import static wooteco.subway.member.MemberAcceptanceTest.회원_생성됨;
 import static wooteco.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음_외부토큰;
@@ -68,7 +68,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음_외부토큰(tokenResponse, "이호선", "bg-red-600", 교대역, 강남역, 10);
         삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음_외부토큰(tokenResponse, "삼호선", "bg-red-600", 교대역, 양재역, 5);
 
-        지하철_구간_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
+        지하철_구간_등록되어_있음_외부토큰(tokenResponse, 삼호선, 교대역, 남부터미널역, 3);
     }
 
     @DisplayName("두 역의 최단 거리 경로를 조회한다.")
