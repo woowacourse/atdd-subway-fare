@@ -35,7 +35,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         downStation = 지하철역_등록되어_있음("광교역");
 
         lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 10);
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 15);
+        lineRequest2 = new LineRequest("구신분당선", "bg-yellow-600", 강남역.getId(), downStation.getId(), 15);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -59,7 +59,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("존재하지 않는 역을 종점으로 노선 생성 요청")
     @Test
     void createLineWithInvalidSection() {
-        LineRequest invalidRequest = new LineRequest("코기선", "bg-red-600", Long.MAX_VALUE, downStation.getId(), 10);
+        LineRequest invalidRequest = new LineRequest("코기선", "bg-black-600", Long.MAX_VALUE, downStation.getId(), 10);
 
         ExtractableResponse<Response> response = 지하철_노선_생성_요청(invalidRequest);
 
@@ -69,7 +69,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("종점의 구간 간격을 음수로 노선 생성 요청")
     @Test
     void createLineWithInvalidDistance() {
-        LineRequest invalidRequest = new LineRequest("코기선", "bg-red-600", 강남역.getId(), downStation.getId(), -1);
+        LineRequest invalidRequest = new LineRequest("코기선", "bg-black-600", 강남역.getId(), downStation.getId(), -1);
 
         ExtractableResponse<Response> response = 지하철_노선_생성_요청(invalidRequest);
 
