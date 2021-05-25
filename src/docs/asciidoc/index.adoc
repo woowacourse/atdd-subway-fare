@@ -35,6 +35,33 @@ API에 관계없이 아래 사항을 지켜주셔야 합니다.
 | 로그인이 필요한 API를 사용하기 위한 JWT 토큰 (Bearer ${token} 형식)
 |===
 
+[[Member]]
+= 유저 관리
+
+== 회원가입
+=== Request
+include::{snippets}/sign-up/http-request.adoc[]
+
+=== Response
+include::{snippets}/sign-up/http-response.adoc[]
+
+
+== 내 정보 수정
+=== Request
+include::{snippets}/modify-my-info/http-request.adoc[]
+
+=== Response
+include::{snippets}/modify-my-info/http-response.adoc[]
+
+
+== 회원 탈퇴
+=== Request
+include::{snippets}/delete-my-account/http-request.adoc[]
+
+=== Response
+include::{snippets}/delete-my-account/http-response.adoc[]
+
+
 [[Auth]]
 = 회원 인증
 
