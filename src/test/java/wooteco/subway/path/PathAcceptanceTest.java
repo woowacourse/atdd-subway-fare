@@ -35,7 +35,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private static final String PASSWORD = "password";
     private static final int AGE_UNDER_6 = 5;
     private static final int AGE_IN_BETWEEN_6_TO_13 = 9;
-    private static final int AGE_IN_BETWEEN_13_TO_19 = 19;
+    private static final int AGE_IN_BETWEEN_13_TO_19 = 18;
     private static final int AGE_ADULT = 20;
 
     private LineResponse 신분당선;
@@ -129,18 +129,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_구간_등록되어_있음(육호선, 뚝섬역, 구의역, 50);
     }
 
-    @DisplayName("두 역의 최단 거리 경로, 요금을 조회한다. 로그인 안함")
-    @Test
-    void findPathByDistance() {
-        //when
-        ExtractableResponse<Response> response = 거리_경로_조회_요청(new TokenResponse(), 3L, 2L);
-
-        //then
-        적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
-        총_거리가_응답됨(response, 5);
-        총_요금이_응답됨(response, 1250);
-    }
-
     @DisplayName("기본경로, 0~6세")
     @Test
     void findPathBaby() {
@@ -160,7 +148,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //then
         적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
         총_거리가_응답됨(response, 5);
-        총_요금이_응답됨(response, 800);
+        총_요금이_응답됨(response, 450);
     }
 
     @DisplayName("기본경로, 13~19세")
@@ -171,10 +159,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //then
         적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
         총_거리가_응답됨(response, 5);
-        총_요금이_응답됨(response, 1070);
+        총_요금이_응답됨(response, 720);
     }
 
-    @DisplayName("기본경로, 13~19세")
+    @DisplayName("기본경로, 성인")
     @Test
     void findPathAdult() {
         //when
@@ -185,18 +173,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
         총_요금이_응답됨(response, 1250);
     }
 
-    @DisplayName("기본경로, 13~19세")
+    @DisplayName("기본경로, 로그인 안한 경우")
     @Test
     void findPath() {
         //when
-        ExtractableResponse<Response> response = 거리_경로_조회_요청(new TokenResponse(), 3L, 2L);
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(new TokenResponse(""), 3L, 2L);
         //then
         적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
         총_거리가_응답됨(response, 5);
-        총_요금이_응답됨(response, 1070);
+        총_요금이_응답됨(response, 1250);
     }
-
-
 
     public static ExtractableResponse<Response> 거리_경로_조회_요청(TokenResponse tokenResponse, long source, long target) {
         return RestAssured

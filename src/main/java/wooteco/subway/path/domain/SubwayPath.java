@@ -29,22 +29,36 @@ public class SubwayPath {
         return sectionEdges.stream().mapToInt(it -> it.getSection().getDistance()).sum();
     }
 
-    public int calculateFare(int distance) {
+    public int calculateFare(Integer age, int distance) {
         if (distance <= DEFAULT_DISTANCE) {
-            return DEFAULT_FARE;
+            return discountByAge(age, DEFAULT_FARE);
         }
 
         if (distance <= OVER_LIMIT_DISTANCE) {
             int overFare = calculateAdditionalFareOver10km(distance - DEFAULT_DISTANCE);
-            return DEFAULT_FARE + overFare;
+            return discountByAge(age,DEFAULT_FARE + overFare);
         }
 
         int additionalFareOver10km = calculateAdditionalFareOver10km(OVER_LIMIT_DISTANCE - DEFAULT_DISTANCE);
         int additionalFareOver50km = calculateAdditionalFareOver50km(distance - OVER_LIMIT_DISTANCE);
 
-        return DEFAULT_FARE
+        return discountByAge(age, DEFAULT_FARE
                 + additionalFareOver10km
-                + additionalFareOver50km;
+                + additionalFareOver50km);
+    }
+
+    private int discountByAge(Integer age, int fare) {
+        if (age < 6) {
+            return 0;
+        }
+        if (age < 13) {
+            return (int) ((fare-350)*0.5);
+        }
+
+        if( age < 19) {
+            return (int) ((fare-350)*0.8);
+        }
+        return fare;
     }
 
     private int calculateAdditionalFareOver10km(int distance) {
