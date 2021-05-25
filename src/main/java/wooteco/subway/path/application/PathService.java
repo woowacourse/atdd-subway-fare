@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
-import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.path.domain.Fare;
 import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.path.dto.PathResponseAssembler;
@@ -33,9 +33,19 @@ public class PathService {
             Station targetStation = stationService.findStationById(target);
             SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
 
-            return PathResponseAssembler.assemble(subwayPath);
+            int fare = calculateFare(subwayPath);
+            return PathResponseAssembler.assemble(subwayPath, fare);
         } catch (Exception e) {
             throw new InvalidPathException();
         }
+    }
+
+    private int calculateFare(SubwayPath subwayPath) {
+        int lineExtraFare = subwayPath.getSectionEdges().stream()
+                .mapToInt(sectionEdge -> sectionEdge.getLine().getExtraFare())
+                .max()
+                .orElseThrow(IllegalStateException::new);
+
+        return Fare.calculate(subwayPath.calculateDistance()) + lineExtraFare;
     }
 }
