@@ -5,6 +5,8 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import wooteco.subway.exception.ErrorMessage;
+import wooteco.subway.exception.HttpException;
 
 @RestControllerAdvice
 public class AdviceController {
@@ -14,5 +16,12 @@ public class AdviceController {
         return ResponseEntity
             .badRequest()
             .body(new ErrorMessage(e.getMessage()));
+    }
+
+    @ExceptionHandler(HttpException.class)
+    public ResponseEntity<ErrorMessage> handleException(HttpException e) {
+        return ResponseEntity
+            .status(e.getHttpStatus())
+            .body(e.getErrorMessage());
     }
 }

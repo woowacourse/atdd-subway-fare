@@ -1,4 +1,4 @@
-package wooteco.subway.advice;
+package wooteco.subway.exception;
 
 public class ErrorMessage {
     private final String message;

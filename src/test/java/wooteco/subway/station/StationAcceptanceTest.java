@@ -73,6 +73,19 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_삭제됨(response);
     }
 
+    @DisplayName("존재하지 않는 지하철역을 제거한다. - 404 에러")
+    @Test
+    void deleteStationNotExists() {
+        // given
+        Long stationIdNotExists = -1L;
+
+        // when
+        ExtractableResponse<Response> response = 지하철역_제거_요청_Id로(stationIdNotExists);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
     public static StationResponse 지하철역_등록되어_있음(String name) {
         return 지하철역_생성_요청(name).as(StationResponse.class);
     }
@@ -104,6 +117,15 @@ public class StationAcceptanceTest extends AcceptanceTest {
             .given(spec).log().all()
             .filter(document("delete-station"))
             .when().delete("/stations/" + stationResponse.getId())
+            .then().log().all()
+            .extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철역_제거_요청_Id로(Long id) {
+        return RestAssured
+            .given(spec).log().all()
+            .filter(document("delete-station"))
+            .when().delete("/stations/" + id)
             .then().log().all()
             .extract();
     }
