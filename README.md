@@ -8,7 +8,7 @@
     
 
 ## 경로 조회 이외에 인증 필요 
-- [ ] LoginInterceptor 통한 token 인증
+- [x] LoginInterceptor 통한 token 인증
 
 ## 추가 요금 정책 - 연령별 추가 요금
 - [ ] 청소년 : 13세 이상 ~ 19세 미만 
