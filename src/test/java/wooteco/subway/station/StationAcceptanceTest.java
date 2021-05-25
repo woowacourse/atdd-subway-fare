@@ -24,7 +24,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     private static final String 강남역 = "강남역";
     private static final String 역삼역 = "역삼역";
 
-    @DisplayName("지하철역 생성 - 역 이름: 2자 이상 20자 이하의 한글 (숫자, 공백 허용 X) - 생성 성공")
+    @DisplayName("지하철역 생성 - 역 이름: 2자 이상 20자 이하의 한글, 숫자로만 이루어져 있다.(공백 허용 X) - 생성 성공")
     @ParameterizedTest
     @ValueSource(strings = {"하나", "11", "하나2역", "일이삼사오육칠팔구십일이삼사오육칠팔구십"})
     void createStation(String name) {
@@ -35,7 +35,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_생성됨(response);
     }
 
-    @DisplayName("지하철역 생성 - 역 이름: 2자 이상 20자 이하의 한글 (숫자, 공백 허용 X) - 예외상황 400 에러")
+    @DisplayName("지하철역 생성 - 역 이름: 2자 이상 20자 이하의 한글, 숫자로만 이루어져 있다.(공백 허용 X) - 예외상황 400 에러")
     @ParameterizedTest
     @ValueSource(strings = {"", " ", "일", "asdf", "일 ", "하나 역", "하나a역", "하나,역", "하나\t역", "일이삼사오육칠팔구십일이삼사오육칠팔구십일"})
     void createStationWithNotValidName(String name) {
