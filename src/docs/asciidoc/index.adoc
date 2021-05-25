@@ -138,3 +138,14 @@ include::{snippets}/delete-line/http-request.adoc[]
 
 === Response
 include::{snippets}/delete-line/http-response.adoc[]
+
+
+[[Path]]
+= 경로
+
+== 경로 조회
+=== Request
+include::{snippets}/find-path/http-request.adoc[]
+
+=== Response
+include::{snippets}/find-path/http-response.adoc[]
