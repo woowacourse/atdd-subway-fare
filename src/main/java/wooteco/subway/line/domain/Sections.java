@@ -41,7 +41,7 @@ public class Sections {
     private void checkAlreadyExisted(Section section) {
         List<Station> stations = getStations();
         if (!stations.contains(section.getUpStation()) && !stations.contains(section.getDownStation())) {
-            throw new InvalidSectionException("[ERROR] 두 지하철 역 모두 해당 노선에 존재하지 않습니다.");
+            throw new InvalidSectionException("유효하지 않는 요청 값입니다");
         }
     }
 
@@ -49,7 +49,7 @@ public class Sections {
         List<Station> stations = getStations();
         List<Station> stationsOfNewSection = Arrays.asList(section.getUpStation(), section.getDownStation());
         if (stations.containsAll(stationsOfNewSection)) {
-            throw new InvalidSectionException("[ERROR] 두 지하철 역 모두 해당 노선에 존재합니다.");
+            throw new InvalidSectionException("유효하지 않는 요청 값입니다");
         }
     }
 
@@ -69,7 +69,7 @@ public class Sections {
 
     private void replaceSectionWithUpStation(Section newSection, Section existSection) {
         if (existSection.getDistance() <= newSection.getDistance()) {
-            throw new InvalidSectionException("[ERROR] 새로운 구간의 거리는 기존 구간의 거리보다 짧아야합니다.");
+            throw new InvalidSectionException("유효하지 않는 요청 값입니다");
         }
         this.sections.add(new Section(existSection.getUpStation(), newSection.getUpStation(), existSection.getDistance() - newSection.getDistance()));
         this.sections.remove(existSection);
@@ -77,7 +77,7 @@ public class Sections {
 
     private void replaceSectionWithDownStation(Section newSection, Section existSection) {
         if (existSection.getDistance() <= newSection.getDistance()) {
-            throw new InvalidSectionException("[ERROR] 새로운 구간의 거리는 기존 구간의 거리보다 짧아야합니다.");
+            throw new InvalidSectionException("유효하지 않는 요청 값입니다");
         }
         this.sections.add(new Section(newSection.getDownStation(), existSection.getDownStation(), existSection.getDistance() - newSection.getDistance()));
         this.sections.remove(existSection);
@@ -130,7 +130,7 @@ public class Sections {
         return this.sections.stream()
                 .filter(it -> !downStations.contains(it.getUpStation()))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new InvalidSectionException("유효하지 않는 요청 값입니다"));
     }
 
     private Section findSectionByNextUpStation(Station station) {
@@ -142,7 +142,7 @@ public class Sections {
 
     public void removeStation(Station station) {
         if (sections.size() <= 1) {
-            throw new InvalidSectionException("[ERROR] 구간이 하나 이상일 때 삭제 가능합니다.");
+            throw new InvalidSectionException("유효하지 않는 요청 값입니다");
         }
 
         Optional<Section> upSection = sections.stream()
