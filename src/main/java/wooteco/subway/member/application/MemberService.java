@@ -1,9 +1,8 @@
 package wooteco.subway.member.application;
 
-import org.apache.commons.logging.Log;
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
@@ -11,12 +10,9 @@ import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
 @Service
+@RequiredArgsConstructor
 public class MemberService {
-    private MemberDao memberDao;
-
-    public MemberService(MemberDao memberDao) {
-        this.memberDao = memberDao;
-    }
+    private final MemberDao memberDao;
 
     public MemberResponse createMember(MemberRequest request) {
         Member member = memberDao.insert(request.toMember());
