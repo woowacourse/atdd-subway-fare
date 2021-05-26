@@ -69,6 +69,10 @@ public class LineService {
         return SimpleLineResponse.from(findLines());
     }
 
+    public List<LineResponse> findLineResponses() {
+        return LineResponse.fromList(findLines());
+    }
+
     public List<Line> findLines() {
         return lineDao.findAll();
     }
@@ -112,9 +116,5 @@ public class LineService {
 
         sectionDao.deleteByLineId(lineId);
         sectionDao.insertSections(line);
-    }
-
-    public int countsStationsById(Long id) {
-        return sectionDao.countsStationById(id);
     }
 }
