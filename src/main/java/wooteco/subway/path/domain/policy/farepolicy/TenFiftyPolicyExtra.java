@@ -1,13 +1,14 @@
-package wooteco.subway.path.domain.farepolicy;
+package wooteco.subway.path.domain.policy.farepolicy;
 
 import java.math.BigDecimal;
 
-public class TenFiftyPolicy implements FarePolicy {
+public class TenFiftyPolicyExtra implements ExtraFarePolicy {
     private static final int FARE = 100;
     private static final int OVER_FARE_DISTANCE = 5;
     private static final int DOWN_THRESHOLD = 10;
     private static final int UP_THRESHOLD = 50;
 
+    @Override
     public BigDecimal calculate(int distance) {
         distance = initializedDistance(distance);
 

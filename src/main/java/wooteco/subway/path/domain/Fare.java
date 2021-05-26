@@ -3,19 +3,26 @@ package wooteco.subway.path.domain;
 import java.math.BigDecimal;
 import java.util.List;
 import wooteco.subway.line.domain.Line;
-import wooteco.subway.path.domain.farepolicy.FarePolicy;
+import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.path.domain.policy.discountpolicy.DiscountFarePolicy;
+import wooteco.subway.path.domain.policy.farepolicy.ExtraFarePolicy;
 
 public class Fare {
 
-    private final List<FarePolicy> farePolicies;
+    private final List<ExtraFarePolicy> farePolicies;
+    private final List<DiscountFarePolicy> discountPolicies;
 
-    public Fare(List<FarePolicy> farePolicies) {
+    public Fare(List<ExtraFarePolicy> farePolicies, List<DiscountFarePolicy> discountPolicies) {
         this.farePolicies = farePolicies;
+        this.discountPolicies = discountPolicies;
     }
 
-    public BigDecimal calculate(SubwayPath subwayPath) {
-        return calculateExtraFareOfDistance(subwayPath)
+    public BigDecimal calculate(SubwayPath subwayPath,
+        LoginMember loginMember) {
+        BigDecimal fare = calculateExtraFareOfDistance(subwayPath)
             .add(calculateMaximumExtraFareOfLines(subwayPath));
+
+        return fare.subtract(calculateDiscountPolicy(loginMember, fare));
     }
 
     private BigDecimal calculateExtraFareOfDistance(SubwayPath subwayPath) {
@@ -23,7 +30,7 @@ public class Fare {
 
         return farePolicies.stream().map(
             farePolicy -> farePolicy.calculate(distance)
-        ).reduce(BigDecimal.valueOf(0), BigDecimal::add);
+        ).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     private BigDecimal calculateMaximumExtraFareOfLines(SubwayPath subwayPath) {
@@ -34,6 +41,12 @@ public class Fare {
             .orElse(0);
 
         return BigDecimal.valueOf(extraFare);
+    }
+
+    private BigDecimal calculateDiscountPolicy(LoginMember loginMember, BigDecimal fare) {
+        return discountPolicies.stream()
+            .map(farePolicy -> farePolicy.calculate(loginMember).apply(fare))
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
 }

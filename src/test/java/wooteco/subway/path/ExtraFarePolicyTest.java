@@ -6,18 +6,18 @@ import java.math.BigDecimal;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import wooteco.subway.path.domain.farepolicy.DefaultFarePolicy;
-import wooteco.subway.path.domain.farepolicy.FiftyOverPolicy;
-import wooteco.subway.path.domain.farepolicy.TenFiftyPolicy;
+import wooteco.subway.path.domain.policy.farepolicy.DefaultExtraFarePolicy;
+import wooteco.subway.path.domain.policy.farepolicy.FiftyOverPolicyExtra;
+import wooteco.subway.path.domain.policy.farepolicy.TenFiftyPolicyExtra;
 
 @DisplayName("요금 정책 테스트")
-public class FarePolicyTest {
+public class ExtraFarePolicyTest {
 
     @DisplayName("기본 요금 정책")
     @ParameterizedTest
     @CsvSource(value = {"1, 1250", "0, 0"})
     void defaultFarePolicy(int distance, int expectedFare) {
-        DefaultFarePolicy defaultFarePolicy = new DefaultFarePolicy();
+        DefaultExtraFarePolicy defaultFarePolicy = new DefaultExtraFarePolicy();
 
         assertThat(defaultFarePolicy.calculate(distance))
             .isEqualTo(BigDecimal.valueOf(expectedFare));
@@ -27,7 +27,7 @@ public class FarePolicyTest {
     @ParameterizedTest
     @CsvSource(value = {"9, 0", "10, 0", "11, 100", "16, 200", "15, 100", "50, 800"})
     void tenFiftyPolicy(int distance, int expectedFare) {
-        TenFiftyPolicy tenFiftyPolicy = new TenFiftyPolicy();
+        TenFiftyPolicyExtra tenFiftyPolicy = new TenFiftyPolicyExtra();
 
         assertThat(tenFiftyPolicy.calculate(distance))
             .isEqualTo(BigDecimal.valueOf(expectedFare));
@@ -37,7 +37,7 @@ public class FarePolicyTest {
     @ParameterizedTest
     @CsvSource(value = {"50, 0", "51, 100", "58, 100", "59, 200"})
     void fiftyOverPolicy(int distance, int expectedFare) {
-        FiftyOverPolicy fiftyOverPolicy = new FiftyOverPolicy();
+        FiftyOverPolicyExtra fiftyOverPolicy = new FiftyOverPolicyExtra();
 
         assertThat(fiftyOverPolicy.calculate(distance))
             .isEqualTo(BigDecimal.valueOf(expectedFare));

@@ -9,7 +9,7 @@ import wooteco.subway.path.domain.Fare;
 import wooteco.subway.path.domain.SectionEdge;
 import wooteco.subway.path.domain.SubwayGraph;
 import wooteco.subway.path.domain.SubwayPath;
-import wooteco.subway.path.domain.farepolicy.FarePolicyFactory;
+import wooteco.subway.path.domain.policy.FarePolicyFactory;
 import wooteco.subway.station.domain.Station;
 
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ public class PathFinder {
         List<SectionEdge> edges = new ArrayList<>(graphPath.getEdgeList());
         List<Station> stations = graphPath.getVertexList();
 
-        return new SubwayPath(edges, stations, new Fare(FarePolicyFactory.create()));
+        return new SubwayPath(edges, stations, new Fare(FarePolicyFactory.createExtraFarePolicy(), FarePolicyFactory.createDiscountPolicy()));
     }
 
 }

@@ -1,5 +1,6 @@
 package wooteco.subway.auth.infrastructure;
 
+import java.util.Optional;
 import wooteco.subway.exception.AuthorizationException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,15 +17,26 @@ public class AuthorizationExtractor {
     public static String extract(HttpServletRequest request) {
         Enumeration<String> headers = request.getHeaders(AUTHORIZATION);
 
-        String token = streamOf(headers)
-                .filter(AuthorizationExtractor::isBearerType)
-                .map(AuthorizationExtractor::extractBearerTokenFromHeader)
-                .findAny()
+        String token = findAuthorizationHeader(headers)
                 .orElseThrow(AuthorizationException::new);
 
         request.setAttribute(ACCESS_TOKEN_TYPE, BEARER_TYPE);
 
         return token;
+    }
+
+    public static boolean isExtractable(HttpServletRequest request) {
+        Enumeration<String> headers = request.getHeaders(AUTHORIZATION);
+
+        return findAuthorizationHeader(headers)
+            .isPresent();
+    }
+
+    private static Optional<String> findAuthorizationHeader(Enumeration<String> headers) {
+        return streamOf(headers)
+            .filter(AuthorizationExtractor::isBearerType)
+            .map(AuthorizationExtractor::extractBearerTokenFromHeader)
+            .findAny();
     }
 
     private static Stream<String> streamOf(Enumeration<String> headers) {
