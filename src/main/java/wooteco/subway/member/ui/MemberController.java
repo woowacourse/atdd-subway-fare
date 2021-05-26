@@ -45,8 +45,8 @@ public class MemberController {
     }
 
     @PostMapping("/members/email-check")
-    public ResponseEntity<Void> checkEmail(@RequestBody EmailRequest emailRequest) {
-        memberService.checkEmail(emailRequest.getEmail());
+    public ResponseEntity<Void> verifyUniqueEmail(@RequestBody EmailRequest emailRequest) {
+        memberService.validateUniqueEmail(emailRequest.getEmail());
         return ResponseEntity.ok().build();
     }
 }

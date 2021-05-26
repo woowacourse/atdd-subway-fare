@@ -7,7 +7,8 @@ import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
-import wooteco.subway.member.exception.EmailAddressNotFoundException;
+import wooteco.subway.member.exception.DuplicatedEmailAddressException;
+import wooteco.subway.member.exception.MemberNotFoundException;
 
 @Service
 public class MemberService {
@@ -23,25 +24,31 @@ public class MemberService {
     }
 
     public MemberResponse findMember(LoginMember loginMember) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
+        Member member = memberDao.findByEmail(loginMember.getEmail())
+            .orElseThrow(() -> new MemberNotFoundException(loginMember.getEmail()));
         return MemberResponse.of(member);
     }
 
     public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
+        Member member = memberDao.findByEmail(loginMember.getEmail())
+            .orElseThrow(() -> new MemberNotFoundException(loginMember.getEmail()));
         memberDao.update(new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
     }
 
     public void deleteMember(LoginMember loginMember) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
+        Member member = memberDao.findByEmail(loginMember.getEmail())
+            .orElseThrow(() -> new MemberNotFoundException(loginMember.getEmail()));
         memberDao.deleteById(member.getId());
     }
 
-    public void checkEmail(String email) {
-        try {
-            memberDao.findByEmail(email);
-        } catch (DataAccessException e) {
-            throw new EmailAddressNotFoundException(email);
+    public void validateUniqueEmail(String email) {
+        if (isDuplicatedMember(email)) {
+            throw new DuplicatedEmailAddressException(email);
         }
+    }
+
+    private boolean isDuplicatedMember(String email) {
+        return memberDao.findByEmail(email)
+            .isPresent();
     }
 }

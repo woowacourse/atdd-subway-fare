@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
+import wooteco.subway.member.dto.EmailRequest;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
@@ -19,9 +20,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
     public static final int AGE = 20;
-    public static final String NEW_EMAIL = "new_email@email.com";
     public static final String NEW_PASSWORD = "new_password";
     public static final int NEW_AGE = 30;
+    public static final String UNIQUE_EMAIL = "unique@email.com";
 
     @DisplayName("회원 정보를 관리한다.")
     @Test
@@ -39,6 +40,16 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> deleteResponse = 내_회원_삭제_요청(사용자);
         회원_삭제됨(deleteResponse);
+    }
+
+    @DisplayName("이메일의 중복여부를 검사한다.")
+    @Test
+    void verifyUniqueEmail() {
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성됨(createResponse);
+
+        이메일_중복_검사_요청(EMAIL, HttpStatus.CONFLICT);
+        이메일_중복_검사_요청(UNIQUE_EMAIL, HttpStatus.OK);
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
@@ -103,5 +114,18 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static ExtractableResponse<Response> 이메일_중복_검사_요청(String email, HttpStatus expectedHttpStatus) {
+        EmailRequest emailRequest = new EmailRequest(email);
+
+        return RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(emailRequest)
+            .when().post("/members/email-check")
+            .then().log().all()
+            .statusCode(expectedHttpStatus.value())
+            .extract();
     }
 }

@@ -8,6 +8,7 @@ import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
+import wooteco.subway.member.exception.MemberNotFoundException;
 
 @Service
 @Transactional
@@ -22,7 +23,8 @@ public class AuthService {
 
     public TokenResponse login(TokenRequest request) {
         try {
-            Member member = memberDao.findByEmail(request.getEmail());
+            Member member = memberDao.findByEmail(request.getEmail())
+                .orElseThrow(() -> new MemberNotFoundException(request.getEmail()));
             member.checkPassword(request.getPassword());
         } catch (Exception e) {
             throw new AuthorizationException("이메일 혹은 비밀번호를 다시 확인해주세요.");
@@ -38,7 +40,8 @@ public class AuthService {
 
         String email = jwtTokenProvider.getPayload(credentials);
         try {
-            Member member = memberDao.findByEmail(email);
+            Member member = memberDao.findByEmail(email)
+                .orElseThrow(() -> new MemberNotFoundException(email));
             return new LoginMember(member.getId(), member.getEmail(), member.getAge());
         } catch (Exception e) {
             return new LoginMember();
