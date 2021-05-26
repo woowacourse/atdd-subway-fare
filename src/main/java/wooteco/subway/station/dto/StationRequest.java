@@ -2,7 +2,12 @@ package wooteco.subway.station.dto;
 
 import wooteco.subway.station.domain.Station;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+
 public class StationRequest {
+    @NotBlank
+    @Pattern(regexp = "^[가-힣0-9]{2,20}$", message = "역 이름은 2~20자 이하의 한글/숫자만 가능합니다")
     private String name;
 
     public StationRequest() {
