@@ -84,7 +84,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/paths?source={sourceId}&target={targetId}", source, target)
+                .when().get("/api/paths?source={sourceId}&target={targetId}", source, target)
                 .then().log().all()
                 .extract();
     }

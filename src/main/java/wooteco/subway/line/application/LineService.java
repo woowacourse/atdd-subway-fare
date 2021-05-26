@@ -1,6 +1,10 @@
 package wooteco.subway.line.application;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import wooteco.subway.exception.DuplicatedLineException;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
@@ -27,10 +31,15 @@ public class LineService {
         this.stationService = stationService;
     }
 
+    @Transactional
     public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
-        persistLine.addSection(addInitSection(persistLine, request));
-        return LineResponse.of(persistLine);
+        try {
+            Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
+            persistLine.addSection(addInitSection(persistLine, request));
+            return LineResponse.of(persistLine);
+        } catch (DataAccessException e) {
+            throw new DuplicatedLineException();
+        }
     }
 
     private Section addInitSection(Line line, LineRequest request) {

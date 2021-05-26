@@ -1,11 +1,28 @@
 package wooteco.subway.line.dto;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+
 public class LineRequest {
+    @NotEmpty(message = "노선 이름은 공백이 아닙니다.")
+    @Pattern(regexp = "^[a-zA-Zㄱ-힣0-9]*$", message = "노선 이름에 특수문자가 들어올 수 없습니다.")
     private String name;
+
+    @NotEmpty(message = "노선 색상은 공백이 아닙니다.")
     private String color;
+
+    @NotEmpty(message = "상행 역은 공백이 아닙니다.")
     private Long upStationId;
+
+    @NotEmpty(message = "하행 역은 공백이 아닙니다.")
     private Long downStationId;
+
+    @NotNull(message = "구간 거리는 공백이 아닙니다.")
+    @Min(value = 0, message = "구간 거리는 0보다 커야 합니다.")
     private int distance;
+
     private int extraFare;
 
     public LineRequest() {

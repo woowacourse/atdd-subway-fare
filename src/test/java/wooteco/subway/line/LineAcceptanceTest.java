@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.exception.ExceptionResponse;
 import wooteco.subway.line.dto.LineInfoResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
@@ -131,7 +132,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
-                .when().post("/lines")
+                .when().post("/api/lines")
                 .then().log().all().
                         extract();
     }
@@ -140,7 +141,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines")
+                .when().get("/api/lines")
                 .then().log().all()
                 .extract();
     }
@@ -149,7 +150,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines/{lineId}", response.getId())
+                .when().get("/api/lines/{lineId}", response.getId())
                 .then().log().all()
                 .extract();
     }
@@ -160,7 +161,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
-                .when().put("/lines/" + response.getId())
+                .when().put("/api/lines/" + response.getId())
                 .then().log().all()
                 .extract();
     }
@@ -168,7 +169,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철_노선_제거_요청(LineResponse lineResponse) {
         return RestAssured
                 .given().log().all()
-                .when().delete("/lines/" + lineResponse.getId())
+                .when().delete("/api/lines/" + lineResponse.getId())
                 .then().log().all()
                 .extract();
     }
@@ -180,6 +181,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철_노선_생성_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
+        assertThat(exceptionResponse.getError()).isEqualTo("DUPLICATED_LINE_NAME");
     }
 
     public static void 지하철_노선_목록_응답됨(ExtractableResponse<Response> response) {
