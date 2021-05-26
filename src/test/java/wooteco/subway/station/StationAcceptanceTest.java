@@ -65,9 +65,9 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @NullSource
     @ValueSource(strings = {"", "   ", "일", "abc", "20글자이상의지하철역이름은생성을할수가없습니다", "공백이 들어가면 안됩니다",
         "특수문자안됨!!"})
-    void createStationWithDuplicateName(String value) {
+    void createStationWithDuplicateName(String name) {
         // when
-        ExtractableResponse<Response> response = 지하철역_생성_요청(value, tokenResponse);
+        ExtractableResponse<Response> response = 지하철역_생성_요청(name, tokenResponse);
 
         // then
         에러가_발생한다(response, SubwayStationException.INVALID_STATION_NAME_EXCEPTION);

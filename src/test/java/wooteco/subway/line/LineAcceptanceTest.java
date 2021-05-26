@@ -77,9 +77,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @ParameterizedTest
     @NullSource
     @ValueSource(strings = {"", "    ", "abc", "일", "공백이 들어가면 안된다", "노선의이름은열글자가넘으면안된다", "특수문자안됨!"})
-    void createLineWithInvalidName(String value) {
+    void createLineWithInvalidName(String name) {
         // given
-        LineRequest lineRequest = new LineRequest(value, "bg-red-600", 강남역.getId(), downStation.getId(), 10);
+        LineRequest lineRequest = new LineRequest(name, "bg-red-600", 강남역.getId(), downStation.getId(), 10);
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest, tokenResponse);
@@ -105,9 +105,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("0 이하의 구간 거리로 지하철 노선을 생성하면 에러가 발생한다.")
     @ParameterizedTest
     @ValueSource(ints = {0, -1})
-    void createLineWithInvalidName(int value) {
+    void createLineWithInvalidName(int distance) {
         // given
-        LineRequest lineRequest = new LineRequest("신림역", "bg-red-600", 강남역.getId(), downStation.getId(), value);
+        LineRequest lineRequest = new LineRequest("신림역", "bg-red-600", 강남역.getId(), downStation.getId(), distance);
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest, tokenResponse);

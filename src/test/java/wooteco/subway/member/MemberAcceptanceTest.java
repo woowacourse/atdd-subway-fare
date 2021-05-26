@@ -48,8 +48,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @ParameterizedTest
     @NullSource
     @ValueSource(strings = {"", "abc", "abc@jjj", "naver.com@abc", "abc@naver.", "ab @naver.com"})
-    void createMemberWithInvalidEmail(String value) {
-        ExtractableResponse<Response> createResponse = 회원_생성을_요청(value, PASSWORD, AGE);
+    void createMemberWithInvalidEmail(String email) {
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(email, PASSWORD, AGE);
         에러가_발생한다(createResponse, SubwayMemberException.INVALID_EMAIL_EXCEPTION);
     }
 
@@ -57,8 +57,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @ParameterizedTest
     @NullSource
     @ValueSource(strings = {"", "a"})
-    void createMemberWithInvalidPassword(String value) {
-        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, value, AGE);
+    void createMemberWithInvalidPassword(String password) {
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, password, AGE);
         에러가_발생한다(createResponse, SubwayMemberException.INVALID_PASSWORD_EXCEPTION);
     }
 
@@ -66,8 +66,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @ParameterizedTest
     @NullSource
     @ValueSource(ints = {-1, 0})
-    void createMemberWithInvalidAge(Integer value) {
-        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, value);
+    void createMemberWithInvalidAge(Integer age) {
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, age);
         에러가_발생한다(createResponse, SubwayMemberException.INVALID_AGE_EXCEPTION);
     }
 
