@@ -32,6 +32,15 @@ public class StationService {
         return StationResponse.of(station);
     }
 
+    public void changeStation(Long id, StationRequest stationRequest) {
+        if (stationDao.existsByName(stationRequest.getName())) {
+            throw new DuplicateStationNameException();
+        }
+
+        Station station = stationDao.findById(id);
+        stationDao.update(new Station(station.getId(), stationRequest.getName()));
+    }
+
     public Station findStationById(Long id) {
         return stationDao.findById(id);
     }

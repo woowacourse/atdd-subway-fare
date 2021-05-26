@@ -6,10 +6,12 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import wooteco.subway.member.domain.Member;
 import wooteco.subway.station.domain.Station;
 
 import javax.sql.DataSource;
 import java.util.List;
+import wooteco.subway.station.exception.StationNotFoundException;
 
 @Repository
 public class StationDao {
@@ -36,6 +38,11 @@ public class StationDao {
         return new Station(id, station.getName());
     }
 
+    public void update(Station station) {
+        String sql = "update STATION set name = ?  where id = ?";
+        jdbcTemplate.update(sql, station.getName(), station.getId());
+    }
+
     public List<Station> findAll() {
         String sql = "select * from STATION";
         return jdbcTemplate.query(sql, rowMapper);
@@ -53,6 +60,9 @@ public class StationDao {
 
     public Station findById(Long id) {
         String sql = "select * from STATION where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        return jdbcTemplate.query(sql, rowMapper, id)
+            .stream()
+            .findAny()
+            .orElseThrow(() -> new StationNotFoundException());
     }
 }

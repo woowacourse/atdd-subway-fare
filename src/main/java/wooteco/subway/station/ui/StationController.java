@@ -1,5 +1,6 @@
 package wooteco.subway.station.ui;
 
+import javax.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,9 +23,16 @@ public class StationController {
     }
 
     @PostMapping("/stations")
-    public ResponseEntity<StationResponse> createStation(@RequestBody StationRequest stationRequest) {
+    public ResponseEntity<StationResponse> createStation(@Valid @RequestBody StationRequest stationRequest) {
         StationResponse station = stationService.saveStation(stationRequest);
         return ResponseEntity.created(URI.create("/stations/" + station.getId())).body(station);
+    }
+
+    @PutMapping("/stations/{id}")
+    public ResponseEntity<StationResponse> changeStation(@PathVariable Long id, @Valid @RequestBody StationRequest stationRequest) {
+        stationService.changeStation(id, stationRequest);
+        StationResponse stationResponse = new StationResponse(id, stationRequest.getName());
+        return ResponseEntity.ok().body(stationResponse);
     }
 
     @GetMapping(value = "/stations", produces = MediaType.APPLICATION_JSON_VALUE)

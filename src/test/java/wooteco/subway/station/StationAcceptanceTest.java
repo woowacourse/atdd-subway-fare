@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
+import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
@@ -19,6 +20,8 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
+import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_생성_요청_withToken;
+import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_생성됨;
 import static wooteco.subway.member.MemberAcceptanceTest.회원_생성됨;
 import static wooteco.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 
@@ -95,6 +98,46 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_목록_포함됨(response, Arrays.asList(stationResponse1, stationResponse2));
     }
 
+    @DisplayName("지하철역 이름을 수정한다.")
+    @Test
+    void changeStationName() {
+        // given
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성됨(createResponse);
+
+        TokenResponse 사용자 = 로그인되어_있음(EMAIL, PASSWORD);
+
+        StationResponse stationResponse = 지하철역_등록되어_있음_withToken(사용자, 강남역);
+        String newStationName = "수정된강남역";
+
+        // when
+        ExtractableResponse<Response> response = 지하철역_수정_요청_withToken(사용자, stationResponse, newStationName);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @DisplayName("이미 존재하는 지하철 역으로 수정시 400을 던진다.")
+    @Test
+    void changeDuplicateStationName() {
+        // given
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성됨(createResponse);
+
+        TokenResponse 사용자 = 로그인되어_있음(EMAIL, PASSWORD);
+
+        StationResponse stationResponse = 지하철역_등록되어_있음_withToken(사용자, 강남역);
+        StationResponse stationResponse2 = 지하철역_등록되어_있음_withToken(사용자, 역삼역);
+        String newStationName = "역삼역";
+
+        // when
+        ExtractableResponse<Response> response = 지하철역_수정_요청_withToken(사용자, stationResponse, newStationName);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+
+    }
+
     @DisplayName("지하철역을 제거한다.")
     @Test
     void deleteStation() {
@@ -123,7 +166,18 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         TokenResponse 사용자 = 로그인되어_있음(EMAIL, PASSWORD);
 
-        StationResponse stationResponse = 지하철역_등록되어_있음_withToken(사용자, 강남역);
+        StationResponse stationResponse1 = 지하철역_등록되어_있음_withToken(사용자, 강남역);
+        StationResponse stationResponse2 = 지하철역_등록되어_있음_withToken(사용자, 역삼역);
+
+        LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", stationResponse1.getId(), stationResponse2.getId(), 10);
+        ExtractableResponse<Response> createLineResponse = 지하철_노선_생성_요청_withToken(사용자, lineRequest);
+        지하철_노선_생성됨(createLineResponse);
+
+        // when
+        ExtractableResponse<Response> response = 지하철역_제거_요청_withToken(사용자, stationResponse1);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static StationResponse 지하철역_등록되어_있음(String name) {
@@ -173,6 +227,19 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 .when().delete("/api/stations/" + stationResponse.getId())
                 .then().log().all()
                 .extract();
+    }
+
+    private ExtractableResponse<Response> 지하철역_수정_요청_withToken(TokenResponse tokenResponse, StationResponse stationResponse, String newStationName) {
+        StationRequest stationRequest = new StationRequest(newStationName);
+
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(tokenResponse.getAccessToken())
+            .body(stationRequest)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().put("/api/stations/" + stationResponse.getId())
+            .then().log().all()
+            .extract();
     }
 
     public static ExtractableResponse<Response> 지하철역_제거_요청_withToken(TokenResponse tokenResponse, StationResponse stationResponse) {
