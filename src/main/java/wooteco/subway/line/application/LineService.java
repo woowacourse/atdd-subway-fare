@@ -31,12 +31,14 @@ public class LineService {
 
     @Transactional
     public LineResponse saveLine(LineRequest request) {
+        if (lineDao.existColor(request.getColor())) {
+            throw new DuplicateLineColorException("라인 색상이 중복되었습니다람쥐.");
+        }
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(),request.getExtraFare()));
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);
     }
 
-    @Transactional
     private Section addInitSection(Line line, LineRequest request) {
         if (request.getUpStationId() != null && request.getDownStationId() != null) {
             Station upStation = stationService.findStationById(request.getUpStationId());
