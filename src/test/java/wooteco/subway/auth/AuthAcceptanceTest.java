@@ -62,13 +62,18 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         params.put("email", EMAIL + "OTHER");
         params.put("password", PASSWORD);
 
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.UNAUTHORIZED.value());
+        ExtractableResponse<Response> response = RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(params)
+            .when().post("/login/token")
+            .then().log().all()
+            .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
+        assertThat(exceptionResponse.getError()).isEqualTo("MISMATCH_ID_PASSWORD");
     }
 
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
