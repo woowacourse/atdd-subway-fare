@@ -1,6 +1,6 @@
-# atdd-subway-fareByDistance
+# atdd-subway-fare
 
-## 구현할 기능 목록
+## 📜 구현할 기능 목록
 - [x] **배포하기**
     - [x] Nginx로 Reverse Proxy 구성하기
         - [x] TLS 설정
