@@ -30,8 +30,8 @@ public class LineController {
     }
 
     @GetMapping
-    public ResponseEntity<List<SimpleLineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findLineResponses());
+    public ResponseEntity<List<SimpleLineResponse>> findLines() {
+        return ResponseEntity.ok(lineService.findSimpleLineResponses());
     }
 
     @GetMapping("/{id}")
@@ -61,6 +61,11 @@ public class LineController {
     public ResponseEntity removeLineStation(@PathVariable Long lineId, @RequestParam Long stationId) {
         lineService.removeLineStation(lineId, stationId);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/maps")
+    public ResponseEntity<List<LineResponse>> findAllLines() {
+        return ResponseEntity.ok(lineService.findLineResponses());
     }
 
     @ExceptionHandler(SQLException.class)

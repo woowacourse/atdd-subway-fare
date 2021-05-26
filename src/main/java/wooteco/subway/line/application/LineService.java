@@ -58,7 +58,7 @@ public class LineService {
         return sectionDao.insert(line, section);
     }
 
-    public List<SimpleLineResponse> findLineResponses() {
+    public List<SimpleLineResponse> findSimpleLineResponses() {
         List<Line> persistLines = findAllSimple();
         return persistLines.stream()
                 .map(SimpleLineResponse::of)
@@ -76,6 +76,10 @@ public class LineService {
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
         return LineResponse.of(persistLine);
+    }
+    
+    public List<LineResponse> findLineResponses() {
+        return LineResponse.listOf(findLines());
     }
 
     public Line findLineById(Long id) {
