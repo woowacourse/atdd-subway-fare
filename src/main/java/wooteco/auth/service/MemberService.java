@@ -18,6 +18,7 @@ public class MemberService {
         this.memberDao = memberDao;
     }
 
+    @Transactional
     public MemberResponse createMember(MemberRequest request) {
         Member member = memberDao.insert(request.toMember());
         return MemberResponse.of(member);
