@@ -34,6 +34,11 @@ public class StationDao {
         return jdbcTemplate.queryForObject(sql, Boolean.class, name);
     }
 
+    public boolean exists(Long id) {
+        String sql = "select exists (select * from STATION where id = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, id);
+    }
+
     public Station insert(Station station) {
         SqlParameterSource params = new BeanPropertySqlParameterSource(station);
         Long id = insertAction.executeAndReturnKey(params).longValue();

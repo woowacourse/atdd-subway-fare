@@ -29,6 +29,11 @@ public class LineDao {
                 .usingGeneratedKeyColumns("id");
     }
 
+    public boolean exists(String name) {
+        String sql = "select exists (select * from LINE where name = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, name);
+    }
+
     public Line insert(Line line) {
         Map<String, Object> params = new HashMap<>();
         params.put("id", line.getId());

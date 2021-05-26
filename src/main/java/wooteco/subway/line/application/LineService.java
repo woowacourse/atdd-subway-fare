@@ -2,6 +2,7 @@ package wooteco.subway.line.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.exception.line.DuplicateLineException;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
@@ -28,6 +29,7 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
+        existsLine(request);
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);
@@ -35,6 +37,8 @@ public class LineService {
 
     private Section addInitSection(Line line, LineRequest request) {
         if (request.getUpStationId() != null && request.getDownStationId() != null) {
+            stationService.existsStation(request.getUpStationId());
+            stationService.existsStation(request.getDownStationId());
             Station upStation = stationService.findStationById(request.getUpStationId());
             Station downStation = stationService.findStationById(request.getDownStationId());
             Section section = new Section(upStation, downStation, request.getDistance());
@@ -68,8 +72,15 @@ public class LineService {
     }
 
     public LineUpdateResponse updateLine(Long id, LineRequest lineUpdateRequest) {
+        existsLine(lineUpdateRequest);
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
         return LineUpdateResponse.of(lineDao.findById(id));
+    }
+
+    private void existsLine(LineRequest request) {
+        if (lineDao.exists(request.getName())) {
+            throw new DuplicateLineException();
+        }
     }
 
     public void deleteLineById(Long id) {

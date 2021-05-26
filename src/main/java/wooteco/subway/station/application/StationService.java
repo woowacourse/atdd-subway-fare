@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.station.DuplicateStationException;
 import wooteco.subway.exception.station.InvalidDeletionException;
+import wooteco.subway.exception.station.NotFoundStationException;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.station.dao.StationDao;
@@ -57,6 +58,13 @@ public class StationService {
         if (stationDao.exists(stationRequest.getName())) {
             throw new DuplicateStationException();
         }
+    }
+
+    public void existsStation(Long id) {
+        if (stationDao.exists(id)) {
+            return;
+        }
+        throw new NotFoundStationException();
     }
 
     public void deleteStationById(Long id) {

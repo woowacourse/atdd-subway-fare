@@ -31,7 +31,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     public static final int AGE = 20;
 
     private StationResponse 강남역;
-    private StationResponse downStation;
+    private StationResponse 광교역;
     private LineRequest lineRequest1;
     private LineRequest lineRequest2;
 
@@ -114,8 +114,12 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .isEqualTo(lineRequest);
     }
 
-    public static void 지하철_노선_생성_실패됨(ExtractableResponse<Response> response) {
+    public static void 지하철_노선_생성_실패됨_400(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    public static void 지하철_노선_생성_실패됨_404(ExtractableResponse response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
     public static void 지하철_노선_목록_응답됨(ExtractableResponse<Response> response) {
@@ -152,6 +156,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .isEqualTo(params);
     }
 
+    public static void 지하철_노선_수정_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
     public static void 지하철_노선_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
@@ -162,10 +170,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // given
         강남역 = 지하철역_등록되어_있음("강남역");
-        downStation = 지하철역_등록되어_있음("광교역");
+        광교역 = 지하철역_등록되어_있음("광교역");
 
-        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 10);
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 15);
+        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
+        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -178,7 +186,23 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_생성됨(response, lineRequest1);
     }
 
-    @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
+    @DisplayName("노선 생성 - 기존에 존재하지 않는 역으로 노선을 생성하는 경우 404 에러가 발생한다.")
+    @Test
+    void createLineWithNotFoundStation() {
+        // given
+        StationResponse 탄현역 = new StationResponse(3L, "탄현역");
+
+        LineRequest 경의중앙선 =
+                new LineRequest("경의중앙선", "bg-blue-600", 강남역.getId(), 탄현역.getId(), 13);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(경의중앙선);
+
+        // then
+        지하철_노선_생성_실패됨_404(response);
+    }
+
+    @DisplayName("노선 생성 - 기존에 존재하는 지하철 노선 이름으로 생성하는 경우 400 에러가 발생한다.")
     @Test
     void createLineWithDuplicateName() {
         // given
@@ -188,7 +212,21 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1);
 
         // then
-        지하철_노선_생성_실패됨(response);
+        지하철_노선_생성_실패됨_400(response);
+    }
+
+    @DisplayName("노선 생성 - 구간 거리가 1 이상이 아닌 경우 400 에러가 발생한다.")
+    @Test
+    void createLineWithNonPositiveDistance() {
+        // given
+        LineRequest 신분당선 =
+                new LineRequest("경의중앙선", "bg-blue-600", 강남역.getId(), 광교역.getId(), -2);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(신분당선);
+
+        // then
+        지하철_노선_생성_실패됨_400(response);
     }
 
     @DisplayName("지하철 노선 목록을 조회한다.")
@@ -230,6 +268,19 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_노선_수정됨(response, lineRequest2);
+    }
+
+    @DisplayName("노선 수정 - 기존에 존재하는 노선 이름으로 수정하는 경우 400 에러가 발생한다.")
+    @Test
+    void updateLineWithDuplicateName() {
+        // given
+        LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse, lineRequest1);
+
+        // then
+        지하철_노선_수정_실패됨(response);
     }
 
     @DisplayName("지하철 노선을 제거한다.")

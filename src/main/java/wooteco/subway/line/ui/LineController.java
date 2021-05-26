@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.dto.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
@@ -21,7 +22,7 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
+    public ResponseEntity<LineResponse> createLine(@Valid @RequestBody LineRequest lineRequest) {
         LineResponse line = lineService.saveLine(lineRequest);
         return ResponseEntity.created(URI.create("/api/lines/" + line.getId())).body(line);
     }
@@ -38,7 +39,7 @@ public class LineController {
 
     @PutMapping("/{id}")
     public ResponseEntity<LineUpdateResponse> updateLine(@PathVariable Long id,
-                                                         @RequestBody LineRequest lineUpdateRequest) {
+                                                         @Valid @RequestBody LineRequest lineUpdateRequest) {
         LineUpdateResponse lineUpdateResponse = lineService.updateLine(id, lineUpdateRequest);
         return ResponseEntity.ok(lineUpdateResponse);
     }
@@ -51,7 +52,7 @@ public class LineController {
 
     @PostMapping("/{lineId}/sections")
     public ResponseEntity<SectionAddResponse> addLineStation(@PathVariable Long lineId,
-                                                             @RequestBody SectionRequest sectionRequest) {
+                                                             @Valid @RequestBody SectionRequest sectionRequest) {
         SectionAddResponse sectionAddResponse = lineService.addLineStation(lineId, sectionRequest);
         return ResponseEntity.created(URI.create("/api/lines" + lineId + "/sections")).body(sectionAddResponse);
     }
