@@ -40,7 +40,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_생성을_요청(EMAIL, PASSWORD, AGE);
 
         ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
-        중복된_이메일은_생성_수정_불가(createResponse);
+        errorTest(createResponse, MemberException.DUPLICATED_EMAIL_EXCEPTION);
     }
 
     @DisplayName("잘못된 이메일을 보내면 에러가 발생한다.")
@@ -49,7 +49,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @ValueSource(strings = {"", "abc", "abc@jj", "@amd.com", " ", " ab @ naver. com"})
     void createMemberWithInvalidEmail(String email) {
         ExtractableResponse<Response> createResponse = 회원_생성을_요청(email, PASSWORD, AGE);
-        이메일_형식에_맞지_않은_이메일은_생성_수정_불가(createResponse);
+        errorTest(createResponse, MemberException.INVALID_EMAIL_EXCEPTION);
     }
 
     @DisplayName("2글자 이하의 비밀번호를 보내면 에러가 발생한다.")
@@ -58,7 +58,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @ValueSource(strings = {"", "1"})
     void createMemberWithInvalidPassword(String password) {
         ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, password, AGE);
-        비밀번호_2글자는이하는_생성_불가(createResponse);
+        errorTest(createResponse, MemberException.INVALID_PASSWORD_EXCEPTION);
     }
 
     @DisplayName("0이하의 나이를 보내면 에러가 발생한다.")
@@ -67,7 +67,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @ValueSource(ints = {-1, -10234, 0})
     void createMemberWithInvalidAge(Integer age) {
         ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, age);
-        나이가_0이하는_생성_불가(createResponse);
+        errorTest(createResponse, MemberException.INVALID_AGE_EXCEPTION);
     }
 
     @DisplayName("토큰을 이용하여 정보를 조회한다.")
@@ -102,7 +102,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(사용자, NEW_EMAIL, NEW_PASSWORD,
                 NEW_AGE);
-        중복된_이메일은_생성_수정_불가(updateResponse);
+        errorTest(updateResponse, MemberException.DUPLICATED_EMAIL_EXCEPTION);
     }
 
 
@@ -115,34 +115,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> deleteResponse = 내_회원_삭제_요청(사용자);
         회원_삭제됨(deleteResponse);
-    }
-
-    public static void 중복된_이메일은_생성_수정_불가(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode())
-                .isEqualTo(MemberException.DUPLICATED_EMAIL_EXCEPTION.status());
-        assertThat(response.body().asString())
-                .isEqualTo(MemberException.DUPLICATED_EMAIL_EXCEPTION.message());
-    }
-
-    private void 이메일_형식에_맞지_않은_이메일은_생성_수정_불가(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode())
-                .isEqualTo(MemberException.INVALID_EMAIL.status());
-        assertThat(response.body().asString())
-                .isEqualTo(MemberException.INVALID_EMAIL.message());
-    }
-
-    private void 비밀번호_2글자는이하는_생성_불가(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode())
-                .isEqualTo(MemberException.INVALID_PASSWORD.status());
-        assertThat(response.body().asString())
-                .isEqualTo(MemberException.INVALID_PASSWORD.message());
-    }
-
-    private void 나이가_0이하는_생성_불가(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode())
-                .isEqualTo(MemberException.INVALID_AGE.status());
-        assertThat(response.body().asString())
-                .isEqualTo(MemberException.INVALID_AGE.message());
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {

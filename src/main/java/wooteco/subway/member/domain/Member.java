@@ -1,7 +1,7 @@
 package wooteco.subway.member.domain;
 
 import org.apache.commons.lang3.StringUtils;
-import wooteco.subway.auth.exception.AuthorizationException;
+import wooteco.subway.auth.exception.AuthException;
 import wooteco.subway.exception.SubwayCustomException;
 import wooteco.subway.member.exception.MemberException;
 
@@ -39,7 +39,7 @@ public class Member {
 
     private void validateEmail(String email) {
         if(Objects.isNull(email) || !isEmailPattern(email)) {
-            throw new SubwayCustomException(MemberException.INVALID_EMAIL);
+            throw new SubwayCustomException(MemberException.INVALID_EMAIL_EXCEPTION);
         }
     }
 
@@ -50,13 +50,13 @@ public class Member {
 
     private void validatePassword(String password) {
         if(Objects.isNull(password) || password.length() < PASSWORD_MIN_LENGTH) {
-            throw new SubwayCustomException(MemberException.INVALID_PASSWORD);
+            throw new SubwayCustomException(MemberException.INVALID_PASSWORD_EXCEPTION);
         }
     }
 
     private void validateAge(Integer age) {
         if(Objects.isNull(age) || age <= 0) {
-            throw new SubwayCustomException(MemberException.INVALID_AGE);
+            throw new SubwayCustomException(MemberException.INVALID_AGE_EXCEPTION);
         }
     }
 
@@ -86,7 +86,7 @@ public class Member {
 
     public void checkPassword(String password) {
         if (!StringUtils.equals(this.password, password)) {
-            throw new AuthorizationException();
+            throw new SubwayCustomException(AuthException.WRONG_PASSWORD_EXCEPTION);
         }
     }
 }

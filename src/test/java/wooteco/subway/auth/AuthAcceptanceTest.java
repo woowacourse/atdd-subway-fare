@@ -9,10 +9,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
+import wooteco.subway.auth.exception.AuthException;
+import wooteco.subway.exception.SubwayException;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static wooteco.subway.member.MemberAcceptanceTest.회원_정보_조회됨;
 
@@ -67,6 +70,24 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
+    @DisplayName("잘못된 아이디로 로그인")
+    @Test
+    void loginNotExistId() {
+        ExtractableResponse<Response> loginResponse = 로그인_요청("NOT_EXIST_ID", PASSWORD);
+
+        errorTest(loginResponse, AuthException.NOT_EXIST_EMAIL_EXCEPTION);
+    }
+
+    @DisplayName("잘못된 패스워드로 로그인")
+    @Test
+    void loginWrongPassword() {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+
+        ExtractableResponse<Response> loginResponse = 로그인_요청(EMAIL, "WRONG_PASSWORD");
+
+        errorTest(loginResponse, AuthException.WRONG_PASSWORD_EXCEPTION);
+    }
+
     public static ExtractableResponse<Response> 회원_등록되어_있음(String email, String password, Integer age) {
         return 회원_생성을_요청(email, password, age);
     }
@@ -88,7 +109,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 post("/login/token").
                 then().
                 log().all().
-                statusCode(HttpStatus.OK.value()).
                 extract();
     }
 
