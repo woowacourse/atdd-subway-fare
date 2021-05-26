@@ -1,19 +1,21 @@
 package wooteco.subway.station.dto;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import wooteco.subway.station.domain.Station;
 
-public class StationRequest {
-    private String name;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
-    public StationRequest() {
-    }
+@Getter
+@NoArgsConstructor
+public class StationRequest {
+    @NotBlank(message = "INVALID_NAME")
+    @Pattern(regexp = "^[가-힣0-9]$", message = "INVALID_NAME")
+    private String name;
 
     public StationRequest(String name) {
         this.name = name;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public Station toStation() {

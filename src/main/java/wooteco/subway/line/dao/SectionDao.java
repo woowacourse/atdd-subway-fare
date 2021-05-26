@@ -38,6 +38,11 @@ public class SectionDao {
         jdbcTemplate.update("delete from SECTION where line_id = ?", lineId);
     }
 
+    public boolean isStationRegistered(Long stationId) {
+        String sql = "select exists from (select * from SECTION where up_station_id = ? or down_station_id = ?";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, stationId);
+    }
+
     public void insertSections(Line line) {
         List<Section> sections = line.getSections().getSections();
         List<Map<String, Object>> batchValues = sections.stream()
