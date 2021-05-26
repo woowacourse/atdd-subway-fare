@@ -37,8 +37,7 @@ public class MemberService {
 
     public void updatePassword(LoginMember loginMember, PasswordRequest req) {
         Member member = memberDao.findByEmail(loginMember.getEmail());
-        checkCurrentPassword(member.getPassword(), req.getCurrentPassword());
-        checkNewPassword(req.getCurrentPassword(), req.getNewPassword());
+        member.validatePassword(req.getCurrentPassword(), req.getNewPassword());
         memberDao.update(new Member(member.getId(), member.getEmail(), req.getNewPassword(), member.getAge()));
     }
 
@@ -46,18 +45,6 @@ public class MemberService {
         Member member = memberDao.findByEmail(loginMember.getEmail());
         memberDao.update(new Member(member.getId(), member.getEmail(), member.getPassword(), age.getAge()));
         return new AgeResponse(member.getId(), age.getAge());
-    }
-
-    private void checkNewPassword(String currentPassword, String newPassword) {
-        if (currentPassword.equals(newPassword)) {
-            throw new IllegalArgumentException("현재 사용 중인 비밀번호입니다. 다른 비밀번호를 입력해주세요");
-        }
-    }
-
-    private void checkCurrentPassword(String password, String currentPassword) {
-        if (!currentPassword.equals(password)) {
-            throw new IllegalArgumentException("현재 비밀번호를 다시 확인해주세요");
-        }
     }
 
     public void deleteMember(LoginMember loginMember) {

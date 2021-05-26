@@ -3,7 +3,6 @@ package wooteco.subway.station;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import jdk.nashorn.internal.parser.Token;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -20,7 +19,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 
 @DisplayName("지하철역 관련 기능")
 @Transactional
@@ -48,7 +46,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         비회원_요청_실패됨(response);
     }
 
-    @DisplayName("기존에 존재하는 지하철역 이름으로 지하철역을 생성한다.")
+    @DisplayName("생성 - 중복된 지하철 역이름으로 생성 요청하는 경우 예외를 던진다.")
     @Test
     void createStationWithDuplicateName() {
         //given

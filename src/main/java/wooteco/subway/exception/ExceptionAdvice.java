@@ -43,4 +43,10 @@ public class ExceptionAdvice {
         return ResponseEntity.badRequest().body(exceptionRes);
     }
 
+    @ExceptionHandler(AuthorizationException.class)
+    public ResponseEntity handleAuthorizationException(AuthorizationException e) {
+        ExceptionResponse exceptionRes = new ExceptionResponse(e.getMessage(), HttpStatus.UNAUTHORIZED.value());
+        return new ResponseEntity(exceptionRes, HttpStatus.UNAUTHORIZED);
+    }
+
 }
