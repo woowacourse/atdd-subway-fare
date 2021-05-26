@@ -32,7 +32,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     private static final String PASSWORD = "password";
     private static final int AGE = 10;
     private StationResponse 강남역;
-    private StationResponse downStation;
+    private StationResponse 광교역;
     private LineRequest lineRequest1;
     private LineRequest lineRequest2;
     private TokenResponse 사용자;
@@ -48,10 +48,47 @@ public class LineAcceptanceTest extends AcceptanceTest {
         사용자 = 로그인되어_있음(EMAIL, PASSWORD);
 
         강남역 = 지하철역_등록되어_있음_withToken(사용자, "강남역");
-        downStation = 지하철역_등록되어_있음_withToken(사용자, "광교역");
+        광교역 = 지하철역_등록되어_있음_withToken(사용자, "광교역");
 
-        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 10);
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 15);
+        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
+        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15);
+    }
+
+    @DisplayName("사용자가 아니면 조회이외 기능은 사용하지 못한다. - 노선 생성 요청")
+    @Test
+    void tokenValidation_create() {
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @DisplayName("사용자가 아니면 조회이외 기능은 사용하지 못한다. - 지하철역 수정 요청")
+    @Test
+    void tokenValidation_update() {
+        // given
+        LineResponse lineResponse = 지하철_노선_등록되어_있음_withToken(사용자, lineRequest1);
+
+        // when
+        LineUpdateRequest updateRequest1 = new LineUpdateRequest(lineRequest2.getName(), lineRequest2.getColor());
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse, updateRequest1);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @DisplayName("사용자가 아니면 조회이외 기능은 사용하지 못한다. - 지하철역 삭제 요청")
+    @Test
+    void tokenValidation_delete() {
+        // given
+        LineResponse lineResponse = 지하철_노선_등록되어_있음_withToken(사용자, lineRequest1);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_제거_요청(lineResponse);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -75,6 +112,34 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_노선_생성_실패됨(response);
+    }
+
+    @DisplayName("지하철 노선 추가시 존재하지 않는 역으로 요청할 경우 404을 던진다.")
+    @Test
+    void createLineWithNonExistsStation() {
+        // given
+        지하철_노선_등록되어_있음_withToken(사용자, lineRequest1);
+
+        // when
+        LineRequest lineRequest = new LineRequest("3호선", "bg-blue-500", -1L, 강남역.getId(), 5);
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청_withToken(사용자, lineRequest);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+    }
+
+    @DisplayName("지하철 노선 추가시 거리가 양수가 아닐 경우")
+    @Test
+    void createLineWithMinusDistance() {
+        // given
+        지하철_노선_등록되어_있음_withToken(사용자, lineRequest1);
+
+        // when
+        LineRequest lineRequest = new LineRequest("3호선", "bg-blue-500", 광교역.getId(), 강남역.getId(), -3);
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청_withToken(사용자, lineRequest);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     @DisplayName("지하철 노선 목록을 조회한다.")
@@ -197,6 +262,17 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .when().get("/api/lines/{lineId}", response.getId())
                 .then().log().all()
                 .extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선_수정_요청(LineResponse response, LineUpdateRequest params) {
+
+        return RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(params)
+            .when().put("/api/lines/" + response.getId())
+            .then().log().all()
+            .extract();
     }
 
     public static ExtractableResponse<Response> 지하철_노선_수정_요청_withToken(TokenResponse tokenResponse, LineResponse response, LineUpdateRequest params) {
