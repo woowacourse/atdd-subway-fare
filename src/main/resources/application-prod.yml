@@ -7,3 +7,12 @@ spring:
     url: jdbc:mysql://localhost:3306/subway?useSSL=false&serverTimezone=UTC
     username: root
     password: root
+
+handlebars:
+  suffix: .html
+  enabled: true
+security:
+  jwt:
+    token:
+      secret-key: my_secret_is_secret
+      expire-length: 3600000
