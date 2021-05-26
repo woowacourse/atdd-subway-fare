@@ -1,6 +1,7 @@
 package wooteco.subway.member.application;
 
 import org.springframework.stereotype.Service;
+import wooteco.subway.exception.DuplicatedException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
@@ -17,6 +18,9 @@ public class MemberService {
     }
 
     public MemberResponse createMember(MemberRequest request) {
+        if (memberDao.isExistByEmail(request.getEmail())) {
+            throw new DuplicatedException(request.getEmail());
+        }
         Member member = memberDao.insert(request.toMember());
         return MemberResponse.of(member);
     }

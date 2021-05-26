@@ -41,6 +41,20 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_삭제됨(deleteResponse);
     }
 
+    @DisplayName("회원 가입 시 이메일은 중복될 수 없다.")
+    @Test
+    void duplicatedEmail() {
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성됨(createResponse);
+
+        ExtractableResponse<Response> createResponseWithDuplicatedEmail = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        이메일_중복_예외(createResponseWithDuplicatedEmail);
+    }
+
+    private void 이메일_중복_예외(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CONFLICT.value());
+    }
+
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 

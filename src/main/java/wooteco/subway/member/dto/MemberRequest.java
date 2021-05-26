@@ -2,8 +2,11 @@ package wooteco.subway.member.dto;
 
 import wooteco.subway.member.domain.Member;
 
+import javax.validation.constraints.Email;
+
 public class MemberRequest {
 
+    @Email
     private String email;
     private String password;
     private Integer age;
