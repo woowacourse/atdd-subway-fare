@@ -19,6 +19,7 @@ import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.exception.LineException;
 import wooteco.subway.line.exception.SectionException;
 import wooteco.subway.station.dto.StationResponse;
+import wooteco.subway.station.exception.StationException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -109,6 +110,16 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         에러_발생함(response, SectionException.INVALID_SECTION_DISTANCE_EXCEPTION);
+    }
+
+    @DisplayName("존재하지 않는 역으로 노선을 생성할 수 없다.")
+    @Test
+    void createLineWithNotExistStation() {
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(new LineRequest("신분당선", "bg-blue-600", null, null, 10), tokenResponse);
+
+        // then
+        에러_발생함(response, StationException.NOT_FOUND_STATION_EXCEPTION);
     }
 
     @DisplayName("지하철 노선 목록을 조회한다.")
