@@ -97,4 +97,19 @@ public class Line {
     public int getExtraFare() {
         return extraFare;
     }
+
+    public Station getStartStation() {
+        return sections.getStations().get(0);
+    }
+
+    public Station getEndStation() {
+        int size = sections.getStations().size();
+        return sections.getStations().get(size - 1);
+    }
+
+    public int getTotalDistance() {
+        return sections.getSections().stream()
+            .mapToInt(Section::getDistance)
+            .sum();
+    }
 }
