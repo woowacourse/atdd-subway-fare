@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
+
+import wooteco.subway.exception.ExceptionResponse;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
@@ -39,6 +41,25 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> deleteResponse = 내_회원_삭제_요청(사용자);
         회원_삭제됨(deleteResponse);
+    }
+
+    @DisplayName("이미 존재하는 이메일인지 요청한다.")
+    @Test
+    void manageExistedEmail() {
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성됨(createResponse);
+
+        ExtractableResponse<Response> existResponse = 존재하는_이메일을_요청(EMAIL);
+        존재하는_이메일_요청됨(existResponse);
+    }
+
+    public static ExtractableResponse<Response> 존재하는_이메일을_요청(String email) {
+        return RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/members/check-validation/?email=" + email)
+            .then().log().all()
+            .extract();
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
@@ -84,6 +105,12 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .when().delete("/members/me")
                 .then().log().all()
                 .extract();
+    }
+
+    private void 존재하는_이메일_요청됨(ExtractableResponse<Response> existResponse) {
+        ExceptionResponse exceptionResponse = existResponse.as(ExceptionResponse.class);
+        assertThat(existResponse.statusCode()).isEqualTo(400);
+        assertThat(exceptionResponse.getError()).isEqualTo("DUPLICATED_ID");
     }
 
     public static void 회원_생성됨(ExtractableResponse<Response> response) {
