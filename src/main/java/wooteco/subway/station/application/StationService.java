@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import wooteco.subway.exception.HttpException;
 import wooteco.subway.line.dao.SectionDao;
-import wooteco.subway.line.domain.Section;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;

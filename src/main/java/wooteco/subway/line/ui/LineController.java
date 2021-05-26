@@ -23,7 +23,6 @@ import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.LineUpdateRequest;
 import wooteco.subway.line.dto.SectionRequest;
-import wooteco.subway.member.dto.MemberResponse;
 
 @RestController
 @RequestMapping("/lines")
