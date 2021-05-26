@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
+import wooteco.subway.exception.auth.WrongEmailException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
@@ -21,12 +22,9 @@ public class AuthService {
     }
 
     public TokenResponse login(TokenRequest request) {
-        try {
-            Member member = memberDao.findByEmail(request.getEmail());
-            member.checkPassword(request.getPassword());
-        } catch (Exception e) {
-            throw new AuthorizationException();
-        }
+        Member member = memberDao.findByEmail(request.getEmail())
+                .orElseThrow(WrongEmailException::new);
+        member.checkPassword(request.getPassword());
         String token = jwtTokenProvider.createToken(request.getEmail());
         return new TokenResponse(token);
     }
@@ -35,13 +33,9 @@ public class AuthService {
         if (!jwtTokenProvider.validateToken(credentials)) {
             return new LoginMember();
         }
-
         String email = jwtTokenProvider.getPayload(credentials);
-        try {
-            Member member = memberDao.findByEmail(email);
-            return new LoginMember(member.getId(), member.getEmail(), member.getAge());
-        } catch (Exception e) {
-            return new LoginMember();
-        }
+        Member member = memberDao.findByEmail(email)
+                .orElseThrow(WrongEmailException::new);
+        return new LoginMember(member.getId(), member.getEmail(), member.getAge());
     }
 }
