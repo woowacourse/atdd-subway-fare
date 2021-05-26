@@ -10,6 +10,7 @@ import wooteco.subway.station.domain.Station;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class StationDao {
@@ -46,8 +47,22 @@ public class StationDao {
         jdbcTemplate.update(sql, id);
     }
 
-    public Station findById(Long id) {
+    public Optional<Station> findById(Long id) {
         String sql = "select * from STATION where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        return jdbcTemplate.query(sql, rowMapper, id)
+                .stream()
+                .findAny();
+    }
+
+    public void updateById(String newName, Long id) {
+        String sql = "update STATION set name = ? where id = ?";
+        jdbcTemplate.update(sql, newName, id);
+    }
+
+    public Optional<Station> findByName(String name) {
+        String sql = "select * from STATION where name = ? ";
+        return jdbcTemplate.query(sql, rowMapper, name)
+                .stream()
+                .findAny();
     }
 }
