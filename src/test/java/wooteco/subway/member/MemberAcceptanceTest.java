@@ -5,10 +5,14 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
+import wooteco.subway.exception.SubwayException;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 import wooteco.subway.member.exception.SubwayMemberException;
@@ -37,7 +41,16 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_생성을_요청(EMAIL, PASSWORD, AGE);
 
         ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
-        중복된_이메일은_생성_수정_불가(createResponse);
+        에러가_발생한다(createResponse, SubwayMemberException.DUPLICATE_EMAIL_EXCEPTION);
+    }
+
+    @DisplayName("잘못된 이메일을 보내면 에러가 발생한다.")
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = {"", "abc", "abc@jjj", "naver.com@abc", "abc@naver.", "ab @naver.com"})
+    void createMemberWithInvalidEmail(String value) {
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(value, PASSWORD, AGE);
+        에러가_발생한다(createResponse, SubwayMemberException.INVALID_EMAIL_EXCEPTION);
     }
 
     @DisplayName("토큰을 이용하여 정보를 조회한다.")
@@ -72,7 +85,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(사용자, NEW_EMAIL, NEW_PASSWORD,
             NEW_AGE);
-        중복된_이메일은_생성_수정_불가(updateResponse);
+//        에러가_발생한다(updateResponse, SubwayMemberException.DUPLICATE_EMAIL_EXCEPTION);
     }
 
     @DisplayName("토큰을 이용하여 회원정보를 삭제한다.")
@@ -99,11 +112,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    public static void 중복된_이메일은_생성_수정_불가(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode())
-            .isEqualTo(SubwayMemberException.DUPLICATE_EMAIL_EXCEPTION.status());
-        assertThat(response.body().asString())
-            .isEqualTo(SubwayMemberException.DUPLICATE_EMAIL_EXCEPTION.message());
+    private void 에러가_발생한다(ExtractableResponse<Response> response, SubwayException subwayException) {
+        assertThat(response.statusCode()).isEqualTo(subwayException.status());
+        assertThat(response.body().asString()).isEqualTo(subwayException.message());
     }
 
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {
