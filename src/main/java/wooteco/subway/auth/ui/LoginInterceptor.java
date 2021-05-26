@@ -17,18 +17,18 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String accessToken = AuthorizationExtractor.extract(request);
-        if (isRequestMethodIsPreflight(request)) {
+        if (isRequestIsPreflight(request)) {
             return true;
         }
         if (isRequestMethodIsGet(request)) {
             return true;
         }
+        String accessToken = AuthorizationExtractor.extract(request);
         authService.validateToken(accessToken);
         return true;
     }
 
-    private boolean isRequestMethodIsPreflight(HttpServletRequest request) {
+    private boolean isRequestIsPreflight(HttpServletRequest request) {
         return request.getMethod().equals(HttpMethod.OPTIONS.name());
     }
 

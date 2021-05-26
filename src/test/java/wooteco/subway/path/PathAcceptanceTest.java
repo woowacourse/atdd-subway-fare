@@ -76,7 +76,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findPathByDistance() {
         //when
-        ExtractableResponse<Response> response = 거리_경로_조회_요청(3L, 2L);
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(3L, 2L, tokenResponse);
 
         //then
         적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
@@ -87,9 +87,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findPathByDistanceAndFirstBoundFare() {
         //when
-        ExtractableResponse<Response> response1 = 거리_경로_조회_요청(4L, 1L);
-        ExtractableResponse<Response> response2 = 거리_경로_조회_요청(1L, 6L);
-        ExtractableResponse<Response> response3 = 거리_경로_조회_요청(8L, 3L);
+        ExtractableResponse<Response> response1 = 거리_경로_조회_요청(4L, 1L, tokenResponse);
+        ExtractableResponse<Response> response2 = 거리_경로_조회_요청(1L, 6L, tokenResponse);
+        ExtractableResponse<Response> response3 = 거리_경로_조회_요청(8L, 3L, tokenResponse);
 
         //then
         적절한_경로_응답됨(response1, Lists.newArrayList(남부터미널역, 양재역, 강남역));
@@ -106,9 +106,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findPathByDistanceAndSecondBoundFare() {
         //when
-        ExtractableResponse<Response> response1 = 거리_경로_조회_요청(5L, 3L);
+        ExtractableResponse<Response> response1 = 거리_경로_조회_요청(5L, 3L, tokenResponse);
 
-        ExtractableResponse<Response> response2 = 거리_경로_조회_요청(2L, 7L);
+        ExtractableResponse<Response> response2 = 거리_경로_조회_요청(2L, 7L, tokenResponse);
 
         //then
         적절한_경로_응답됨(response1, Lists.newArrayList(잠실역, 교대역));
@@ -121,6 +121,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
         return RestAssured
                 .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/api/paths?source={sourceId}&target={targetId}", source, target)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target, TokenResponse tokenResponse) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/api/paths?source={sourceId}&target={targetId}", source, target)
                 .then().log().all()

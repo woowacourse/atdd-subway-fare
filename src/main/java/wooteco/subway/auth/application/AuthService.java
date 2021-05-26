@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
+import wooteco.subway.exception.badrequest.LoginFailException;
 import wooteco.subway.exception.notfound.MemberNotFoundException;
 import wooteco.subway.exception.unauthorized.AuthorizationException;
 import wooteco.subway.member.dao.MemberDao;
@@ -23,14 +24,10 @@ public class AuthService {
     }
 
     public TokenResponse login(TokenRequest request) {
-        try {
-            Member member = memberDao.findByEmail(request.getEmail()).orElseThrow(MemberNotFoundException::new);
-            member.checkPassword(request.getPassword());
-            String token = jwtTokenProvider.createToken(String.valueOf(member.getId()));
-            return new TokenResponse(token);
-        } catch (Exception e) {
-            throw new AuthorizationException();
-        }
+        Member member = memberDao.findByEmail(request.getEmail()).orElseThrow(LoginFailException::new);
+        member.checkPassword(request.getPassword());
+        String token = jwtTokenProvider.createToken(String.valueOf(member.getId()));
+        return new TokenResponse(token);
     }
 
     public LoginMember findMemberByToken(String credentials) {
