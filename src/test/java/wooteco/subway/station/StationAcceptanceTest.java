@@ -1,6 +1,7 @@
 package wooteco.subway.station;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_생성_요청;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 import wooteco.subway.util.ExceptionCheck;
@@ -112,18 +114,18 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @DisplayName("노선에 등록된 역 삭제는 불가능")
     @Test
     void deleteRegisteredStation() {
-//        // given
-//        StationResponse stationResponse1 = 지하철역_등록되어_있음(강남역);
-//        StationResponse stationResponse2 = 지하철역_등록되어_있음(역삼역);
-//        지하철_노선_생성_요청(
-//            new LineRequest("line", "black", stationResponse1.getId(), stationResponse2.getId(),
-//                10));
-//        // when
-//        ExtractableResponse<Response> response = 지하철역_제거_요청(
-//            new StationResponse(stationResponse1.getId(),stationResponse1.getName()));
-//        // then
-//        ExceptionCheck.코드_400_응답됨(response);
-//        ExceptionCheck.에러_문구_확인(response, "STATION_ALREADY_REGISTERED_IN_LINE");
+        // given
+        StationResponse stationResponse1 = 지하철역_등록되어_있음(강남역);
+        StationResponse stationResponse2 = 지하철역_등록되어_있음(역삼역);
+        지하철_노선_생성_요청(
+            new LineRequest("line", "black", stationResponse1.getId(), stationResponse2.getId(),
+                10));
+        // when
+        ExtractableResponse<Response> response = 지하철역_제거_요청(
+            new StationResponse(stationResponse1.getId(), stationResponse1.getName()));
+        // then
+        ExceptionCheck.코드_400_응답됨(response);
+        ExceptionCheck.에러_문구_확인(response, "STATION_ALREADY_REGISTERED_IN_LINE");
     }
 
     public static StationResponse 지하철역_등록되어_있음(String name) {

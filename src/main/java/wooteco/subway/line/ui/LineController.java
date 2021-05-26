@@ -20,16 +20,17 @@ import wooteco.subway.line.dto.LineDetailResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.station.application.StationService;
+import wooteco.subway.station.ui.SubwayController;
 
 @RestController
 @RequestMapping("/lines")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-public class LineController {
+public class LineController extends SubwayController {
 
-    private LineService lineService;
-
-    public LineController(LineService lineService) {
-        this.lineService = lineService;
+    public LineController(StationService stationService,
+        LineService lineService) {
+        super(stationService, lineService);
     }
 
     @PostMapping

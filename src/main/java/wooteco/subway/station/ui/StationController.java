@@ -16,18 +16,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.ExceptionResponse;
+import wooteco.subway.line.application.LineService;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-public class StationController {
+public class StationController extends SubwayController {
 
-    private StationService stationService;
-
-    public StationController(StationService stationService) {
-        this.stationService = stationService;
+    public StationController(StationService stationService,
+        LineService lineService) {
+        super(stationService, lineService);
     }
 
     @PostMapping("/stations")
@@ -44,6 +44,7 @@ public class StationController {
 
     @DeleteMapping("/stations/{id}")
     public ResponseEntity deleteStation(@PathVariable Long id) {
+        lineService.isRegisteredStation(stationService.findStationById(id));
         stationService.deleteStationById(id);
         return ResponseEntity.noContent().build();
     }

@@ -14,6 +14,7 @@ import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
+import wooteco.subway.station.exception.StationAlreadyRegisteredInLineException;
 
 @Service
 public class LineService {
@@ -102,11 +103,9 @@ public class LineService {
     public boolean isRegisteredStation(Station station) {
         List<Line> lines = lineDao.findAll();
 
-        for (Line line : lines) {
-            if (line.getStations().contains(station)) {
-                return true;
-            }
-        }
+        lines.stream().filter(line -> line.getStations().contains(station)).forEach(line -> {
+            throw new StationAlreadyRegisteredInLineException("노선에 등록된 역은 삭제할 수 없습니다.");
+        });
         return false;
     }
 }
