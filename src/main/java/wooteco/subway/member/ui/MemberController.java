@@ -1,7 +1,9 @@
 package wooteco.subway.member.ui;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import wooteco.subway.auth.application.AuthorizationException;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.LoginMember;
@@ -9,6 +11,8 @@ import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
 import java.net.URI;
+import java.sql.SQLException;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -20,26 +24,41 @@ public class MemberController {
     }
 
     @PostMapping("/members")
-    public ResponseEntity createMember(@RequestBody MemberRequest request) {
+    public ResponseEntity<Void> createMember(@RequestBody MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
         return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
-        MemberResponse member = memberService.findMember(loginMember);
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal Optional<LoginMember> loginMember) {
+        final LoginMember memberLoggedIn = validateLoginMember(loginMember);
+        MemberResponse member = memberService.findMember(memberLoggedIn);
         return ResponseEntity.ok().body(member);
     }
 
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest param) {
-        memberService.updateMember(loginMember, param);
+    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal Optional<LoginMember> loginMember, @RequestBody MemberRequest param) {
+        final LoginMember memberLoggedIn = validateLoginMember(loginMember);
+        memberService.updateMember(memberLoggedIn, param);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/members/me")
-    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
-        memberService.deleteMember(loginMember);
+    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal Optional<LoginMember> loginMember) {
+        final LoginMember memberLoggedIn = validateLoginMember(loginMember);
+        memberService.deleteMember(memberLoggedIn);
         return ResponseEntity.noContent().build();
+    }
+
+    private LoginMember validateLoginMember(Optional<LoginMember> loginMember) {
+        if (!loginMember.isPresent()) {
+            throw new AuthorizationException();
+        }
+        return loginMember.get();
+    }
+
+    @ExceptionHandler(AuthorizationException.class)
+    public ResponseEntity<Void> handleAuthorizationException() {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }
