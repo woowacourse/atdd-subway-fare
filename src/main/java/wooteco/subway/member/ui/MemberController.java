@@ -8,7 +8,6 @@ import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
-import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
