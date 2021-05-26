@@ -18,13 +18,13 @@ public enum FareByDistance {
     });
 
     private static class Constants {
-        public static final int DEFAULT_FARE = 1250;
-        public static final int EXTRA_FARE_PER_SECTION = 100;
-        public static final int OVER_TEN_FARE_SECTION_STANDARD_DISTANCE = 5;
-        public static final int OVER_FIFTY_FARE_SECTION_STANDARD_DISTANCE = 8;
-        public static final int MAX_DISTANCE_FOR_DEFAULT_FARE = 10;
-        public static final int MAX_DISTANCE_FOR_OVER_TEN_FARE = 40;
-        public static final int MAX_DISTANCE_OF_SUBWAY_PATH = 1000;
+        private static final int DEFAULT_FARE = 1250;
+        private static final int EXTRA_FARE_PER_SECTION = 100;
+        private static final int OVER_TEN_FARE_SECTION_STANDARD_DISTANCE = 5;
+        private static final int OVER_FIFTY_FARE_SECTION_STANDARD_DISTANCE = 8;
+        private static final int MAX_DISTANCE_FOR_DEFAULT_FARE = 10;
+        private static final int MAX_DISTANCE_FOR_OVER_TEN_FARE = 40;
+        private static final int MAX_DISTANCE_OF_SUBWAY_PATH = 1000;
     }
 
     private static int extraFareOverTen(Integer distance) {
