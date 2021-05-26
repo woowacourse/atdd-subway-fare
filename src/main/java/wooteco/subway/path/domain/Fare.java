@@ -7,10 +7,14 @@ import java.util.Objects;
 
 public class Fare {
     private static final int DEFAULT_FARE_AMOUNT = 1250;
+    public static final int MINIMUM_POSSIBLE_FARE = 0;
 
     private final int fare;
 
     public Fare(final int fare) {
+        if (fare < MINIMUM_POSSIBLE_FARE) {
+            throw new IllegalArgumentException();
+        }
         this.fare = fare;
     }
 
