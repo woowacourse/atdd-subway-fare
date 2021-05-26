@@ -1,6 +1,7 @@
 package wooteco.auth.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.auth.dao.MemberDao;
 import wooteco.auth.domain.LoginMember;
 import wooteco.auth.domain.Member;
@@ -10,6 +11,7 @@ import wooteco.common.exception.badrequest.MemberNotFoundException;
 import wooteco.common.exception.unauthorizationexception.UnAuthorizationException;
 
 @Service
+@Transactional(readOnly = true)
 public class MemberService {
     private MemberDao memberDao;
 
@@ -28,6 +30,7 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
+    @Transactional
     public MemberResponse updateMember(LoginMember loginMember, MemberRequest memberRequest) {
         Member member = memberDao.findById(loginMember.getId())
                 .orElseThrow(MemberNotFoundException::new);
@@ -37,6 +40,7 @@ public class MemberService {
         return MemberResponse.of(updatedMember);
     }
 
+    @Transactional
     public void deleteMember(LoginMember loginMember) {
         Member member = memberDao.findById(loginMember.getId())
                 .orElseThrow(MemberNotFoundException::new);

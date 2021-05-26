@@ -4,9 +4,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.service.LineService;
 import wooteco.subway.web.dto.request.LineRequest;
-import wooteco.subway.web.dto.response.LineResponse;
 import wooteco.subway.web.dto.request.LineUpdateRequest;
 import wooteco.subway.web.dto.request.SectionRequest;
+import wooteco.subway.web.dto.response.LineResponse;
 
 import java.net.URI;
 import java.sql.SQLException;

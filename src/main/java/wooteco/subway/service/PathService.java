@@ -2,17 +2,17 @@ package wooteco.subway.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wooteco.common.exception.badrequest.InvalidPathException;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.SubwayPath;
-import wooteco.common.exception.badrequest.InvalidPathException;
-import wooteco.subway.web.dto.response.PathResponse;
 import wooteco.subway.web.dto.PathResponseAssembler;
+import wooteco.subway.web.dto.response.PathResponse;
 
 import java.util.List;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class PathService {
     private LineService lineService;
     private StationService stationService;

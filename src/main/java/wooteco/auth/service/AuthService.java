@@ -8,7 +8,6 @@ import wooteco.auth.util.JwtTokenProvider;
 import wooteco.auth.web.dto.request.TokenRequest;
 import wooteco.auth.web.dto.response.TokenResponse;
 import wooteco.common.exception.unauthorizationexception.AuthorizationException;
-import wooteco.common.exception.badrequest.MemberNotFoundException;
 
 @Service
 @Transactional
