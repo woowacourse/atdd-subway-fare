@@ -29,16 +29,15 @@ public class Line {
     }
 
     public Line(Long id, String name, String color, Sections sections) {
-        validate(name, color);
+        validate(name);
         this.id = id;
         this.name = name.trim();
         this.color = color;
         this.sections = sections;
     }
 
-    private void validate(String name, String color) {
+    private void validate(String name) {
         validateName(name);
-//        validateColor(color);
     }
 
     private void validateName(String name) {

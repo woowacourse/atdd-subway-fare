@@ -45,7 +45,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         downStation = 지하철역_등록되어_있음("광교역", tokenResponse);
 
         lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 10);
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 15);
+        lineRequest2 = new LineRequest("구신분당선", "bg-green-600", 강남역.getId(), downStation.getId(), 15);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -58,20 +58,21 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_생성됨(response);
     }
 
-    @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
+    @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성하면 에러가 발생한다.")
     @Test
     void createLineWithDuplicateName() {
         // given
         지하철_노선_등록되어_있음(lineRequest1, tokenResponse);
+        LineRequest lineRequest = new LineRequest("신분당선", "bg-green-600", 강남역.getId(), downStation.getId(), 10);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1, tokenResponse);
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest, tokenResponse);
 
         // then
-        에러가_발생한다(response, SubwayLineException.DUPLICATE_LINE_EXCEPTION);
+        에러가_발생한다(response, SubwayLineException.DUPLICATE_LINE_NAME_EXCEPTION);
     }
 
-    @DisplayName("잘못된 이름으로 지하철 노선을 생성하면 에러가 발생한다.")
+    @DisplayName("2글자이상 10글자이하 한글,숫자가 아닌 이름으로 지하철 노선을 생성하면 에러가 발생한다.")
     @ParameterizedTest
     @NullSource
     @ValueSource(strings = {"", "    ", "abcde", "일", "공백이 들어가면 안된다", "노선의이름은열글자가넘으면안된다", "특수문자안됨!"})
@@ -84,6 +85,20 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         에러가_발생한다(response, SubwayLineException.INVALID_LINE_EXCEPTION);
+    }
+
+    @DisplayName("기존에 존재하는 지하철 노선 색상으로 지하철 노선을 생성하면 에러가 발생한다.")
+    @Test
+    void createLineWithDuplicateColor() {
+        // given
+        지하철_노선_등록되어_있음(lineRequest1, tokenResponse);
+        LineRequest lineRequest = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 15);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest, tokenResponse);
+
+        // then
+        에러가_발생한다(response, SubwayLineException.DUPLICATE_LINE_COLOR_EXCEPTION);
     }
 
     @DisplayName("지하철 노선 목록을 조회한다.")

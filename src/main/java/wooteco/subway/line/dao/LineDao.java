@@ -1,5 +1,6 @@
 package wooteco.subway.line.dao;
 
+import java.util.Objects;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -107,5 +108,10 @@ public class LineDao {
 
     public void deleteById(Long id) {
         jdbcTemplate.update("delete from Line where id = ?", id);
+    }
+
+    public boolean existColor(String color) {
+        String sql = "select exists (select * from LINE where color = ?)";
+        return Objects.requireNonNull(jdbcTemplate.queryForObject(sql, Boolean.class, color));
     }
 }

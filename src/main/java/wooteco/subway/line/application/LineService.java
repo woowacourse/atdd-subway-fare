@@ -34,11 +34,18 @@ public class LineService {
 
     public LineResponse saveLine(LineRequest request) {
         try {
+            checkDuplicateLineColor(request);
             Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
             persistLine.addSection(addInitSection(persistLine, request));
             return LineResponse.of(persistLine);
         } catch (DuplicateKeyException exception) {
-            throw new SubwayCustomException(SubwayLineException.DUPLICATE_LINE_EXCEPTION);
+            throw new SubwayCustomException(SubwayLineException.DUPLICATE_LINE_NAME_EXCEPTION);
+        }
+    }
+
+    private void checkDuplicateLineColor(LineRequest request) {
+        if (lineDao.existColor(request.getColor())) {
+            throw new SubwayCustomException(SubwayLineException.DUPLICATE_LINE_COLOR_EXCEPTION);
         }
     }
 

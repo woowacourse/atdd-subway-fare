@@ -60,7 +60,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         에러가_발생한다(response, SubwayStationException.DUPLICATE_STATION_EXCEPTION);
     }
 
-    @DisplayName("유효하지 않은 이름으로 지하철역을 생성하면 에러가 발생한다.")
+    @DisplayName("2글자이상 20글자이하 한글,숫자가 아닌 이름으로 지하철역을 생성하면 에러가 발생한다.")
     @ParameterizedTest
     @NullSource
     @ValueSource(strings = {"", "   ", "일", "abc", "20글자이상의지하철역이름은생성을할수가없습니다", "공백이 들어가면 안됩니다",
