@@ -44,8 +44,8 @@ public class Fare {
     @Override
     public String toString() {
         return "Fare{" +
-            "fare=" + fare +
-            '}';
+                "fare=" + fare +
+                '}';
     }
 
     public Fare sub(Fare subFare) {

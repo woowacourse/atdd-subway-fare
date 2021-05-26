@@ -1,14 +1,14 @@
 package wooteco.subway.path.application;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-
 import org.springframework.stereotype.Component;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.path.domain.Fare;
 import wooteco.subway.path.domain.SubwayPath;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 
 @Component
 public class FareCalculator implements FarePolicy {
@@ -41,10 +41,10 @@ public class FareCalculator implements FarePolicy {
 
     public Fare getFareWithLineExtraFare(Fare currentFare, List<Line> lines) {
         return lines.stream()
-            .map(Line::getExtraFare)
-            .max(Comparator.comparingInt(Fare::getFare))
-            .orElseThrow(() -> new IllegalArgumentException("Line이 한 개 이상 존재해야 합니다."))
-            .add(currentFare);
+                .map(Line::getExtraFare)
+                .max(Comparator.comparingInt(Fare::getFare))
+                .orElseThrow(() -> new IllegalArgumentException("Line이 한 개 이상 존재해야 합니다."))
+                .add(currentFare);
     }
 
     public Fare getFareByAge(int age, Fare fare) {

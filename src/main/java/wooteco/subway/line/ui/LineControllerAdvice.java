@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wooteco.subway.exception.ErrorResponse;
 import wooteco.subway.line.exception.LineDaoException;
 import wooteco.subway.line.exception.LineDomainException;
-import wooteco.subway.station.exception.StationDaoException;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice(assignableTypes = LineController.class)

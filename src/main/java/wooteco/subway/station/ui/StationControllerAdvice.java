@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wooteco.subway.exception.ErrorResponse;
 import wooteco.subway.station.exception.StationDaoException;
 
-import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
