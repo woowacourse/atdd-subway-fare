@@ -19,7 +19,7 @@ public class LoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String accessToken = AuthorizationExtractor.extract(request);
         if (isRequestMethodIsPreflight(request)) {
-            return false;
+            return true;
         }
         if (isRequestMethodIsGet(request)) {
             return true;
