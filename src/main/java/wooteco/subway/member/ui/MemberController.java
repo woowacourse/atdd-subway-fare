@@ -14,7 +14,7 @@ import java.net.URI;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/members")
+@RequestMapping("/api/members")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class MemberController {
     private MemberService memberService;

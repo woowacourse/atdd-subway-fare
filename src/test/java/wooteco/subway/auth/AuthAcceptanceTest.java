@@ -132,6 +132,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 
         ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
-        assertThat(exceptionResponse.getError()).isEqualTo("INVALID_INPUT");
+        assertThat(exceptionResponse.getError()).isEqualTo("INVALID_EMAIL");
     }
 }

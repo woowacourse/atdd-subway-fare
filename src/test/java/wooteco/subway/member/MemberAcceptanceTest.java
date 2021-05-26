@@ -7,9 +7,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
-import org.junit.jupiter.params.provider.NullSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
@@ -56,7 +53,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 
         ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
-        assertThat(exceptionResponse.getError()).isEqualTo("INVALID_INPUT");
+        assertThat(exceptionResponse.getError()).contains("INVALID");
     }
 
     @DisplayName("이미 존재하는 이메일인지 요청한다.")
