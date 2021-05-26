@@ -9,13 +9,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.line.dto.LineRequest;
-import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.TransferLineResponse;
 import wooteco.subway.station.dto.StationLineResponse;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -57,7 +55,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         // given
         StationResponse stationResponse1 = 지하철역_등록되어_있음(강남역);
         StationResponse stationResponse2 = 지하철역_등록되어_있음(역삼역);
-        LineRequest lineRequest1 = new LineRequest("신분당선", "bg-red-600", 100,  stationResponse1.getId(), stationResponse2.getId(), 10);
+        LineRequest lineRequest1 = new LineRequest("신분당선", "bg-red-600", 100, stationResponse1.getId(), stationResponse2.getId(), 10);
         LineRequest lineRequest2 = new LineRequest("구신분당선", "bg-red-600", stationResponse1.getId(), stationResponse2.getId(), 15);
         지하철_노선_생성_요청(lineRequest1);
         지하철_노선_생성_요청(lineRequest2);

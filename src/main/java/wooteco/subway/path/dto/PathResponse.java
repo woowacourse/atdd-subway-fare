@@ -1,6 +1,5 @@
 package wooteco.subway.path.dto;
 
-import wooteco.subway.path.domain.Fare;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.List;

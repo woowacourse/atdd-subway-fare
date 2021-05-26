@@ -12,7 +12,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/map")
 public class MapController {
-    private LineService lineService;
+    private final LineService lineService;
 
     public MapController(final LineService lineService) {
         this.lineService = lineService;

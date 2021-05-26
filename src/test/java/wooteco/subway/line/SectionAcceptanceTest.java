@@ -13,7 +13,6 @@ import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionDistanceRequest;
 import wooteco.subway.line.dto.SectionRequest;
-import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.Arrays;

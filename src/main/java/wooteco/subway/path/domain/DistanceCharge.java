@@ -7,10 +7,10 @@ import java.util.function.Predicate;
 public enum DistanceCharge {
     FIRST_OVER_CHARGE(Distance::calculateFirstOverCharge, Distance::isFirstOverCharge),
     SECOND_OVER_CHARGE(Distance::calculateSecondOverCharge, Distance::isSecondOverCharge),
-    NO_OVER_CHARGE((distance) -> 0, (distance) -> true);
+    NONE((distance) -> 0, (distance) -> true);
 
     private final Function<Distance, Integer> calculateOverCharge;
-    private Predicate<Distance> chargeScheme;
+    private final Predicate<Distance> chargeScheme;
 
     DistanceCharge(final Function<Distance, Integer> calculateOverCharge, final Predicate<Distance> chargeScheme) {
         this.calculateOverCharge = calculateOverCharge;

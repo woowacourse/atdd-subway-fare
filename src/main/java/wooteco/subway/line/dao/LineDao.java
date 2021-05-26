@@ -19,8 +19,8 @@ import java.util.stream.Collectors;
 
 @Repository
 public class LineDao {
-    private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcInsert insertAction;
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert insertAction;
 
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
@@ -57,7 +57,7 @@ public class LineDao {
 
     public void update(Line newLine) {
         String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
+        jdbcTemplate.update(sql, newLine.getName(), newLine.getColor(), newLine.getId());
     }
 
     public List<Line> findAll() {

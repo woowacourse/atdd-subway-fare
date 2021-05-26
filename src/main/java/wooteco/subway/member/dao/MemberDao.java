@@ -2,8 +2,6 @@ package wooteco.subway.member.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.member.domain.Age;
@@ -15,10 +13,10 @@ import java.util.Map;
 
 @Repository
 public class MemberDao {
-    private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcInsert simpleJdbcInsert;
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert simpleJdbcInsert;
 
-    private RowMapper<Member> rowMapper = (rs, rowNum) ->
+    private final RowMapper<Member> rowMapper = (rs, rowNum) ->
             new Member(
                     rs.getLong("id"),
                     rs.getString("email"),
@@ -45,7 +43,7 @@ public class MemberDao {
 
     public void update(Member member) {
         String sql = "update MEMBER set email = ?, password = ?, age = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{member.getEmail(), member.getPassword(), member.getAgeAsInt(), member.getId()});
+        jdbcTemplate.update(sql, member.getEmail(), member.getPassword(), member.getAgeAsInt(), member.getId());
     }
 
     public void deleteById(Long id) {

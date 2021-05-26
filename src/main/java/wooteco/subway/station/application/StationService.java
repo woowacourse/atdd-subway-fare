@@ -2,7 +2,6 @@ package wooteco.subway.station.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.application.NoSuchLineException;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.station.dao.StationDao;
@@ -16,8 +15,8 @@ import java.util.List;
 
 @Service
 public class StationService {
-    private StationDao stationDao;
-    private LineDao lineDao;
+    private final StationDao stationDao;
+    private final LineDao lineDao;
 
     public StationService(final StationDao stationDao, final LineDao lineDao) {
         this.stationDao = stationDao;

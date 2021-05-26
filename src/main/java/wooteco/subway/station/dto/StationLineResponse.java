@@ -1,7 +1,6 @@
 package wooteco.subway.station.dto;
 
 import wooteco.subway.line.dto.TransferLineResponse;
-import wooteco.subway.station.domain.Station;
 
 import java.util.List;
 

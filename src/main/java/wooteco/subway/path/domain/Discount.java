@@ -8,7 +8,7 @@ import java.util.function.Predicate;
 public enum Discount {
     CHILDREN(0.5, Age::isChildren),
     TEENAGER(0.2, Age::isTeenager),
-    NORMAL(0, (age) -> true);
+    NONE(0, (age) -> true);
 
     public static final int DEFAULT_DISCOUNT_AMOUNT = 350;
 

@@ -46,7 +46,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         몽촌토성역 = 지하철역_등록되어_있음("몽촌토성역");
         downStation = 지하철역_등록되어_있음("광교역");
 
-        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 100,  강남역.getId(), downStation.getId(), 10);
+        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 100, 강남역.getId(), downStation.getId(), 10);
         lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 15);
         lineRequest3 = new LineRequest("2호선", "bg-red-600", 강남역.getId(), 역삼역.getId(), 20);
     }

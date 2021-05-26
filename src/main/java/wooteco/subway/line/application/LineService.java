@@ -20,9 +20,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class LineService {
-    private LineDao lineDao;
-    private SectionDao sectionDao;
-    private StationService stationService;
+    private final LineDao lineDao;
+    private final SectionDao sectionDao;
+    private final StationService stationService;
 
     public LineService(LineDao lineDao, SectionDao sectionDao, StationService stationService) {
         this.lineDao = lineDao;
@@ -161,8 +161,8 @@ public class LineService {
 
     private List<TransferLineResponse> getTransferLineResponses(final List<Line> lines, final Line currentLine, final Station station) {
         return lines.stream()
-                .filter(it -> it.contains(station) && !it.equals(currentLine))
-                .map(it -> new TransferLineResponse(it.getId(), it.getName(), it.getColor()))
+                .filter(line -> line.contains(station) && !line.equals(currentLine))
+                .map(transferLine -> new TransferLineResponse(transferLine.getId(), transferLine.getName(), transferLine.getColor()))
                 .collect(Collectors.toList());
     }
 }

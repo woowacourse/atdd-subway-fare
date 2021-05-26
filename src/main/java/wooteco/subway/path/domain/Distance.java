@@ -20,8 +20,8 @@ public class Distance {
     public static Distance calculateDistance(final List<SectionEdge> sectionEdges) {
         return new Distance(
                 sectionEdges.stream()
-                .mapToInt(it -> it.getSection().getDistance().distance)
-                .sum()
+                        .mapToInt(it -> it.getSection().getDistance().distance)
+                        .sum()
         );
     }
 
