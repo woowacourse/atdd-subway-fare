@@ -19,7 +19,7 @@ public class PathController {
         this.pathService = pathService;
     }
 
-    @GetMapping("/paths")
+    @GetMapping("/api/paths")
     public ResponseEntity<PathResponse> findPath(@AuthenticationPrincipal LoginMember loginMember,
                                                  @RequestParam Long source, @RequestParam Long target) {
         return ResponseEntity.ok(pathService.findPath(source, target, loginMember.getAge()));
