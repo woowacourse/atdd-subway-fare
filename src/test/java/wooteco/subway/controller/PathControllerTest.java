@@ -20,6 +20,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import wooteco.auth.util.JwtTokenProvider;
 import wooteco.subway.TestDataLoader;
 import wooteco.auth.service.AuthService;
 import wooteco.subway.domain.Line;
@@ -41,7 +42,7 @@ class PathControllerTest {
     @MockBean
     private PathService pathService;
     @MockBean
-    private AuthService authService;
+    private JwtTokenProvider jwtTokenProvider;
 
     @Test
     @DisplayName("구간 검색 - 성공")

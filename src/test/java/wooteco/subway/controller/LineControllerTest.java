@@ -29,6 +29,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import wooteco.auth.util.JwtTokenProvider;
 import wooteco.subway.TestDataLoader;
 import wooteco.auth.service.AuthService;
 import wooteco.subway.service.LineService;
@@ -53,7 +54,7 @@ class LineControllerTest {
     @MockBean
     private LineService lineService;
     @MockBean
-    private AuthService authService;
+    private JwtTokenProvider jwtTokenProvider;
 
     @Test
     @DisplayName("노선 생성 - 성공")
@@ -65,10 +66,15 @@ class LineControllerTest {
         final SectionResponse sectionResponse = new SectionResponse(1L, 강남역, 잠실역, 5);
         final LineResponse lineResponse = new LineResponse(1L, "2호선", "bg-red-200",
             Collections.singletonList(sectionResponse));
+
         given(lineService.saveLine(any(LineRequest.class)))
             .willReturn(lineResponse);
 
+        String token = "이것은토큰입니다";
+        given(jwtTokenProvider.validateToken(token)).willReturn(true);
+
         mockMvc.perform(post("/api/lines")
+            .header("Authorization", "Bearer "+token)
             .content(objectMapper.writeValueAsString(lineRequest))
             .contentType(MediaType.APPLICATION_JSON)
         )
@@ -107,8 +113,12 @@ class LineControllerTest {
         given(lineService.findLineResponseById(any()))
             .willReturn(LineResponse.of(신분당선));
 
+        String token = "이것은토큰입니다";
+        given(jwtTokenProvider.validateToken(token)).willReturn(true);
+
         mockMvc.perform(
             put("/api/lines/1")
+                .header("Authorization", "Bearer "+token)
                 .content(objectMapper.writeValueAsString(lineUpdateRequest))
                 .contentType(MediaType.APPLICATION_JSON)
         )
@@ -122,8 +132,12 @@ class LineControllerTest {
     @Test
     @DisplayName("노선 삭제 - 성공")
     public void deleteLine() throws Exception {
+        String token = "이것은토큰입니다";
+        given(jwtTokenProvider.validateToken(token)).willReturn(true);
+
         mockMvc.perform(
             delete("/api/lines/1")
+                .header("Authorization", "Bearer "+token)
         )
             .andExpect(status().isNoContent())
             .andDo(print())
@@ -135,7 +149,11 @@ class LineControllerTest {
     @DisplayName("구간 삭제 - 성공")
     @Test
     public void removeLineStation() throws Exception {
-        mockMvc.perform(delete("/api/lines/1/sections?stationId=1"))
+        String token = "이것은토큰입니다";
+        given(jwtTokenProvider.validateToken(token)).willReturn(true);
+
+        mockMvc.perform(delete("/api/lines/1/sections?stationId=1")
+            .header("Authorization", "Bearer "+token))
             .andExpect(status().isNoContent())
             .andDo(print())
             .andDo(document("section-delete",
@@ -162,8 +180,12 @@ class LineControllerTest {
     @Test
     @DisplayName("구간 추가 - 성공")
     public void createSection() throws Exception {
+        String token = "이것은토큰입니다";
+        given(jwtTokenProvider.validateToken(token)).willReturn(true);
+
         SectionRequest sectionRequest = new SectionRequest(1L, 2L, 5);
         mockMvc.perform(post("/api/lines/1/sections")
+            .header("Authorization", "Bearer "+token)
             .content(objectMapper.writeValueAsBytes(sectionRequest))
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
