@@ -7,6 +7,8 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
@@ -66,7 +68,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findPathByDistance() {
         //when
-        ExtractableResponse<Response> response = 거리_경로_조회_요청(3L, 2L);
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(교대역.getId(), 양재역.getId());
 
         //then
         적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
@@ -82,6 +84,26 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat((String) response.body().jsonPath().get("message")).isEqualTo("해당되는 최단 경로를 찾을 수 없습니다.");
+    }
+
+    @DisplayName("경로 요금 조회 - 10km 초과 50km 이하 : 5km 마다 100 / 50km 초과 시 : 8km마다 100원")
+    @ParameterizedTest
+    @CsvSource(value = {"11:1350", "50:2050", "51:2150", "58:2150", "59:2250"}, delimiter = ':')
+    void findFare(int distance, int fare) {
+        StationResponse 노량진역 = 지하철역_등록되어_있음("노량진");
+        StationResponse 여의도역 = 지하철역_등록되어_있음("여의도역");
+
+        LineResponse 육호선 = 지하철_노선_등록되어_있음("육호선", "bg-red-600", 노량진역, 여의도역, distance);
+
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(노량진역.getId(), 여의도역.getId());
+
+        //ten
+        적절한_요금_응답됨(response, fare);
+    }
+
+    private void 적절한_요금_응답됨(ExtractableResponse<Response> response, int fare) {
+        assertThat(response.as(PathResponse.class).getExtraFare()).isEqualTo(fare);
     }
 
     public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
@@ -110,5 +132,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public static void 총_거리가_응답됨(ExtractableResponse<Response> response, int totalDistance) {
         PathResponse pathResponse = response.as(PathResponse.class);
         assertThat(pathResponse.getDistance()).isEqualTo(totalDistance);
+        assertThat(pathResponse.getExtraFare()).isEqualTo(1250);
     }
 }

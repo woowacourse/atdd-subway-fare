@@ -13,6 +13,7 @@ public class PathResponseAssembler {
                 .collect(Collectors.toList());
 
         int distance = subwayPath.calculateDistance();
-        return new PathResponse(stationResponses, distance);
+        int extraFare = subwayPath.getExtraFare();
+        return new PathResponse(stationResponses, distance, extraFare);
     }
 }
