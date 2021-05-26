@@ -1,5 +1,7 @@
 package wooteco.subway.station.dao;
 
+import java.util.Optional;
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -46,9 +48,10 @@ public class StationDao {
         jdbcTemplate.update(sql, id);
     }
 
-    public Station findById(Long id) {
+    public Optional<Station> findById(Long id) {
         String sql = "select * from STATION where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        List<Station> result =  jdbcTemplate.query(sql, rowMapper, id);
+        return Optional.ofNullable(DataAccessUtils.singleResult(result));
     }
 
     public boolean exists(String name) {

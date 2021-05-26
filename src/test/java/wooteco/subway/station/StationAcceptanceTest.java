@@ -3,11 +3,15 @@ package wooteco.subway.station;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.auth.application.AuthService;
+import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
@@ -16,11 +20,25 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {
+
     private static final String 강남역 = "강남역";
     private static final String 역삼역 = "역삼역";
+
+    @MockBean
+    JwtTokenProvider jwtTokenProvider;
+
+    @Override
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        when(jwtTokenProvider.validateToken(any()))
+                .thenReturn(true);
+    }
 
     @DisplayName("지하철역을 생성한다.")
     @Test
@@ -74,6 +92,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     }
 
     public static StationResponse 지하철역_등록되어_있음(String name) {
+
         return 지하철역_생성_요청(name).as(StationResponse.class);
     }
 
