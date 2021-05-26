@@ -88,6 +88,18 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         errorTest(loginResponse, AuthException.WRONG_PASSWORD_EXCEPTION);
     }
 
+    @DisplayName("토큰이 필요한 기능에 로그인을 안했을 경우 에러")
+    @Test
+    void notExistToken() {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+
+        로그인_요청(EMAIL, PASSWORD);
+
+        ExtractableResponse<Response> response = 내_회원_정보_조회_요청(new TokenResponse(""));
+
+        errorTest(response, AuthException.INVALID_TOKEN_EXCEPTION);
+    }
+
     public static ExtractableResponse<Response> 회원_등록되어_있음(String email, String password, Integer age) {
         return 회원_생성을_요청(email, password, age);
     }
@@ -120,7 +132,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 get("/members/me").
                 then().
                 log().all().
-                statusCode(HttpStatus.OK.value()).
                 extract();
     }
 }
