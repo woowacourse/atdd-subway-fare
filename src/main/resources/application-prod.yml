@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://3.37.87.154:8080/subway?serverTimezone=UTC&characterEncoding=UTF-8
+    username: 9mak
+    password: 9999
+    schema:
+      - classpath:schema.sql
+    initialization-mode: always
+handlebars:
+  suffix: .html
+  enabled: true
+security:
+  jwt:
+    token:
+      secret-key: my_secret_is_secret
+      expire-length: 3600000
