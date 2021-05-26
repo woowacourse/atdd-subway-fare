@@ -11,7 +11,6 @@ import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.line.dto.LineRequest;
-import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 

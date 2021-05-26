@@ -14,7 +14,6 @@ import wooteco.subway.member.dto.MemberRequest;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.member.MemberAcceptanceTest.회원_생성_요청;
 import static wooteco.subway.member.MemberAcceptanceTest.회원_정보_조회됨;
 

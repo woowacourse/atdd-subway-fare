@@ -3,7 +3,6 @@ package wooteco.subway.member.dto;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 
 public class MemberAgeRequest {
     @NotNull(message = "입력되지 않은 항목을 확인해주세요")
