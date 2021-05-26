@@ -1,5 +1,6 @@
 package wooteco.subway.station.application;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -47,9 +48,12 @@ public class StationService {
     }
 
     public void deleteStationById(Long id) {
-        int updateRow = stationDao.deleteById(id);
-
-        validateUpdateRow(updateRow);
+        try {
+            int updateRow = stationDao.deleteById(id);
+            validateUpdateRow(updateRow);
+        } catch (DataIntegrityViolationException e) {
+            throw new SubwayCustomException(StationException.DELETE_USE_STATION_EXCEPTION);
+        }
     }
 
     public void updateStationById(Long id, StationRequest stationRequest) {

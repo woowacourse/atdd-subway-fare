@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.auth.AuthAcceptanceTest;
+import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
 import wooteco.subway.station.dto.StationResponse;
@@ -30,16 +32,20 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     private StationResponse 정자역;
     private StationResponse 광교역;
 
+    private TokenResponse tokenResponse;
+
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        강남역 = 지하철역_등록되어_있음("강남역");
-        양재역 = 지하철역_등록되어_있음("양재역");
-        정자역 = 지하철역_등록되어_있음("정자역");
-        광교역 = 지하철역_등록되어_있음("광교역");
+        tokenResponse = AuthAcceptanceTest.회원가입_토큰가져오기();
 
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 광교역, 10);
+        강남역 = 지하철역_등록되어_있음("강남역", tokenResponse);
+        양재역 = 지하철역_등록되어_있음("양재역", tokenResponse);
+        정자역 = 지하철역_등록되어_있음("정자역", tokenResponse);
+        광교역 = 지하철역_등록되어_있음("광교역", tokenResponse);
+
+        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 광교역, 10, tokenResponse);
     }
 
     @DisplayName("지하철 구간을 등록한다.")
@@ -94,7 +100,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
 
         // then
-        지하철_노선에_지하철역_제외됨(removeResponse, 신분당선, Arrays.asList(강남역, 정자역, 광교역));
+        지하철_노선에_지하철역_제외됨(removeResponse, 신분당선, Arrays.asList(강남역, 정자역, 광교역), tokenResponse);
     }
 
     @DisplayName("지하철 노선에 등록된 지하철역이 두개일 때 한 역을 제외한다.")
@@ -150,13 +156,13 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
     private void 지하철_구간_생성됨(ExtractableResponse<Response> result, LineResponse lineResponse, List<StationResponse> stationResponses) {
         assertThat(result.statusCode()).isEqualTo(HttpStatus.OK.value());
-        ExtractableResponse<Response> response = 지하철_노선_조회_요청(lineResponse);
+        ExtractableResponse<Response> response = 지하철_노선_조회_요청(lineResponse, tokenResponse);
         지하철_노선에_지하철역_순서_정렬됨(response, stationResponses);
     }
 
-    public static void 지하철_노선에_지하철역_제외됨(ExtractableResponse<Response> result, LineResponse lineResponse, List<StationResponse> stationResponses) {
+    public static void 지하철_노선에_지하철역_제외됨(ExtractableResponse<Response> result, LineResponse lineResponse, List<StationResponse> stationResponses, TokenResponse tokenResponse) {
         assertThat(result.statusCode()).isEqualTo(HttpStatus.OK.value());
-        ExtractableResponse<Response> response = 지하철_노선_조회_요청(lineResponse);
+        ExtractableResponse<Response> response = 지하철_노선_조회_요청(lineResponse, tokenResponse);
         지하철_노선에_지하철역_순서_정렬됨(response, stationResponses);
     }
 

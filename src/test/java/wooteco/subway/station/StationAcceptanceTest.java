@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.AuthAcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
+import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 import wooteco.subway.station.exception.StationException;
@@ -23,13 +24,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_생성_요청;
 
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {
     private static final String 강남역 = "강남역";
     private static final String 역삼역 = "역삼역";
 
-    private static TokenResponse tokenResponse;
+    private TokenResponse tokenResponse;
 
     @Override
     @BeforeEach
@@ -42,7 +44,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void createStation() {
         // when
-        ExtractableResponse<Response> response = 지하철역_생성_요청(강남역);
+        ExtractableResponse<Response> response = 지하철역_생성_요청(강남역, tokenResponse);
 
         // then
         지하철역_생성됨(response);
@@ -52,10 +54,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void createStationWithDuplicateName() {
         //given
-        지하철역_등록되어_있음(강남역);
+        지하철역_등록되어_있음(강남역, tokenResponse);
 
         // when
-        ExtractableResponse<Response> response = 지하철역_생성_요청(강남역);
+        ExtractableResponse<Response> response = 지하철역_생성_요청(강남역, tokenResponse);
 
         // then
         에러_발생함(response, StationException.DUPLICATED_STATION_NAME_EXCEPTION);
@@ -66,7 +68,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @NullSource
     @ValueSource(strings = {"", "a", "20글자이상의지하철역이름은생성을할수가없습니다.", "공백도 불가해요", " 앞뒤 공백 불가 ", "NotEnglish", "!!#$%^"})
     void createStationNameLength(String name) {
-        ExtractableResponse<Response> response = 지하철역_생성_요청(name);
+        ExtractableResponse<Response> response = 지하철역_생성_요청(name, tokenResponse);
 
         에러_발생함(response, StationException.INVALID_STATION_NAME_LENGTH_EXCEPTION);
     }
@@ -75,11 +77,11 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void getStations() {
         // given
-        StationResponse stationResponse1 = 지하철역_등록되어_있음(강남역);
-        StationResponse stationResponse2 = 지하철역_등록되어_있음(역삼역);
+        StationResponse stationResponse1 = 지하철역_등록되어_있음(강남역, tokenResponse);
+        StationResponse stationResponse2 = 지하철역_등록되어_있음(역삼역, tokenResponse);
 
         // when
-        ExtractableResponse<Response> response = 지하철역_목록_조회_요청();
+        ExtractableResponse<Response> response = 지하철역_목록_조회_요청(tokenResponse);
 
         // then
         지하철역_목록_응답됨(response);
@@ -89,9 +91,9 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철역을 수정한다.")
     @Test
     void updateStation() {
-        StationResponse stationResponse = 지하철역_등록되어_있음(강남역);
+        StationResponse stationResponse = 지하철역_등록되어_있음(강남역, tokenResponse);
 
-        ExtractableResponse<Response> response = 지하철역_수정_요청(new StationRequest("잠실역"), stationResponse.getId());
+        ExtractableResponse<Response> response = 지하철역_수정_요청(new StationRequest("잠실역"), stationResponse.getId(), tokenResponse);
 
         지하철역_이름_수정됨(response);
     }
@@ -99,10 +101,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철역을 수정할 때 중복된 이름을 사용할 수 없다.")
     @Test
     void updateStationWithDuplicate() {
-        StationResponse stationResponse = 지하철역_등록되어_있음(강남역);
-        지하철역_등록되어_있음(역삼역);
+        StationResponse stationResponse = 지하철역_등록되어_있음(강남역, tokenResponse);
+        지하철역_등록되어_있음(역삼역, tokenResponse);
 
-        ExtractableResponse<Response> response = 지하철역_수정_요청(new StationRequest("역삼역"), stationResponse.getId());
+        ExtractableResponse<Response> response = 지하철역_수정_요청(new StationRequest("역삼역"), stationResponse.getId(), tokenResponse);
 
         에러_발생함(response, StationException.DUPLICATED_STATION_NAME_EXCEPTION);
     }
@@ -111,10 +113,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteStation() {
         // given
-        StationResponse stationResponse = 지하철역_등록되어_있음(강남역);
+        StationResponse stationResponse = 지하철역_등록되어_있음(강남역, tokenResponse);
 
         // when
-        ExtractableResponse<Response> response = 지하철역_제거_요청(stationResponse);
+        ExtractableResponse<Response> response = 지하철역_제거_요청(stationResponse, tokenResponse);
 
         // then
         지하철역_삭제됨(response);
@@ -123,20 +125,33 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @DisplayName("존재하지 않는 역을 제거, 수정할 경우")
     @Test
     void notExistStationDeleteAndUpdate() {
-        ExtractableResponse<Response> deleteResponse = 지하철역_제거_요청(new StationResponse(0L, "없는역"));
+        ExtractableResponse<Response> deleteResponse = 지하철역_제거_요청(new StationResponse(0L, "없는역"), tokenResponse);
 
         에러_발생함(deleteResponse, StationException.NOT_FOUND_STATION_EXCEPTION);
 
-        ExtractableResponse<Response> updateResponse = 지하철역_수정_요청(new StationRequest("없는역"), 1L);
+        ExtractableResponse<Response> updateResponse = 지하철역_수정_요청(new StationRequest("없는역"), 1L, tokenResponse);
 
         에러_발생함(updateResponse, StationException.NOT_FOUND_STATION_EXCEPTION);
     }
 
-    public static StationResponse 지하철역_등록되어_있음(String name) {
-        return 지하철역_생성_요청(name).as(StationResponse.class);
+    @DisplayName("노선에 포함되어있는 자하철역을 제거할 수 없다.")
+    @Test
+    void deleteStationWithUseStation() {
+        StationResponse 강남역Response = 지하철역_등록되어_있음(강남역, tokenResponse);
+        StationResponse 역삼역Response = 지하철역_등록되어_있음(역삼역, tokenResponse);
+
+        지하철_노선_생성_요청(new LineRequest("2호선", "bg-red-600", 강남역Response.getId(), 역삼역Response.getId(), 10), tokenResponse);
+
+        ExtractableResponse<Response> deleteResponse = 지하철역_제거_요청(강남역Response, tokenResponse);
+
+        에러_발생함(deleteResponse, StationException.DELETE_USE_STATION_EXCEPTION);
     }
 
-    public static ExtractableResponse<Response> 지하철역_생성_요청(String name) {
+    public static StationResponse 지하철역_등록되어_있음(String name, TokenResponse tokenResponse) {
+        return 지하철역_생성_요청(name, tokenResponse).as(StationResponse.class);
+    }
+
+    public static ExtractableResponse<Response> 지하철역_생성_요청(String name, TokenResponse tokenResponse) {
         StationRequest stationRequest = new StationRequest(name);
 
         return RestAssured
@@ -149,7 +164,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 지하철역_수정_요청(StationRequest stationRequest, Long id) {
+    public static ExtractableResponse<Response> 지하철역_수정_요청(StationRequest stationRequest, Long id, TokenResponse tokenResponse) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
@@ -160,7 +175,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 지하철역_목록_조회_요청() {
+    public static ExtractableResponse<Response> 지하철역_목록_조회_요청(TokenResponse tokenResponse) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
@@ -169,7 +184,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 지하철역_제거_요청(StationResponse stationResponse) {
+    public static ExtractableResponse<Response> 지하철역_제거_요청(StationResponse stationResponse, TokenResponse tokenResponse) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
