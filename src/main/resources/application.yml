@@ -14,9 +14,9 @@ spring:
         url: jdbc:h2:mem:subway
         username: sa
         password:
-        h2:
-            console:
-                enabled: true
+    h2:
+        console:
+              enabled: true
 ---
 spring:
     config:
@@ -30,9 +30,9 @@ spring:
         url: jdbc:h2:mem:testdb
         username: sa
         password:
-        h2:
-            console:
-                enabled: true
+    h2:
+        console:
+            enabled: true
 ---
 spring:
     config:
