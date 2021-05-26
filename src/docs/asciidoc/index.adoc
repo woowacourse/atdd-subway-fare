@@ -53,6 +53,11 @@ include::{snippets}/member-delete/http-response.adoc[]
 include::{snippets}/station-create/http-request.adoc[]
 ==== Response
 include::{snippets}/station-create/http-response.adoc[]
+=== 생성 실패 (비로그인)
+==== Request
+include::{snippets}/station-create-fail/http-request.adoc[]
+==== Response
+include::{snippets}/station-create-fail/http-response.adoc[]
 === 조회
 ==== Request
 include::{snippets}/station-show/http-request.adoc[]

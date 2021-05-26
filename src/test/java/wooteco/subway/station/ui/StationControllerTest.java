@@ -28,9 +28,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.auth.infrastructure.LoginInterceptor;
+import wooteco.subway.exception.AuthorizationException;
 import wooteco.subway.exception.DuplicatedStationNameException;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.dto.StationRequest;
@@ -73,6 +73,31 @@ public class StationControllerTest {
             .andExpect(jsonPath("name").value(stationResponse.getName()))
             .andDo(print())
             .andDo(document("station-create",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint())
+            ));
+    }
+
+    @DisplayName("역 생성 테스트 - 실패(인증)")
+    @Test
+    public void createStationFail() throws Exception {
+        //given
+        StationRequest stationRequest = new StationRequest("잠실역");
+        StationResponse stationResponse = new StationResponse(1L, "잠실역");
+
+        given(stationService.saveStation(any(StationRequest.class))).willReturn(stationResponse);
+        given(loginInterceptor.preHandle(any(), any(), any()))
+            .willThrow(AuthorizationException.class);
+
+        //when
+        mockMvc.perform(post("/api/stations")
+            .content(objectMapper.writeValueAsString(stationRequest))
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+        )
+            // then
+            .andExpect(status().isUnauthorized())
+            .andDo(print())
+            .andDo(document("station-create-fail",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint())
             ));
