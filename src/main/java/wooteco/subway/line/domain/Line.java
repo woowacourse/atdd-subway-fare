@@ -44,17 +44,17 @@ public class Line {
 
     private void validateColor(String color) {
         if(Objects.isNull(color) || color.length() == 0) {
-            throw new SubwayCustomException(LineException.INVALID_LINE_COLOR);
+            throw new SubwayCustomException(LineException.INVALID_LINE_COLOR_EXCEPTION);
         }
     }
 
     private void validateNameLength(String name) {
         if(Objects.isNull(name)) {
-            throw new SubwayCustomException(LineException.INVALID_LINE_EXCEPTION);
+            throw new SubwayCustomException(LineException.INVALID_LINE_EXCEPTION_EXCEPTION);
         }
 
         if(!isNamePattern(name)) {
-            throw new SubwayCustomException(LineException.INVALID_LINE_EXCEPTION);
+            throw new SubwayCustomException(LineException.INVALID_LINE_EXCEPTION_EXCEPTION);
         }
     }
 

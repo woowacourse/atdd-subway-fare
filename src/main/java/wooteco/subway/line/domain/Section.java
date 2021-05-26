@@ -1,5 +1,7 @@
 package wooteco.subway.line.domain;
 
+import wooteco.subway.exception.SubwayCustomException;
+import wooteco.subway.line.exception.SectionException;
 import wooteco.subway.station.domain.Station;
 
 public class Section {
@@ -12,6 +14,7 @@ public class Section {
     }
 
     public Section(Long id, Station upStation, Station downStation, int distance) {
+        validateDistance(distance);
         this.id = id;
         this.upStation = upStation;
         this.downStation = downStation;
@@ -19,9 +22,13 @@ public class Section {
     }
 
     public Section(Station upStation, Station downStation, int distance) {
-        this.upStation = upStation;
-        this.downStation = downStation;
-        this.distance = distance;
+        this(0L, upStation, downStation, distance);
+    }
+
+    private void validateDistance(int distance) {
+        if (distance <= 0) {
+            throw new SubwayCustomException(SectionException.INVALID_SECTION_DISTANCE_EXCEPTION);
+        }
     }
 
     public Long getId() {

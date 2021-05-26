@@ -17,6 +17,7 @@ import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.exception.LineException;
+import wooteco.subway.line.exception.SectionException;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.Arrays;
@@ -79,7 +80,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     void createLineWithInvalidName(String name) {
         ExtractableResponse<Response> response = 지하철_노선_생성_요청(new LineRequest(name, "bg-red-600", 강남역.getId(), 광교역.getId(), 10), tokenResponse);
 
-        에러_발생함(response, LineException.INVALID_LINE_EXCEPTION);
+        에러_발생함(response, LineException.INVALID_LINE_EXCEPTION_EXCEPTION);
     }
 
     @DisplayName("기존에 존재하는 지하철 노선 색깔로 지하철 노선을 생성한다.")
@@ -93,6 +94,18 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         에러_발생함(response, LineException.DUPLICATED_LINE_COLOR_EXCEPTION);
+    }
+
+    @DisplayName("노선 생성 시 거리가 0이하일 수 없다.")
+    @ParameterizedTest
+    @ValueSource(ints = {0, -1})
+    void createLineWithInvalidDistance(int distance) {
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(new LineRequest("신분당선2", "bg-red-600", 강남역.getId(), 광교역.getId(), distance), tokenResponse);
+
+        // then
+        에러_발생함(response, SectionException.INVALID_SECTION_DISTANCE_EXCEPTION);
     }
 
     @DisplayName("지하철 노선 목록을 조회한다.")
