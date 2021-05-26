@@ -36,7 +36,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         downStation = 지하철역_등록되어_있음("광교역");
 
         lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 10);
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 15);
+        lineRequest2 = new LineRequest("구신분당선", "bg-red-601", 강남역.getId(), downStation.getId(), 15);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -59,7 +59,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1);
 
         // then
-        지하철_노선_생성_실패됨(response);
+        지하철_노선_생성_실패됨_CONFLICT(response);
     }
 
     @DisplayName("지하철 노선 목록을 조회한다.")
@@ -182,8 +182,12 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(response.header("Location")).isNotBlank();
     }
 
-    public static void 지하철_노선_생성_실패됨(ExtractableResponse<Response> response) {
+    public static void 지하철_노선_생성_실패됨_BAD_REQUEST(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    public static void 지하철_노선_생성_실패됨_CONFLICT(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CONFLICT.value());
     }
 
     public static void 지하철_노선_목록_응답됨(ExtractableResponse<Response> response) {

@@ -113,4 +113,19 @@ public class LineDao {
     public void deleteById(Long id) {
         jdbcTemplate.update("delete from Line where id = ?", id);
     }
+
+    public boolean existsById(Long id) {
+        String sql = "select exists(select * from LINE where id = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, id);
+    }
+
+    public boolean existsByName(String name) {
+        String sql = "select exists(select * from LINE where name = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, name);
+    }
+
+    public boolean existsByColor(String color) {
+        String sql = "select exists(select * from LINE where color = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, color);
+    }
 }
