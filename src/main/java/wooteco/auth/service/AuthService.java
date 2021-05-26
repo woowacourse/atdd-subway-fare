@@ -12,7 +12,7 @@ import wooteco.auth.dao.MemberDao;
 import wooteco.auth.domain.Member;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class AuthService {
     private MemberDao memberDao;
     private JwtTokenProvider jwtTokenProvider;

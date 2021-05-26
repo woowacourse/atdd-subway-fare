@@ -1,6 +1,7 @@
 package wooteco.auth.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.auth.dao.MemberDao;
 import wooteco.auth.domain.LoginMember;
 import wooteco.auth.domain.Member;
@@ -8,6 +9,7 @@ import wooteco.auth.web.dto.request.MemberRequest;
 import wooteco.auth.web.dto.response.MemberResponse;
 
 @Service
+@Transactional(readOnly = true)
 public class MemberService {
     private MemberDao memberDao;
 
@@ -25,6 +27,7 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
+    @Transactional
     public MemberResponse updateMember(LoginMember loginMember, MemberRequest memberRequest) {
         Member member = memberDao.findById(loginMember.getId());
         final Member updatedMember = new Member(member.getId(), memberRequest.getEmail(),
@@ -33,6 +36,7 @@ public class MemberService {
         return MemberResponse.of(updatedMember);
     }
 
+    @Transactional
     public void deleteMember(LoginMember loginMember) {
         Member member = memberDao.findById(loginMember.getId());
         memberDao.deleteById(member.getId());
