@@ -2,7 +2,7 @@ package wooteco.subway.member.application;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
-import wooteco.subway.exception.AlreadyExistEmailException;
+import wooteco.subway.exception.conflict.AlreadyExistEmailException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;

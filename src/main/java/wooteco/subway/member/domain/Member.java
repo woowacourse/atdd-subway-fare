@@ -1,7 +1,7 @@
 package wooteco.subway.member.domain;
 
 import org.apache.commons.lang3.StringUtils;
-import wooteco.subway.exception.AuthorizationException;
+import wooteco.subway.exception.unauthorized.AuthorizationException;
 
 public class Member {
 
