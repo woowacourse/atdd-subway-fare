@@ -7,32 +7,32 @@ public enum FareByDistance {
     DEFAULT_FARE(0, 10, distance -> {
         return Constants.DEFAULT_FARE;
     }),
-    OVER_TEN_FARE(10, 50, distance -> {
+    OVER_TEN_KILOMETERS_FARE(10, 50, distance -> {
         return Constants.DEFAULT_FARE +
-                extraFareOverTen(distance - Constants.MAX_DISTANCE_FOR_DEFAULT_FARE);
+                extraFareOverTenKilometers(distance - Constants.MAX_DISTANCE_FOR_DEFAULT_FARE);
     }),
-    OVER_FIFTY_FARE(50, distance -> {
+    OVER_FIFTY_KILOMETERS_FARE(50, distance -> {
         return Constants.DEFAULT_FARE +
-                extraFareOverTen(Constants.MAX_DISTANCE_FOR_OVER_TEN_FARE) +
-                extraFareOverFifty(distance - Constants.MAX_DISTANCE_FOR_DEFAULT_FARE - Constants.MAX_DISTANCE_FOR_OVER_TEN_FARE);
+                extraFareOverTenKilometers(Constants.MAX_DISTANCE_FOR_OVER_TEN_KILOMETERS_FARE) +
+                extraFareOverFiftyKilometers(distance - Constants.MAX_DISTANCE_FOR_DEFAULT_FARE - Constants.MAX_DISTANCE_FOR_OVER_TEN_KILOMETERS_FARE);
     });
 
     private static class Constants {
         public static final int DEFAULT_FARE = 1250;
-        public static final int EXTRA_FARE_PER_SECTION = 100;
-        public static final int OVER_TEN_FARE_SECTION_STANDARD_DISTANCE = 5;
-        public static final int OVER_FIFTY_FARE_SECTION_STANDARD_DISTANCE = 8;
         public static final int MAX_DISTANCE_FOR_DEFAULT_FARE = 10;
-        public static final int MAX_DISTANCE_FOR_OVER_TEN_FARE = 40;
-        public static final int MAX_DISTANCE_OF_SUBWAY_PATH = 1000;
+        public static final int MAX_DISTANCE_FOR_OVER_TEN_KILOMETERS_FARE = 40;
+        public static final int EXTRA_FARE_PER_SECTION = 100;
+        public static final int OVER_TEN_KILOMETERS_FARE_SECTION_STANDARD_DISTANCE = 5;
+        public static final int OVER_FIFTY_KILOMETERS_FARE_SECTION_STANDARD_DISTANCE = 8;
+        public static final int MAX_DISTANCE_OF_TOTAL_SUBWAY_PATH = 10000;
     }
 
-    private static int extraFareOverTen(Integer distance) {
-        return calculateExtraFare(distance, Constants.OVER_TEN_FARE_SECTION_STANDARD_DISTANCE);
+    private static int extraFareOverTenKilometers(Integer distance) {
+        return calculateExtraFare(distance, Constants.OVER_TEN_KILOMETERS_FARE_SECTION_STANDARD_DISTANCE);
     }
 
-    private static int extraFareOverFifty(Integer distance) {
-        return calculateExtraFare(distance, Constants.OVER_FIFTY_FARE_SECTION_STANDARD_DISTANCE);
+    private static int extraFareOverFiftyKilometers(Integer distance) {
+        return calculateExtraFare(distance, Constants.OVER_FIFTY_KILOMETERS_FARE_SECTION_STANDARD_DISTANCE);
     }
 
     private static int calculateExtraFare(Integer totalDistanceToPay, int sectionStandard) {
@@ -40,25 +40,25 @@ public enum FareByDistance {
         return (int) sectionsToPay * Constants.EXTRA_FARE_PER_SECTION;
     }
 
-    private final int from;
-    private final int to;
+    private final int distanceFrom;
+    private final int distanceTo;
     private final Function<Integer, Integer> farePolicy;
 
-    FareByDistance(int from, int to, Function<Integer, Integer> farePolicy) {
-        this.from = from;
-        this.to = to;
+    FareByDistance(int distanceFrom, int distanceTo, Function<Integer, Integer> farePolicy) {
+        this.distanceFrom = distanceFrom;
+        this.distanceTo = distanceTo;
         this.farePolicy = farePolicy;
     }
 
-    FareByDistance(int from, Function<Integer, Integer> farePolicy) {
-        this.from = from;
-        this.to = Constants.MAX_DISTANCE_OF_SUBWAY_PATH;
+    FareByDistance(int distanceFrom, Function<Integer, Integer> farePolicy) {
+        this.distanceFrom = distanceFrom;
+        this.distanceTo = Constants.MAX_DISTANCE_OF_TOTAL_SUBWAY_PATH;
         this.farePolicy = farePolicy;
     }
 
     public static int calculate(int distance) {
         final FareByDistance chosenFareByDistance = Arrays.stream(FareByDistance.values())
-                .filter(fareByDistance -> fareByDistance.from < distance && distance <= fareByDistance.to)
+                .filter(fareByDistance -> fareByDistance.distanceFrom < distance && distance <= fareByDistance.distanceTo)
                 .findAny()
                 .orElseThrow(IllegalStateException::new);
 
