@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
+import wooteco.subway.line.domain.Section;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.path.dto.PathResponse;
@@ -32,7 +33,9 @@ public class PathService {
             List<Line> lines = lineService.findLines();
             Station sourceStation = stationService.findStationById(source);
             Station targetStation = stationService.findStationById(target);
+
             SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
+
             return PathResponseAssembler.assemble(loginMember.getAge(), subwayPath);
         } catch (Exception e) {
             throw new InvalidPathException();

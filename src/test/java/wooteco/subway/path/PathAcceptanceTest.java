@@ -184,6 +184,28 @@ public class PathAcceptanceTest extends AcceptanceTest {
         총_요금이_응답됨(response, 1250);
     }
 
+    @DisplayName("비회원, 55km 일경우 추가운임 확인, 교대역 -> 멀리있는역")
+    @Test
+    void findPath55km() {
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(new TokenResponse(""), 3L, 5L);
+        //then
+        적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역, 멀리있는역));
+        총_거리가_응답됨(response, 55);
+        총_요금이_응답됨(response, 2150);
+    }
+
+    @DisplayName("비회원, 12Km 일 경우 거리에 따른 추가운임 확인, 강냠역 -> 남부터미널역")
+    @Test
+    void findPath12Km() {
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(new TokenResponse(""), 1L, 4L);
+        //then
+        적절한_경로_응답됨(response, Lists.newArrayList(강남역, 양재역, 남부터미널역));
+        총_거리가_응답됨(response, 12);
+        총_요금이_응답됨(response, 1350);
+    }
+
     public static ExtractableResponse<Response> 거리_경로_조회_요청(TokenResponse tokenResponse, long source, long target) {
         return RestAssured
                 .given().log().all()

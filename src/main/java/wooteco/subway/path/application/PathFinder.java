@@ -10,6 +10,7 @@ import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,6 +26,7 @@ public class PathFinder {
         // 다익스트라 최단 경로 찾기
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
         GraphPath<Station, SectionEdge> path = dijkstraShortestPath.getPath(source, target);
+
         if (path == null) {
             throw new InvalidPathException();
         }
@@ -35,6 +37,9 @@ public class PathFinder {
     private SubwayPath convertSubwayPath(GraphPath graphPath) {
         List<SectionEdge> edges = (List<SectionEdge>) graphPath.getEdgeList().stream().collect(Collectors.toList());
         List<Station> stations = graphPath.getVertexList();
-        return new SubwayPath(edges, stations);
+        Set<Line> line = edges.stream()
+                .map(SectionEdge::getLine)
+                .collect(Collectors.toSet());
+        return new SubwayPath(edges, stations, line);
     }
 }

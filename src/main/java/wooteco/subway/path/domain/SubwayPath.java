@@ -1,8 +1,10 @@
 package wooteco.subway.path.domain;
 
+import wooteco.subway.line.domain.Line;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
+import java.util.Set;
 
 public class SubwayPath {
     private static final int DEFAULT_DISTANCE = 10;
@@ -11,10 +13,12 @@ public class SubwayPath {
 
     private List<SectionEdge> sectionEdges;
     private List<Station> stations;
+    private Set<Line> lines;
 
-    public SubwayPath(List<SectionEdge> sectionEdges, List<Station> stations) {
+    public SubwayPath(List<SectionEdge> sectionEdges, List<Station> stations, Set<Line> lines) {
         this.sectionEdges = sectionEdges;
         this.stations = stations;
+        this.lines = lines;
     }
 
     public List<SectionEdge> getSectionEdges() {
@@ -30,21 +34,30 @@ public class SubwayPath {
     }
 
     public int calculateFare(Integer age, int distance) {
+        int maxExtraFare = findExtraFare();
+
         if (distance <= DEFAULT_DISTANCE) {
-            return discountByAge(age, DEFAULT_FARE);
+            return discountByAge(age, DEFAULT_FARE + maxExtraFare);
         }
 
         if (distance <= OVER_LIMIT_DISTANCE) {
             int overFare = calculateAdditionalFareOver10km(distance - DEFAULT_DISTANCE);
-            return discountByAge(age,DEFAULT_FARE + overFare);
+            return discountByAge(age,DEFAULT_FARE + overFare + maxExtraFare);
         }
 
         int additionalFareOver10km = calculateAdditionalFareOver10km(OVER_LIMIT_DISTANCE - DEFAULT_DISTANCE);
         int additionalFareOver50km = calculateAdditionalFareOver50km(distance - OVER_LIMIT_DISTANCE);
 
-        return discountByAge(age, DEFAULT_FARE
+        return discountByAge(age, DEFAULT_FARE + maxExtraFare
                 + additionalFareOver10km
                 + additionalFareOver50km);
+    }
+
+    private int findExtraFare() {
+        return lines.stream()
+                .mapToInt(Line::getExtraFare)
+                .max()
+                .orElse(0);
     }
 
     private int discountByAge(Integer age, int fare) {
