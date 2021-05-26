@@ -78,4 +78,10 @@ public class Line {
     public List<Station> getStations() {
         return sections.getStations();
     }
+
+    public boolean containsStation(Long id) {
+        return getStations().stream()
+                            .map(Station::getId)
+                            .anyMatch(it -> it.equals(id));
+    }
 }

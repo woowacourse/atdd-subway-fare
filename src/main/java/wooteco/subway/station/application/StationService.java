@@ -1,6 +1,9 @@
 package wooteco.subway.station.application;
 
 import org.springframework.stereotype.Service;
+
+import wooteco.subway.exception.StationException;
+import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;
@@ -12,9 +15,11 @@ import java.util.stream.Collectors;
 @Service
 public class StationService {
     private StationDao stationDao;
+    private LineDao lineDao;
 
-    public StationService(StationDao stationDao) {
+    public StationService(StationDao stationDao, LineDao lineDao) {
         this.stationDao = stationDao;
+        this.lineDao = lineDao;
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
@@ -35,6 +40,16 @@ public class StationService {
     }
 
     public void deleteStationById(Long id) {
+        validate(id);
         stationDao.deleteById(id);
+    }
+
+    private void validate(Long id) {
+        boolean isPresent = lineDao.findAll()
+                                   .stream()
+                                   .anyMatch(it -> it.containsStation(id));
+        if (isPresent) {
+            throw new StationException("이미 등록되어있는 역입니다.");
+        }
     }
 }

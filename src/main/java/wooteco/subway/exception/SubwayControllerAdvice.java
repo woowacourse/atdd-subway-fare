@@ -18,6 +18,16 @@ public class SubwayControllerAdvice {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(e.getMessage()));
     }
 
+    @ExceptionHandler(StationException.class)
+    public ResponseEntity<ErrorResponse> handleStationException(StationException e) {
+        return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(LineException.class)
+    public ResponseEntity<ErrorResponse> handleLineException(LineException e) {
+        return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+    }
+
     @ExceptionHandler(SectionException.class)
     public ResponseEntity<ErrorResponse> handleSectionException(SectionException e) {
         return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
