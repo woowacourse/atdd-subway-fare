@@ -65,4 +65,10 @@ public class StationDao {
                 .stream()
                 .findAny();
     }
+
+
+    public int countsStationById(Long id) {
+        String sql = "select count(*) from SECTION where ? in (up_station_id, down_station_id)";
+        return jdbcTemplate.queryForObject(sql, int.class, id);
+    }
 }
