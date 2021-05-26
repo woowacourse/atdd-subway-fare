@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.auth.acceptatnce.AuthAcceptanceTest.토큰;
 import static wooteco.subway.acceptance.StationAcceptanceTest.지하철역_등록되어_있음;
 
 @DisplayName("지하철 노선 관련 기능")
@@ -128,6 +129,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest params) {
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(토큰().getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().post("/api/lines")
@@ -157,6 +159,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(토큰().getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().put("/api/lines/" + response.getId())
@@ -167,6 +170,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철_노선_제거_요청(LineResponse lineResponse) {
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(토큰().getAccessToken())
                 .when().delete("/api/lines/" + lineResponse.getId())
                 .then().log().all()
                 .extract();

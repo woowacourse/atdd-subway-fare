@@ -11,6 +11,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import wooteco.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.TestDataLoader;
 import wooteco.auth.service.AuthService;
 import wooteco.subway.service.LineService;
@@ -47,7 +48,7 @@ class LineControllerTest {
     private LineService lineService;
 
     @MockBean
-    private AuthService authService;
+    private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
     private MockMvc mockMvc;
@@ -59,6 +60,7 @@ class LineControllerTest {
     @Test
     public void createLine() throws Exception {
         //given
+        String token = "이것은토큰입니다";
         List<SectionResponse> sections = Arrays.asList(
                 new SectionResponse(
                         1L,
@@ -71,9 +73,13 @@ class LineControllerTest {
         LineResponse lineResponse = new LineResponse(1L, "2호선", "bg-green-200",
                 sections
         );
+        given(jwtTokenProvider.validateToken(token))
+                .willReturn(true);
         given(lineService.saveLine(any(LineRequest.class))).willReturn(lineResponse);
+
         //when
         mockMvc.perform(post("/api/lines")
+                .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(lineRequest))
         )
@@ -94,6 +100,7 @@ class LineControllerTest {
                         preprocessResponse(prettyPrint())
                 ));
     }
+
     @DisplayName("전체 노선 조회 - 성공")
     @Test
     public void findAllLines() throws Exception {
@@ -153,10 +160,15 @@ class LineControllerTest {
         final TestDataLoader testDataLoader = new TestDataLoader();
         final Line 신분당선 = testDataLoader.신분당선();
         LineUpdateRequest lineUpdateRequest = new LineUpdateRequest(신분당선.getName(), 신분당선.getColor());
+        String token = "이것은토큰입니다";
+        given(jwtTokenProvider.validateToken(token))
+                .willReturn(true);
         given(lineService.updateLine(any(), any()))
                 .willReturn(LineResponse.of(신분당선));
+
         mockMvc.perform(
                 put("/api/lines/1")
+                        .header("Authorization", "Bearer " + token)
                         .content(objectMapper.writeValueAsString(lineUpdateRequest))
                         .contentType(MediaType.APPLICATION_JSON)
         )
@@ -170,9 +182,13 @@ class LineControllerTest {
     @Test
     @DisplayName("노선 삭제 - 성공")
     public void deleteLine() throws Exception {
+        String token = "이것은토큰입니다";
+        given(jwtTokenProvider.validateToken(token))
+                .willReturn(true);
         // when
         mockMvc.perform(
                 delete("/api/lines/1")
+                        .header("Authorization", "Bearer " + token)
         )
                 // then
                 .andExpect(status().isNoContent())
@@ -187,9 +203,13 @@ class LineControllerTest {
     public void createSection() throws Exception {
         // given
         SectionRequest sectionRequest = new SectionRequest(1L, 2L, 5);
+        String token = "이것은토큰입니다";
+        given(jwtTokenProvider.validateToken(token))
+                .willReturn(true);
         // when
         mockMvc.perform(
                 post("/api/lines/1/sections")
+                        .header("Authorization", "Bearer " + token)
                         .content(objectMapper.writeValueAsBytes(sectionRequest))
                         .contentType(MediaType.APPLICATION_JSON)
         )
@@ -204,9 +224,13 @@ class LineControllerTest {
     @DisplayName("구간 삭제 - 성공")
     @Test
     public void removeLineStation() throws Exception {
+        String token = "이것은토큰입니다";
+        given(jwtTokenProvider.validateToken(token))
+                .willReturn(true);
         // when
         mockMvc.perform(
                 delete("/api/lines/1/sections?stationId=1")
+                        .header("Authorization", "Bearer " + token)
         )
                 // then
                 .andExpect(status().isNoContent())

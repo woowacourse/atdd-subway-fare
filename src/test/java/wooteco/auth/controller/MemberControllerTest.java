@@ -10,12 +10,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import wooteco.auth.infrastructure.JwtTokenProvider;
 import wooteco.auth.service.AuthService;
 import wooteco.auth.service.MemberService;
 import wooteco.auth.domain.LoginMember;
 import wooteco.auth.web.dto.MemberRequest;
 import wooteco.auth.web.dto.MemberResponse;
 import wooteco.auth.web.MemberController;
+import wooteco.common.ExceptionAdviceController;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -35,7 +37,7 @@ class MemberControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private AuthService authService;
+    private JwtTokenProvider jwtTokenProvider;
 
     @MockBean
     private MemberService memberService;
@@ -72,8 +74,8 @@ class MemberControllerTest {
         final long id = 1L;
         final String email = "test@email.com";
         final int age = 20;
-        given(authService.findMemberByToken(token))
-                .willReturn(new LoginMember(id, email, age));
+        given(jwtTokenProvider.getPayload(token))
+                .willReturn(Long.toString(id));
         given(memberService.findMember(any(LoginMember.class)))
                 .willReturn(new MemberResponse(id, email, age));
 
@@ -98,8 +100,11 @@ class MemberControllerTest {
         final String email = "test@email.com";
         final int age = 20;
         final int newAge = 29;
-        given(authService.findMemberByToken(token))
-                .willReturn(new LoginMember(id, email, age));
+        given(jwtTokenProvider.getPayload(token))
+                .willReturn(Long.toString(id));
+
+        given(jwtTokenProvider.validateToken(token))
+                .willReturn(true);
 
         given(memberService.updateMember(any(LoginMember.class), any(MemberRequest.class)))
                 .willReturn(new MemberResponse(id, email, newAge));
@@ -126,8 +131,11 @@ class MemberControllerTest {
         long id = 1L;
         String email = "test@email.com";
         int age = 20;
-        given(authService.findMemberByToken(token))
-                .willReturn(new LoginMember(id, email, age));
+        given(jwtTokenProvider.getPayload(token))
+                .willReturn(Long.toString(id));
+
+        given(jwtTokenProvider.validateToken(token))
+                .willReturn(true);
 
         mockMvc.perform(
                 delete("/api/members/me")

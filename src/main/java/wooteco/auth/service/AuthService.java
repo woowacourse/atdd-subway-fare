@@ -23,29 +23,25 @@ public class AuthService {
     }
 
     public TokenResponse login(TokenRequest request) {
-        try {
-            Member member = memberDao.findByEmail(request.getEmail())
-                    .orElseThrow(MemberNotFoundException::new);
-            member.checkPassword(request.getPassword());
-        } catch (Exception e) {
-            throw new AuthorizationException();
-        }
-        String token = jwtTokenProvider.createToken(request.getEmail());
+        Member member = memberDao.findByEmail(request.getEmail())
+                .orElseThrow(AuthorizationException::new);
+        member.checkPassword(request.getPassword());
+        String token = jwtTokenProvider.createToken(String.valueOf(member.getId()));
         return new TokenResponse(token);
     }
 
-    public LoginMember findMemberByToken(String credentials) {
-        if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
-        }
-
-        String email = jwtTokenProvider.getPayload(credentials);
-        try {
-            Member member = memberDao.findByEmail(email)
-                    .orElseThrow(MemberNotFoundException::new);
-            return new LoginMember(member.getId(), member.getEmail(), member.getAge());
-        } catch (Exception e) {
-            return new LoginMember();
-        }
-    }
+//    public LoginMember findMemberByToken(String credentials) {
+//        if (!jwtTokenProvider.validateToken(credentials)) {
+//            return new LoginMember();
+//        }
+//
+//        String email = jwtTokenProvider.getPayload(credentials);
+//        try {
+//            Member member = memberDao.findByEmail(email)
+//                    .orElseThrow(MemberNotFoundException::new);
+//            return new LoginMember(member.getId(), member.getEmail(), member.getAge());
+//        } catch (Exception e) {
+//            return new LoginMember();
+//        }
+//    }
 }

@@ -25,14 +25,14 @@ public class MemberService {
     }
 
     public MemberResponse findMember(LoginMember loginMember) {
-        Member member = memberDao.findByEmail(loginMember.getEmail())
+        Member member = memberDao.findById(loginMember.getId())
                 .orElseThrow(MemberNotFoundException::new);
         return MemberResponse.of(member);
     }
 
     @Transactional
     public MemberResponse updateMember(LoginMember loginMember, MemberRequest memberRequest) {
-        Member member = memberDao.findByEmail(loginMember.getEmail())
+        Member member = memberDao.findById(loginMember.getId())
                 .orElseThrow(MemberNotFoundException::new);
         final Member updatedMember = new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge());
         memberDao.update(updatedMember);
@@ -41,7 +41,7 @@ public class MemberService {
 
     @Transactional
     public void deleteMember(LoginMember loginMember) {
-        Member member = memberDao.findByEmail(loginMember.getEmail())
+        Member member = memberDao.findById(loginMember.getId())
                 .orElseThrow(MemberNotFoundException::new);
         memberDao.deleteById(member.getId());
     }

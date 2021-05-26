@@ -10,6 +10,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import wooteco.auth.infrastructure.JwtTokenProvider;
 import wooteco.auth.service.AuthService;
 import wooteco.auth.web.dto.TokenRequest;
 import wooteco.auth.web.dto.TokenResponse;
@@ -38,6 +39,9 @@ class AuthControllerTest {
 
     @MockBean
     private AuthService authService;
+
+    @MockBean
+    private JwtTokenProvider jwtTokenProvider;
 
     @Test
     @DisplayName("로그인 - 성공")

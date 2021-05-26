@@ -2,27 +2,30 @@ package wooteco.auth.domain;
 
 public class LoginMember {
     private Long id;
-    private String email;
-    private Integer age;
+    private Role role;
 
     public LoginMember() {
     }
 
-    public LoginMember(Long id, String email, Integer age) {
+    public LoginMember(Long id, Role role) {
         this.id = id;
-        this.email = email;
-        this.age = age;
+        this.role = role;
+    }
+
+    public static LoginMember anonymous() {
+        return new LoginMember(null, Role.ANONYMOUS);
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getEmail() {
-        return email;
+    public Role getRole() {
+        return role;
     }
 
-    public Integer getAge() {
-        return age;
+    public boolean isAnonymous() {
+        return role.isAnonymous();
     }
+
 }

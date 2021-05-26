@@ -48,9 +48,11 @@ public class MemberDao {
         jdbcTemplate.update(sql, id);
     }
 
-    public Member findById(Long id) {
+    public Optional<Member> findById(Long id) {
         String sql = "select * from MEMBER where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        return jdbcTemplate.query(sql, rowMapper, id)
+                .stream()
+                .findAny();
     }
 
 //    public Member findByEmail(String email) {
@@ -60,7 +62,8 @@ public class MemberDao {
 
     public Optional<Member> findByEmail(String email) {
         String sql = "select * from MEMBER where email = ?";
-        return jdbcTemplate.query(sql, rowMapper, email).stream()
+        return jdbcTemplate.query(sql, rowMapper, email)
+                .stream()
                 .findAny();
     }
 }

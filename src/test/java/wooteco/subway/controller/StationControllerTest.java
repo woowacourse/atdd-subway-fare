@@ -11,6 +11,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import wooteco.auth.infrastructure.JwtTokenProvider;
 import wooteco.common.ExceptionAdviceController;
 import wooteco.auth.service.AuthService;
 import wooteco.common.exception.badrequest.DuplicateNameException;
@@ -45,7 +46,7 @@ class StationControllerTest {
     private StationService stationService;
 
     @MockBean
-    private AuthService authService;
+    private JwtTokenProvider jwtTokenProvider;
 
     @Test
     @DisplayName("역 생성 - 성공")
@@ -53,10 +54,15 @@ class StationControllerTest {
         //given
         StationRequest stationRequest = new StationRequest("잠실역");
         StationResponse stationResponse = new StationResponse(1L, "잠실역");
+        String token = "이것은토큰입니다";
+
+        given(jwtTokenProvider.validateToken(token))
+                .willReturn(true);
         given(stationService.saveStation(any(StationRequest.class)))
                 .willReturn(stationResponse);
 
         mockMvc.perform(post("/api/stations")
+                .header("Authorization", "Bearer " + token)
                 .content(objectMapper.writeValueAsString(stationRequest))
                 .contentType(MediaType.APPLICATION_JSON)
         )
@@ -105,10 +111,15 @@ class StationControllerTest {
     public void updateStation() throws Exception {
         StationRequest stationRequest = new StationRequest("잠실역");
         StationResponse stationResponse = new StationResponse(1L, "잠실역");
+        String token = "이것은토큰입니다";
+
+        given(jwtTokenProvider.validateToken(token))
+                .willReturn(true);
         given(stationService.updateStation(any(Long.class), any(StationRequest.class)))
                 .willReturn(stationResponse);
 
         mockMvc.perform(put("/api/stations/1")
+                .header("Authorization", "Bearer " + token)
                 .content(objectMapper.writeValueAsString(stationRequest))
                 .contentType(MediaType.APPLICATION_JSON)
         )
@@ -125,11 +136,15 @@ class StationControllerTest {
     @Test
     @DisplayName("역 수정 - 실패(중복 이름)")
     public void updateStations() throws Exception {
+        String token = "이것은토큰입니다";
+        given(jwtTokenProvider.validateToken(token))
+                .willReturn(true);
         given(stationService.updateStation(any(), any()))
                 .willThrow(new DuplicateNameException());
 
         final StationRequest stationRequest = new StationRequest("newName");
         mockMvc.perform(put("/api/stations/1")
+                .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(stationRequest))
         )
@@ -145,8 +160,13 @@ class StationControllerTest {
     @DisplayName("역 삭제 - 성공")
     public void deleteStations() throws Exception {
         //given
+        String token = "이것은토큰입니다";
+        given(jwtTokenProvider.validateToken(token))
+                .willReturn(true);
+
         mockMvc.perform(
                 delete("/api/stations/1")
+                        .header("Authorization", "Bearer " + token)
         )
                 .andExpect(status().isNoContent())
                 .andDo(document("station-delete",
