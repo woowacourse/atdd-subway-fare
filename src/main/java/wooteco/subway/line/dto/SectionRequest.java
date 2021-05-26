@@ -12,7 +12,7 @@ public class SectionRequest {
     @Positive
     private Long downStationId;
     @NotNull(message = "입력되지 않은 항목을 확인해주세요")
-    @Min(value = 0, message = "거리는 0 이상의 숫자를 입력해주세요")
+    @Min(value = 1, message = "거리는 1 이상의 숫자를 입력해주세요")
     private int distance;
 
     public SectionRequest() {

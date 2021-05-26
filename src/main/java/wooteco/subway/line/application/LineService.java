@@ -89,6 +89,8 @@ public class LineService {
 
     public SectionAddResponse addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
+        stationService.existsStation(request.getUpStationId());
+        stationService.existsStation(request.getDownStationId());
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
         line.addSection(upStation, downStation, request.getDistance());
