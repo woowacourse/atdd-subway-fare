@@ -17,7 +17,6 @@ import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -85,11 +84,19 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        int updateRow = lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        validateUpdateRow(updateRow);
     }
 
     public void deleteLineById(Long id) {
-        lineDao.deleteById(id);
+        int updateRow = lineDao.deleteById(id);
+        validateUpdateRow(updateRow);
+    }
+
+    private void validateUpdateRow(int updateRow) {
+        if(updateRow != 1) {
+            throw new SubwayCustomException(LineException.NOT_EXIST_LINE_EXCEPTION);
+        }
     }
 
     public void addLineStation(Long lineId, SectionRequest request) {

@@ -144,7 +144,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_등록되어_있음(신분당선, tokenResponse);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_조회_요청(new LineResponse(3L, "2호선", "RED", new ArrayList<>()), tokenResponse);
+        ExtractableResponse<Response> response = 지하철_노선_조회_요청(new LineResponse(3L, "존재하지않는노선", "RED", new ArrayList<>()), tokenResponse);
 
         // then
         에러_발생함(response, LineException.NOT_EXIST_LINE_EXCEPTION);
@@ -163,6 +163,19 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_수정됨(response);
     }
 
+    @DisplayName("존재하지 않는 지하철 노선을 수정한다.")
+    @Test
+    void updateLineWithNotExistLine() {
+        // given
+        지하철_노선_등록되어_있음(신분당선, tokenResponse);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(new LineResponse(3L, "존재하지않는노선", "RED", new ArrayList<>()), 구신분당선, tokenResponse);
+
+        // then
+        에러_발생함(response, LineException.NOT_EXIST_LINE_EXCEPTION);
+    }
+
     @DisplayName("지하철 노선을 제거한다.")
     @Test
     void deleteLine() {
@@ -174,6 +187,19 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_노선_삭제됨(response);
+    }
+
+    @DisplayName("존재하지 않는 지하철 노선을 제거한다.")
+    @Test
+    void deleteLineWithNotExistLine() {
+        // given
+        지하철_노선_등록되어_있음(신분당선, tokenResponse);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_제거_요청(new LineResponse(3L, "존재하지않는노선", "RED", new ArrayList<>()), tokenResponse);
+
+        // then
+        에러_발생함(response, LineException.NOT_EXIST_LINE_EXCEPTION);
     }
 
     public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance, TokenResponse tokenResponse) {

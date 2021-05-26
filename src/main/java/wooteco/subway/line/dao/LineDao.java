@@ -50,9 +50,9 @@ public class LineDao {
         return mapLine(result);
     }
 
-    public void update(Line newLine) {
+    public int update(Line newLine) {
         String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
+        return jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
     }
 
     public List<Line> findAll() {
@@ -103,8 +103,8 @@ public class LineDao {
                 .collect(Collectors.toList());
     }
 
-    public void deleteById(Long id) {
-        jdbcTemplate.update("delete from Line where id = ?", id);
+    public int deleteById(Long id) {
+        return jdbcTemplate.update("delete from Line where id = ?", id);
     }
 
     public boolean existColor(String color) {
