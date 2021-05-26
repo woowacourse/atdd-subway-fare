@@ -1,6 +1,7 @@
 package wooteco.subway.station.application;
 
 import org.springframework.stereotype.Service;
+import wooteco.subway.exception.deletion.StationCannotDeleteException;
 import wooteco.subway.exception.duplication.StationNameDuplicatedException;
 import wooteco.subway.exception.notfound.StationNotFoundException;
 import wooteco.subway.station.dao.StationDao;
@@ -14,8 +15,6 @@ import java.util.stream.Collectors;
 @Service
 public class StationService {
     private StationDao stationDao;
-    // private LineService lineService;
-
 
     public StationService(StationDao stationDao) {
         this.stationDao = stationDao;
@@ -42,9 +41,9 @@ public class StationService {
 
     public void deleteStationById(Long id) {
         findStationById(id);
-//        if (lineService.countsStationsById(id) > 0) {
-//            throw new StationCannotDeleteException();
-//        }
+        if (stationDao.countsStationById(id) > 0) {
+            throw new StationCannotDeleteException();
+        }
         stationDao.deleteById(id);
     }
 
