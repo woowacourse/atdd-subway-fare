@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
@@ -21,11 +22,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
 @DisplayName("지하철 노선 관련 기능")
+@Sql("classpath:tableInit.sql")
 public class LineAcceptanceTest extends AcceptanceTest {
     private StationResponse 강남역;
     private StationResponse downStation;
     private LineRequest lineRequest1;
     private LineRequest lineRequest2;
+    private LineRequest lineRequest3;
+    private LineRequest lineRequest4;
 
     @BeforeEach
     public void setUp() {
@@ -37,6 +41,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 10);
         lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 15);
+        lineRequest3 = new LineRequest("abc1", "bg-red-600", 강남역.getId(), downStation.getId(), 15);
+        lineRequest4 = new LineRequest("", "bg-red-600", 강남역.getId(), downStation.getId(), 15);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -47,6 +53,26 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_노선_생성됨(response);
+    }
+
+    @DisplayName("영어가 섞인 이름으로 노선을 생성한다.")
+    @Test
+    void createLine2() {
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest3);
+
+        // then
+        지하철_노선_생성_실패됨(response);
+    }
+
+    @DisplayName("빈칸으로 노선을 생성한다.")
+    @Test
+    void createLine3() {
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest4);
+
+        // then
+        지하철_노선_생성_실패됨(response);
     }
 
     @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")

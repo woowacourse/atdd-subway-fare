@@ -21,6 +21,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class StationAcceptanceTest extends AcceptanceTest {
     private static final String 강남역 = "강남역";
     private static final String 역삼역 = "역삼역";
+    private static final String abc = "abc";
+    private static final String _ = "1";
 
     @DisplayName("지하철역을 생성한다.")
     @Test
@@ -40,6 +42,26 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response = 지하철역_생성_요청(강남역);
+
+        // then
+        지하철역_생성_실패됨(response);
+    }
+
+    @DisplayName("영어 이름으로 지하철역을 생성한다.")
+    @Test
+    void createStationWithNotSatisfyPattern() {
+        // given-when
+        ExtractableResponse<Response> response = 지하철역_생성_요청(abc);
+
+        // then
+        지하철역_생성_실패됨(response);
+    }
+
+    @DisplayName("한글자로 지하철역을 생성한다.")
+    @Test
+    void createStationWithNotSatisfyPattern2() {
+        // given-when
+        ExtractableResponse<Response> response = 지하철역_생성_요청(_);
 
         // then
         지하철역_생성_실패됨(response);
