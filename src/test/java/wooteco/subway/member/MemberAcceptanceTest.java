@@ -5,6 +5,9 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
@@ -38,6 +41,15 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
         중복된_이메일은_생성_수정_불가(createResponse);
+    }
+
+    @DisplayName("잘못된 이메일을 보내면 에러가 발생한다.")
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = {"", "abc", "abc@jj", "@amd.com", " ", " ab @ naver. com"})
+    void createMemberWithInvalidEmail(String email) {
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(email, PASSWORD, AGE);
+        이메일_형식에_맞지_않은_이메일은_생성_수정_불가(createResponse);
     }
 
     @DisplayName("토큰을 이용하여 정보를 조회한다.")
@@ -92,6 +104,13 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .isEqualTo(MemberException.DUPLICATED_EMAIL_EXCEPTION.status());
         assertThat(response.body().asString())
                 .isEqualTo(MemberException.DUPLICATED_EMAIL_EXCEPTION.message());
+    }
+
+    private void 이메일_형식에_맞지_않은_이메일은_생성_수정_불가(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode())
+                .isEqualTo(MemberException.INVALID_EMAIL.status());
+        assertThat(response.body().asString())
+                .isEqualTo(MemberException.INVALID_EMAIL.message());
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
