@@ -89,4 +89,7 @@ public class LineService {
         sectionDao.insertSections(line);
     }
 
+    public int countsStationsById(Long id) {
+        return sectionDao.countsStationById(id);
+    }
 }

@@ -148,4 +148,24 @@ public class StationAcceptanceTest extends AcceptanceTest {
         // then
         지하철역_삭제됨(response);
     }
+
+    @DisplayName("지하철역을 수정한다.")
+    @Test
+    void updateStation() {
+        // given
+        StationResponse stationResponse = 지하철역_등록되어_있음(강남역, loginToken);
+        StationRequest stationRequest = new StationRequest("잠실송파역");
+
+        // when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .auth().oauth2(loginToken)
+                .body(stationRequest)
+                .when().put("/stations/" + stationResponse.getId())
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
 }
