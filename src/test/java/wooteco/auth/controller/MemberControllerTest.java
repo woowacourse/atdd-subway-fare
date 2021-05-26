@@ -10,20 +10,19 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import wooteco.auth.infrastructure.JwtTokenProvider;
-import wooteco.auth.service.AuthService;
-import wooteco.auth.service.MemberService;
 import wooteco.auth.domain.LoginMember;
+import wooteco.auth.infrastructure.JwtTokenProvider;
+import wooteco.auth.service.MemberService;
+import wooteco.auth.web.MemberController;
 import wooteco.auth.web.dto.MemberRequest;
 import wooteco.auth.web.dto.MemberResponse;
-import wooteco.auth.web.MemberController;
-import wooteco.common.ExceptionAdviceController;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = MemberController.class)
@@ -60,6 +59,7 @@ class MemberControllerTest {
         )
                 .andExpect(status().isCreated())
                 .andExpect(header().exists("Location"))
+                .andDo(print())
                 .andDo(document("member-create",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint())
