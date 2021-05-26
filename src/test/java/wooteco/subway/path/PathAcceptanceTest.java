@@ -70,15 +70,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_구간_등록되어_있음(삼호선, 교대역, 남부터미널역, 3, tokenResponse);
     }
 
-    @DisplayName("두 역의 최단 거리 경로를 조회한다.")
+    @DisplayName("두 역의 최단 거리 경로, 요금을 조회한다.")
     @Test
     void findPathByDistance() {
         //when
-        ExtractableResponse<Response> response = 거리_경로_조회_요청(3L, 2L);
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(교대역.getId(), 양재역.getId());
 
         //then
         적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
         총_거리가_응답됨(response, 5);
+        총_요금이_응답됨(response, 1250);
     }
 
     @DisplayName("departure와 arrival가 같은경우 예외가 발생한다.")
@@ -137,6 +138,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public static void 총_거리가_응답됨(ExtractableResponse<Response> response, int totalDistance) {
         PathResponse pathResponse = response.as(PathResponse.class);
         assertThat(pathResponse.getDistance()).isEqualTo(totalDistance);
+    }
+
+    private void 총_요금이_응답됨(ExtractableResponse<Response> response, int expectedFare) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getFare()).isEqualTo(expectedFare);
     }
 
     private void 거리_경로_조회_요청_실패(ExtractableResponse<Response> response) {

@@ -24,4 +24,12 @@ public class SubwayPath {
     public int calculateDistance() {
         return sectionEdges.stream().mapToInt(it -> it.getSection().getDistance()).sum();
     }
+
+    public int calculateFare() {
+        int distance = calculateDistance();
+        if (distance <= 10) {
+            return 1250;
+        }
+        return 1250 + (int) ((Math.ceil((distance - 1) / 5) + 1) * 100);
+    }
 }
