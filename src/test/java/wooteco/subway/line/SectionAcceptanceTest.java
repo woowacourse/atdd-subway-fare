@@ -87,6 +87,16 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         assertThat(response.as(ExceptionResponse.class).getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
+    @DisplayName("등록 - 등록하려는 구간의 거리가 기존 구간보다 긴 경우 예외를 던진다.")
+    @Test
+    void addLineSectionWhenLongerDistance() {
+        // when
+        ExtractableResponse<Response> response = 지하철_구간_생성_요청(사용자, 신분당선, 강남역, 양재역, 11);
+
+        // then
+        assertThat(response.as(ExceptionResponse.class).getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
     @DisplayName("지하철 노선에 여러개의 역을 순서 상관 없이 등록한다.")
     @Test
     void addLineSection2() {
@@ -98,7 +108,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         지하철_구간_생성됨(response, 신분당선, Arrays.asList(정자역, 강남역, 양재역, 광교역));
     }
 
-    @DisplayName("지하철 노선에 이미 등록되어있는 역을 등록한다.")
+    @DisplayName("등록 - 지하철 노선에 이미 등록되어있는 역을 등록 요청시 예외를 던진다.")
     @Test
     void addLineSectionWithSameStation() {
         // when

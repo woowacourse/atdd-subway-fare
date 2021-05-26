@@ -53,7 +53,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_생성됨(response);
     }
 
-    @DisplayName("생성 - 구간이 존재하지 않는 역인 경우.")
+    @DisplayName("생성 - 구간이 존재하지 않는 역인 경우 예외를 던진다.")
     @Test
     void createLineWhenNotValidMember() {
         // when
@@ -65,11 +65,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(response.as(ExceptionResponse.class).getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
-    @DisplayName("생성 - 구간이 존재하지 않는 역인 경우.")
+    @DisplayName("생성 - 구간이 존재하지 않는 역인 경우 예외를 던진다.")
     @Test
-    void createLineWhenNotValidDistance() {
+    void createLineWhenSameStationsInSection() {
         // when
-        LineRequest 구호선 = new LineRequest("구호선", "황금색", 광교역.getId(), 3L, 0);
+        LineRequest 구호선 = new LineRequest("구호선", "황금색", 광교역.getId(), 광교역.getId(), 4);
 
         ExtractableResponse<Response> response = 지하철_노선_생성_요청(사용자, 구호선);
 
@@ -87,7 +87,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         비회원_요청_실패됨(response);
     }
 
-    @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
+    @DisplayName("생성 - 기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성 시 예외를 던진다.")
     @Test
     void createLineWithDuplicateName() {
         // given

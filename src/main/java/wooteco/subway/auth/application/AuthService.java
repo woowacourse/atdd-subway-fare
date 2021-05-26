@@ -37,7 +37,7 @@ public class AuthService {
             throw new AuthorizationException("다시 로그인 후 시도해주세요");
         }
 
-        String email = jwtTokenProvider.getPayload(credentials);
+        String email = jwtTokenProvider.getEmail(credentials);
         try {
             Member member = memberDao.findByEmail(email);
             return new LoginMember(member.getId(), member.getEmail(), member.getAge());

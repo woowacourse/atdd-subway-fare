@@ -2,6 +2,7 @@ package wooteco.subway.line.application;
 
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import wooteco.subway.exception.InvalidInsertException;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
@@ -31,7 +32,7 @@ public class LineService {
             persistLine.addSection(addInitSection(persistLine, request));
             return LineResponse.of(persistLine);
         } catch (DuplicateKeyException e) {
-            throw new IllegalArgumentException("지하철 노선 이름이 이미 존재합ㄴ디ㅏ");
+            throw new IllegalArgumentException("지하철 노선 이름이 이미 존재합니다");
         }
     }
 
@@ -39,10 +40,17 @@ public class LineService {
         if (request.getUpStationId() != null && request.getDownStationId() != null) {
             Station upStation = stationService.findStationById(request.getUpStationId());
             Station downStation = stationService.findStationById(request.getDownStationId());
+            validateStationsInSection(upStation, downStation);
             Section section = new Section(upStation, downStation, request.getDistance());
             return sectionDao.insert(line, section);
         }
         return null;
+    }
+
+    private void validateStationsInSection(Station upStation, Station downStation) {
+        if (upStation.equals(downStation)) {
+            throw new InvalidInsertException("유효하지 않는 요청 값입니다");
+        }
     }
 
     public List<LineResponse> findLineResponses() {

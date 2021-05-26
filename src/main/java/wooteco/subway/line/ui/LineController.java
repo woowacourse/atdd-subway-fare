@@ -1,6 +1,5 @@
 package wooteco.subway.line.ui;
 
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
@@ -25,7 +24,8 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity createLine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody @Valid LineRequest lineRequest) {
+    public ResponseEntity createLine(@AuthenticationPrincipal LoginMember loginMember,
+                                     @RequestBody @Valid LineRequest lineRequest) {
         LineResponse line = lineService.saveLine(lineRequest);
         return ResponseEntity.created(URI.create("/api/lines/" + line.getId())).body(line);
     }
@@ -41,7 +41,8 @@ public class LineController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity updateLine(@AuthenticationPrincipal LoginMember loginMember, @PathVariable Long id, @RequestBody @Valid LineRequest lineUpdateRequest) {
+    public ResponseEntity updateLine(@AuthenticationPrincipal LoginMember loginMember,
+                                     @PathVariable Long id, @RequestBody @Valid LineRequest lineUpdateRequest) {
         LineUpdateResponse response = lineService.updateLine(id, lineUpdateRequest);
         return ResponseEntity.ok().body(response);
     }
@@ -53,13 +54,15 @@ public class LineController {
     }
 
     @PostMapping("/{lineId}/sections")
-    public ResponseEntity addLineStation(@AuthenticationPrincipal LoginMember loginMember, @PathVariable Long lineId, @RequestBody @Valid SectionRequest sectionRequest) {
+    public ResponseEntity addLineStation(@AuthenticationPrincipal LoginMember loginMember,
+                                         @PathVariable Long lineId, @RequestBody @Valid SectionRequest sectionRequest) {
         SectionResponse sectionResponse = lineService.addLineStation(lineId, sectionRequest);
         return ResponseEntity.ok().body(sectionResponse);
     }
 
     @DeleteMapping("/{lineId}/sections")
-    public ResponseEntity removeLineStation(@AuthenticationPrincipal LoginMember loginMember, @PathVariable Long lineId, @RequestParam Long stationId) {
+    public ResponseEntity removeLineStation(@AuthenticationPrincipal LoginMember loginMember,
+                                            @PathVariable Long lineId, @RequestParam Long stationId) {
         lineService.removeLineStation(lineId, stationId);
         return ResponseEntity.noContent().build();
     }

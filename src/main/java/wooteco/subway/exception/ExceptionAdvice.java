@@ -39,7 +39,7 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(InvalidInsertException.class)
     public ResponseEntity handleInvalidInsertException(InvalidInsertException e) {
-        ExceptionResponse exceptionRes = new ExceptionResponse(e.getMessage(), HttpStatus.NOT_FOUND.value());
+        ExceptionResponse exceptionRes = new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST.value());
         return ResponseEntity.badRequest().body(exceptionRes);
     }
 
