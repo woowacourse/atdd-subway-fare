@@ -44,7 +44,7 @@ public class StationController {
     }
 
     @ExceptionHandler(SQLException.class)
-    public ResponseEntity handleSQLException() {
-        return ResponseEntity.badRequest().build();
+    public ResponseEntity handleSQLException(SQLException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 }
