@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.station.domain.Station;
 
 @Repository
@@ -49,5 +50,15 @@ public class StationDao {
     public Station findById(Long id) {
         String sql = "select * from STATION where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    }
+
+    public boolean existsById(Long id) {
+        String sql = "select exists(select * from STATION where id = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, id);
+    }
+
+    public boolean existsByName(String name) {
+        String sql = "select exists(select * from STATION where name = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, name);
     }
 }

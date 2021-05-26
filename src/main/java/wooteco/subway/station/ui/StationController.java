@@ -23,11 +23,9 @@ import wooteco.subway.station.dto.StationResponse;
 public class StationController {
 
     private final StationService stationService;
-    private final LineService lineService;
 
-    public StationController(StationService stationService, LineService lineService) {
+    public StationController(StationService stationService) {
         this.stationService = stationService;
-        this.lineService = lineService;
     }
 
     @PostMapping("/stations")
@@ -43,7 +41,6 @@ public class StationController {
 
     @DeleteMapping("/stations/{id}")
     public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
-        lineService.deleteSectionHasStationInEveryLine(id);
         stationService.deleteStationById(id);
         return ResponseEntity.noContent().build();
     }
