@@ -71,8 +71,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         정자역 = 지하철역_등록되어_있음_외부토큰(tokenResponse, "정자역");
 
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음_외부토큰(tokenResponse, "신분당선", "bg-red-600", 강남역, 정자역, 300, 10);
-        이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음_외부토큰(tokenResponse, "이호선", "bg-yellow-600", 교대역, 강남역, 500, 10);
-        삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음_외부토큰(tokenResponse, "삼호선", "bg-blue-600", 교대역, 양재역, 0, 5);
+        이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음_외부토큰(tokenResponse, "이호선", "bg-blue-600", 교대역, 강남역, 500, 10);
+        삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음_외부토큰(tokenResponse, "삼호선", "bg-yellow-600", 교대역, 양재역, 0, 5);
 
         지하철_구간_등록되어_있음_외부토큰(tokenResponse, 삼호선, 교대역, 남부터미널역, 3);
         지하철_구간_등록되어_있음_외부토큰(tokenResponse, 신분당선, 강남역, 양재역, 8);

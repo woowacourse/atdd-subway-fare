@@ -20,6 +20,9 @@ public class MemberService {
 
     @Transactional
     public MemberResponse createMember(MemberRequest request) {
+        if (memberDao.existEmail(request.getEmail())) {
+            throw new DuplicateMemberEmailException("중복된 이메일이 있습니다.");
+        }
         Member member = memberDao.insert(request.toMember());
         return MemberResponse.of(member);
     }
