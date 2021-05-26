@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
+import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음_추가요금_포함;
 import static wooteco.subway.line.SectionAcceptanceTest.지하철_구간_등록되어_있음;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
@@ -90,7 +91,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @ParameterizedTest
     @CsvSource(value = {"11:1350", "50:2050", "51:2150", "58:2150", "59:2250"}, delimiter = ':')
     void findFare(int distance, int fare) {
-        StationResponse 노량진역 = 지하철역_등록되어_있음("노량진");
+        //given
+        StationResponse 노량진역 = 지하철역_등록되어_있음("노량진역");
         StationResponse 여의도역 = 지하철역_등록되어_있음("여의도역");
 
         LineResponse 육호선 = 지하철_노선_등록되어_있음("육호선", "bg-red-600", 노량진역, 여의도역, distance);
@@ -98,7 +100,36 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //when
         ExtractableResponse<Response> response = 거리_경로_조회_요청(노량진역.getId(), 여의도역.getId());
 
-        //ten
+        //then
+        적절한_요금_응답됨(response, fare);
+    }
+
+
+    /**
+     *                     태평역
+     *                      |
+     *                   *파란선*
+     *                      |
+     * 석수역 -- *노란선* --- 군포역  --- *파란선* ---  수진역
+     */
+    @DisplayName("파랑 노선 : 2000원, 노란 노선 : 3000원, 석수 -> 수진역으로 갈 때 11/50/51/58/59km 체크")
+    @ParameterizedTest
+    @CsvSource(value = {"6:5:4350", "25:25:5050", "25:26:5150", "29:29:5150", "30:29:5250"}, delimiter = ':')
+    void 추가된_요금_정책을_계산한다(int 군포역_수진역_거리, int 석수역_군포역_거리, int fare) {
+        // given
+        StationResponse 태평역 = 지하철역_등록되어_있음("태평역");
+        StationResponse 군포역 = 지하철역_등록되어_있음("군포역");
+        StationResponse 수진역 = 지하철역_등록되어_있음("수진역");
+        StationResponse 석수역 = 지하철역_등록되어_있음("석수역");
+
+        LineResponse 파란선 = 지하철_노선_등록되어_있음_추가요금_포함("파란선", "bg-red-600", 2000, 태평역, 군포역, 10);
+        지하철_구간_등록되어_있음(파란선, 군포역, 수진역, 군포역_수진역_거리);
+        LineResponse 노란선 = 지하철_노선_등록되어_있음_추가요금_포함("노란선", "bg-red-600", 3000, 석수역, 군포역, 석수역_군포역_거리);
+
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(석수역.getId(), 수진역.getId());
+
+        //then
         적절한_요금_응답됨(response, fare);
     }
 

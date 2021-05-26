@@ -23,6 +23,15 @@ public class SubwayPath {
     }
 
     public int getExtraFare() {
+        int fare = totalFare();
+        int maxExtraLineFare = sectionEdges.stream()
+                .mapToInt(sectionEdges -> sectionEdges.getLine().getExtraFare())
+                .max()
+                .orElse(0);
+        return fare + maxExtraLineFare;
+    }
+
+    private int totalFare() {
         int distance = calculateDistance();
         if (distance <= 10) {
             return 1250;

@@ -227,7 +227,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
     }
 
     public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
-        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance);
+        return 지하철_노선_등록되어_있음_추가요금_포함(name, color, 0, upStation, downStation, distance);
+    }
+
+    public static LineResponse 지하철_노선_등록되어_있음_추가요금_포함(String name, String color, int extraFare, StationResponse upStation, StationResponse downStation, int distance) {
+        LineRequest lineRequest = new LineRequest(name, color, extraFare, upStation.getId(), downStation.getId(), distance);
         return 지하철_노선_등록되어_있음(lineRequest);
     }
 
