@@ -12,6 +12,8 @@ import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.dto.StationRequest;
 
+import java.util.NoSuchElementException;
+
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
@@ -38,5 +40,14 @@ public class LineServiceTest {
         assertThatThrownBy(() -> lineService.saveLine(new LineRequest("2호선", "black", 3L, 4L, 20)))
                 .isInstanceOf(DuplicateNameException.class)
                 .hasMessage("이미 존재하는 노선입니다.");
+    }
+
+
+    @DisplayName("존재하지 않는 지하철 노선을 검색할 시 NoSuchElementException이 발생한다.")
+    @Test
+    void throw_NoSuchElementException_When_Find_NonExists() {
+        assertThatThrownBy(() -> lineService.findLineById(1L))
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessage("존재하지 않는 노선입니다.");
     }
 }

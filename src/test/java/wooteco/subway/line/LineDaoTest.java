@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.domain.Line;
@@ -35,5 +36,12 @@ public class LineDaoTest {
         lineDao.insert(new Line("신분당선", "bg-red-600", 1200));
         assertThatThrownBy(() -> lineDao.insert(new Line("신분당선", "black", 1200)))
                 .isInstanceOf(DuplicateKeyException.class);
+    }
+
+    @DisplayName("존재하지 않는 지하철 노선을 검색할 시 RuntimeException이 발생한다.")
+    @Test
+    void throw_NoSuchElementException_When_Find_NonExists() {
+        assertThatThrownBy(() -> lineDao.findById(1L))
+                .isInstanceOf(RuntimeException.class);
     }
 }
