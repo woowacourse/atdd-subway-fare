@@ -19,7 +19,11 @@ public class TransferLineResponse {
     }
 
     public static TransferLineResponse of(Line line) {
-        return new TransferLineResponse(line.getId(), line.getName(), line.getName());
+        return new TransferLineResponse(line.getId(), line.getName(), line.getColor());
+    }
+
+    public static TransferLineResponse of(Long id, String name, String color) {
+        return new TransferLineResponse(id, name, color);
     }
 
     public Long getId() {
