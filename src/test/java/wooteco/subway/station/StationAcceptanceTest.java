@@ -5,9 +5,12 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.exception.ExceptionResponse;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
@@ -30,6 +33,20 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철역_생성됨(response);
+    }
+
+    @DisplayName("옳지 않은 이름으로 지하철역을 생성한다.")
+    @ParameterizedTest
+    @ValueSource(strings = {"", "강남역!", "  "})
+    void createInvalidStation(String name) {
+        // when
+        ExtractableResponse<Response> response = 지하철역_생성_요청(name);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
+        assertThat(exceptionResponse.getError()).isEqualTo("INVALID_NAME");
     }
 
     @DisplayName("기존에 존재하는 지하철역 이름으로 지하철역을 생성한다.")

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import wooteco.subway.exception.ExceptionResponse;
 import wooteco.subway.exception.InvalidInputException;
+import wooteco.subway.exception.InvalidNameException;
 import wooteco.subway.exception.SubwayException;
 
 @ControllerAdvice
@@ -23,7 +24,11 @@ public class SubwayControllerAdvice {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ExceptionResponse> validExceptionHandle(MethodArgumentNotValidException e) {
         String message = Objects.requireNonNull(e.getBindingResult().getFieldError()).getDefaultMessage();
-        ExceptionResponse exceptionResponse = new ExceptionResponse(new InvalidInputException(message));
+        if(message.contains("이메일") || message.contains("비밀번호") || message.contains("나이")) {
+            ExceptionResponse exceptionResponse = new ExceptionResponse(new InvalidInputException(message));
+            return ResponseEntity.badRequest().body(exceptionResponse);
+        }
+        ExceptionResponse exceptionResponse = new ExceptionResponse(new InvalidNameException(message));
         return ResponseEntity.badRequest().body(exceptionResponse);
     }
 }

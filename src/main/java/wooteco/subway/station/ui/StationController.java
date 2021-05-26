@@ -11,6 +11,8 @@ import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
 
+import javax.validation.Valid;
+
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class StationController {
@@ -21,7 +23,7 @@ public class StationController {
     }
 
     @PostMapping("/stations")
-    public ResponseEntity<StationResponse> createStation(@RequestBody StationRequest stationRequest) {
+    public ResponseEntity<StationResponse> createStation(@RequestBody @Valid StationRequest stationRequest) {
         StationResponse station = stationService.saveStation(stationRequest);
         return ResponseEntity.created(URI.create("/stations/" + station.getId())).body(station);
     }
