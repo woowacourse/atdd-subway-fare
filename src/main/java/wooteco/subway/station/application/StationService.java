@@ -1,5 +1,7 @@
 package wooteco.subway.station.application;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -9,13 +11,11 @@ import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
-
-import java.util.List;
-import java.util.stream.Collectors;
 import wooteco.subway.station.exception.SubwayStationException;
 
 @Service
 public class StationService {
+
     private final StationDao stationDao;
 
     public StationService(StationDao stationDao) {
@@ -43,8 +43,8 @@ public class StationService {
         List<Station> stations = stationDao.findAll();
 
         return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+            .map(StationResponse::of)
+            .collect(Collectors.toList());
     }
 
     public void deleteStationById(Long id) {

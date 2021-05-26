@@ -156,17 +156,14 @@ public class StationAcceptanceTest extends AcceptanceTest {
         StationResponse stationResponse1 = 지하철역_등록되어_있음(강남역, tokenResponse);
         StationResponse stationResponse2 = 지하철역_등록되어_있음(역삼역, tokenResponse);
 
-        LineAcceptanceTest.지하철_노선_등록되어_있음("2호선", "녹색", stationResponse1, stationResponse2, 10, tokenResponse);
-        
+        LineAcceptanceTest
+            .지하철_노선_등록되어_있음("2호선", "녹색", stationResponse1, stationResponse2, 10, tokenResponse);
+
         // when
         ExtractableResponse<Response> response = 지하철역_제거_요청(stationResponse1, tokenResponse);
 
         // then
         에러가_발생한다(response, SubwayStationException.DELETE_USE_STATION_EXCEPTION);
-    }
-
-    public static StationResponse 지하철역_등록되어_있음(String name) {
-        return 지하철역_생성_요청(name).as(StationResponse.class);
     }
 
     public static StationResponse 지하철역_등록되어_있음(String name, TokenResponse tokenResponse) {
@@ -187,19 +184,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    public static ExtractableResponse<Response> 지하철역_생성_요청(String name) {
-        StationRequest stationRequest = new StationRequest(name);
-
-        return RestAssured
-            .given().log().all()
-            .body(stationRequest)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().post("/stations")
-            .then().log().all()
-            .extract();
-    }
-
-    public static ExtractableResponse<Response> 지하철역_목록_조회_요청(TokenResponse tokenResponse) {
+    private ExtractableResponse<Response> 지하철역_목록_조회_요청(TokenResponse tokenResponse) {
         return RestAssured
             .given().log().all()
             .auth().oauth2(tokenResponse.getAccessToken())
@@ -208,7 +193,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    public static ExtractableResponse<Response> 지하철역_제거_요청(StationResponse stationResponse,
+    private ExtractableResponse<Response> 지하철역_제거_요청(StationResponse stationResponse,
         TokenResponse tokenResponse) {
         return RestAssured
             .given().log().all()
@@ -218,23 +203,23 @@ public class StationAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    public static void 지하철역_생성됨(ExtractableResponse response) {
+    private void 지하철역_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
     }
 
-    public static void 지하철역_목록_응답됨(ExtractableResponse<Response> response) {
+    private void 지하철역_목록_응답됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static void 지하철역_삭제됨(ExtractableResponse<Response> response) {
+    private void 지하철역_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    public static void 지하철역_목록_포함됨(ExtractableResponse<Response> response,
+    private void 지하철역_목록_포함됨(ExtractableResponse<Response> response,
         List<StationResponse> createdResponses) {
         List<Long> expectedLineIds = createdResponses.stream()
-            .map(it -> it.getId())
+            .map(StationResponse::getId)
             .collect(Collectors.toList());
 
         List<Long> resultLineIds = response.jsonPath().getList(".", StationResponse.class).stream()

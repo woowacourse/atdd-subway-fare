@@ -1,12 +1,11 @@
 package wooteco.subway.line.domain;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 import wooteco.subway.exception.SubwayCustomException;
 import wooteco.subway.line.exception.SubwayLineException;
 import wooteco.subway.station.domain.Station;
-
-import java.util.List;
 
 public class Line {
 
@@ -83,7 +82,7 @@ public class Line {
         return color;
     }
 
-    public Sections getSections() {
-        return sections;
+    public List<Section> getSections() {
+        return sections.getSections();
     }
 }

@@ -1,11 +1,11 @@
 package wooteco.subway.line.domain;
 
 import wooteco.subway.exception.SubwayCustomException;
-import wooteco.subway.line.exception.SubwayLineException;
 import wooteco.subway.line.exception.SubwaySectionException;
 import wooteco.subway.station.domain.Station;
 
 public class Section {
+
     private Long id;
     private Station upStation;
     private Station downStation;
@@ -32,7 +32,8 @@ public class Section {
 
     private void validateDistance(int distance) {
         if (distance <= 0) {
-            throw new SubwayCustomException(SubwaySectionException.INVALID_SECTION_DISTANCE_EXCEPTION);
+            throw new SubwayCustomException(
+                SubwaySectionException.INVALID_SECTION_DISTANCE_EXCEPTION);
         }
     }
 

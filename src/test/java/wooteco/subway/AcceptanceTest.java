@@ -16,6 +16,7 @@ import wooteco.subway.exception.SubwayException;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @ActiveProfiles("test")
 public class AcceptanceTest {
+
     @LocalServerPort
     int port;
 
@@ -24,7 +25,8 @@ public class AcceptanceTest {
         RestAssured.port = port;
     }
 
-    protected void 에러가_발생한다(ExtractableResponse<Response> response, SubwayException subwayException) {
+    protected void 에러가_발생한다(ExtractableResponse<Response> response,
+        SubwayException subwayException) {
         assertThat(response.statusCode()).isEqualTo(subwayException.status());
         assertThat(response.body().asString()).isEqualTo(subwayException.message());
     }

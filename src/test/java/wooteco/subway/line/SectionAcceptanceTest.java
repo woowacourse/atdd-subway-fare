@@ -120,7 +120,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @ValueSource(ints = {10, 11})
     void addLineSectionWithIllegalDistance(int distance) {
         // when
-        ExtractableResponse<Response> response = 지하철_구간_생성_요청(신분당선, 강남역, 양재역, distance, tokenResponse);
+        ExtractableResponse<Response> response = 지하철_구간_생성_요청(신분당선, 강남역, 양재역, distance,
+            tokenResponse);
 
         // then
         에러가_발생한다(response, SubwaySectionException.INVALID_SECTION_DATA_EXCEPTION);
@@ -132,7 +133,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 지하철_구간_생성_요청(LineResponse line,
-        StationResponse upStation, StationResponse downStation, int distance, TokenResponse tokenResponse) {
+        StationResponse upStation, StationResponse downStation, int distance,
+        TokenResponse tokenResponse) {
         SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(),
             distance);
 
@@ -146,7 +148,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    public static void 지하철_노선에_지하철역_순서_정렬됨(ExtractableResponse<Response> response,
+    private void 지하철_노선에_지하철역_순서_정렬됨(ExtractableResponse<Response> response,
         List<StationResponse> expectedStations) {
         LineResponse line = response.as(LineResponse.class);
         List<Long> stationIds = line.getStations().stream()
@@ -179,7 +181,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     }
 
     private void 지하철_노선에_지하철역_제외됨(ExtractableResponse<Response> result,
-        LineResponse lineResponse, List<StationResponse> stationResponses, TokenResponse tokenResponse) {
+        LineResponse lineResponse, List<StationResponse> stationResponses,
+        TokenResponse tokenResponse) {
         assertThat(result.statusCode()).isEqualTo(HttpStatus.OK.value());
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(lineResponse, tokenResponse);
         지하철_노선에_지하철역_순서_정렬됨(response, stationResponses);

@@ -15,6 +15,7 @@ import wooteco.subway.exception.SubwayCustomException;
 import wooteco.subway.member.domain.LoginMember;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
+
     private final AuthService authService;
 
     public AuthenticationPrincipalArgumentResolver(AuthService authService) {
@@ -27,7 +28,8 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
+        NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String credentials = AuthorizationExtractor.extract(
             Objects.requireNonNull(webRequest.getNativeRequest(HttpServletRequest.class)));
         LoginMember member = authService.findMemberByToken(credentials);

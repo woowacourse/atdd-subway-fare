@@ -15,12 +15,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
-import wooteco.subway.auth.exception.SubwayAuthException;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 import wooteco.subway.member.exception.SubwayMemberException;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
+
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
     public static final int AGE = 20;
@@ -130,7 +130,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {
+    private ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {
         return RestAssured
             .given().log().all()
             .auth().oauth2(tokenResponse.getAccessToken())
@@ -141,7 +141,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    public static ExtractableResponse<Response> 내_회원_정보_수정_요청(TokenResponse tokenResponse,
+    private ExtractableResponse<Response> 내_회원_정보_수정_요청(TokenResponse tokenResponse,
         String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
@@ -155,7 +155,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    public static ExtractableResponse<Response> 내_회원_삭제_요청(TokenResponse tokenResponse) {
+    private ExtractableResponse<Response> 내_회원_삭제_요청(TokenResponse tokenResponse) {
         return RestAssured
             .given().log().all()
             .auth().oauth2(tokenResponse.getAccessToken())
@@ -164,7 +164,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    public static void 회원_생성됨(ExtractableResponse<Response> response) {
+    private void 회원_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
@@ -175,11 +175,11 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(memberResponse.getAge()).isEqualTo(age);
     }
 
-    public static void 회원_정보_수정됨(ExtractableResponse<Response> response) {
+    private void 회원_정보_수정됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static void 회원_삭제됨(ExtractableResponse<Response> response) {
+    private void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }

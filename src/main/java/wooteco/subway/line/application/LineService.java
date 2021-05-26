@@ -1,5 +1,6 @@
 package wooteco.subway.line.application;
 
+import java.util.List;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -12,13 +13,10 @@ import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.line.dto.SimpleLineResponse;
 import wooteco.subway.line.exception.SubwayLineException;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
-
-import java.util.List;
-import java.util.stream.Collectors;
-import wooteco.subway.station.exception.SubwayStationException;
 
 @Service
 @Transactional
@@ -58,11 +56,14 @@ public class LineService {
         return sectionDao.insert(line, section);
     }
 
+    public List<SimpleLineResponse> findAllSimpleLineResponses() {
+        List<Line> simpleLines = lineDao.findAllSimple();
+        return SimpleLineResponse.listOf(simpleLines);
+    }
+
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
-        return persistLines.stream()
-                .map(line -> LineResponse.of(line))
-                .collect(Collectors.toList());
+        return LineResponse.listOf(persistLines);
     }
 
     public List<Line> findLines() {
@@ -85,7 +86,8 @@ public class LineService {
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         checkUpdateDuplicateLineColor(id, lineUpdateRequest);
         try {
-            int updateRow = lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+            int updateRow = lineDao
+                .update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
             validateUpdate(updateRow);
         } catch (DuplicateKeyException exception) {
             throw new SubwayCustomException(SubwayLineException.DUPLICATE_LINE_NAME_EXCEPTION);

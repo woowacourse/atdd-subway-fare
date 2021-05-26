@@ -5,6 +5,7 @@ import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 
 public class SectionEdge extends DefaultWeightedEdge {
+
     private Section section;
     private Line line;
 

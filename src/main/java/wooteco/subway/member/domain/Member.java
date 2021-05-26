@@ -52,7 +52,7 @@ public class Member {
     }
 
     private void validateAge(Integer age) {
-        if (Objects.isNull(age) || age <= 0 ) {
+        if (Objects.isNull(age) || age <= 0) {
             throw new SubwayCustomException(SubwayMemberException.INVALID_AGE_EXCEPTION);
         }
     }

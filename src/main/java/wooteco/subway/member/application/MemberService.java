@@ -12,6 +12,7 @@ import wooteco.subway.member.exception.SubwayMemberException;
 
 @Service
 public class MemberService {
+
     private final MemberDao memberDao;
 
     public MemberService(MemberDao memberDao) {
@@ -35,7 +36,9 @@ public class MemberService {
     public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
         Member member = memberDao.findByEmail(loginMember.getEmail());
         try {
-            memberDao.update(new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
+            memberDao.update(
+                new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(),
+                    memberRequest.getAge()));
         } catch (DuplicateKeyException exception) {
             throw new SubwayCustomException(SubwayMemberException.DUPLICATE_EMAIL_EXCEPTION);
         }
