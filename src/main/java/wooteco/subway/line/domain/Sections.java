@@ -1,5 +1,6 @@
 package wooteco.subway.line.domain;
 
+import wooteco.subway.exception.badrequest.BadRequest;
 import wooteco.subway.station.domain.Station;
 
 import java.util.*;
@@ -38,7 +39,7 @@ public class Sections {
     private void checkAlreadyExisted(Section section) {
         List<Station> stations = getStations();
         if (!stations.contains(section.getUpStation()) && !stations.contains(section.getDownStation())) {
-            throw new IllegalArgumentException("연결할 수 있는 구간이 존재하지 않습니다. 구간에 등록할 지하철 역을 확인해주세요.");
+            throw new BadRequest("유효하지 않는 요청 값입니다");
         }
     }
 
@@ -46,7 +47,7 @@ public class Sections {
         List<Station> stations = getStations();
         List<Station> stationsOfNewSection = Arrays.asList(section.getUpStation(), section.getDownStation());
         if (stations.containsAll(stationsOfNewSection)) {
-            throw new IllegalArgumentException("이미 존재하는 구간입니다.");
+            throw new BadRequest("유효하지 않는 요청 값입니다");
         }
     }
 
@@ -78,7 +79,7 @@ public class Sections {
 
     private void checkSectionDistance(Section newSection, Section existSection) {
         if (existSection.getDistance() <= newSection.getDistance()) {
-            throw new IllegalArgumentException("연결할 구간보다 거리가 크거나 같으면 등록할 수 없습니다.");
+            throw new BadRequest("유효하지 않는 요청 값입니다");
         }
     }
 
@@ -125,7 +126,7 @@ public class Sections {
         return this.sections.stream()
                 .filter(it -> !downStations.contains(it.getUpStation()))
                 .findFirst()
-                .orElseThrow(() -> new IllegalStateException("지하철 종점이 존재하지 않습니다."));
+                .orElseThrow(() -> new BadRequest("지하철 종점이 존재하지 않습니다."));
     }
 
     private Section findSectionByNextUpStation(Station station) {
@@ -137,7 +138,7 @@ public class Sections {
 
     public void removeStation(Station station) {
         if (sections.size() <= 1) {
-            throw new IllegalStateException("지하철 구간이 1개 이하일 때 더 이상 삭제할 수 없습니다.");
+            throw new BadRequest("지하철 구간이 1개 이하일 때 더 이상 삭제할 수 없습니다.");
         }
 
         Optional<Section> upSection = sections.stream()

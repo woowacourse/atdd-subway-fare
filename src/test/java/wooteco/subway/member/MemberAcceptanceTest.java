@@ -266,11 +266,4 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(exceptionResponse.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat(exceptionResponse.getMessage()).isEqualTo("현재 사용 중인 비밀번호입니다. 다른 비밀번호를 입력해주세요");
     }
-
-    private void 잘못된_토큰으로_요청을_보냄(ExtractableResponse<Response> response) {
-        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
-
-        assertThat(exceptionResponse.getStatus()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-        assertThat(exceptionResponse.getMessage()).isEqualTo("다시 로그인 후 시도해주세요");
-    }
 }

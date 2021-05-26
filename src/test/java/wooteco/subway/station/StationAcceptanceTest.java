@@ -322,20 +322,6 @@ public class StationAcceptanceTest extends AcceptanceTest {
         assertThat(resultLineIds).containsAll(expectedLineIds);
     }
 
-    private static void 잘못된_토큰으로_요청을_보냄(ExtractableResponse<Response> response) {
-        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
-
-        assertThat(exceptionResponse.getStatus()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-        assertThat(exceptionResponse.getMessage()).isEqualTo("다시 로그인 후 시도해주세요");
-    }
-
-    private static void 잘못된_입력값으로_요청을_보냄(ExtractableResponse<Response> response) {
-        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
-
-        assertThat(exceptionResponse.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(exceptionResponse.getMessage()).isEqualTo("입력되지 않은 항목을 확인해주세요");
-    }
-
     private void 노선의_구간에_등록_되어있는_지하철역을_제거함(ExtractableResponse<Response> response) {
         ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
 

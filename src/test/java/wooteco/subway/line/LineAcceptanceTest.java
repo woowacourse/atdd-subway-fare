@@ -429,28 +429,14 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(exceptionResponse.getMessage()).isEqualTo("지하철 노선 이름이 이미 존재합니다");
     }
 
-    private static void 잘못된_토큰으로_요청을_보냄(ExtractableResponse<Response> response) {
-        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
-
-        assertThat(exceptionResponse.getStatus()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-        assertThat(exceptionResponse.getMessage()).isEqualTo("다시 로그인 후 시도해주세요");
-    }
-
-    private static void 잘못된_입력값으로_요청을_보냄(ExtractableResponse<Response> response) {
+    public static void 지하철_역ID_음수요청됨(ExtractableResponse<Response> response) {
         ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
 
         assertThat(exceptionResponse.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(exceptionResponse.getMessage()).isEqualTo("입력되지 않은 항목을 확인해주세요");
+        assertThat(exceptionResponse.getMessage()).isEqualTo("지하철역의 ID는 양수여야 합니다");
     }
 
-    private void 지하철_역ID_음수요청됨(ExtractableResponse<Response> response) {
-        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
-
-        assertThat(exceptionResponse.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(exceptionResponse.getMessage()).isEqualTo("지하철역의 ID는 양수여야 합니다.");
-    }
-
-    private void 유효하지_않은_거리값_요청됨(ExtractableResponse<Response> response) {
+    public static void 유효하지_않은_거리값_요청됨(ExtractableResponse<Response> response) {
         ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
 
         assertThat(exceptionResponse.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
