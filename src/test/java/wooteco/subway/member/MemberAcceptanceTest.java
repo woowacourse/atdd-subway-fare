@@ -11,6 +11,7 @@ import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
+import wooteco.subway.member.exception.MemberException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
@@ -23,22 +24,74 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String NEW_PASSWORD = "new_password";
     public static final int NEW_AGE = 30;
 
-    @DisplayName("회원 정보를 관리한다.")
+    @DisplayName("사용자를 생성한다.")
     @Test
-    void manageMember() {
+    void createMember() {
         ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
         회원_생성됨(createResponse);
+    }
 
+    @DisplayName("중복된 이메일로 사용자를 생성하면 에러가 발생한다.")
+    @Test
+    void createMemberWithDuplicateEmail() {
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        중복된_이메일은_생성_수정_불가(createResponse);
+    }
+
+    @DisplayName("토큰을 이용하여 정보를 조회한다.")
+    @Test
+    void showMemberInfo() {
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
         TokenResponse 사용자 = 로그인되어_있음(EMAIL, PASSWORD);
 
         ExtractableResponse<Response> findResponse = 내_회원_정보_조회_요청(사용자);
         회원_정보_조회됨(findResponse, EMAIL, AGE);
+    }
 
-        ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(사용자, EMAIL, NEW_PASSWORD, NEW_AGE);
+    @DisplayName("토큰을 이용하여 정보를 수정한다.")
+    @Test
+    void updateMember() {
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+
+        TokenResponse 사용자 = 로그인되어_있음(EMAIL, PASSWORD);
+
+        ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(사용자, EMAIL, NEW_PASSWORD,
+                NEW_AGE);
         회원_정보_수정됨(updateResponse);
+    }
+
+    @DisplayName("토큰을 이용하여 정보를 수정하는데 사용중인 이메일로 변경하면 에러가 발생한다.")
+    @Test
+    void updateMemberWithDuplicateEmail() {
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성을_요청(NEW_EMAIL, PASSWORD, AGE);
+
+        TokenResponse 사용자 = 로그인되어_있음(EMAIL, PASSWORD);
+
+        ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(사용자, NEW_EMAIL, NEW_PASSWORD,
+                NEW_AGE);
+        중복된_이메일은_생성_수정_불가(updateResponse);
+    }
+
+
+    @DisplayName("토큰을 이용하여 회원정보를 삭제한다.")
+    @Test
+    void deleteMember() {
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+
+        TokenResponse 사용자 = 로그인되어_있음(EMAIL, PASSWORD);
 
         ExtractableResponse<Response> deleteResponse = 내_회원_삭제_요청(사용자);
         회원_삭제됨(deleteResponse);
+    }
+
+    public static void 중복된_이메일은_생성_수정_불가(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode())
+                .isEqualTo(MemberException.DUPLICATED_EMAIL_EXCEPTION.status());
+        assertThat(response.body().asString())
+                .isEqualTo(MemberException.DUPLICATED_EMAIL_EXCEPTION.message());
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
