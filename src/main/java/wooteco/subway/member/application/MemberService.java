@@ -3,6 +3,7 @@ package wooteco.subway.member.application;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.member.dao.MemberDao;
+import wooteco.subway.member.domain.Age;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
@@ -31,7 +32,7 @@ public class MemberService {
     public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
         Member member = memberDao.findByEmail(loginMember.getEmail());
         //TODO: 중복 email 검사?
-        memberDao.update(new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
+        memberDao.update(new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), new Age(memberRequest.getAge())));
     }
 
     @Transactional

@@ -75,24 +75,23 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void fare() {
         회원_등록되어_있음(EMAIL, PASSWORD, 13);
         TokenResponse tokenResponse1 = 로그인되어_있음(EMAIL, PASSWORD);
-
-        ExtractableResponse<Response> responseWithAge13 = 거리_경로_조회_요청(4L, 1L, tokenResponse1);
-
-        PathResponse pathResponseWithAge13 = responseWithAge13.as(PathResponse.class);
-        int totalFare = 1250 + 800 + 100;
-        assertThat(pathResponseWithAge13.getFare()).isEqualTo(totalFare - (int) ((totalFare - 350) * 0.2));
-
         회원_등록되어_있음(NEW_EMAIL, PASSWORD, 12);
         TokenResponse tokenResponse2 = 로그인되어_있음(NEW_EMAIL, PASSWORD);
 
+        int expectedTotalFare = 1250 + 삼호선.getExtraFare() + 100;
+
+        ExtractableResponse<Response> responseWithAge13 = 거리_경로_조회_요청(4L, 1L, tokenResponse1);
         ExtractableResponse<Response> responseWithAge12 = 거리_경로_조회_요청(4L, 1L, tokenResponse2);
+        ExtractableResponse<Response> responseWithoutLogin = 거리_경로_조회_요청(4L, 1L, new TokenResponse(""));
+
+        PathResponse pathResponseWithAge13 = responseWithAge13.as(PathResponse.class);
+        assertThat(pathResponseWithAge13.getFare()).isEqualTo(expectedTotalFare - (int) ((expectedTotalFare - 350) * 0.2));
 
         PathResponse pathResponseWithAge12 = responseWithAge12.as(PathResponse.class);
-        assertThat(pathResponseWithAge12.getFare()).isEqualTo(totalFare - (int) ((totalFare - 350) * 0.5));
+        assertThat(pathResponseWithAge12.getFare()).isEqualTo(expectedTotalFare - (int) ((expectedTotalFare - 350) * 0.5));
 
-        ExtractableResponse<Response> responseWithoutLogin = 거리_경로_조회_요청(4L, 1L, new TokenResponse(""));
         PathResponse pathResponseWithoutLogin = responseWithoutLogin.as(PathResponse.class);
-        assertThat(pathResponseWithoutLogin.getFare()).isEqualTo(totalFare);
+        assertThat(pathResponseWithoutLogin.getFare()).isEqualTo(expectedTotalFare);
     }
 
     public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target, TokenResponse tokenResponse) {

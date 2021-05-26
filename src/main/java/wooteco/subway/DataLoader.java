@@ -8,6 +8,7 @@ import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.member.dao.MemberDao;
+import wooteco.subway.member.domain.Age;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.path.domain.Distance;
 import wooteco.subway.station.dao.StationDao;
@@ -46,7 +47,7 @@ public class DataLoader implements CommandLineRunner {
         이호선.addSection(new Section(역삼역, 잠실역, new Distance(10)));
         sectionDao.insertSections(이호선);
 
-        Member member = new Member("email@email.com", "password", 10);
+        Member member = new Member("email@email.com", "password", new Age(10));
         memberDao.insert(member);
     }
 }
