@@ -13,6 +13,7 @@ import wooteco.subway.auth.AuthAcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
+import wooteco.subway.line.exception.LineException;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.Arrays;
@@ -25,9 +26,9 @@ import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록�
 @DisplayName("지하철 노선 관련 기능")
 public class LineAcceptanceTest extends AcceptanceTest {
     private StationResponse 강남역;
-    private StationResponse downStation;
-    private LineRequest lineRequest1;
-    private LineRequest lineRequest2;
+    private StationResponse 광교역;
+    private LineRequest 신분당선;
+    private LineRequest 구신분당선;
 
     private TokenResponse tokenResponse;
 
@@ -39,17 +40,17 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // given
         강남역 = 지하철역_등록되어_있음("강남역", tokenResponse);
-        downStation = 지하철역_등록되어_있음("광교역", tokenResponse);
+        광교역 = 지하철역_등록되어_있음("광교역", tokenResponse);
 
-        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 10);
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 15);
+        신분당선 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
+        구신분당선 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
     @Test
     void createLine() {
         // when
-        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1, tokenResponse);
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(신분당선, tokenResponse);
 
         // then
         지하철_노선_생성됨(response);
@@ -59,21 +60,21 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void createLineWithDuplicateName() {
         // given
-        지하철_노선_등록되어_있음(lineRequest1, tokenResponse);
+        지하철_노선_등록되어_있음(신분당선, tokenResponse);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1, tokenResponse);
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(신분당선, tokenResponse);
 
         // then
-        지하철_노선_생성_실패됨(response);
+        에러_발생함(response, LineException.DUPLICATED_LINE_EXCEPTION);
     }
 
     @DisplayName("지하철 노선 목록을 조회한다.")
     @Test
     void getLines() {
         // given
-        LineResponse lineResponse1 = 지하철_노선_등록되어_있음(lineRequest1, tokenResponse);
-        LineResponse lineResponse2 = 지하철_노선_등록되어_있음(lineRequest2, tokenResponse);
+        LineResponse lineResponse1 = 지하철_노선_등록되어_있음(신분당선, tokenResponse);
+        LineResponse lineResponse2 = 지하철_노선_등록되어_있음(구신분당선, tokenResponse);
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청(tokenResponse);
@@ -87,7 +88,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void getLine() {
         // given
-        LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1, tokenResponse);
+        LineResponse lineResponse = 지하철_노선_등록되어_있음(신분당선, tokenResponse);
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(lineResponse, tokenResponse);
@@ -100,10 +101,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void updateLine() {
         // given
-        LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1, tokenResponse);
+        LineResponse lineResponse = 지하철_노선_등록되어_있음(신분당선, tokenResponse);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse, lineRequest2, tokenResponse);
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse, 구신분당선, tokenResponse);
 
         // then
         지하철_노선_수정됨(response);
@@ -113,7 +114,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteLine() {
         // given
-        LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1, tokenResponse);
+        LineResponse lineResponse = 지하철_노선_등록되어_있음(신분당선, tokenResponse);
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_제거_요청(lineResponse, tokenResponse);
