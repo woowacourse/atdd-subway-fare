@@ -23,9 +23,9 @@ class StationRequestTest {
         validator = factory.getValidator();
     }
 
+    @DisplayName("입력값이 빈 값, null, 2자 미만, 10자 초과면 안 된다.")
     @ParameterizedTest
     @NullAndEmptySource
-    @DisplayName("입력값이 빈 값, null, 2자 미만, 10자 초과면 안 된다.")
     @ValueSource(strings = {"썬", "가나다라마바사아자차카타파하"})
     void create(String name) {
         final StationRequest stationRequest = new StationRequest(name);

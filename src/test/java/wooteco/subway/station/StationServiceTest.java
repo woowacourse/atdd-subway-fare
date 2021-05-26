@@ -29,8 +29,8 @@ public class StationServiceTest {
     @Mock
     private StationDao stationDao;
 
-    @Test
     @DisplayName("지하철역을 저장한다.")
+    @Test
     void saveStation() {
         final String name = "강남역";
         final StationRequest stationRequest = new StationRequest(name);
@@ -43,8 +43,8 @@ public class StationServiceTest {
         verify(stationDao, times(1)).insert(station);
     }
 
-    @Test
     @DisplayName("이미 존재하는 이름의 지하철역은 등록할 수 없다.")
+    @Test
     void saveStationFail() {
         final String name = "강남역";
         final StationRequest stationRequest = new StationRequest(name);
@@ -56,8 +56,8 @@ public class StationServiceTest {
         verify(stationDao, times(1)).existsByName(name);
     }
 
-    @Test
     @DisplayName("존재하지 않는 ID로 지하철역을 찾을 수 없다.")
+    @Test
     void findStationByIdFail() {
         given(stationDao.existsById(anyLong())).willReturn(false);
         assertThatThrownBy(() -> stationService.findStationById(anyLong()))
@@ -66,8 +66,8 @@ public class StationServiceTest {
         verify(stationDao, times(1)).existsById(anyLong());
     }
 
-    @Test
     @DisplayName("존재하지 않는 ID로 지하철역을 지울 수 없다.")
+    @Test
     void deleteStationByIdFail() {
         given(stationDao.existsById(anyLong())).willReturn(false);
         assertThatThrownBy(() -> stationService.deleteStationById(anyLong()))
