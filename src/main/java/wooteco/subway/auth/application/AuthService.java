@@ -9,6 +9,8 @@ import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
 
+import java.util.Optional;
+
 @Service
 @Transactional
 public class AuthService {
@@ -31,17 +33,18 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
-    public LoginMember findMemberByToken(String credentials) {
+    public Optional<LoginMember> findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
+            return Optional.empty();
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
         try {
             Member member = memberDao.findByEmail(email);
-            return new LoginMember(member.getId(), member.getEmail(), member.getAge());
+            LoginMember loginMember = new LoginMember(member.getId(), member.getEmail(), member.getAge());
+            return Optional.of(loginMember);
         } catch (Exception e) {
-            return new LoginMember();
+            return Optional.empty();
         }
     }
 
