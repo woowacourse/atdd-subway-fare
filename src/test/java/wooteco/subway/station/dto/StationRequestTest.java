@@ -23,7 +23,7 @@ class StationRequestTest {
         validator = factory.getValidator();
     }
 
-    @DisplayName("입력값이 빈 값, null, 특수 문자, 영어, 글자수는 2자 미만이거나 10자 초과면 안 된다.")
+    @DisplayName("이름 입력값이 빈 값, null, 특수 문자, 영어, 글자수는 2자 미만이거나 10자 초과면 안 된다.")
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = {"썬", "가나다라마바사아자차카타파하, %, )))"})
