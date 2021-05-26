@@ -102,6 +102,17 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_삭제됨(response);
     }
 
+    @DisplayName("존재하지 않는 지하철역을 제거한다.")
+    @Test
+    void deleteNotExistStation() {
+        // when
+        ExtractableResponse<Response> response = 지하철역_제거_요청(new StationResponse(55L, "없는역"));
+
+        // then
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
+        assertThat(exceptionResponse.getError()).isEqualTo("NO_SUCH_STATION");
+    }
+
     public static StationResponse 지하철역_등록되어_있음(String name) {
         return 지하철역_생성_요청(name).as(StationResponse.class);
     }

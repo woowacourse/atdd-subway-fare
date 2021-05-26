@@ -4,6 +4,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import wooteco.subway.exception.DuplicatedStationException;
+import wooteco.subway.exception.NoSuchStationException;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;
@@ -30,7 +31,11 @@ public class StationService {
     }
 
     public Station findStationById(Long id) {
-        return stationDao.findById(id);
+        try {
+            return stationDao.findById(id);
+        } catch (DataAccessException e) {
+            throw new NoSuchStationException();
+        }
     }
 
     public List<StationResponse> findAllStationResponses() {
@@ -42,6 +47,8 @@ public class StationService {
     }
 
     public void deleteStationById(Long id) {
-        stationDao.deleteById(id);
+        if(stationDao.deleteById(id) == 0) {
+            throw new NoSuchStationException();
+        }
     }
 }
