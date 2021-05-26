@@ -32,7 +32,7 @@ public class DataLoader implements CommandLineRunner {
     public void run(String... args) throws Exception {
         List<Station> stations = stationDao.findAll();
         List<Line> lines = lineDao.findAll();
-        if (stations.size() == 0 && lines.size() ==0 ) {
+        if (stations.size() != 0 && lines.size() !=0 ) {
             return;
         }
         setInitialData();
