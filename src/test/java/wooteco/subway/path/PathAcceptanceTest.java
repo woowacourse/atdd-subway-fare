@@ -86,7 +86,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         총_요금이_응답됨(response, 1250);
     }
 
-    private static Stream<Arguments> distanceByFare() {
+    private static Stream<Arguments> findFareByDistance() {
         return Stream.of(
                 Arguments.of(9, 21250),
                 Arguments.of(11, 21350),
@@ -98,7 +98,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("역 거리에 따른 요금 계산")
     @ParameterizedTest
-    @MethodSource("distanceByFare")
+    @MethodSource
     void findFareByDistance(int distance, int fare) {
         // given
         지하철_구간_등록되어_있음(우아한테크코스선, 에어포츈바다우기검프사랑해역, 우린모두취업할거야역, distance, tokenResponse);
