@@ -8,14 +8,23 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wooteco.subway.exception.ErrorResponse;
 
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice
 public class StationControllerAdvice {
+    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+    public ResponseEntity<ErrorResponse> handleSQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException e) {
+        e.printStackTrace();
+        return ResponseEntity.badRequest()
+                .body(new ErrorResponse("노선에 등록된 역은 삭제할 수 없습니다."));
+    }
+
     @ExceptionHandler(SQLException.class)
     public ResponseEntity<ErrorResponse> handleSQLException(SQLException e) {
         e.printStackTrace();
         return ResponseEntity.badRequest()
                 .body(new ErrorResponse(e.getMessage()));
     }
+
 }
