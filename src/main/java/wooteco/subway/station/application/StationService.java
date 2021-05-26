@@ -43,6 +43,10 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
+    public void updateStationById(Long id, StationRequest stationRequest) {
+        stationDao.updateById(id, stationRequest.getName());
+    }
+
     public void deleteStationById(Long id) {
         validate(id);
         stationDao.deleteById(id);
