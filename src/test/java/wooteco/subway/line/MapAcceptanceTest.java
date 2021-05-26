@@ -40,7 +40,8 @@ public class MapAcceptanceTest extends AcceptanceTest {
         역삼역 = 지하철역_등록되어_있음("역삼역");
         광교역 = 지하철역_등록되어_있음("광교역");
 
-        신분당선 = 지하철_노선_생성_요청(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10))
+        신분당선 = 지하철_노선_생성_요청(
+            new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 900, 10))
             .as(LineResponse.class);
         경의중앙선 = 지하철_노선_생성_요청(new LineRequest("경의중앙선", "bg-red-600", 강남역.getId(), 역삼역.getId(), 20))
             .as(LineResponse.class);

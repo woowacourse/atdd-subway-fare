@@ -1,8 +1,8 @@
 package wooteco.subway.path.domain;
 
 import java.util.List;
-import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.exception.FareCalculateException;
+import wooteco.subway.member.domain.LoginMember;
 
 public class FareCalculator {
 
@@ -14,12 +14,11 @@ public class FareCalculator {
     }
 
     private int discountFare(LoginMember member, int fare) {
-        if(member.getId() == null){
+        if (member.getId() == null) {
             return fare;
         }
         if (isTeenager(member)) {
             return (int) (fare - ((fare - 350) * 0.2));
-
         }
         if (isChild(member)) {
             return (int) (fare - ((fare - 350) * 0.5));
@@ -43,15 +42,16 @@ public class FareCalculator {
         return sectionEdges.stream()
             .mapToInt(edges -> edges.getLine().getFare())
             .max()
-            .orElseThrow(FareCalculateException::new);
+            .orElseThrow(FareCalculateException::new)
+            ;
     }
 
     private int calculateDistanceOverFare(int distance) {
-        if(distance > 10 && distance <= 50) {
-            return (int) ((Math.ceil((distance -10) / 5) +1) * 100);
+        if (distance > 10 && distance <= 50) {
+            return (int) ((Math.ceil((distance - 10) / 5) + 1) * 100);
         }
-        if(distance > 50) {
-            return 800 + (int) ((Math.ceil((distance -50) / 8) +1) * 100);
+        if (distance > 50) {
+            return 800 + (int) ((Math.ceil((distance - 50) / 8) + 1) * 100);
         }
         return 0;
     }

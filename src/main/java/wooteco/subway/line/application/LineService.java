@@ -38,7 +38,8 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
+        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(),
+            request.getFare()));
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);
     }
@@ -159,7 +160,7 @@ public class LineService {
             .map(station -> new StationMapResponse(station.getId(), station.getName(),
                 findDistance(sections, station.getId()),
                 stationTransferResponseMap.get(station.getId())))
-        .collect(Collectors.toList());
+            .collect(Collectors.toList());
     }
 
     private int findDistance(Sections sections, Long stationId) {

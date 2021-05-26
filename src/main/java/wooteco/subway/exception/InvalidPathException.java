@@ -7,10 +7,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class InvalidPathException extends SubwayException {
 
     public InvalidPathException() {
-        super();
-    }
-
-    public InvalidPathException(String message) {
-        super(message);
+        super("경로를 찾을 수 없습니다.");
     }
 }

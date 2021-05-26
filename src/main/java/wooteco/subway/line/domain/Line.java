@@ -1,22 +1,23 @@
 package wooteco.subway.line.domain;
 
+import java.util.List;
 import wooteco.subway.station.domain.Station;
 
-import java.util.List;
-
 public class Line {
+
     private Long id;
     private String name;
     private String color;
-    private int fare;
+    private int extraFare;
     private Sections sections = new Sections();
 
     public Line() {
     }
 
-    public Line(String name, String color) {
+    public Line(String name, String color, int extraFare) {
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
     }
 
     public Line(Long id, String name, String color) {
@@ -25,19 +26,19 @@ public class Line {
         this.color = color;
     }
 
-    public Line(Long id, String name, String color, Sections sections) {
+    public Line(Long id, String name, String color, int extraFare) {
         this.id = id;
         this.name = name;
         this.color = color;
-        this.sections = sections;
+        this.extraFare = extraFare;
     }
 
-    public Line(Long id, String name, String color, int fare,
+    public Line(Long id, String name, String color, int extraFare,
         Sections sections) {
         this.id = id;
         this.name = name;
         this.color = color;
-        this.fare = fare;
+        this.extraFare = extraFare;
         this.sections = sections;
     }
 
@@ -58,7 +59,7 @@ public class Line {
     }
 
     public int getFare() {
-        return fare;
+        return extraFare;
     }
 
     public void update(Line line) {
