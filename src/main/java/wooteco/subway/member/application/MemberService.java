@@ -1,11 +1,14 @@
 package wooteco.subway.member.application;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import wooteco.subway.exception.SubwayCustomException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
+import wooteco.subway.member.exception.SubwayMemberException;
 
 @Service
 public class MemberService {
@@ -19,8 +22,8 @@ public class MemberService {
         try {
             Member member = memberDao.insert(request.toMember());
             return MemberResponse.of(member);
-        } catch (Exception e) {
-            throw e;
+        } catch (DuplicateKeyException exception) {
+            throw new SubwayCustomException(SubwayMemberException.DUPLICATE_EMAIL_EXCEPTION);
         }
     }
 
