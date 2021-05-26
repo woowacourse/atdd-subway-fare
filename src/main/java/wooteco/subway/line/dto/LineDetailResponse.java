@@ -37,7 +37,7 @@ public class LineDetailResponse {
 
         // TODO : 전체 거리를 구하는 메소드 호출
         // DONE
-        return new LineDetailResponse(line.getId(), line.getName(), line.getColor(), line.getDistance() , stations, sections);
+        return new LineDetailResponse(line.getId(), line.getName(), line.getColor(), line.getDistance(), stations, sections);
     }
 
     public static List<LineDetailResponse> listOf(List<Line> lines) {

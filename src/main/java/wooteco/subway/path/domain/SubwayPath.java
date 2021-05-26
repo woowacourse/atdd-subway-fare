@@ -5,8 +5,16 @@ import wooteco.subway.station.domain.Station;
 import java.util.List;
 
 public class SubwayPath {
-    private List<SectionEdge> sectionEdges;
-    private List<Station> stations;
+    public static final int DEFAULT_FARE = 1250;
+    public static final int DEFAULT_DISTANCE_PIVOT = 10;
+    public static final int DEFAULT_CONDITION_PIVOT = 5;
+    public static final int LONG_DISTANCE_PIVOT = 50;
+    public static final int LONG_CONDITION_PIVOT = 8;
+    public static final int ADDITIONAL_FARE = 100;
+
+
+    private final List<SectionEdge> sectionEdges;
+    private final List<Station> stations;
 
     public SubwayPath(List<SectionEdge> sectionEdges, List<Station> stations) {
         this.sectionEdges = sectionEdges;
@@ -27,19 +35,18 @@ public class SubwayPath {
 
     public int calculateFare() {
         int distance = calculateDistance();
-        int fare = 1250;
-        if (distance <= 10) {
-            return fare;
+        if (distance <= DEFAULT_DISTANCE_PIVOT) {
+            return DEFAULT_FARE;
         }
 
-        if (distance > 50) {
-            return fare + calculateAdditionalFare(distance - (distance % 50) - 10, 5) + calculateAdditionalFare(distance - 50, 8);
+        if (distance > LONG_DISTANCE_PIVOT) {
+            return DEFAULT_FARE + calculateAdditionalFare(distance - (distance % LONG_DISTANCE_PIVOT) - DEFAULT_DISTANCE_PIVOT, DEFAULT_CONDITION_PIVOT) + calculateAdditionalFare(distance - LONG_DISTANCE_PIVOT, LONG_CONDITION_PIVOT);
         }
 
-        return fare + calculateAdditionalFare(distance - 10, 5);
+        return DEFAULT_FARE + calculateAdditionalFare(distance - DEFAULT_DISTANCE_PIVOT, DEFAULT_CONDITION_PIVOT);
     }
 
     private int calculateAdditionalFare(int distance, int condition) {
-        return (int) ((Math.ceil((distance - 1) / condition) + 1) * 100);
+        return (int) ((Math.ceil((distance - 1) / condition) + 1) * ADDITIONAL_FARE);
     }
 }

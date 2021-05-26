@@ -13,7 +13,7 @@ import wooteco.subway.exception.SubwayException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    private Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+    private final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> unValidBinding(final MethodArgumentNotValidException exception) {
@@ -22,19 +22,19 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(SubwayException.class)
-    public ResponseEntity<ErrorResponse> subwayExceptionHandler(final SubwayException exception){
+    public ResponseEntity<ErrorResponse> subwayExceptionHandler(final SubwayException exception) {
         logger.error(exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(exception.getMessage()));
     }
 
     @ExceptionHandler(AuthorizationException.class)
-    public ResponseEntity<ErrorResponse> authorizeException(final AuthorizationException exception){
+    public ResponseEntity<ErrorResponse> authorizeException(final AuthorizationException exception) {
         logger.error(exception.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(exception.getMessage()));
     }
 
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
-    public ResponseEntity<ErrorResponse> unsupportedMediaType(final HttpMediaTypeNotSupportedException exception){
+    public ResponseEntity<ErrorResponse> unsupportedMediaType(final HttpMediaTypeNotSupportedException exception) {
         logger.error(exception.getMessage());
         return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(new ErrorResponse(exception.getMessage()));
     }
