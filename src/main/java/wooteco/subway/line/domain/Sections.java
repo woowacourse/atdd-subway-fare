@@ -1,12 +1,11 @@
 package wooteco.subway.line.domain;
 
-import wooteco.subway.station.domain.Station;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import wooteco.subway.station.domain.Station;
 
 public class Sections {
     private List<Section> sections = new ArrayList<>();
@@ -139,5 +138,9 @@ public class Sections {
 
         upSection.ifPresent(it -> sections.remove(it));
         downSection.ifPresent(it -> sections.remove(it));
+    }
+
+    public int getTotalDistance() {
+        return sections.stream().mapToInt(Section::getDistance).sum();
     }
 }
