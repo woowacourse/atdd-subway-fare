@@ -40,7 +40,6 @@ public class LineService {
         if (request.getUpStationId() != null && request.getDownStationId() != null) {
             Station upStation = stationService.findStationById(request.getUpStationId());
             Station downStation = stationService.findStationById(request.getDownStationId());
-            validateStationsInSection(upStation, downStation);
             Section section = new Section(upStation, downStation, request.getDistance());
             return sectionDao.insert(line, section);
         }

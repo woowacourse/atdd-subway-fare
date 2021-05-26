@@ -1,5 +1,7 @@
 package wooteco.subway.station.domain;
 
+import wooteco.subway.exception.InvalidInsertException;
+
 import java.util.Objects;
 
 public class Station {
@@ -37,5 +39,11 @@ public class Station {
     @Override
     public int hashCode() {
         return Objects.hash(id, name);
+    }
+
+    public void validateDifferentStation(Station downStation) {
+        if (this.equals(downStation)) {
+            throw new InvalidInsertException("유효하지 않는 요청 값입니다");
+        }
     }
 }
