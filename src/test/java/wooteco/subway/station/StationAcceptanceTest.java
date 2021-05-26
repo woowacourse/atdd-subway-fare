@@ -33,15 +33,50 @@ public class StationAcceptanceTest extends AcceptanceTest {
     private static final String 강남역 = "강남역";
     private static final String 역삼역 = "역삼역";
 
-    @DisplayName("사용자가 아니면 조회이외 기능은 사용하지 못한다.")
+    @DisplayName("사용자가 아니면 조회이외 기능은 사용하지 못한다. - 지하철역 생성 요청")
     @Test
-    void tokenValidation() {
+    void tokenValidation_create() {
         // when
-        ExtractableResponse<Response> 지하철역_생성_요청 = 지하철역_생성_요청(강남역);
-
+        ExtractableResponse<Response> response = 지하철역_생성_요청(강남역);
 
         // then
-        assertThat(지하철역_생성_요청.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @DisplayName("사용자가 아니면 조회이외 기능은 사용하지 못한다. - 지하철역 수정 요청")
+    @Test
+    void tokenValidation_update() {
+        // given
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성됨(createResponse);
+
+        TokenResponse 사용자 = 로그인되어_있음(EMAIL, PASSWORD);
+
+        StationResponse stationResponse = 지하철역_등록되어_있음_withToken(사용자, 강남역);
+
+        // when
+        ExtractableResponse<Response> response = 지하철역_수정_요청(stationResponse, "역삼역");
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @DisplayName("사용자가 아니면 조회이외 기능은 사용하지 못한다. - 지하철역 삭제 요청")
+    @Test
+    void tokenValidation_delete() {
+        // given
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성됨(createResponse);
+
+        TokenResponse 사용자 = 로그인되어_있음(EMAIL, PASSWORD);
+
+        StationResponse stationResponse = 지하철역_등록되어_있음_withToken(사용자, 강남역);
+
+        // when
+        ExtractableResponse<Response> response = 지하철역_제거_요청(stationResponse);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("지하철역을 생성한다.")
@@ -227,6 +262,18 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 .when().delete("/api/stations/" + stationResponse.getId())
                 .then().log().all()
                 .extract();
+    }
+
+    private ExtractableResponse<Response> 지하철역_수정_요청(StationResponse stationResponse, String newStationName) {
+        StationRequest stationRequest = new StationRequest(newStationName);
+
+        return RestAssured
+            .given().log().all()
+            .body(stationRequest)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().put("/api/stations/" + stationResponse.getId())
+            .then().log().all()
+            .extract();
     }
 
     private ExtractableResponse<Response> 지하철역_수정_요청_withToken(TokenResponse tokenResponse, StationResponse stationResponse, String newStationName) {
