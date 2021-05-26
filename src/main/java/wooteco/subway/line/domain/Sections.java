@@ -139,4 +139,20 @@ public class Sections {
         upSection.ifPresent(it -> sections.remove(it));
         downSection.ifPresent(it -> sections.remove(it));
     }
+
+    public List<Section> getSortedSections() {
+        if (sections.isEmpty()) {
+            return Arrays.asList();
+        }
+
+        List<Section> sections = new ArrayList<>();
+
+        Section nextSection = findUpEndSection();
+        while (nextSection != null) {
+            sections.add(nextSection);
+            nextSection = findSectionByNextUpStation(nextSection.getDownStation());
+        }
+
+        return sections;
+    }
 }

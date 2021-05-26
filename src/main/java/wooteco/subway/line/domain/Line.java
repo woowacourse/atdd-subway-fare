@@ -63,6 +63,10 @@ public class Line {
         this.sections = sections;
     }
 
+    public List<Section> getSortedSections() {
+        return this.sections.getSortedSections();
+    }
+
     public Long getId() {
         return id;
     }
