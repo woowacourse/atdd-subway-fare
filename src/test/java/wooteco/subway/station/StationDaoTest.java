@@ -12,6 +12,7 @@ import wooteco.subway.station.domain.Station;
 
 import javax.sql.DataSource;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @JdbcTest
@@ -35,5 +36,11 @@ public class StationDaoTest {
         stationDao.insert(new Station("잠실역"));
         assertThatThrownBy(() -> stationDao.insert(new Station("잠실역")))
                 .isInstanceOf(DuplicateKeyException.class);
+    }
+
+    @DisplayName("존재하지 않는 지하철 역을 삭제할 시 affectedRow가 0이다.")
+    @Test
+    void deleteExceptionTest() {
+        assertThat(stationDao.deleteById(1L)).isEqualTo(0);
     }
 }

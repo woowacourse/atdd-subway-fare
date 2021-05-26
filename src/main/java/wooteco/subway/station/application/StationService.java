@@ -8,6 +8,7 @@ import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,7 +24,7 @@ public class StationService {
         try {
             station = stationDao.insert(stationRequest.toStation());
         } catch (Exception e) {
-            throw new DuplicateNameException("이미 존재하는 역 이름입니다.");
+            throw new DuplicateNameException("이미 존재하는 역입니다.");
         }
         return StationResponse.of(station);
     }
@@ -41,6 +42,9 @@ public class StationService {
     }
 
     public void deleteStationById(Long id) {
-        stationDao.deleteById(id);
+        int affectedRowNumber = stationDao.deleteById(id);
+        if (affectedRowNumber == 0) {
+            throw new NoSuchElementException("존재하지 않는 역입니다.");
+        }
     }
 }
