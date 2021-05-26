@@ -45,6 +45,36 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_생성_실패됨(response);
     }
 
+    @DisplayName("유효하지 않은 이름의 역을 생성한다. - 비어있는 문자열")
+    @Test
+    void createStationWithBlankName() {
+        // when
+        ExtractableResponse<Response> response = 지하철역_생성_요청("");
+
+        // then
+        유효하지_않은_이름의_지하철역_생성_실패됨(response);
+    }
+
+    @DisplayName("유효하지 않은 이름의 역을 생성한다. - 1글자")
+    @Test
+    void createStationWithSingleCharacterName() {
+        // when
+        ExtractableResponse<Response> response = 지하철역_생성_요청("ㅠ");
+
+        // then
+        유효하지_않은_이름의_지하철역_생성_실패됨(response);
+    }
+
+    @DisplayName("유효하지 않은 이름의 역을 생성한다. - 공백 문자 포함")
+    @Test
+    void createStationWithIncludingSpaceName() {
+        // when
+        ExtractableResponse<Response> response = 지하철역_생성_요청("강 남");
+
+        // then
+        유효하지_않은_이름의_지하철역_생성_실패됨(response);
+    }
+
     @DisplayName("지하철역을 조회한다.")
     @Test
     void getStations() {
@@ -112,6 +142,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철역_생성_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CONFLICT.value());
+    }
+
+    private void 유효하지_않은_이름의_지하철역_생성_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static void 지하철역_목록_응답됨(ExtractableResponse<Response> response) {
