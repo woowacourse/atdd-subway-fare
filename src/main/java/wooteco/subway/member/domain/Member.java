@@ -1,7 +1,7 @@
 package wooteco.subway.member.domain;
 
 import org.apache.commons.lang3.StringUtils;
-import wooteco.subway.auth.application.AuthorizationException;
+import wooteco.subway.auth.exception.AuthorizationException;
 
 public class Member {
     private Long id;
@@ -49,7 +49,7 @@ public class Member {
 
     public void checkPassword(String password) {
         if (!StringUtils.equals(this.password, password)) {
-            throw new AuthorizationException();
+            throw new AuthorizationException("비밀번호를 잘못 기입하셨습니다.");
         }
     }
 }
