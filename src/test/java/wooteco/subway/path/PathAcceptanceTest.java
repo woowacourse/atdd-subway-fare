@@ -88,11 +88,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private static Stream<Arguments> distanceByFare() {
         return Stream.of(
-                Arguments.of(9, 1250),
-                Arguments.of(11, 1350),
-                Arguments.of(50, 2050),
-                Arguments.of(51, 2150),
-                Arguments.of(59, 2250)
+                Arguments.of(9, 21250),
+                Arguments.of(11, 21350),
+                Arguments.of(50, 22050),
+                Arguments.of(51, 22150),
+                Arguments.of(59, 22250)
         );
     }
 
@@ -110,6 +110,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
         적절한_경로_응답됨(response, Lists.newArrayList(에어포츈바다우기검프사랑해역, 우린모두취업할거야역));
         총_거리가_응답됨(response, distance);
         총_요금이_응답됨(response, fare);
+    }
+
+    @Test
+    void findExtraFare() {
+        // given
+        int expectedTotalFare = 21_350;
+
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(우린모두취업할거야역.getId(), 리뷰잘부탁해요역.getId());
+
+        //then
+        적절한_경로_응답됨(response, Lists.newArrayList(우린모두취업할거야역, 리뷰잘부탁해요역));
+        총_거리가_응답됨(response, 15);
+        총_요금이_응답됨(response, expectedTotalFare);
     }
 
     @DisplayName("departure와 arrival가 같은경우 예외가 발생한다.")

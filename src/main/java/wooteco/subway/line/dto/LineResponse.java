@@ -52,4 +52,8 @@ public class LineResponse {
     public List<StationResponse> getStations() {
         return stations;
     }
+
+    public int getExtraFare() {
+        return extraFare;
+    }
 }

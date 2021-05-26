@@ -34,16 +34,25 @@ public class SubwayPath {
     }
 
     public int calculateFare() {
+        int extraFare = findMaximumExtraFare();
+
         int distance = calculateDistance();
         if (distance <= DEFAULT_DISTANCE_PIVOT) {
-            return DEFAULT_FARE;
+            return DEFAULT_FARE + extraFare;
         }
 
         if (distance > LONG_DISTANCE_PIVOT) {
-            return DEFAULT_FARE + calculateAdditionalFare(distance - (distance % LONG_DISTANCE_PIVOT) - DEFAULT_DISTANCE_PIVOT, DEFAULT_CONDITION_PIVOT) + calculateAdditionalFare(distance - LONG_DISTANCE_PIVOT, LONG_CONDITION_PIVOT);
+            return DEFAULT_FARE + calculateAdditionalFare(distance - (distance % LONG_DISTANCE_PIVOT) - DEFAULT_DISTANCE_PIVOT, DEFAULT_CONDITION_PIVOT) + calculateAdditionalFare(distance - LONG_DISTANCE_PIVOT, LONG_CONDITION_PIVOT) + extraFare;
         }
 
-        return DEFAULT_FARE + calculateAdditionalFare(distance - DEFAULT_DISTANCE_PIVOT, DEFAULT_CONDITION_PIVOT);
+        return DEFAULT_FARE + calculateAdditionalFare(distance - DEFAULT_DISTANCE_PIVOT, DEFAULT_CONDITION_PIVOT) + extraFare;
+    }
+
+    private int findMaximumExtraFare() {
+        return sectionEdges.stream()
+                .mapToInt(sectionEdge -> sectionEdge.getLine().getExtraFare())
+                .max()
+                .orElse(0);
     }
 
     private int calculateAdditionalFare(int distance, int condition) {
