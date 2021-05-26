@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wooteco.subway.auth.application.AuthorizationException;
 import wooteco.subway.exception.DuplicatedException;
-import wooteco.subway.exception.InvalidException;
+import wooteco.subway.exception.InvalidInputException;
 import wooteco.subway.exception.NotFoundException;
 
 @RestControllerAdvice
@@ -30,8 +30,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(exception.getMessage()));
     }
 
-    @ExceptionHandler(InvalidException.class)
-    public ResponseEntity<ErrorResponse> InvalidExceptionHandler(InvalidException exception) {
+    @ExceptionHandler(InvalidInputException.class)
+    public ResponseEntity<ErrorResponse> InvalidExceptionHandler(InvalidInputException exception) {
         logger.error(exception.getMessage());
         return ResponseEntity.badRequest().body(new ErrorResponse(exception.getMessage()));
     }

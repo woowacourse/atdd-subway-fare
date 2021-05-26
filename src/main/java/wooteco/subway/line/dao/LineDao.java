@@ -78,7 +78,7 @@ public class LineDao {
 
     private Line mapLine(List<Map<String, Object>> result) {
         if (result.size() == 0) {
-            throw new RuntimeException();
+            throw new RuntimeException("쿼리에 결과 값이 존재하지 않습니다.");
         }
 
         List<Section> sections = extractSections(result);

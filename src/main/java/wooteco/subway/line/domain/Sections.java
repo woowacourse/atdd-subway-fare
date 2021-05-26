@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import wooteco.subway.exception.DuplicatedException;
+import wooteco.subway.exception.InvalidInputException;
 import wooteco.subway.station.domain.Station;
 
 public class Sections {
@@ -36,19 +38,18 @@ public class Sections {
 
         this.sections.add(section);
     }
-
-    private void checkAlreadyExisted(Section section) {
+    private void checkExistedAny(Section section) {
         List<Station> stations = getStations();
         if (!stations.contains(section.getUpStation()) && !stations.contains(section.getDownStation())) {
-            throw new RuntimeException();
+            throw new InvalidInputException("노선에 등록하려는 구간의 역들이 포함되어있지 않습니다.");
         }
     }
 
-    private void checkExistedAny(Section section) {
+    private void checkAlreadyExisted(Section section) {
         List<Station> stations = getStations();
         List<Station> stationsOfNewSection = Arrays.asList(section.getUpStation(), section.getDownStation());
         if (stations.containsAll(stationsOfNewSection)) {
-            throw new RuntimeException();
+            throw new DuplicatedException("이미 등록된 구간입니다");
         }
     }
 
@@ -68,7 +69,8 @@ public class Sections {
 
     private void replaceSectionWithUpStation(Section newSection, Section existSection) {
         if (existSection.getDistance() <= newSection.getDistance()) {
-            throw new RuntimeException();
+            throw new InvalidInputException(
+                String.format("등록하려는 구간의 거리가 기존의 구간의 거리보다 큽니다. 기존 구간의 거리: %d", existSection.getDistance()));
         }
         this.sections.add(new Section(existSection.getUpStation(), newSection.getUpStation(),
             existSection.getDistance() - newSection.getDistance()));
@@ -77,7 +79,8 @@ public class Sections {
 
     private void replaceSectionWithDownStation(Section newSection, Section existSection) {
         if (existSection.getDistance() <= newSection.getDistance()) {
-            throw new RuntimeException();
+            throw new InvalidInputException(
+                String.format("등록하려는 구간의 거리가 기존의 구간의 거리보다 큽니다. 기존 구간의 거리: %d", existSection.getDistance()));
         }
         this.sections.add(new Section(newSection.getDownStation(), existSection.getDownStation(),
             existSection.getDistance() - newSection.getDistance()));
@@ -104,13 +107,13 @@ public class Sections {
 
     private Section findUpEndSection() {
         List<Station> downStations = this.sections.stream()
-            .map(it -> it.getDownStation())
+            .map(Section::getDownStation)
             .collect(Collectors.toList());
 
         return this.sections.stream()
             .filter(it -> !downStations.contains(it.getUpStation()))
             .findFirst()
-            .orElseThrow(RuntimeException::new);
+            .orElseThrow(() -> new InvalidInputException("해당 역의 상행역중에 하행역에 속한 역이 없습니다."));
     }
 
     private Section findSectionByNextUpStation(Station station) {
@@ -122,7 +125,7 @@ public class Sections {
 
     public void removeStation(Station station) {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new InvalidInputException("구간이 하나일 경우 삭제할 수 없습니다.");
         }
 
         Optional<Section> upSection = sections.stream()

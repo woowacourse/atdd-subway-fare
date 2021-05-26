@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import wooteco.subway.exception.DuplicatedException;
-import wooteco.subway.exception.InvalidException;
+import wooteco.subway.exception.InvalidInputException;
 import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
@@ -54,7 +54,7 @@ public class StationService {
         try {
             stationDao.deleteById(id);
         } catch (DataAccessException e) {
-            throw new InvalidException("노선에 등록된 지하철역은 지울 수 없습니다.");
+            throw new InvalidInputException("노선에 등록된 지하철역은 지울 수 없습니다.");
         }
     }
 }

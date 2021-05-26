@@ -3,9 +3,13 @@ package wooteco.subway.line;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.Set;
+import javax.validation.ConstraintViolation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
@@ -52,6 +56,38 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         지하철_구간_생성됨(response, 신분당선, Arrays.asList(강남역, 양재역, 광교역));
     }
 
+    @DisplayName("중간에 추가하려는 구간의 거리가 기존에 존재하는 구간의 거리보다 클 수 없다.")
+    @Test
+    void addLineSectionWithInvalidDistanceException() {
+        // when
+        ExtractableResponse<Response> response = 지하철_구간_생성_요청(신분당선, 강남역, 양재역, 11);
+
+        // then
+        지하철_구간_등록_실패됨(response);
+    }
+
+    @DisplayName("상행역과 하행역이 같을 수 없다.")
+    @Test
+    void addLineSectionWithSameStationException() {
+        // when
+        ExtractableResponse<Response> response = 지하철_구간_생성_요청(신분당선, 강남역, 강남역, 5);
+
+        // then
+        지하철_구간_등록_실패됨_CONFLICT(response);
+    }
+
+    @DisplayName("상행역, 하행역, 거리는 모두 1 이상의 값이어야 한다.")
+    @ParameterizedTest
+    @CsvSource(value = {"0:2:10", "1:0:10", "1:2:0"}, delimiter = ',')
+    void create(String input) {
+        final String[] inputs = input.split(":");
+        final SectionRequest sectionRequest = new SectionRequest(
+            Long.parseLong(inputs[0]), Long.parseLong(inputs[1]), Integer.parseInt(inputs[2]));
+
+        ExtractableResponse<Response> response = 지하철_구간_생성_요청(신분당선, sectionRequest);
+        지하철_구간_등록_실패됨(response);
+    }
+
     @DisplayName("지하철 노선에 여러개의 역을 순서 상관 없이 등록한다.")
     @Test
     void addLineSection2() {
@@ -70,7 +106,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_구간_생성_요청(신분당선, 강남역, 광교역, 3);
 
         // then
-        지하철_구간_등록_실패됨(response);
+        지하철_구간_등록_실패됨_CONFLICT(response);
     }
 
     @DisplayName("지하철 노선에 등록되지 않은 역을 기준으로 등록한다.")
@@ -97,7 +133,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_제외됨(removeResponse, 신분당선, Arrays.asList(강남역, 정자역, 광교역));
     }
 
-    @DisplayName("지하철 노선에 등록된 지하철역이 두개일 때 한 역을 제외한다.")
+    @DisplayName("지하철 노선에 등록된 지하철역이 두 개일 때 한 역을 제외한다.")
     @Test
     void removeLineSection2() {
         // when
@@ -121,6 +157,17 @@ public class SectionAcceptanceTest extends AcceptanceTest {
                 .when().post("/lines/{lineId}/sections", line.getId())
                 .then().log().all()
                 .extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철_구간_생성_요청(LineResponse line, SectionRequest sectionRequest) {
+
+        return RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(sectionRequest)
+            .when().post("/lines/{lineId}/sections", line.getId())
+            .then().log().all()
+            .extract();
     }
 
     public static void 지하철_노선에_지하철역_순서_정렬됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
@@ -161,10 +208,14 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 지하철_구간_등록_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    public static void 지하철_구간_등록_실패됨_CONFLICT(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CONFLICT.value());
     }
 
     public static void 지하철_노선에_지하철역_제외_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
