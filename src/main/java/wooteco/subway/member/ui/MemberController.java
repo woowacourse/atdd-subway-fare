@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import java.net.URI;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import javax.validation.Valid;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +33,7 @@ public class MemberController {
     }
 
     @PostMapping("/members")
-    public ResponseEntity createMember(@RequestBody @Valid MemberRequest request) {
+    public ResponseEntity createMember(@RequestBody MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
         return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
     }

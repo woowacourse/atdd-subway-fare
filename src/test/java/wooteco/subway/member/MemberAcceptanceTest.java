@@ -74,13 +74,24 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExceptionCheck.에러_문구_확인(createResponse, "INVALID_AGE");
     }
 
-    @DisplayName("null이 입력되는 경우")
+    @DisplayName("null 이 입력되는 경우")
     @Test
     void createHaveNull() {
         ExtractableResponse<Response> createResponse = 잘못된_회원_생성을_요청(EMAIL, null, null);
 
         ExceptionCheck.코드_400_응답됨(createResponse);
         ExceptionCheck.에러_문구_확인(createResponse, "INVALID_INPUT");
+    }
+
+    @DisplayName("중복된 ID가 입력되는 경우")
+    @Test
+    void duplicateId() {
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        ExtractableResponse<Response> createResponse2 = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+
+        ExceptionCheck.코드_400_응답됨(createResponse2);
+        ExceptionCheck.에러_문구_확인(createResponse2, "DUPLICATED_ID");
+
     }
 
     private static ExtractableResponse<Response> 회원이_존재하는지_요청(String email) {

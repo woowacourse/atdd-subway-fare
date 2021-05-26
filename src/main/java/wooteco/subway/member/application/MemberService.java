@@ -1,14 +1,17 @@
 package wooteco.subway.member.application;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
+import wooteco.subway.member.exception.DuplicatedIdException;
 
 @Service
 public class MemberService {
+
     private MemberDao memberDao;
 
     public MemberService(MemberDao memberDao) {
@@ -16,8 +19,13 @@ public class MemberService {
     }
 
     public MemberResponse createMember(MemberRequest request) {
-        Member member = memberDao.insert(request.toMember());
-        return MemberResponse.of(member);
+        try {
+            memberDao.findByEmail(request.getEmail());
+        } catch (EmptyResultDataAccessException exception) {
+            Member member = memberDao.insert(request.toMember());
+            return MemberResponse.of(member);
+        }
+        throw new DuplicatedIdException("중복된 ID 입니다.");
     }
 
     public MemberResponse findMember(String email) {
