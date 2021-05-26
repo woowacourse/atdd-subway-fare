@@ -10,6 +10,7 @@ import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.line.exception.SameEndStationsException;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
@@ -26,9 +27,16 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
+        validateLineRequest(request);
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);
+    }
+
+    private void validateLineRequest(LineRequest request) {
+        if (request.getUpStationId().equals(request.getDownStationId())) {
+            throw new SameEndStationsException("상행 종점, 하행 종점은 같을 수 없습니다.");
+        }
     }
 
     private Section addInitSection(Line line, LineRequest request) {
