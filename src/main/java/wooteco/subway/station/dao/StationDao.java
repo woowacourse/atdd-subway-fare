@@ -12,22 +12,21 @@ import wooteco.subway.station.domain.Station;
 
 @Repository
 public class StationDao {
+    private JdbcTemplate jdbcTemplate;
+    private SimpleJdbcInsert insertAction;
 
-    private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert insertAction;
-
-    private final RowMapper<Station> rowMapper = (rs, rowNum) ->
-        new Station(
-            rs.getLong("id"),
-            rs.getString("name")
-        );
+    private RowMapper<Station> rowMapper = (rs, rowNum) ->
+            new Station(
+                    rs.getLong("id"),
+                    rs.getString("name")
+            );
 
 
     public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
-            .withTableName("station")
-            .usingGeneratedKeyColumns("id");
+                .withTableName("STATION")
+                .usingGeneratedKeyColumns("id");
     }
 
     public Station insert(Station station) {

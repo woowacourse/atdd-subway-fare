@@ -1,3 +1,9 @@
+-- create user 'anne'@'localhost' identified by 'anne';
+-- grant all privileges on *.* to 'anne'@'localhost';
+-- flush privileges;
+-- CREATE DATABASE subway DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+-- use subway;
+
 create table if not exists STATION
 (
     id bigint auto_increment not null,
