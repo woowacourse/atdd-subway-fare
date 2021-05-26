@@ -40,7 +40,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_생성을_요청(EMAIL, PASSWORD, AGE);
 
         ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
-        errorTest(createResponse, MemberException.DUPLICATED_EMAIL_EXCEPTION);
+        에러_발생함(createResponse, MemberException.DUPLICATED_EMAIL_EXCEPTION);
     }
 
     @DisplayName("잘못된 이메일을 보내면 에러가 발생한다.")
@@ -49,7 +49,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @ValueSource(strings = {"", "abc", "abc@jj", "@amd.com", " ", " ab @ naver. com"})
     void createMemberWithInvalidEmail(String email) {
         ExtractableResponse<Response> createResponse = 회원_생성을_요청(email, PASSWORD, AGE);
-        errorTest(createResponse, MemberException.INVALID_EMAIL_EXCEPTION);
+        에러_발생함(createResponse, MemberException.INVALID_EMAIL_EXCEPTION);
     }
 
     @DisplayName("2글자 이하의 비밀번호를 보내면 에러가 발생한다.")
@@ -58,7 +58,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @ValueSource(strings = {"", "1"})
     void createMemberWithInvalidPassword(String password) {
         ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, password, AGE);
-        errorTest(createResponse, MemberException.INVALID_PASSWORD_EXCEPTION);
+        에러_발생함(createResponse, MemberException.INVALID_PASSWORD_EXCEPTION);
     }
 
     @DisplayName("0이하의 나이를 보내면 에러가 발생한다.")
@@ -67,7 +67,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @ValueSource(ints = {-1, -10234, 0})
     void createMemberWithInvalidAge(Integer age) {
         ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, age);
-        errorTest(createResponse, MemberException.INVALID_AGE_EXCEPTION);
+        에러_발생함(createResponse, MemberException.INVALID_AGE_EXCEPTION);
     }
 
     @DisplayName("토큰을 이용하여 정보를 조회한다.")
@@ -103,7 +103,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(사용자, NEW_EMAIL, NEW_PASSWORD,
                 NEW_AGE);
 
-        errorTest(updateResponse, MemberException.DUPLICATED_EMAIL_EXCEPTION);
+        에러_발생함(updateResponse, MemberException.DUPLICATED_EMAIL_EXCEPTION);
     }
 
 

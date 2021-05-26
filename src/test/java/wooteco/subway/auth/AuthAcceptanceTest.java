@@ -10,7 +10,6 @@ import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.exception.AuthException;
-import wooteco.subway.exception.SubwayException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -75,7 +74,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     void loginNotExistId() {
         ExtractableResponse<Response> loginResponse = 로그인_요청("NOT_EXIST_ID", PASSWORD);
 
-        errorTest(loginResponse, AuthException.NOT_EXIST_EMAIL_EXCEPTION);
+        에러_발생함(loginResponse, AuthException.NOT_EXIST_EMAIL_EXCEPTION);
     }
 
     @DisplayName("잘못된 패스워드로 로그인")
@@ -85,7 +84,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> loginResponse = 로그인_요청(EMAIL, "WRONG_PASSWORD");
 
-        errorTest(loginResponse, AuthException.WRONG_PASSWORD_EXCEPTION);
+        에러_발생함(loginResponse, AuthException.WRONG_PASSWORD_EXCEPTION);
     }
 
     @DisplayName("토큰이 필요한 기능에 로그인을 안했을 경우 에러")
@@ -97,7 +96,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> response = 내_회원_정보_조회_요청(new TokenResponse(""));
 
-        errorTest(response, AuthException.INVALID_TOKEN_EXCEPTION);
+        에러_발생함(response, AuthException.INVALID_TOKEN_EXCEPTION);
     }
 
     public static ExtractableResponse<Response> 회원_등록되어_있음(String email, String password, Integer age) {
@@ -133,5 +132,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 then().
                 log().all().
                 extract();
+    }
+
+    public static TokenResponse 회원가입_토큰가져오기() {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+
+        return 로그인되어_있음(EMAIL, PASSWORD);
     }
 }

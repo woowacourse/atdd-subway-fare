@@ -3,13 +3,19 @@ package wooteco.subway.station;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.auth.AuthAcceptanceTest;
+import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
+import wooteco.subway.station.exception.StationException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -21,6 +27,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class StationAcceptanceTest extends AcceptanceTest {
     private static final String 강남역 = "강남역";
     private static final String 역삼역 = "역삼역";
+
+    private static TokenResponse tokenResponse;
+
+    @Override
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        tokenResponse = AuthAcceptanceTest.회원가입_토큰가져오기();
+    }
 
     @DisplayName("지하철역을 생성한다.")
     @Test
@@ -42,7 +57,13 @@ public class StationAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철역_생성_요청(강남역);
 
         // then
-        지하철역_생성_실패됨(response);
+        에러_발생함(response, StationException.DUPLICATED_STATION_NAME_EXCEPTION);
+    }
+
+    @DisplayName("역 이름은 2글자 이상 20글자 이하가 되어야한다. 공백이 불가하다.")
+    @ParameterizedTest
+    @ValueSource(strings = {})
+    void createStationNameLength() {
     }
 
     @DisplayName("지하철역을 조회한다.")
@@ -58,6 +79,32 @@ public class StationAcceptanceTest extends AcceptanceTest {
         // then
         지하철역_목록_응답됨(response);
         지하철역_목록_포함됨(response, Arrays.asList(stationResponse1, stationResponse2));
+    }
+
+    @DisplayName("지하철역을 수정한다.")
+    @Test
+    void updateStation() {
+        StationResponse stationResponse = 지하철역_등록되어_있음(강남역);
+
+        ExtractableResponse<Response> response = 지하철역_수정_요청(new StationRequest("잠실역"), stationResponse.getId());
+
+        지하철역_이름_수정됨(response);
+    }
+
+    @DisplayName("지하철역을 수정할 때 중복된 이름을 사용할 수 없다.")
+    @Test
+    void updateStationWithDuplicate() {
+        StationResponse stationResponse = 지하철역_등록되어_있음(강남역);
+        지하철역_등록되어_있음(역삼역);
+
+        ExtractableResponse<Response> response = 지하철역_수정_요청(new StationRequest("역삼역"), stationResponse.getId());
+
+        에러_발생함(response, StationException.DUPLICATED_STATION_NAME_EXCEPTION);
+    }
+
+    @DisplayName("역 이름을 수정할 때 역 이름은 2글자 이상 20글자 이하가 되어야한다. 공백이 불가하다")
+    @Test
+    void updateStationNameLength() {
     }
 
     @DisplayName("지하철역을 제거한다.")
@@ -82,6 +129,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .body(stationRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/stations")
@@ -89,9 +137,21 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 지하철역_수정_요청(StationRequest stationRequest, Long id) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .body(stationRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().put("/stations/" + id)
+                .then().log().all()
+                .extract();
+    }
+
     public static ExtractableResponse<Response> 지하철역_목록_조회_요청() {
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .when().get("/stations")
                 .then().log().all()
                 .extract();
@@ -100,6 +160,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철역_제거_요청(StationResponse stationResponse) {
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .when().delete("/stations/" + stationResponse.getId())
                 .then().log().all()
                 .extract();
@@ -110,8 +171,8 @@ public class StationAcceptanceTest extends AcceptanceTest {
         assertThat(response.header("Location")).isNotBlank();
     }
 
-    public static void 지하철역_생성_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    private void 지하철역_이름_수정됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     public static void 지하철역_목록_응답됨(ExtractableResponse<Response> response) {

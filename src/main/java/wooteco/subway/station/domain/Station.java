@@ -1,8 +1,14 @@
 package wooteco.subway.station.domain;
 
+import wooteco.subway.exception.SubwayCustomException;
+import wooteco.subway.station.exception.StationException;
+
 import java.util.Objects;
 
 public class Station {
+    private static final int MIN_NAME_LENGTH = 2;
+    private static final int MAX_NAME_LENGTH = 20;
+
     private Long id;
     private String name;
 
@@ -10,12 +16,19 @@ public class Station {
     }
 
     public Station(Long id, String name) {
+        validateNameLength(name);
         this.id = id;
         this.name = name;
     }
 
+    private void validateNameLength(String name) {
+        if(Objects.isNull(name) || name.length() < MIN_NAME_LENGTH || name.length() > MAX_NAME_LENGTH) {
+            throw new SubwayCustomException(StationException.INVALID_STATION_NAME_LENGTH);
+        }
+    }
+
     public Station(String name) {
-        this.name = name;
+        this(0L, name);
     }
 
     public Long getId() {

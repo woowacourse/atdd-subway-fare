@@ -26,7 +26,7 @@ public class AcceptanceTest {
         RestAssured.port = port;
     }
 
-    protected void errorTest(ExtractableResponse<Response> response, SubwayException subwayException) {
+    protected void 에러_발생함(ExtractableResponse<Response> response, SubwayException subwayException) {
         assertThat(response.statusCode())
                 .isEqualTo(subwayException.status());
         assertThat(response.body().asString())
