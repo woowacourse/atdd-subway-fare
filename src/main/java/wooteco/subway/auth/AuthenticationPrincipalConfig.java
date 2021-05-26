@@ -1,19 +1,33 @@
 package wooteco.subway.auth;
 
+import java.util.Arrays;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.ui.AuthenticationPrincipalArgumentResolver;
 
 import java.util.List;
+import wooteco.subway.auth.ui.LoginInterceptor;
 
 @Configuration
 public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
+
     private final AuthService authService;
 
     public AuthenticationPrincipalConfig(AuthService authService) {
         this.authService = authService;
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(createLoginInterceptor())
+                .addPathPatterns(Arrays.asList(
+                        "/members/me/**",
+                        "/stations",
+                        "/lines"
+                ));
     }
 
     @Override
@@ -24,5 +38,10 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
     @Bean
     public AuthenticationPrincipalArgumentResolver createAuthenticationPrincipalArgumentResolver() {
         return new AuthenticationPrincipalArgumentResolver(authService);
+    }
+
+    @Bean
+    public LoginInterceptor createLoginInterceptor() {
+        return new LoginInterceptor(authService);
     }
 }
