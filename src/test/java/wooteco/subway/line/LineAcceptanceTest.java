@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.station.dto.StationResponse;
@@ -121,8 +122,17 @@ public class LineAcceptanceTest extends AcceptanceTest {
         return 지하철_노선_등록되어_있음(lineRequest);
     }
 
+    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance, TokenResponse tokenResponse) {
+        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance);
+        return 지하철_노선_등록되어_있음(lineRequest, tokenResponse);
+    }
+
     public static LineResponse 지하철_노선_등록되어_있음(LineRequest lineRequest) {
         return 지하철_노선_생성_요청(lineRequest).as(LineResponse.class);
+    }
+
+    public static LineResponse 지하철_노선_등록되어_있음(LineRequest lineRequest, TokenResponse tokenResponse) {
+        return 지하철_노선_생성_요청(lineRequest, tokenResponse).as(LineResponse.class);
     }
 
     public static ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest params) {
@@ -133,6 +143,17 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .when().post("/lines")
                 .then().log().all().
                         extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest params, TokenResponse tokenResponse) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(tokenResponse.getAccessToken())
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(params)
+            .when().post("/lines")
+            .then().log().all().
+                extract();
     }
 
     private static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {

@@ -1,6 +1,8 @@
 package wooteco.subway.station.application;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import wooteco.subway.exception.SubwayCustomException;
 import wooteco.subway.station.dao.StationDao;
@@ -30,7 +32,11 @@ public class StationService {
     }
 
     public Station findStationById(Long id) {
-        return stationDao.findById(id);
+        try {
+            return stationDao.findById(id);
+        } catch (EmptyResultDataAccessException exception) {
+            throw new SubwayCustomException(SubwayStationException.NOT_EXIST_STATION_EXCEPTION);
+        }
     }
 
     public List<StationResponse> findAllStationResponses() {
@@ -42,18 +48,27 @@ public class StationService {
     }
 
     public void deleteStationById(Long id) {
-        stationDao.deleteById(id);
+        try {
+            int updateRow = stationDao.deleteById(id);
+            validateUpdate(updateRow);
+        } catch (DataIntegrityViolationException exception) {
+            throw new SubwayCustomException(SubwayStationException.DELETE_USE_STATION_EXCEPTION);
+        }
     }
 
     public void updateStation(Long id, StationRequest stationRequest) {
         Station station = stationRequest.toStation();
         try {
-            stationDao.update(id, station);
+            int updateRow = stationDao.update(id, station);
+            validateUpdate(updateRow);
         } catch (DuplicateKeyException exception) {
             throw new SubwayCustomException(SubwayStationException.DUPLICATE_STATION_EXCEPTION);
-        } catch (Exception e) {
-            System.out.println(e.getClass());
-            throw e;
+        }
+    }
+
+    private void validateUpdate(int updateRow) {
+        if (updateRow != 1) {
+            throw new SubwayCustomException(SubwayStationException.NOT_EXIST_STATION_EXCEPTION);
         }
     }
 }
