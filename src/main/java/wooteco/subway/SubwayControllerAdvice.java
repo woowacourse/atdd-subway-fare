@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wooteco.subway.exception.SubwayException;
 import wooteco.subway.exception.dto.ExceptionResponse;
 
+import java.util.Objects;
+
 @RestControllerAdvice
 public class SubwayControllerAdvice {
     @ExceptionHandler(SubwayException.class)
@@ -19,6 +21,8 @@ public class SubwayControllerAdvice {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponse> exception(Exception e) {
+        System.out.println("@@@@" + e.getCause());
+        e.printStackTrace();
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ExceptionResponse("서버에서 요청을 처리하지 못했습니다.", HttpStatus.INTERNAL_SERVER_ERROR.value()));
@@ -28,6 +32,6 @@ public class SubwayControllerAdvice {
     public ResponseEntity<ExceptionResponse> methodArgumentNotValidException(MethodArgumentNotValidException e) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
+                .body(new ExceptionResponse(Objects.requireNonNull(e.getFieldError()).getDefaultMessage(), HttpStatus.BAD_REQUEST.value()));
     }
 }
