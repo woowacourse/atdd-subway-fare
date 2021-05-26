@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import wooteco.subway.auth.exception.InvalidEmailException;
 import wooteco.subway.auth.exception.InvalidPasswordException;
 import wooteco.subway.member.exception.DuplicatedIdException;
+import wooteco.subway.station.exception.DuplicatedStationNameException;
 
 @ControllerAdvice
 public class controllerAdvice {
@@ -26,4 +27,11 @@ public class controllerAdvice {
         DuplicatedIdException e) {
         return ResponseEntity.badRequest().body(new ExceptionResponse(e));
     }
+
+    @ExceptionHandler(DuplicatedStationNameException.class)
+    public ResponseEntity<ExceptionResponse> invalidPasswordExceptionHandle(
+        DuplicatedStationNameException e) {
+        return ResponseEntity.badRequest().body(new ExceptionResponse(e));
+    }
+
 }

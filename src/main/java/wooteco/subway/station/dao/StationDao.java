@@ -12,21 +12,22 @@ import wooteco.subway.station.domain.Station;
 
 @Repository
 public class StationDao {
+
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert insertAction;
 
     private RowMapper<Station> rowMapper = (rs, rowNum) ->
-            new Station(
-                    rs.getLong("id"),
-                    rs.getString("name")
-            );
+        new Station(
+            rs.getLong("id"),
+            rs.getString("name")
+        );
 
 
     public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
             .withTableName("STATION")
-                .usingGeneratedKeyColumns("id");
+            .usingGeneratedKeyColumns("id");
     }
 
     public Station insert(Station station) {
@@ -48,5 +49,10 @@ public class StationDao {
     public Station findById(Long id) {
         String sql = "select * from STATION where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    }
+
+    public boolean isHaveStationByName(String name) {
+        String sql = "select count(*) from STATION where name = ?";
+        return 0 < jdbcTemplate.queryForObject(sql, Integer.class, name);
     }
 }
