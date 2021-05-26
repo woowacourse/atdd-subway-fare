@@ -66,7 +66,7 @@ public class LineDao {
                 "from LINE L \n" +
                 "left outer join SECTION S on L.id = S.line_id " +
                 "left outer join STATION UST on S.up_station_id = UST.id " +
-                "left outer join STATION DST on S.down_station_id = DST.id ";
+                "left outer join STATION DST on S.down_station_id = DST.id order by L.id asc";
 
         List<Map<String, Object>> result = jdbcTemplate.queryForList(sql);
         Map<Long, List<Map<String, Object>>> resultByLine = result.stream().collect(Collectors.groupingBy(it -> (Long) it.get("line_id")));
