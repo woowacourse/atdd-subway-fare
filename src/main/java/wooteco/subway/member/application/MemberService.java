@@ -40,13 +40,12 @@ public class MemberService {
 
     public void updateMemberPassword(LoginMember loginMember, MemberPasswordUpdateRequest memberPasswordUpdateRequest) {
         Member member = memberDao.findByEmail(loginMember.getEmail()).orElseThrow(MemberNotFoundException::new);
-        member.checkPassword(memberPasswordUpdateRequest.getCurrentPassword());
+        member.validateUpdatePassword(memberPasswordUpdateRequest.getCurrentPassword(), memberPasswordUpdateRequest.getNewPassword());
         memberDao.update(new Member(member.getId(), member.getEmail(), memberPasswordUpdateRequest.getNewPassword(), member.getAge()));
     }
 
     public void deleteMember(LoginMember loginMember) {
-        Member member = memberDao.findByEmail(loginMember.getEmail()).orElseThrow(MemberNotFoundException::new);
-        memberDao.deleteById(member.getId());
+        memberDao.deleteById(loginMember.getId());
     }
 
     public void checkDuplicateEmail(DuplicateEmailCheckRequest request) {

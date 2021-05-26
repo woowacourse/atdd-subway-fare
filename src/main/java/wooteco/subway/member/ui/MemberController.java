@@ -7,6 +7,7 @@ import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.dto.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
@@ -20,13 +21,13 @@ public class MemberController {
     }
 
     @PostMapping
-    public ResponseEntity<MemberResponse> createMember(@RequestBody MemberRequest request) {
+    public ResponseEntity<MemberResponse> createMember(@RequestBody @Valid MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
         return ResponseEntity.created(URI.create("/members/" + member.getId())).body(member);
     }
 
     @PostMapping("/exists")
-    public ResponseEntity<Void> checkDuplicateEmail(@RequestBody DuplicateEmailCheckRequest request) {
+    public ResponseEntity<Void> checkDuplicateEmail(@RequestBody @Valid DuplicateEmailCheckRequest request) {
         memberService.checkDuplicateEmail(request);
         return ResponseEntity.noContent().build();
     }
@@ -38,13 +39,13 @@ public class MemberController {
     }
 
     @PutMapping("/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberInfoUpdateRequest memberInfoUpdateRequest) {
+    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody @Valid MemberInfoUpdateRequest memberInfoUpdateRequest) {
         MemberResponse memberResponse = memberService.updateMember(loginMember, memberInfoUpdateRequest);
         return ResponseEntity.ok(memberResponse);
     }
 
     @PutMapping("/me/pw")
-    public ResponseEntity<MemberResponse> updateMemberPasswordOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberPasswordUpdateRequest memberPasswordUpdateRequest) {
+    public ResponseEntity<MemberResponse> updateMemberPasswordOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody @Valid MemberPasswordUpdateRequest memberPasswordUpdateRequest) {
         memberService.updateMemberPassword(loginMember, memberPasswordUpdateRequest);
         return ResponseEntity.noContent().build();
     }
