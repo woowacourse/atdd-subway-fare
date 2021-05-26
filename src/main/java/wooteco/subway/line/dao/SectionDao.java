@@ -32,8 +32,7 @@ public class SectionDao {
         params.put("down_station_id", section.getDownStation().getId());
         params.put("distance", section.getDistance());
         Long sectionId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
-        return new Section(sectionId, section.getUpStation(), section.getDownStation(),
-                section.getDistance());
+        return new Section(sectionId, section.getUpStation(), section.getDownStation(), section.getDistance());
     }
 
     public void deleteByLineId(Long lineId) {
@@ -57,7 +56,7 @@ public class SectionDao {
     }
 
     public boolean existsByStationId(Long stationId) {
-        String sql = "select exists(select * from SECTION where up_station_id = ? or down_station_id = ?";
+        String sql = "select exists (select * from SECTION where up_station_id = ? or down_station_id = ?)";
         return jdbcTemplate.queryForObject(sql, Boolean.class, stationId, stationId);
     }
 }

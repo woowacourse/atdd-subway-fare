@@ -34,7 +34,7 @@ public class LineService {
             throw new DuplicatedLineException(request);
         }
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
-        Section persistSection = addInitSection(new Line(request.getName(), request.getColor()), request);
+        Section persistSection = addInitSection(persistLine, request);
         persistLine.addSection(persistSection);
         return LineResponse.of(persistLine);
     }
