@@ -4,6 +4,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import wooteco.subway.exception.badrequest.DuplicateNameException;
 import wooteco.subway.exception.badrequest.IllegalDeleteException;
+import wooteco.subway.exception.notfound.StationNotFoundException;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
@@ -33,7 +34,7 @@ public class StationService {
     }
 
     public Station findStationById(Long id) {
-        return stationDao.findById(id);
+        return stationDao.findById(id).orElseThrow(StationNotFoundException::new);
     }
 
     public List<StationResponse> findAllStationResponses() {
@@ -46,7 +47,7 @@ public class StationService {
 
     public StationResponse updateStation(Long id, StationRequest stationRequest) {
         try {
-            Station station = stationDao.findById(id);
+            Station station = stationDao.findById(id).orElseThrow(StationNotFoundException::new);
             Station updateStation = station.update(stationRequest.getName());
             stationDao.update(updateStation);
             return StationResponse.of(updateStation);

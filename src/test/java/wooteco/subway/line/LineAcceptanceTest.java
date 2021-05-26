@@ -10,8 +10,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
+import wooteco.subway.exception.dto.ExceptionResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
+import wooteco.subway.line.dto.LineUpdateRequest;
 import wooteco.subway.member.MemberAcceptanceTest;
 import wooteco.subway.station.dto.StationResponse;
 
@@ -20,7 +22,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
 @DisplayName("지하철 노선 관련 기능")
@@ -41,7 +42,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         downStation = 지하철역_등록되어_있음("광교역", tokenResponse);
 
         lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 10);
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 15);
+        lineRequest2 = new LineRequest("구신분당선", "bg-red-400", 강남역.getId(), downStation.getId(), 15);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -54,6 +55,29 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_생성됨(response);
     }
 
+    @DisplayName("유효하지 않은 토큰으로 지하철 노선을 생성한다.")
+    @Test
+    void createLineWithInvalidToken() {
+        // when
+        ExtractableResponse<Response> response = 유효하지_않은_토큰으로_지하철_노선_생성_요청(lineRequest1);
+
+        // then
+        잘못된_토큰으로_요청을_보냄(response);
+    }
+
+    @DisplayName("존재하지 않는 지하철 역으로 지하철 노선을 생성한다.")
+    @Test
+    void createLineWithNotExistStationId() {
+        // given
+        LineRequest lineRequest = new LineRequest("3호선", "bg-red-100", 6L, 7L, 12);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest, tokenResponse);
+
+        // then
+        지하철_노선_생성_지하철역이_존재하지않아_실패됨(response);
+    }
+
     @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
     @Test
     void createLineWithDuplicateName() {
@@ -64,7 +88,38 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1, tokenResponse);
 
         // then
-        지하철_노선_생성_실패됨(response);
+        지하철_노선_생성_이름중복으로_실패됨(response);
+    }
+
+    @DisplayName("지하철 노선을 생성요청에 유효하지 않은 값을 넣는다.")
+    @Test
+    void createLineWithInvalidValue() {
+        // given
+        LineRequest 노선이름_빈값 = new LineRequest("", "bg-red-600", 강남역.getId(), downStation.getId(), 10);
+        LineRequest 노선색깔_빈값 = new LineRequest("신분당선", "", 강남역.getId(), downStation.getId(), 10);
+        LineRequest 상행역_NULL = new LineRequest("신분당선", "bg-red-600", null, downStation.getId(), 10);
+        LineRequest 상행역_음수 = new LineRequest("신분당선", "bg-red-600", -1L, downStation.getId(), 10);
+        LineRequest 하행역_NULL = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), null, 10);
+        LineRequest 하행역_음수 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), -1L, 10);
+        LineRequest 구간거리_음수 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), -1);
+
+        // when
+        ExtractableResponse<Response> 노선이름_빈값_응답 = 지하철_노선_생성_요청(노선이름_빈값, tokenResponse);
+        ExtractableResponse<Response> 노선색깔_빈값_응답 = 지하철_노선_생성_요청(노선색깔_빈값, tokenResponse);
+        ExtractableResponse<Response> 상행역_NULL_응답 = 지하철_노선_생성_요청(상행역_NULL, tokenResponse);
+        ExtractableResponse<Response> 하행역_NULL_응답 = 지하철_노선_생성_요청(하행역_NULL, tokenResponse);
+        ExtractableResponse<Response> 상행역_음수_응답 = 지하철_노선_생성_요청(상행역_음수, tokenResponse);
+        ExtractableResponse<Response> 하행역_음수_응답 = 지하철_노선_생성_요청(하행역_음수, tokenResponse);
+        ExtractableResponse<Response> 구간거리_음수_응답 = 지하철_노선_생성_요청(구간거리_음수, tokenResponse);
+
+        // then
+        잘못된_입력값으로_요청을_보냄(노선이름_빈값_응답);
+        잘못된_입력값으로_요청을_보냄(노선색깔_빈값_응답);
+        잘못된_입력값으로_요청을_보냄(상행역_NULL_응답);
+        잘못된_입력값으로_요청을_보냄(하행역_NULL_응답);
+        지하철_역ID_음수요청됨(상행역_음수_응답);
+        지하철_역ID_음수요청됨(하행역_음수_응답);
+        유효하지_않은_거리값_요청됨(구간거리_음수_응답);
     }
 
     @DisplayName("지하철 노선 목록을 조회한다.")
@@ -113,12 +168,27 @@ public class LineAcceptanceTest extends AcceptanceTest {
     void updateLine() {
         // given
         LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1);
+        LineUpdateRequest lineUpdateRequest = new LineUpdateRequest("8호선", "bg-red-600");
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse, lineRequest2);
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse, lineUpdateRequest);
 
         // then
         지하철_노선_수정됨(response);
+    }
+
+    @DisplayName("유효하지 않은 토큰으로 지하철 노선을 수정한다.")
+    @Test
+    void updateLineWithInvalidToken() {
+        // given
+        LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1);
+        LineUpdateRequest lineUpdateRequest = new LineUpdateRequest("8호선", "bg-red-600");
+
+        // when
+        ExtractableResponse<Response> response = 유효하지_않은_토큰으로_지하철_노선_수정_요청(lineResponse, lineUpdateRequest);
+
+        // then
+        잘못된_토큰으로_요청을_보냄(response);
     }
 
     @DisplayName("지하철 노선 이름을 이미 존재하는 이름으로 수정한다.")
@@ -127,12 +197,36 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // given
         지하철_노선_등록되어_있음(lineRequest1);
         LineResponse lineResponse2 = 지하철_노선_등록되어_있음(lineRequest2);
+        LineUpdateRequest lineUpdateRequest = new LineUpdateRequest(lineRequest1.getName(), "bg-red-600");
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse2, lineRequest1);
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse2, lineUpdateRequest);
 
         // then
         지하철_노선_이름_중복됨(response);
+    }
+
+    @DisplayName("지하철 노선 유효하지 않은 값으로 수정한다.")
+    @Test
+    void updateLineByInvalidValue() {
+        // given
+        LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1);
+        LineUpdateRequest 이름_Null = new LineUpdateRequest(null, "bg-red-600");
+        LineUpdateRequest 이름_빈값 = new LineUpdateRequest("", "bg-red-600");
+        LineUpdateRequest 색깔_Null = new LineUpdateRequest("8호선", null);
+        LineUpdateRequest 색깔_빈값 = new LineUpdateRequest("8호선", "");
+
+        // when
+        ExtractableResponse<Response> 이름_Null_응답 = 지하철_노선_수정_요청(lineResponse, 이름_Null);
+        ExtractableResponse<Response> 이름_빈값_응답 = 지하철_노선_수정_요청(lineResponse, 이름_빈값);
+        ExtractableResponse<Response> 색깔_Null_응답 = 지하철_노선_수정_요청(lineResponse, 색깔_Null);
+        ExtractableResponse<Response> 색깔_빈값_응답 = 지하철_노선_수정_요청(lineResponse, 색깔_빈값);
+
+        // then
+        잘못된_입력값으로_요청을_보냄(이름_Null_응답);
+        잘못된_입력값으로_요청을_보냄(이름_빈값_응답);
+        잘못된_입력값으로_요청을_보냄(색깔_Null_응답);
+        잘못된_입력값으로_요청을_보냄(색깔_빈값_응답);
     }
 
     @DisplayName("지하철 노선을 제거한다.")
@@ -146,6 +240,19 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_노선_삭제됨(response);
+    }
+
+    @DisplayName("유효하지 않은 토큰으로 지하철 노선을 제거한다.")
+    @Test
+    void deleteLineWithInvalidToken() {
+        // given
+        LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1);
+
+        // when
+        ExtractableResponse<Response> response = 유효하지_않은_토큰으로_지하철_노선_제거_요청(lineResponse);
+
+        // then
+        잘못된_토큰으로_요청을_보냄(response);
     }
 
     public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
@@ -188,6 +295,17 @@ public class LineAcceptanceTest extends AcceptanceTest {
                         extract();
     }
 
+    public static ExtractableResponse<Response> 유효하지_않은_토큰으로_지하철_노선_생성_요청(LineRequest params) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken() + "유효하지 않은 토큰이다요")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/api/lines")
+                .then().log().all().
+                        extract();
+    }
+
     private static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {
         return RestAssured
                 .given().log().all()
@@ -215,11 +333,23 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_수정_요청(LineResponse response, LineRequest params) {
+    public static ExtractableResponse<Response> 지하철_노선_수정_요청(LineResponse response, LineUpdateRequest params) {
 
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().put("/api/lines/" + response.getId())
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 유효하지_않은_토큰으로_지하철_노선_수정_요청(LineResponse response, LineUpdateRequest params) {
+
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken() + "이상한 토큰")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().put("/api/lines/" + response.getId())
@@ -236,13 +366,25 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 유효하지_않은_토큰으로_지하철_노선_제거_요청(LineResponse lineResponse) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken() + "유효하지 않은 토큰")
+                .when().delete("/api/lines/" + lineResponse.getId())
+                .then().log().all()
+                .extract();
+    }
+
     public static void 지하철_노선_생성됨(ExtractableResponse response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
     }
 
-    public static void 지하철_노선_생성_실패됨(ExtractableResponse<Response> response) {
+    public static void 지하철_노선_생성_이름중복으로_실패됨(ExtractableResponse<Response> response) {
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
+
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(exceptionResponse.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static void 지하철_노선_목록_응답됨(ExtractableResponse<Response> response) {
@@ -280,6 +422,45 @@ public class LineAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 지하철_노선_이름_중복됨(ExtractableResponse<Response> response) {
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
+
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(exceptionResponse.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(exceptionResponse.getMessage()).isEqualTo("지하철 노선 이름이 이미 존재합니다");
+    }
+
+    private static void 잘못된_토큰으로_요청을_보냄(ExtractableResponse<Response> response) {
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
+
+        assertThat(exceptionResponse.getStatus()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        assertThat(exceptionResponse.getMessage()).isEqualTo("다시 로그인 후 시도해주세요");
+    }
+
+    private static void 잘못된_입력값으로_요청을_보냄(ExtractableResponse<Response> response) {
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
+
+        assertThat(exceptionResponse.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(exceptionResponse.getMessage()).isEqualTo("입력되지 않은 항목을 확인해주세요");
+    }
+
+    private void 지하철_역ID_음수요청됨(ExtractableResponse<Response> response) {
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
+
+        assertThat(exceptionResponse.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(exceptionResponse.getMessage()).isEqualTo("지하철역의 ID는 양수여야 합니다.");
+    }
+
+    private void 유효하지_않은_거리값_요청됨(ExtractableResponse<Response> response) {
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
+
+        assertThat(exceptionResponse.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(exceptionResponse.getMessage()).isEqualTo("거리는 1 이상의 숫자를 입력해주세요");
+    }
+
+    private void 지하철_노선_생성_지하철역이_존재하지않아_실패됨(ExtractableResponse<Response> response) {
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
+
+        assertThat(exceptionResponse.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
+        assertThat(exceptionResponse.getMessage()).isEqualTo("존재하지 않는 지하철 역입니다");
     }
 }

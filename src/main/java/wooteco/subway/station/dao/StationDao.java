@@ -1,5 +1,6 @@
 package wooteco.subway.station.dao;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -10,6 +11,7 @@ import wooteco.subway.station.domain.Station;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class StationDao {
@@ -46,9 +48,13 @@ public class StationDao {
         jdbcTemplate.update(sql, id);
     }
 
-    public Station findById(Long id) {
-        String sql = "select * from station where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    public Optional<Station> findById(Long id) {
+        try {
+            String sql = "select * from station where id = ?";
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     public void update(Station station) {

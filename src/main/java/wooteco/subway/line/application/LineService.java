@@ -67,12 +67,12 @@ public class LineService {
         return lineDao.findById(id).orElseThrow(LineNotFoundException::new);
     }
 
-    public LineNameColorResponse updateLine(Long id, LineRequest lineUpdateRequest) {
+    public LineNameColorResponse updateLine(Long id, LineUpdateRequest lineUpdateRequest) {
         try {
             lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
             return new LineNameColorResponse(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor());
         } catch (DuplicateKeyException e) {
-            throw new DuplicateNameException("수정하려는 이름이 이미 존재하는 노선 이름입니다.");
+            throw new DuplicateNameException("지하철 노선 이름이 이미 존재합니다");
         }
     }
 
