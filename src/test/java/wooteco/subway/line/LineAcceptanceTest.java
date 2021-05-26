@@ -114,6 +114,20 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_생성_실패됨(response);
     }
 
+    @DisplayName("노선 생성 - 기존에 존재하는 노선 색으로 지하철 노선을 생성할 수 없다. (400)")
+    @Test
+    void createLineWithDuplicateColor() {
+        // given
+        지하철_노선_등록되어_있음_withToken(사용자, lineRequest1);
+
+        // when
+        LineRequest lineRequest = new LineRequest("9호선", lineRequest1.getColor(), lineRequest1.getUpStationId(), lineRequest1.getDownStationId(), lineRequest1.getDistance());
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청_withToken(사용자, lineRequest);
+
+        // then
+        지하철_노선_생성_실패됨(response);
+    }
+
     @DisplayName("노선 생성 - 존재하지 않는 역으로 노선을 생성할 수 없다. (404)")
     @Test
     void createLineWithNonExistsStation() {

@@ -80,6 +80,11 @@ public class LineDao {
         return jdbcTemplate.queryForObject(sql, Boolean.class, name);
     }
 
+    public boolean existsByColor(String color) {
+        String sql = "select exists (select * from LINE where color = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, color);
+    }
+
     private Line mapLine(List<Map<String, Object>> result) {
         if (result.size() == 0) {
             throw new LineNotFoundException();

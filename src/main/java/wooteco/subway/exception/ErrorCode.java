@@ -24,6 +24,7 @@ public enum ErrorCode {
     // Line
     DUPLICATE_LINE_NAME("지하철 노선 이름이 이미 존재합니다", HttpStatus.BAD_REQUEST.value()),
     NOTFOUND_LINE("존재하지 않는 지하철노선입니다", HttpStatus.NOT_FOUND.value()),
+    DUPLICATE_LINE_COLOR("이미 존재하는 노선 색입니다.", HttpStatus.BAD_REQUEST.value()),
 
     // Section
     INVALID_SECTION("유효하지 않는 구간 요청입니다", HttpStatus.BAD_REQUEST.value());
