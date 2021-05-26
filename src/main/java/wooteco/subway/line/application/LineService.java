@@ -84,8 +84,19 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        int updateRow = lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
-        validateUpdateRow(updateRow);
+        try {
+            checkDuplicatedUpdateColor(id, lineUpdateRequest.getColor());
+            int updateRow = lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+            validateUpdateRow(updateRow);
+        } catch (DuplicateKeyException e) {
+            throw new SubwayCustomException(LineException.DUPLICATED_LINE_NAME_EXCEPTION);
+        }
+    }
+
+    private void checkDuplicatedUpdateColor(Long id, String color) {
+        if(lineDao.existColor(id, color)) {
+            throw new SubwayCustomException(LineException.DUPLICATED_LINE_COLOR_EXCEPTION);
+        }
     }
 
     public void deleteLineById(Long id) {

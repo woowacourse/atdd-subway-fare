@@ -112,4 +112,10 @@ public class LineDao {
 
         return jdbcTemplate.queryForObject(sql, Boolean.class, color);
     }
+
+    public boolean existColor(Long id, String color) {
+        String sql = "select exists (select * from LINE where id <> ? AND color = ?)";
+
+        return jdbcTemplate.queryForObject(sql, Boolean.class, id, color);
+    }
 }

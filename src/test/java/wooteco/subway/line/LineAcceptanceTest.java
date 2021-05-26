@@ -34,6 +34,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     private StationResponse 광교역;
     private LineRequest 신분당선;
     private LineRequest 구신분당선;
+    private LineRequest 일호선;
 
     private TokenResponse tokenResponse;
 
@@ -49,6 +50,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         신분당선 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
         구신분당선 = new LineRequest("구신분당선", "bg-green-600", 강남역.getId(), 광교역.getId(), 15);
+        일호선 = new LineRequest("1호선", "bg-blue-600", 강남역.getId(), 광교역.getId(), 15);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -174,6 +176,36 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         에러_발생함(response, LineException.NOT_EXIST_LINE_EXCEPTION);
+    }
+
+    @DisplayName("중복된 노선 이름으로 수정할 수 없다.")
+    @Test
+    void updateLineWithDuplicatedName() {
+        // given
+        LineResponse lineResponse = 지하철_노선_등록되어_있음(신분당선, tokenResponse);
+        지하철_노선_등록되어_있음(일호선, tokenResponse);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse,
+                new LineRequest("1호선", lineResponse.getColor(), 강남역.getId(), 광교역.getId(), 15), tokenResponse);
+
+        // then
+        에러_발생함(response, LineException.DUPLICATED_LINE_NAME_EXCEPTION);
+    }
+
+    @DisplayName("중복된 노선 색상으로 수정할 수 없다.")
+    @Test
+    void updateLineWithDuplicatedColor() {
+        // given
+        LineResponse lineResponse = 지하철_노선_등록되어_있음(신분당선, tokenResponse);
+        지하철_노선_등록되어_있음(일호선, tokenResponse);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse,
+                new LineRequest(lineResponse.getName(), "bg-blue-600", 강남역.getId(), 광교역.getId(), 15), tokenResponse);
+
+        // then
+        에러_발생함(response, LineException.DUPLICATED_LINE_COLOR_EXCEPTION);
     }
 
     @DisplayName("지하철 노선을 제거한다.")
