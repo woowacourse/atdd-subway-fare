@@ -9,6 +9,7 @@ import wooteco.subway.station.dto.StationNameRequest;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -31,18 +32,22 @@ public class StationService {
     public Station findStationById(Long id) {
         try{
             return stationDao.findById(id);
-        } catch (NotFoundException e) {
+        } catch (Exception e) {
             throw new NotFoundException("존재하지 않는 지하철 역입니다");
         }
     }
 
     public List<StationResponse> findAllStationResponses() {
         List<Station> stations = stationDao.findAll();
-
+        stations.stream()
+                .sorted(Comparator.comparing(Station::getId));
         return StationResponse.listOf(stations);
     }
 
     public void deleteStationById(Long id) {
+        if (stationDao.isOnSection(id)) {
+            throw new IllegalArgumentException("이미 노선에 등록된 지하철 역입니다");
+        }
         stationDao.deleteById(id);
     }
 

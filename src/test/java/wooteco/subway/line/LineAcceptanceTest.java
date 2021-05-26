@@ -10,22 +10,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
-import wooteco.subway.line.domain.Section;
+import wooteco.subway.exception.ExceptionResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionInLineResponse;
-import wooteco.subway.line.dto.SectionResponse;
-import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
-import static wooteco.subway.member.MemberAcceptanceTest.회원_생성됨;
-import static wooteco.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
 @DisplayName("지하철 노선 관련 기능")
@@ -59,9 +53,33 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_생성됨(response);
     }
 
-    @DisplayName("생성 - 로그인하지 않은 사용자나 유효하지 않은 회원이 요청시 예외를 발생한다.")
+    @DisplayName("생성 - 구간이 존재하지 않는 역인 경우.")
     @Test
     void createLineWhenNotValidMember() {
+        // when
+        LineRequest 구호선 = new LineRequest("구호선", "황금색", 광교역.getId(), 3L, 4);
+
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(사용자, 구호선);
+
+        // then
+        assertThat(response.as(ExceptionResponse.class).getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
+    }
+
+    @DisplayName("생성 - 구간이 존재하지 않는 역인 경우.")
+    @Test
+    void createLineWhenNotValidDistance() {
+        // when
+        LineRequest 구호선 = new LineRequest("구호선", "황금색", 광교역.getId(), 3L, 0);
+
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(사용자, 구호선);
+
+        // then
+        assertThat(response.as(ExceptionResponse.class).getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("생성 - 로그인하지 않은 사용자나 유효하지 않은 회원이 요청시 예외를 발생한다.")
+    @Test
+    void createLineWhenNotExistsStation() {
         // when
         ExtractableResponse<Response> response = 지하철_노선_생성_요청(비회원, 신분당선);
 
@@ -134,6 +152,21 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         비회원_요청_실패됨(response);
+    }
+
+    @DisplayName("수정 - 이미 존재하는 노선일 경우 예외를 던진다.")
+    @Test
+    void updateLineWhenAlreadyExistsLine() {
+        // given
+        LineResponse lineResponse = 지하철_노선_등록되어_있음(신분당선);
+        지하철_노선_등록되어_있음(구신분당선);
+
+        LineRequest 중복노선 = new LineRequest("구신분당선", "빨간색", 2L, 1L, 2);
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(사용자, lineResponse, 중복노선);
+
+        // then
+        지하철_노선_생성_실패됨(response);
     }
 
     @DisplayName("지하철 노선을 제거한다.")

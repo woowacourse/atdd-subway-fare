@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
+import wooteco.subway.exception.ExceptionResponse;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
 import wooteco.subway.line.dto.SectionResponse;
@@ -62,6 +63,28 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         // then
         비회원_요청_실패됨(response);
+    }
+
+    @DisplayName("등록 - 존재하지 않는 역인 경우 예외를 던진다.")
+    @Test
+    void addLineSectionWhenNotExistsStation() {
+        // when
+        StationResponse 없는역 = new StationResponse(11L, "없는역");
+        StationResponse 없는역2 = new StationResponse(12L, "없는역2");
+        ExtractableResponse<Response> response = 지하철_구간_생성_요청(사용자, 신분당선, 없는역, 없는역2, 3);
+
+        // then
+        assertThat(response.as(ExceptionResponse.class).getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
+    }
+
+    @DisplayName("등록 - 유효하지 않은 거리의 경우 예외를 던진다.")
+    @Test
+    void addLineSectionWhenNotValidDistance() {
+        // when
+        ExtractableResponse<Response> response = 지하철_구간_생성_요청(사용자, 신분당선, 강남역, 양재역, 0);
+
+        // then
+        assertThat(response.as(ExceptionResponse.class).getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     @DisplayName("지하철 노선에 여러개의 역을 순서 상관 없이 등록한다.")
