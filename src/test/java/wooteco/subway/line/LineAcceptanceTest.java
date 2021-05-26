@@ -51,7 +51,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         광교역 = 지하철역_등록되어_있음_withToken(사용자, "광교역");
 
         lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15);
+        lineRequest2 = new LineRequest("구신분당선", "bg-blue-600", 강남역.getId(), 광교역.getId(), 15);
     }
 
     @DisplayName("사용자 권한 (조회 이외의 기능 사용불가 401) - 노선 생성")
@@ -211,6 +211,48 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("노선 수정 - 기존과 같은 이름과 색으로 수정이 가능하다.")
+    @Test
+    void updateLineWithSameNameAndSameColor() {
+        // given
+        LineResponse lineResponse1 = 지하철_노선_등록되어_있음_withToken(사용자, lineRequest1);
+
+        // when
+        LineUpdateRequest updateRequest = new LineUpdateRequest(lineResponse1.getName(), lineResponse1.getColor());
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청_withToken(사용자, lineResponse1, updateRequest);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @DisplayName("노선 수정 - 기존과 같은 이름과 기존과 다른 색으로 수정이 가능하다.")
+    @Test
+    void updateLineWithSameName() {
+        // given
+        LineResponse lineResponse1 = 지하철_노선_등록되어_있음_withToken(사용자, lineRequest1);
+
+        // when
+        LineUpdateRequest updateRequest = new LineUpdateRequest(lineResponse1.getName(), "bg-yellow-600");
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청_withToken(사용자, lineResponse1, updateRequest);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @DisplayName("노선 수정 - 기존과 다른 이름과 기존과 같은 색으로 수정이 가능하다.")
+    @Test
+    void updateLineWithSameColor() {
+        // given
+        LineResponse lineResponse1 = 지하철_노선_등록되어_있음_withToken(사용자, lineRequest1);
+
+        // when
+        LineUpdateRequest updateRequest = new LineUpdateRequest("9호선", lineResponse1.getColor());
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청_withToken(사용자, lineResponse1, updateRequest);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     @DisplayName("노선 제거 - 지하철 노선을 제거한다.")

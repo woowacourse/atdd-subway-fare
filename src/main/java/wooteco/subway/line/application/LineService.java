@@ -16,7 +16,6 @@ import wooteco.subway.station.domain.Station;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import wooteco.subway.station.exception.DuplicateStationNameException;
 
 @Service
 public class LineService {
@@ -31,12 +30,8 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        if (lineDao.existsByName(request.getName())) {
-            throw new DuplicateLineNameException();
-        }
-        if (lineDao.existsByColor(request.getColor())) {
-            throw new DuplicateLineColorException();
-        }
+        checkAlreadyExistsName(request.getName());
+        checkAlreadyExistsColor(request.getColor());
 
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
         persistLine.addSection(addInitSection(persistLine, request));
@@ -74,9 +69,14 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineUpdateRequest lineUpdateRequest) {
-        if (lineDao.existsByName(lineUpdateRequest.getName())) {
-            throw new DuplicateLineNameException();
+        Line line = lineDao.findById(id);
+        if (!line.getName().equals(lineUpdateRequest.getName())) {
+            checkAlreadyExistsName(lineUpdateRequest.getName());
         }
+        if (!line.getColor().equals(lineUpdateRequest.getColor())) {
+            checkAlreadyExistsColor(lineUpdateRequest.getColor());
+        }
+
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
@@ -103,4 +103,15 @@ public class LineService {
         sectionDao.insertSections(line);
     }
 
+    private void checkAlreadyExistsName(String updateName) {
+        if (lineDao.existsByName(updateName)) {
+            throw new DuplicateLineNameException();
+        }
+    }
+
+    private void checkAlreadyExistsColor(String updateColor) {
+        if (lineDao.existsByColor(updateColor)) {
+            throw new DuplicateLineColorException();
+        }
+    }
 }
