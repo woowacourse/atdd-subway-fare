@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionDistanceRequest;
 import wooteco.subway.line.dto.SectionRequest;
@@ -118,7 +119,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         지하철_노선에_구간_거리_수정_요청(신분당선.getId(), 강남역, 광교역, sectionDistanceRequest);
 
-        ExtractableResponse<Response> pathResponse = 거리_경로_조회_요청(강남역.getId(), 광교역.getId());
+        ExtractableResponse<Response> pathResponse = 거리_경로_조회_요청(강남역.getId(), 광교역.getId(), new TokenResponse(""));
         총_거리가_응답됨(pathResponse, sectionDistanceRequest.getDistance());
     }
 
