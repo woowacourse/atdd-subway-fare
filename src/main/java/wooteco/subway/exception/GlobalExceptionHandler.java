@@ -27,6 +27,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiError> methodArgumentNotValidException(MethodArgumentNotValidException e) {
         return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
-            .body(new ApiError(ErrorCode.INVALID_INPUT));
+            .body(new ApiError(e.getFieldError().getDefaultMessage(), HttpStatus.BAD_REQUEST.value()));
     }
 }

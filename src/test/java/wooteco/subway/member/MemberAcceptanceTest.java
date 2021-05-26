@@ -32,6 +32,20 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_생성됨(createResponse);
     }
 
+    @DisplayName("회원 가입시 빈 값이나 잘못된 값으로 요청시 400")
+    @Test
+    void registerMemberUncorrectly() {
+        ExtractableResponse<Response> emptyCreateResponse = 회원_생성을_요청("", "", 0);
+        ExtractableResponse<Response> unCorrectAgeCreateResponse = 회원_생성을_요청(EMAIL, PASSWORD, -1);
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, 90);
+        ExtractableResponse<Response> duplicateEmailCreateResponse = 회원_생성을_요청(EMAIL, PASSWORD, 90);
+
+        assertThat(emptyCreateResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(unCorrectAgeCreateResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(duplicateEmailCreateResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
     @DisplayName("회원 정보 조회")
     @Test
     void manageMember() {

@@ -11,7 +11,7 @@ public enum ErrorCode {
     INVALID_TOKEN("[ERROR] 유효하지 않는 토큰 정보입니다.", HttpStatus.UNAUTHORIZED.value()),
 
     // MEMBER
-    DUPLICATE_EMAIL("[ERROR] 이미 존재하는 이메일입니다. 다른 이메일을 사용해주세요.", HttpStatus.BAD_REQUEST.value()),
+    DUPLICATE_EMAIL("이미 가입된 이메일입니다", HttpStatus.BAD_REQUEST.value()),
 
     // STATION
     DUPLICATE_STATION_NAME("[ERROR] 이미 존재하는 지하철 역 이름입니다. 다른 이름을 사용해주세요.", HttpStatus.BAD_REQUEST.value()),
