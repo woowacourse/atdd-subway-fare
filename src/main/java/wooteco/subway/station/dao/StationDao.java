@@ -29,6 +29,11 @@ public class StationDao {
                 .usingGeneratedKeyColumns("id");
     }
 
+    public boolean exists(String name) {
+        String sql = "select exists (select * from STATION where name = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, name);
+    }
+
     public Station insert(Station station) {
         SqlParameterSource params = new BeanPropertySqlParameterSource(station);
         Long id = insertAction.executeAndReturnKey(params).longValue();

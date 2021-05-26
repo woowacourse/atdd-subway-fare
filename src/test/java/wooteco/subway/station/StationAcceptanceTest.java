@@ -111,6 +111,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 .isEqualTo(params);
     }
 
+    public static void 지하철역_수정_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
     public static void 지하철역_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
@@ -182,6 +186,20 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철역_수정됨(response, 역삼역);
+    }
+
+    @DisplayName("역 수정 - 기존에 존재하는 역 이름으로 수정하는 경우 400 에러가 발생한다.")
+    @Test
+    void updateStationWithDuplicateName() {
+        // given
+        StationResponse 강남역 = 지하철역_등록되어_있음(StationAcceptanceTest.강남역);
+        StationRequest 강남역_중복 = new StationRequest("강남역");
+
+        // when
+        ExtractableResponse<Response> response = 지하철역_수정_요청(강남역, 강남역_중복);
+
+        // then
+        지하철역_수정_실패됨(response);
     }
 
     @DisplayName("지하철역을 제거한다.")

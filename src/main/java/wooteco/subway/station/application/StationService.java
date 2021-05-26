@@ -2,6 +2,7 @@ package wooteco.subway.station.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.exception.station.DuplicateStationException;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;
@@ -21,6 +22,7 @@ public class StationService {
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
+        existsStation(stationRequest);
         Station station = stationDao.insert(stationRequest.toStation());
         return StationResponse.of(station);
     }
@@ -39,8 +41,15 @@ public class StationService {
     }
 
     public StationResponse updateStationById(Long id, StationRequest stationRequest) {
+        existsStation(stationRequest);
         stationDao.update(new Station(id, stationRequest.getName()));
         return StationResponse.of(stationDao.findById(id));
+    }
+
+    private void existsStation(StationRequest stationRequest) {
+        if (stationDao.exists(stationRequest.getName())) {
+            throw new DuplicateStationException();
+        }
     }
 
     public void deleteStationById(Long id) {
