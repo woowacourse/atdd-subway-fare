@@ -9,10 +9,8 @@ import java.util.regex.Pattern;
 
 public class Station {
 
-    private static final Pattern PATTERN = Pattern.compile("^[ㄱ-ㅎ가-힣0-9]*$");
+    private static final Pattern PATTERN = Pattern.compile("^[ㄱ-ㅎ가-힣0-9]{2,20}$");
 
-    private static final int MIN_NAME_LENGTH = 2;
-    private static final int MAX_NAME_LENGTH = 20;
 
     private Long id;
     private String name;
@@ -32,10 +30,6 @@ public class Station {
         }
 
         name = name.trim();
-
-        if (name.length() < MIN_NAME_LENGTH || name.length() > MAX_NAME_LENGTH) {
-            throw new SubwayCustomException(StationException.INVALID_STATION_NAME_LENGTH_EXCEPTION);
-        }
 
         if(!isNamePattern(name)) {
             throw new SubwayCustomException(StationException.INVALID_STATION_NAME_LENGTH_EXCEPTION);

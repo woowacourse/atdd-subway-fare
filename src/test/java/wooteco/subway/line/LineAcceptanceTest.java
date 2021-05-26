@@ -6,6 +6,9 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
@@ -67,6 +70,16 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         에러_발생함(response, LineException.DUPLICATED_LINE_EXCEPTION);
+    }
+
+    @DisplayName("잘못된 이름으로 지하철 노선을 생성하면 에러가 발생한다.")
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = {"", " ", "a", "공백은 불가", "열글자가넘어도절대절대안되요", "!@$!^"})
+    void createLineWithInvalidName(String name) {
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(new LineRequest(name, "bg-red-600", 강남역.getId(), 광교역.getId(), 10), tokenResponse);
+
+        에러_발생함(response, LineException.INVALID_LINE_EXCEPTION);
     }
 
     @DisplayName("지하철 노선 목록을 조회한다.")
