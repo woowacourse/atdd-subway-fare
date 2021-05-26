@@ -30,7 +30,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
         LoginMember member = authService.findMemberByToken(credentials);
         if (member.getId() == null) {
-            throw new AuthorizationException("유효하지 않은 사용자입니다.");
+            throw new AuthorizationException("이메일 혹은 비밀번호를 다시 확인해주세요");
         }
         return member;
     }

@@ -6,6 +6,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.Objects;
+
 @RestControllerAdvice
 public class ExceptionAdvice {
 
@@ -18,7 +20,8 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        ExceptionResponse exceptionRes = new ExceptionResponse(e.getLocalizedMessage(), HttpStatus.BAD_REQUEST.value());
+        String msg = Objects.requireNonNull(e.getFieldError()).getDefaultMessage();
+        ExceptionResponse exceptionRes = new ExceptionResponse(msg, HttpStatus.BAD_REQUEST.value());
         return ResponseEntity.badRequest().body(exceptionRes);
     }
 

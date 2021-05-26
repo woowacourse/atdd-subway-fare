@@ -2,7 +2,6 @@ package wooteco.subway.line.domain;
 
 import wooteco.subway.exception.DuplicatedException;
 import wooteco.subway.exception.InvalidInsertException;
-import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.station.domain.Station;
 
 import java.util.*;
@@ -36,7 +35,7 @@ public class Sections {
     private void checkAlreadyExisted(Section section) {
         List<Station> stations = getStations();
         if (!stations.contains(section.getUpStation()) && !stations.contains(section.getDownStation())) {
-            throw new InvalidInsertException("구간은 존재하는 역이어야만 등록 가능합니다.");
+            throw new InvalidInsertException("유효하지 않는 요청 값입니다");
         }
     }
 
@@ -44,7 +43,7 @@ public class Sections {
         List<Station> stations = getStations();
         List<Station> stationsOfNewSection = Arrays.asList(section.getUpStation(), section.getDownStation());
         if (stations.containsAll(stationsOfNewSection)) {
-            throw new DuplicatedException("추가하려는 구간이 이미 존재합니다.");
+            throw new DuplicatedException("유효하지 않는 요청 값입니다");
         }
     }
 
@@ -64,7 +63,7 @@ public class Sections {
 
     private void replaceSectionWithUpStation(Section newSection, Section existSection) {
         if (existSection.getDistance() <= newSection.getDistance()) {
-            throw new InvalidInsertException("추가하려는 구간의 거리는 기존 구간의 거리를 넘을 수 없습니다.");
+            throw new InvalidInsertException("유효하지 않는 요청 값입니다");
         }
         this.sections.add(new Section(existSection.getUpStation(), newSection.getUpStation(), existSection.getDistance() - newSection.getDistance()));
         this.sections.remove(existSection);
@@ -72,7 +71,7 @@ public class Sections {
 
     private void replaceSectionWithDownStation(Section newSection, Section existSection) {
         if (existSection.getDistance() <= newSection.getDistance()) {
-            throw new InvalidInsertException("추가하려는 구간의 거리는 기존 구간의 거리를 넘을 수 없습니다.");
+            throw new InvalidInsertException("유효하지 않는 요청 값입니다");
         }
         this.sections.add(new Section(newSection.getDownStation(), existSection.getDownStation(), existSection.getDistance() - newSection.getDistance()));
         this.sections.remove(existSection);
@@ -104,7 +103,7 @@ public class Sections {
         return this.sections.stream()
                 .filter(it -> !downStations.contains(it.getUpStation()))
                 .findFirst()
-                .orElseThrow(() -> new NotFoundException("해당하는 역이 없습니다."));
+                .orElseThrow(() -> new InvalidInsertException("유효하지 않는 요청 값입니다"));
     }
 
     private Section findSectionByNextUpStation(Station station) {
@@ -116,7 +115,7 @@ public class Sections {
 
     public void removeStation(Station station) {
         if (sections.size() <= 1) {
-            throw new IllegalArgumentException("구간이 하나인 경우 삭제할 수 없습니다.");
+            throw new IllegalArgumentException("유효하지 않는 요청 값입니다");
         }
 
         Optional<Section> upSection = sections.stream()
@@ -142,7 +141,7 @@ public class Sections {
                 .filter(section -> section.getUpStationId().equals(upStationId))
                 .filter(section -> section.getDownStationId().equals(downStationId))
                 .findFirst()
-                .orElseThrow(() -> new NotFoundException("일치하는 구간이 없습니다."));
+                .orElseThrow(() -> new InvalidInsertException("유효하지 않는 요청 값입니다"));
     }
 
     public List<Section> getSections() {

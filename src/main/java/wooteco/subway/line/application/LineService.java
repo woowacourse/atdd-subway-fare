@@ -31,7 +31,7 @@ public class LineService {
             persistLine.addSection(addInitSection(persistLine, request));
             return LineResponse.of(persistLine);
         } catch (DuplicateKeyException e) {
-            throw new IllegalArgumentException("중복된 노선이 존재합니다.");
+            throw new IllegalArgumentException("지하철 노선 이름이 이미 존재합ㄴ디ㅏ");
         }
     }
 
@@ -75,7 +75,7 @@ public class LineService {
 
     private void validatesChangeName(String newName, String currentName) {
         if (lineDao.existNewNameExceptCurrentName(newName, currentName)) {
-            throw new IllegalArgumentException("변경할 수 없는 이름입니다.");
+            throw new IllegalArgumentException("지하철 노선 이름이 이미 존재합니다");
         }
     }
 

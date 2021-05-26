@@ -3,6 +3,7 @@ package wooteco.subway.member.application;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import wooteco.subway.exception.DuplicatedException;
+import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
@@ -21,18 +22,23 @@ public class MemberService {
             Member member = memberDao.insert(request.toMember());
             return MemberResponse.of(member);
         } catch(DuplicateKeyException e) {
-            throw new DuplicatedException("중복된 회원이 존재합니다.");
+            throw new DuplicatedException("이미 가입된 이메일입니다");
         }
     }
 
     public MemberResponse findMember(LoginMember loginMember) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
-        return MemberResponse.of(member);
+        try {
+            Member member = memberDao.findByEmail(loginMember.getEmail());
+            return MemberResponse.of(member);
+        } catch(NotFoundException e) {
+            throw new NotFoundException("존재하지 않는 회원입니다");
+        }
     }
 
     public void updatePassword(LoginMember loginMember, PasswordRequest req) {
         Member member = memberDao.findByEmail(loginMember.getEmail());
         checkCurrentPassword(member.getPassword(), req.getCurrentPassword());
+        checkNewPassword(req.getCurrentPassword(), req.getNewPassword());
         memberDao.update(new Member(member.getId(), member.getEmail(), req.getNewPassword(), member.getAge()));
     }
 
@@ -42,9 +48,15 @@ public class MemberService {
         return new AgeResponse(member.getId(), age.getAge());
     }
 
+    private void checkNewPassword(String currentPassword, String newPassword) {
+        if (currentPassword.equals(newPassword)) {
+            throw new IllegalArgumentException("현재 사용 중인 비밀번호입니다. 다른 비밀번호를 입력해주세요");
+        }
+    }
+
     private void checkCurrentPassword(String password, String currentPassword) {
         if (!currentPassword.equals(password)) {
-            throw new IllegalArgumentException("입력하신 현재 비밀번호가 올바르지 않습니다.");
+            throw new IllegalArgumentException("현재 비밀번호를 다시 확인해주세요");
         }
     }
 
@@ -55,7 +67,7 @@ public class MemberService {
 
     public void checkExistEmail(EmailCheckRequest email) {
         if (memberDao.checkExistsMemberBy(email)) {
-            throw new DuplicatedException("중복된 이메일이 존재합니다.");
+            throw new DuplicatedException("중복된 이메일이 존재합니다");
         }
     }
 }

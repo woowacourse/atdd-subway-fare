@@ -2,7 +2,7 @@ package wooteco.subway.station.application;
 
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
-import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationNameRequest;
@@ -10,7 +10,6 @@ import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class StationService {
@@ -25,12 +24,16 @@ public class StationService {
             Station station = stationDao.insert(stationRequest.toStation());
             return StationResponse.of(station);
         } catch (DuplicateKeyException e) {
-            throw new IllegalArgumentException("입력하신 역이 이미 존재합니다.");
+            throw new IllegalArgumentException("이미 존재하는 지하철 역입니다");
         }
     }
 
     public Station findStationById(Long id) {
-        return stationDao.findById(id);
+        try{
+            return stationDao.findById(id);
+        } catch (NotFoundException e) {
+            throw new NotFoundException("존재하지 않는 지하철 역입니다");
+        }
     }
 
     public List<StationResponse> findAllStationResponses() {
@@ -45,7 +48,7 @@ public class StationService {
 
     public StationResponse updateName(Long id, StationNameRequest req) {
         if (stationDao.findByName(req.getName()) != null) {
-            throw new IllegalArgumentException("중복된 이름의 역이 존재합니다.");
+            throw new IllegalArgumentException("이미 존재하는 지하철 역입니다");
         }
         Station station = stationDao.updateName(id, req.getName());
         return StationResponse.of(station);
