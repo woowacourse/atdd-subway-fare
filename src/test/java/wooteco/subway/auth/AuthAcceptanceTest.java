@@ -48,10 +48,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 extract();
     }
 
-    public static void 로그인_요청_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {
         return RestAssured.given().log().all().
                 auth().oauth2(tokenResponse.getAccessToken()).
