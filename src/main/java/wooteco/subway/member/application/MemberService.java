@@ -18,11 +18,12 @@ public class MemberService {
     }
 
     public MemberResponse createMember(MemberRequest request) {
-        if (memberDao.isExistByEmail(request.getEmail())) {
+        try {
+            Member member = memberDao.insert(request.toMember());
+            return MemberResponse.of(member);
+        } catch (Exception e) {
             throw new DuplicatedException(request.getEmail());
         }
-        Member member = memberDao.insert(request.toMember());
-        return MemberResponse.of(member);
     }
 
     public MemberResponse findMember(LoginMember loginMember) {

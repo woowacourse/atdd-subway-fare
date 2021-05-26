@@ -34,6 +34,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(message);
     }
 
+    @ExceptionHandler(AuthorizationException.class)
+    public ResponseEntity<String> handle(AuthorizationException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handle(Exception e) {
         logger.error("오류 발생 >>> {}", e.getMessage());

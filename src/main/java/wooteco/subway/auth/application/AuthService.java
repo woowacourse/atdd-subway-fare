@@ -4,6 +4,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
+import wooteco.subway.exception.AuthorizationException;
+import wooteco.subway.auth.exception.TokenInvalidException;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
@@ -33,9 +35,9 @@ public class AuthService {
     }
 
     public LoginMember findMemberByToken(String credentials) {
-        if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
-        }
+//        if (!jwtTokenProvider.validateToken(credentials)) {
+//            return new LoginMember();
+//        }
 
         String email = jwtTokenProvider.getPayload(credentials);
         try {
@@ -43,6 +45,12 @@ public class AuthService {
             return new LoginMember(member.getId(), member.getEmail(), member.getAge(), true);
         } catch (Exception e) {
             return new LoginMember();
+        }
+    }
+
+    public void validateToken(String credentials) {
+        if (!jwtTokenProvider.validateToken(credentials)) {
+            throw new TokenInvalidException("토큰이 유효하지 않습니다.");
         }
     }
 }
