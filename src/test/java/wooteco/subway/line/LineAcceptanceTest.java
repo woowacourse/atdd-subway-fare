@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
+import static wooteco.subway.line.SectionAcceptanceTest.지하철_구간_생성_요청_withToken;
 import static wooteco.subway.member.MemberAcceptanceTest.회원_생성됨;
 import static wooteco.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음_withToken;
@@ -260,12 +261,25 @@ public class LineAcceptanceTest extends AcceptanceTest {
     void deleteLine() {
         // given
         LineResponse lineResponse = 지하철_노선_등록되어_있음_withToken(사용자, lineRequest1);
+        StationResponse 양재역 = 지하철역_등록되어_있음_withToken(사용자, "양재역");
+        지하철_구간_생성_요청_withToken(사용자, lineResponse, 강남역, 양재역, 2);
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_제거_요청_withToken(사용자, lineResponse);
 
         // then
         지하철_노선_삭제됨(response);
+    }
+
+    @DisplayName("노선 제거 - 존재하지 않는 노선을 제거할 수 없다. (404)")
+    @Test
+    void deleteLineWithNonExists() {
+        // when
+        LineResponse nonExistsLineResponse = new LineResponse(-1L, "2호선", "bg-red-600", null, null);
+        ExtractableResponse<Response> response = 지하철_노선_제거_요청_withToken(사용자, nonExistsLineResponse);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
     public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
