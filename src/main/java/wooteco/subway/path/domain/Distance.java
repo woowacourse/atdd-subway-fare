@@ -10,14 +10,10 @@ public class Distance {
     private static final int SECOND_CHARGE_DISTANCE = 8;
     private static final int CHARGE_AMOUNT = 100;
     private static final int FIRST_DISTANCE_FULL_CHARGE = 800;
-    private static final int MINIMUM_POSSIBLE_DISTANCE = 0;
 
     private final int distance;
 
     public Distance(final int distance) {
-        if (distance < MINIMUM_POSSIBLE_DISTANCE) {
-            throw new IllegalArgumentException();
-        }
         this.distance = distance;
     }
 

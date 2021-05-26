@@ -18,7 +18,6 @@ public class Fare {
         this.fare = fare;
     }
 
-
     public int getFare() {
         return fare;
     }
