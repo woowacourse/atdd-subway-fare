@@ -25,14 +25,14 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String NEW_PASSWORD = "new_password";
     public static final int NEW_AGE = 30;
 
-    @DisplayName("회원 가입")
+    @DisplayName("회원 가입 - 회원 가입을 한다.")
     @Test
     void registerMember() {
         ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
         회원_생성됨(createResponse);
     }
 
-    @DisplayName("회원 가입시 빈 값이나 잘못된 값으로 요청시 400")
+    @DisplayName("회원 가입 - 빈 값이나 잘못된 값으로 요청시 가입이 안된다. (400)")
     @Test
     void registerMemberUncorrectly() {
         ExtractableResponse<Response> emptyCreateResponse = 회원_생성을_요청("", "", 0);
@@ -74,7 +74,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_정보_비밀번호_수정됨(changePasswordResponse);
     }
 
-    @DisplayName("비밀번호 수정 - 현재 비밀번호가 틀리면 401을 던진다.")
+    @DisplayName("비밀번호 수정 - 현재 비밀번호가 틀리면 비밀번호 수정이 안된다. (400)")
     @Test
     void changePasswordUnCorrectly() {
         // given
@@ -90,7 +90,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(changePasswordResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    @DisplayName("비밀번호 수정 - 현재 비밀번호와 변경하고자 하는 비밀번호가 같으면 400을 던진다.")
+    @DisplayName("비밀번호 수정 - 현재 비밀번호와 변경하고자 하는 비밀번호가 같으면 비밀번호 수정이 안된다. (400)")
     @Test
     void changePasswordSamePassword() {
         // given
@@ -123,7 +123,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat((int) changeAgeResponse.body().jsonPath().get("age")).isEqualTo(NEW_AGE);
     }
 
-    @DisplayName("나이 수정 - 수정하고자 하는 나이가 음수거나 150살을 넘으면 400을 던진다.")
+    @DisplayName("나이 수정 - 수정하고자 하는 나이가 음수거나 150살을 넘으면 수정이 안된다. (400)")
     @Test
     void notValidChangeAge() {
         // given

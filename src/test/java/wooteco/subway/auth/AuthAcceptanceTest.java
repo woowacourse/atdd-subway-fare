@@ -22,7 +22,25 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     private static final String PASSWORD = "password";
     private static final Integer AGE = 20;
 
-    @DisplayName("Bearer Auth")
+    @DisplayName("로그인 - Bearer Auth 로그인 실패")
+    @Test
+    void myInfoWithBadBearerAuth() {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("email", EMAIL + "OTHER");
+        params.put("password", PASSWORD);
+
+        RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(params)
+            .when().post("/api/login")
+            .then().log().all()
+            .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("내 회원 정보 요청 - Bearer Auth")
     @Test
     void myInfoWithBearerAuth() {
         // given
@@ -36,25 +54,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         회원_정보_조회됨(response, EMAIL, AGE);
     }
 
-    @DisplayName("Bearer Auth 로그인 실패")
-    @Test
-    void myInfoWithBadBearerAuth() {
-        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
-
-        Map<String, String> params = new HashMap<>();
-        params.put("email", EMAIL + "OTHER");
-        params.put("password", PASSWORD);
-
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/api/login")
-                .then().log().all()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
-    }
-
-    @DisplayName("Bearer Auth 유효하지 않은 토큰")
+    @DisplayName("내 회원 정보 요청 - Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
         TokenResponse tokenResponse = new TokenResponse("accesstoken");

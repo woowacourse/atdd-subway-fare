@@ -33,7 +33,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     private static final String 강남역 = "강남역";
     private static final String 역삼역 = "역삼역";
 
-    @DisplayName("사용자가 아니면 조회이외 기능은 사용하지 못한다. - 지하철역 생성 요청")
+    @DisplayName("사용자 권한 (조회 이외의 기능 사용불가 401) - 역 생성")
     @Test
     void tokenValidation_create() {
         // when
@@ -43,7 +43,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    @DisplayName("사용자가 아니면 조회이외 기능은 사용하지 못한다. - 지하철역 수정 요청")
+    @DisplayName("사용자 권한 (조회 이외의 기능 사용불가 401) - 역 수정")
     @Test
     void tokenValidation_update() {
         // given
@@ -61,7 +61,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    @DisplayName("사용자가 아니면 조회이외 기능은 사용하지 못한다. - 지하철역 삭제 요청")
+    @DisplayName("사용자 권한 (조회 이외의 기능 사용불가 401) - 역 삭제")
     @Test
     void tokenValidation_delete() {
         // given
@@ -79,7 +79,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    @DisplayName("지하철역을 생성한다.")
+    @DisplayName("역 생성 - 지하철역을 생성한다.")
     @Test
     void createStation() {
         // given
@@ -95,7 +95,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_생성됨(response);
     }
 
-    @DisplayName("기존에 존재하는 지하철역 이름으로 지하철역을 생성한다.")
+    @DisplayName("역 생성 - 기존에 존재하는 지하철역 이름으로 역을 생성할 수 없다. (400)")
     @Test
     void createStationWithDuplicateName() {
         //given
@@ -113,7 +113,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_생성_실패됨(response);
     }
 
-    @DisplayName("지하철역을 조회한다.")
+    @DisplayName("목록 조회 - 지하철역을 조회한다.")
     @Test
     void getStations() {
         // given
@@ -133,7 +133,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_목록_포함됨(response, Arrays.asList(stationResponse1, stationResponse2));
     }
 
-    @DisplayName("지하철역 이름을 수정한다.")
+    @DisplayName("이름 수정 - 지하철역 이름을 수정한다.")
     @Test
     void changeStationName() {
         // given
@@ -152,7 +152,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    @DisplayName("이미 존재하는 지하철 역으로 수정시 400을 던진다.")
+    @DisplayName("이름 수정 - 이미 존재하는 지하철 역으로 수정할 수 없다. (400)")
     @Test
     void changeDuplicateStationName() {
         // given
@@ -173,7 +173,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
     }
 
-    @DisplayName("지하철역을 제거한다.")
+    @DisplayName("역 삭제 - 지하철역을 제거한다.")
     @Test
     void deleteStation() {
         // given
@@ -191,7 +191,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_삭제됨(response);
     }
 
-    @DisplayName("노선에 포함된 지하철역은 삭제할 수 없다.")
+    @DisplayName("역 삭제 - 노선에 포함된 지하철역은 삭제할 수 없다. (400)")
     @Test
     @Ignore
     void deleteStationException() {

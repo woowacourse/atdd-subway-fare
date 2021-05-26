@@ -60,7 +60,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         신분당선 = 지하철_노선_등록되어_있음_withToken(사용자, lineRequest);
     }
 
-    @DisplayName("지하철 구간을 등록한다.")
+    @DisplayName("구간 추가 - 구간 지하철 구간을 등록한다.")
     @Test
     void addLineSection() {
         // when
@@ -70,7 +70,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         지하철_구간_생성됨(response, 신분당선, Arrays.asList(강남역, 양재역, 광교역));
     }
 
-    @DisplayName("지하철 노선에 여러개의 역을 순서 상관 없이 등록한다.")
+    @DisplayName("구간 추가 - 지하철 노선에 여러개의 역을 순서 상관 없이 등록한다.")
     @Test
     void addLineSection2() {
         // when
@@ -81,7 +81,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         지하철_구간_생성됨(response, 신분당선, Arrays.asList(정자역, 강남역, 양재역, 광교역));
     }
 
-    @DisplayName("지하철 노선에 이미 등록되어있는 역을 등록한다.")
+    @DisplayName("구간 추가 - 이미 등록되어있는 역을 등록하면 구간을 추가할 수 없다. (400)")
     @Test
     void addLineSectionWithSameStation() {
         // when
@@ -91,7 +91,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         지하철_구간_등록_실패됨(response);
     }
 
-    @DisplayName("지하철 노선에 등록되지 않은 역을 기준으로 등록한다.")
+    @DisplayName("구간 추가 - 지하철 노선에 등록되지 않은 역을 기준으로 구간을 추가할 수 없다. (400)")
     @Test
     void addLineSectionWithNoStation() {
         // when
@@ -101,7 +101,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         지하철_구간_등록_실패됨(response);
     }
 
-    @DisplayName("지하철 노선에 등록된 지하철역을 제외한다.")
+    @DisplayName("구간 추가 - 지하철 노선에 등록된 지하철역을 제외한다.")
     @Test
     void removeLineSection1() {
         // given
@@ -115,7 +115,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_제외됨(removeResponse, 신분당선, Arrays.asList(강남역, 정자역, 광교역));
     }
 
-    @DisplayName("지하철 노선에 등록된 지하철역이 두개일 때 한 역을 제외한다.")
+    @DisplayName("구간 제거 - 지하철 노선에 등록된 지하철역이 두개일 때 한 역을 제외한다.")
     @Test
     void removeLineSection2() {
         // when

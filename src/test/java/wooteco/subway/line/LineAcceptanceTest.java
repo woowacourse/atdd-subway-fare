@@ -54,7 +54,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15);
     }
 
-    @DisplayName("사용자가 아니면 조회이외 기능은 사용하지 못한다. - 노선 생성 요청")
+    @DisplayName("사용자 권한 (조회 이외의 기능 사용불가 401) - 노선 생성")
     @Test
     void tokenValidation_create() {
         // when
@@ -64,7 +64,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    @DisplayName("사용자가 아니면 조회이외 기능은 사용하지 못한다. - 지하철역 수정 요청")
+    @DisplayName("사용자 권한 (조회 이외의 기능 사용 불가 401) - 노선 수정")
     @Test
     void tokenValidation_update() {
         // given
@@ -78,7 +78,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    @DisplayName("사용자가 아니면 조회이외 기능은 사용하지 못한다. - 지하철역 삭제 요청")
+    @DisplayName("사용자 권한 (조회 이외의 기능 사용 불가 401) - 노선 삭제")
     @Test
     void tokenValidation_delete() {
         // given
@@ -91,7 +91,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    @DisplayName("지하철 노선을 생성한다.")
+    @DisplayName("노선 생성 - 지하철 노선을 생성한다.")
     @Test
     void createLine() {
         // when
@@ -101,7 +101,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_생성됨(response);
     }
 
-    @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
+    @DisplayName("노선 생성 - 기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성할 수 없다. (400)")
     @Test
     void createLineWithDuplicateName() {
         // given
@@ -114,7 +114,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_생성_실패됨(response);
     }
 
-    @DisplayName("지하철 노선 추가시 존재하지 않는 역으로 요청할 경우 404을 던진다.")
+    @DisplayName("노선 생성 - 존재하지 않는 역으로 노선을 생성할 수 없다. (404)")
     @Test
     void createLineWithNonExistsStation() {
         // given
@@ -128,7 +128,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
-    @DisplayName("지하철 노선 추가시 거리가 양수가 아닐 경우")
+    @DisplayName("노선 생성 - 거리가 양수가 아닐 경우 노선을 생성할 수 없다. (400)")
     @Test
     void createLineWithMinusDistance() {
         // given
@@ -142,7 +142,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    @DisplayName("지하철 노선 목록을 조회한다.")
+    @DisplayName("목록 조회 - 지하철 노선 목록을 조회한다.")
     @Test
     void getLines() {
         // given
@@ -157,7 +157,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_목록_포함됨(response, Arrays.asList(lineResponse1, lineResponse2));
     }
 
-    @DisplayName("지하철 노선을 조회한다.")
+    @DisplayName("조회 - 지하철 노선을 조회한다.")
     @Test
     void getLine() {
         // given
@@ -170,7 +170,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_응답됨(response, lineResponse);
     }
 
-    @DisplayName("지하철 노선을 수정한다.")
+    @DisplayName("노선 수정 - 지하철 노선을 수정한다.")
     @Test
     void updateLine() {
         // given
@@ -184,7 +184,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_수정됨(response);
     }
 
-    @DisplayName("지하철 노선을 수정할 때 이미 존재하는 이름이면 400을 던진다.")
+    @DisplayName("노선 수정 - 이미 존재하는 이름이면 노선을 생성할 수 없다. (400)")
     @Test
     void updateLineWithDuplicate() {
         // given
@@ -199,7 +199,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    @DisplayName("지하철 노선을 제거한다.")
+    @DisplayName("노선 제거 - 지하철 노선을 제거한다.")
     @Test
     void deleteLine() {
         // given
