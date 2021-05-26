@@ -8,7 +8,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.member.domain.Member;
-import wooteco.subway.member.exception.NoSuchMemberException;
+import wooteco.subway.member.exception.MismatchIdPasswordException;
 
 import javax.sql.DataSource;
 
@@ -42,14 +42,14 @@ public class MemberDao {
     public void update(Member member) {
         String sql = "update MEMBER set email = ?, password = ?, age = ? where id = ?";
         if (jdbcTemplate.update(sql, new Object[]{member.getEmail(), member.getPassword(), member.getAge(), member.getId()}) == 0) {
-            throw new NoSuchMemberException();
+            throw new MismatchIdPasswordException();
         }
     }
 
     public void deleteById(Long id) {
         String sql = "delete from MEMBER where id = ?";
         if (jdbcTemplate.update(sql, id) == 0) {
-            throw new NoSuchMemberException();
+            throw new MismatchIdPasswordException();
         }
     }
 
@@ -58,7 +58,7 @@ public class MemberDao {
         try {
             return jdbcTemplate.queryForObject(sql, rowMapper, id);
         } catch (EmptyResultDataAccessException e) {
-            throw new NoSuchMemberException();
+            throw new MismatchIdPasswordException();
         }
     }
 
@@ -67,7 +67,7 @@ public class MemberDao {
         try {
             return jdbcTemplate.queryForObject(sql, rowMapper, email);
         } catch (EmptyResultDataAccessException e) {
-            throw new NoSuchMemberException();
+            throw new MismatchIdPasswordException ();
         }
     }
 }

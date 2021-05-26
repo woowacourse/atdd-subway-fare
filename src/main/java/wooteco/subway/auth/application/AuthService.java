@@ -6,7 +6,6 @@ import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
-import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
 
 @Service
@@ -21,27 +20,20 @@ public class AuthService {
     }
 
     public TokenResponse login(TokenRequest request) {
-        try {
-            Member member = memberDao.findByEmail(request.getEmail());
-            member.checkPassword(request.getPassword());
-        } catch (Exception e) {
-            throw new AuthorizationException();
-        }
-        String token = jwtTokenProvider.createToken(request.getEmail());
+        Long id = getIdWhenValidLogin(request);
+        String token = jwtTokenProvider.createToken(id);
         return new TokenResponse(token);
     }
 
-    public LoginMember findMemberByToken(String credentials) {
-        if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
-        }
+    private Long getIdWhenValidLogin(TokenRequest request) {
+        Member member = memberDao.findByEmail(request.getEmail());
+        member.checkPassword(request.getPassword());
+        return member.getId();
+    }
 
-        String email = jwtTokenProvider.getPayload(credentials);
-        try {
-            Member member = memberDao.findByEmail(email);
-            return new LoginMember(member.getId(), member.getEmail(), member.getAge());
-        } catch (Exception e) {
-            return new LoginMember();
-        }
+    public Member findMemberByToken(String credentials) {
+        jwtTokenProvider.validateToken(credentials);
+        Long id = jwtTokenProvider.getPayload(credentials);
+        return memberDao.findById(id);
     }
 }
