@@ -29,6 +29,7 @@ public class AuthService {
         } catch (EmptyResultDataAccessException e) {
             throw new InvalidEmailException("이메일을 찾을 수 없습니다.");
         }
+
         String token = jwtTokenProvider.createToken(request.getEmail());
         return new TokenResponse(token);
     }

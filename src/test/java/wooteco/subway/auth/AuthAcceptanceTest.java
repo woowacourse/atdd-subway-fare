@@ -51,7 +51,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("email 이 다른 경우")
     @Test
-    void myInfoWithBadBearerAuth() {
+    void invalidEmail() {
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
 
         Map<String, String> params = new HashMap<>();
@@ -59,9 +59,24 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         params.put("password", PASSWORD);
 
         ExtractableResponse<Response> response = 로그인_결과_요청(params);
-        ExceptionCheck.코드_400_응답됨(response);
 
+        ExceptionCheck.코드_400_응답됨(response);
         ExceptionCheck.에러_문구_확인(response, "INVALID_EMAIL");
+    }
+
+    @DisplayName("password 가 다른 경우")
+    @Test
+    void invalidPassword() {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("email", EMAIL);
+        params.put("password", "invalidPassword");
+
+        ExtractableResponse<Response> response = 로그인_결과_요청(params);
+
+        ExceptionCheck.코드_400_응답됨(response);
+        ExceptionCheck.에러_문구_확인(response, "INVALID_PASSWORD");
     }
 
     public static ExtractableResponse<Response> 회원_등록되어_있음(String email, String password,

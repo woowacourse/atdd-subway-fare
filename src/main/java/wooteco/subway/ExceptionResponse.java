@@ -1,4 +1,4 @@
-package wooteco.subway.auth;
+package wooteco.subway;
 
 public class ExceptionResponse {
 

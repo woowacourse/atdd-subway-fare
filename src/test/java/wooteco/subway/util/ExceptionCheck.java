@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.springframework.http.HttpStatus;
-import wooteco.subway.auth.ExceptionResponse;
+import wooteco.subway.ExceptionResponse;
 
 public class ExceptionCheck {
 
