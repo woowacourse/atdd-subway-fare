@@ -2,6 +2,7 @@ package wooteco.subway.path.domain;
 
 import java.util.Arrays;
 import java.util.function.UnaryOperator;
+import wooteco.subway.exception.NotFoundException;
 
 public enum ExtraFare {
     BASIC_FARE(0, 10, 0, 0, distance -> 0),
@@ -27,7 +28,7 @@ public enum ExtraFare {
         final ExtraFare extraFare = Arrays.stream(values())
             .filter(element -> element.minRange < distance && element.maxRange >= distance)
             .findAny()
-            .orElseThrow(() -> new IllegalArgumentException("해당하는 FareForDistance 객체가 없습니다."));
+            .orElseThrow(() -> new NotFoundException("해당하는 ExtraFare 객체가 없습니다."));
 
         return extraFare.calculator.apply(distance);
     }

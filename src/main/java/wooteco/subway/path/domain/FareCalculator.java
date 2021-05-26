@@ -1,6 +1,7 @@
 package wooteco.subway.path.domain;
 
 import java.util.List;
+import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.line.domain.Line;
 
 public class FareCalculator {
@@ -15,7 +16,7 @@ public class FareCalculator {
         return basicFare + lines.stream()
             .mapToInt(Line::getFare)
             .max()
-            .orElseThrow(() -> new IllegalArgumentException("노선이 존재하지 않습니다."));
+            .orElseThrow(() -> new NotFoundException("노선이 존재하지 않습니다."));
     }
 
     public static int discountFareByAge(int fare, int age) {

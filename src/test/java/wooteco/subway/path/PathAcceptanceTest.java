@@ -7,10 +7,12 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.AuthAcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
+import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.dto.StationResponse;
@@ -27,6 +29,7 @@ import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록�
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
+
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
@@ -34,6 +37,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
+    private StationResponse 제이온역;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -50,6 +54,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         양재역 = 지하철역_등록되어_있음("양재역");
         교대역 = 지하철역_등록되어_있음("교대역");
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역");
+        제이온역 = 지하철역_등록되어_있음("제이온역");
 
         신분당선 = 지하철_추가요금_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 11, 900);
         이호선 = 지하철_추가요금_노선_등록되어_있음("이호선", "bg-red-601", 교대역, 강남역, 10, 1100);
@@ -68,6 +73,36 @@ public class PathAcceptanceTest extends AcceptanceTest {
         적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
         총_거리가_응답됨(response, 5);
         총_금액이_응답됨(response, 1250);
+    }
+
+    @DisplayName("상행역과 하행역이 같을 수 없다.")
+    @Test
+    void sameStationException() {
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(강남역.getId(), 강남역.getId());
+
+        //then
+        거리_경로_조회_요청_실패(response);
+    }
+
+    @DisplayName("상행역에서 하행역으로까지의 경로가 존재해야 한다.")
+    @Test
+    void noPathException() {
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(강남역.getId(), 제이온역.getId());
+
+        //then
+        거리_경로_조회_요청_실패(response);
+    }
+
+    @DisplayName("상행역과 하행역 모두 노선에 등록되어 있어야 한다.")
+    @Test
+    void noInLineStationException() {
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(강남역.getId(), 제이온역.getId());
+
+        //then
+        거리_경로_조회_요청_실패(response);
     }
 
     @DisplayName("초과 운임을 고려하여 두 역의 최단 거리 경로를 조회한다.")
@@ -141,6 +176,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .collect(Collectors.toList());
 
         assertThat(stationIds).containsExactlyElementsOf(expectedPathIds);
+    }
+
+    public static void 거리_경로_조회_요청_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static void 총_거리가_응답됨(ExtractableResponse<Response> response, int totalDistance) {

@@ -3,6 +3,7 @@ package wooteco.subway.path.application;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.exception.InvalidInputException;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.member.domain.LoginMember;
@@ -37,7 +38,7 @@ public class PathService {
             int totalFare = calculateTotalFare(loginMember, subwayPath);
             return PathResponseAssembler.assemble(subwayPath, totalFare);
         } catch (Exception e) {
-            throw new InvalidPathException();
+            throw new InvalidInputException("경로를 찾을 수 없습니다.");
         }
     }
 
