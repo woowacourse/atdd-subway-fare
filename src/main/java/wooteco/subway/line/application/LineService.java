@@ -1,5 +1,6 @@
 package wooteco.subway.line.application;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,7 +58,10 @@ public class LineService {
 
     @Transactional(readOnly = true)
     public List<Line> findLines() {
-        return lineDao.findAll();
+        final List<Line> lines = lineDao.findAll();
+        return lines.stream()
+                    .sorted(Comparator.comparing(Line::getName))
+                    .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)

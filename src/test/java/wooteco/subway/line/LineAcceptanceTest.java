@@ -36,7 +36,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         downStation = 지하철역_등록되어_있음("광교역");
 
         lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 10);
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 15);
+        lineRequest2 = new LineRequest("2호선", "bg-green-600", 강남역.getId(), downStation.getId(), 15);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -74,7 +74,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_노선_목록_응답됨(response);
-        지하철_노선_목록_포함됨(response, Arrays.asList(lineResponse1, lineResponse2));
+        지하철_노선_목록_포함됨(response, Arrays.asList(lineResponse2, lineResponse1));
     }
 
     @DisplayName("지하철 노선을 조회한다.")
@@ -205,7 +205,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .map(LineResponse::getId)
                 .collect(Collectors.toList());
 
-        assertThat(resultLineIds).containsAll(expectedLineIds);
+        assertThat(resultLineIds).containsExactly(expectedLineIds.toArray(new Long[0]));
     }
 
     public static void 지하철_노선_수정됨(ExtractableResponse<Response> response) {
