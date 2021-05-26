@@ -102,6 +102,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(사용자, NEW_EMAIL, NEW_PASSWORD,
                 NEW_AGE);
+
         errorTest(updateResponse, MemberException.DUPLICATED_EMAIL_EXCEPTION);
     }
 
