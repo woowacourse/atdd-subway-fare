@@ -12,6 +12,7 @@ import wooteco.subway.auth.dto.TokenResponse;
 
 import java.util.HashMap;
 import java.util.Map;
+import wooteco.subway.auth.exception.SubwayAuthException;
 
 import static wooteco.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static wooteco.subway.member.MemberAcceptanceTest.회원_정보_조회됨;
@@ -67,6 +68,22 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
+    @DisplayName("이메일이 일치하지 않을 경우 에러가 발생한다.")
+    @Test
+    void loginWithNotExistEmail() {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        ExtractableResponse<Response> response = 로그인_요청("abc@naver.com", PASSWORD);
+        에러가_발생한다(response, SubwayAuthException.NOT_EXIST_EMAIL_EXCEPTION);
+    }
+
+    @DisplayName("이메일이 일치하지 않을 경우 에러가 발생한다.")
+    @Test
+    void loginWithIllegalPassword() {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        ExtractableResponse<Response> response = 로그인_요청(EMAIL, "1234");
+        에러가_발생한다(response, SubwayAuthException.ILLEGAL_PASSWORD_EXCEPTION);
+    }
+
     public static ExtractableResponse<Response> 회원_등록되어_있음(String email, String password, Integer age) {
         return 회원_생성을_요청(email, password, age);
     }
@@ -88,7 +105,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 post("/login/token").
                 then().
                 log().all().
-                statusCode(HttpStatus.OK.value()).
                 extract();
     }
 

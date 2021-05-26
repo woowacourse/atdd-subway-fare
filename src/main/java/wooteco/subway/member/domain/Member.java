@@ -3,7 +3,7 @@ package wooteco.subway.member.domain;
 import java.util.Objects;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
-import wooteco.subway.auth.application.AuthorizationException;
+import wooteco.subway.auth.exception.SubwayAuthException;
 import wooteco.subway.exception.SubwayCustomException;
 import wooteco.subway.member.exception.SubwayMemberException;
 
@@ -75,7 +75,7 @@ public class Member {
 
     public void checkPassword(String password) {
         if (!StringUtils.equals(this.password, password)) {
-            throw new AuthorizationException();
+            throw new SubwayCustomException(SubwayAuthException.ILLEGAL_PASSWORD_EXCEPTION);
         }
     }
 }

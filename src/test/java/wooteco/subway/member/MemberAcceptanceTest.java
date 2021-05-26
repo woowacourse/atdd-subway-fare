@@ -1,5 +1,8 @@
 package wooteco.subway.member;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -12,13 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
-import wooteco.subway.exception.SubwayException;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 import wooteco.subway.member.exception.SubwayMemberException;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
@@ -128,11 +127,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .when().post("/members")
             .then().log().all()
             .extract();
-    }
-
-    private void 에러가_발생한다(ExtractableResponse<Response> response, SubwayException subwayException) {
-        assertThat(response.statusCode()).isEqualTo(subwayException.status());
-        assertThat(response.body().asString()).isEqualTo(subwayException.message());
     }
 
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {
