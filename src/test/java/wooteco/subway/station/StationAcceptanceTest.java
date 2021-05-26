@@ -63,7 +63,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @DisplayName("유효하지 않은 이름으로 지하철역을 생성하면 에러가 발생한다.")
     @ParameterizedTest
     @NullSource
-    @ValueSource(strings = {"", " ", "일", "abc", "20글자이상의지하철역이름은생성을할수가없습니다", "공백이 들어가면 안됩니다",
+    @ValueSource(strings = {"", "   ", "일", "abc", "20글자이상의지하철역이름은생성을할수가없습니다", "공백이 들어가면 안됩니다",
         "특수문자안됨!!"})
     void createStationWithDuplicateName(String value) {
         // when
@@ -204,14 +204,6 @@ public class StationAcceptanceTest extends AcceptanceTest {
             .given().log().all()
             .auth().oauth2(tokenResponse.getAccessToken())
             .when().get("/stations")
-            .then().log().all()
-            .extract();
-    }
-
-    public static ExtractableResponse<Response> 지하철역_제거_요청(StationResponse stationResponse) {
-        return RestAssured
-            .given().log().all()
-            .when().delete("/stations/" + stationResponse.getId())
             .then().log().all()
             .extract();
     }

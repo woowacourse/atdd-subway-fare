@@ -7,9 +7,7 @@ import wooteco.subway.station.exception.SubwayStationException;
 
 public class Station {
 
-    private static final Pattern PATTERN = Pattern.compile("^[ㄱ-ㅎ가-힣0-9]*$");
-    private static final int STATION_NAME_MIN_LENGTH = 2;
-    private static final int STATION_NAME_MAX_LENGTH = 20;
+    private static final Pattern PATTERN = Pattern.compile("^[ㄱ-ㅎ가-힣0-9]{2,20}$");
 
     private Long id;
     private String name;
@@ -24,17 +22,11 @@ public class Station {
     public Station(Long id, String name) {
         validate(name);
         this.id = id;
-        this.name = name;
+        this.name = name.trim();
     }
 
     private void validate(String name) {
-        if (Objects.isNull(name)) {
-            throw new SubwayCustomException(SubwayStationException.INVALID_STATION_NAME_EXCEPTION);
-        }
-        name = name.trim();
-        if (name.length() < STATION_NAME_MIN_LENGTH
-            || name.length() > STATION_NAME_MAX_LENGTH
-            || !PATTERN.matcher(name).matches()) {
+        if (Objects.isNull(name) || !PATTERN.matcher(name.trim()).matches()) {
             throw new SubwayCustomException(SubwayStationException.INVALID_STATION_NAME_EXCEPTION);
         }
     }
