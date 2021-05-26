@@ -1,4 +1,4 @@
-package wooteco.subway.line.ui;
+package wooteco.subway.line.dto;
 
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.station.dto.StationResponse;
