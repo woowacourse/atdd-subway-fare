@@ -18,11 +18,11 @@ class SubwayPathTest {
 
     @DisplayName("요금 계산")
     @ParameterizedTest
-    @CsvSource(value = {"10, 1250", "11, 1350", "15, 1350", "16, 1450", "50, 2050", "58, 2150"})
+    @CsvSource(value = {"10, 2150", "11, 2250", "15, 2250", "16, 2350", "50, 2950", "58, 3050"})
     void fare(int distance, int expectedFare) {
         SectionEdge sectionEdge = new SectionEdge(
             new Section(1L, neozalStation(), rootStation(), distance),
-            new Line(1L, "백기선", "red")
+            new Line(1L, "백기선", "red", 900)
         );
 
         SubwayPath subwayPath = new SubwayPath(Collections.singletonList(sectionEdge), Arrays.asList(neozalStation(), rootStation()), new Fare(

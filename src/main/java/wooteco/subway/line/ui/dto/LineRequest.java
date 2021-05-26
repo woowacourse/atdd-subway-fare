@@ -17,14 +17,18 @@ public class LineRequest {
     @NotNull(message = "하행역은 빈 값일 수 없습니다.")
     private final Long downStationId;
     private final int distance;
+    private final int extraFare;
 
-    @ConstructorProperties({"name", "color", "upStationId", "downStationId", "distance"})
-    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance) {
+    @ConstructorProperties({"name", "color", "upStationId", "downStationId", "distance",
+        "extraFare"})
+    public LineRequest(String name, String color, Long upStationId, Long downStationId,
+        int distance, int extraFare) {
         this.name = name;
         this.color = color;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
+        this.extraFare = extraFare;
     }
 
     public String getName() {
@@ -47,4 +51,7 @@ public class LineRequest {
         return distance;
     }
 
+    public int getExtraFare() {
+        return extraFare;
+    }
 }

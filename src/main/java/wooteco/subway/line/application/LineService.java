@@ -1,5 +1,8 @@
 package wooteco.subway.line.application;
 
+import static java.util.stream.Collectors.toList;
+
+import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.DuplicateException;
@@ -7,7 +10,11 @@ import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.infrastructure.dao.LineDao;
 import wooteco.subway.line.infrastructure.dao.SectionDao;
-import wooteco.subway.line.ui.dto.*;
+import wooteco.subway.line.ui.dto.LineRequest;
+import wooteco.subway.line.ui.dto.LineResponse;
+import wooteco.subway.line.ui.dto.SectionRequest;
+import wooteco.subway.line.ui.dto.SectionResponse;
+import wooteco.subway.line.ui.dto.SectionsResponse;
 import wooteco.subway.line.ui.dto.map.MapResponse;
 import wooteco.subway.line.ui.dto.map.StationOfMapResponse;
 import wooteco.subway.line.ui.dto.sectionsofline.LineWithTransferLineResponse;
@@ -15,10 +22,6 @@ import wooteco.subway.line.ui.dto.sectionsofline.SectionsOfLineResponse;
 import wooteco.subway.line.ui.dto.sectionsofline.StationOfLineResponse;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
-
-import java.util.List;
-
-import static java.util.stream.Collectors.toList;
 
 @Transactional(readOnly = true)
 @Service
@@ -29,8 +32,8 @@ public class LineService {
     private final StationService stationService;
 
     public LineService(LineDao lineDao,
-                       SectionDao sectionDao,
-                       StationService stationService) {
+        SectionDao sectionDao,
+        StationService stationService) {
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
         this.stationService = stationService;
@@ -38,8 +41,19 @@ public class LineService {
 
     @Transactional
     public LineResponse saveLine(LineRequest request) {
+<<<<<<< HEAD
         validateSavableLine(request);
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
+=======
+        Line persistLine = lineDao.insert(
+                new Line(
+                    1L,
+                    request.getName(),
+                    request.getColor(),
+                    request.getExtraFare()
+                )
+            );
+>>>>>>> feat: 노선 별 추가요금 구현
         persistLine.addSection(addInitSection(persistLine, request));
 
         return LineResponse.of(persistLine);
@@ -71,8 +85,8 @@ public class LineService {
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
-                .map(LineResponse::of)
-                .collect(toList());
+            .map(LineResponse::of)
+            .collect(toList());
     }
 
     public List<Line> findLines() {
@@ -90,8 +104,19 @@ public class LineService {
 
     @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
+<<<<<<< HEAD
         validateUpdatableLine(id, lineUpdateRequest);
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+=======
+        lineDao.update(
+            new Line(
+                id,
+                lineUpdateRequest.getName(),
+                lineUpdateRequest.getColor(),
+                lineUpdateRequest.getExtraFare()
+            )
+        );
+>>>>>>> feat: 노선 별 추가요금 구현
     }
 
     @Transactional
@@ -136,37 +161,37 @@ public class LineService {
     private LineWithTransferLineResponse createLineResponse(Line line) {
         List<StationOfLineResponse> stationOfLineResponses = createStationOfLineResponses(line);
         return new LineWithTransferLineResponse(
-                line.getId(),
-                line.getColor(),
-                line.getName(),
-                stationOfLineResponses
+            line.getId(),
+            line.getColor(),
+            line.getName(),
+            stationOfLineResponses
         );
     }
 
     private List<StationOfLineResponse> createStationOfLineResponses(Line line) {
         return line.getStations().stream()
-                .map(station -> new StationOfLineResponse(station,
-                        findTransferLinesOfStation(station, line)))
-                .collect(toList());
+            .map(station -> new StationOfLineResponse(station,
+                findTransferLinesOfStation(station, line)))
+            .collect(toList());
     }
 
     private List<Line> findTransferLinesOfStation(Station station, Line targetLine) {
         List<Line> all = lineDao.findAll();
         return all.stream()
-                .filter(line -> !line.equals(targetLine))
-                .filter(line -> line.getStations().contains(station))
-                .collect(toList());
+            .filter(line -> !line.equals(targetLine))
+            .filter(line -> line.getStations().contains(station))
+            .collect(toList());
     }
 
     @Transactional
     public void updateSectionDistance(Long lineId, Long upStationId, Long downStationId,
-                                      int distance) {
+        int distance) {
         Line line = findLineById(lineId);
 
         line.updateSectionDistance(
-                upStationId,
-                downStationId,
-                distance
+            upStationId,
+            downStationId,
+            distance
         );
 
         sectionDao.update(line.getSections().getSections());
@@ -176,8 +201,8 @@ public class LineService {
         List<Line> lines = findLines();
 
         return lines.stream()
-                .map(this::toMapResponse)
-                .collect(toList());
+            .map(this::toMapResponse)
+            .collect(toList());
     }
 
     private MapResponse toMapResponse(Line line) {
@@ -187,33 +212,36 @@ public class LineService {
         return new MapResponse(line.getId(), line.getName(), line.getColor(), stations);
     }
 
-    private List<StationOfMapResponse> toStationOfMapResponses(SectionsOfLineResponse sectionsResponseOfLine) {
+    private List<StationOfMapResponse> toStationOfMapResponses(
+        SectionsOfLineResponse sectionsResponseOfLine) {
         return sectionsResponseOfLine.getStations().stream()
-                .map(stationOfLineResponse ->
-                        createSectionOfMapResponse(
-                                sectionsResponseOfLine,
-                                stationOfLineResponse
-                        )
+            .map(stationOfLineResponse ->
+                createSectionOfMapResponse(
+                    sectionsResponseOfLine,
+                    stationOfLineResponse
                 )
-                .collect(toList());
+            )
+            .collect(toList());
     }
 
-    private StationOfMapResponse createSectionOfMapResponse(SectionsOfLineResponse sectionsResponseOfLine,
-                                                            StationOfLineResponse stationOfLineResponse) {
+    private StationOfMapResponse createSectionOfMapResponse(
+        SectionsOfLineResponse sectionsResponseOfLine,
+        StationOfLineResponse stationOfLineResponse) {
         return new StationOfMapResponse(
-                stationOfLineResponse.getId(),
-                stationOfLineResponse.getName(),
-                getDistance(sectionsResponseOfLine, stationOfLineResponse),
-                stationOfLineResponse.getTransferLines()
+            stationOfLineResponse.getId(),
+            stationOfLineResponse.getName(),
+            getDistance(sectionsResponseOfLine, stationOfLineResponse),
+            stationOfLineResponse.getTransferLines()
         );
     }
 
-    private Integer getDistance(SectionsOfLineResponse sectionsResponseOfLine, StationOfLineResponse w) {
+    private Integer getDistance(SectionsOfLineResponse sectionsResponseOfLine,
+        StationOfLineResponse w) {
         return sectionsResponseOfLine.getSections().stream()
-                .filter(section -> section.getUpStation().getId().equals(w.getId()))
-                .map(SectionResponse::getDistance)
-                .findAny()
-                .orElse(-1);
+            .filter(section -> section.getUpStation().getId().equals(w.getId()))
+            .map(SectionResponse::getDistance)
+            .findAny()
+            .orElse(-1);
     }
 
 }

@@ -42,9 +42,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
         강남역 = 지하철역_등록되어_있음("강남역");
         downStation = 지하철역_등록되어_있음("광교역");
 
-        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 10);
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 15);
-        lineRequest3 = new LineRequest("신신분당선", "bg-blue-600", 강남역.getId(), downStation.getId(), 15);
+        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 10, 0);
+        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 15, 0);
+        lineRequest3 = new LineRequest("신신분당선", "bg-blue-600", 강남역.getId(), downStation.getId(), 15,0 );
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -61,7 +61,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void createLineWithOneCharacterName() {
         // when
-        LineRequest 한_글자_노선 = new LineRequest("선", "bg-red-600", 강남역.getId(), downStation.getId(), 10);
+        LineRequest 한_글자_노선 = new LineRequest("선", "bg-red-600", 강남역.getId(), downStation.getId(), 10, 0);
         ExtractableResponse<Response> response = 지하철_노선_생성_요청(한_글자_노선);
 
         // then
@@ -72,7 +72,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void createLineWithSameStations() {
         // when
-        LineRequest invalidLine = new LineRequest("백기선", "bg-red-600", 강남역.getId(), 강남역.getId(), 10);
+        LineRequest invalidLine = new LineRequest("백기선", "bg-red-600", 강남역.getId(), 강남역.getId(), 10, 0);
         ExtractableResponse<Response> response = 지하철_노선_생성_요청(invalidLine);
 
         // then
@@ -173,9 +173,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
     }
 
     public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation,
-        StationResponse downStation, int distance) {
+        StationResponse downStation, int distance, int extraFare) {
         LineRequest lineRequest = new LineRequest(name, color, upStation.getId(),
-            downStation.getId(), distance);
+            downStation.getId(), distance, extraFare);
         return 지하철_노선_등록되어_있음(lineRequest);
     }
 

@@ -48,9 +48,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
         교대역 = 지하철역_등록되어_있음("교대역");
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역");
 
+<<<<<<< HEAD
         신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
         이호선 = 지하철_노선_등록되어_있음("이호선", "bg-blue-600", 교대역, 강남역, 10);
         삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-green-600", 교대역, 양재역, 5);
+=======
+        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10, 100);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10, 200);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5, 300);
+>>>>>>> feat: 노선 별 추가요금 구현
 
         지하철_구간_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
     }
@@ -64,6 +70,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //then
         적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
         총_거리가_응답됨(response, 5);
+        총_요금이_응답됨(response, 1550);
+    }
+
+    @DisplayName("추가 요금 정책 적용 후 여러 노선을 지날 때 요금을 계산한다.")
+    @Test
+    void calculateFareWithExtraFarePolicy() {
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(4L, 1L);
+
+        //then
+        적절한_경로_응답됨(response, Lists.newArrayList(남부터미널역, 양재역, 강남역));
+        총_거리가_응답됨(response, 12);
+        총_요금이_응답됨(response, 1650);
+
     }
 
     public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
@@ -92,5 +112,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public static void 총_거리가_응답됨(ExtractableResponse<Response> response, int totalDistance) {
         PathResponse pathResponse = response.as(PathResponse.class);
         assertThat(pathResponse.getDistance()).isEqualTo(totalDistance);
+    }
+
+    private static void 총_요금이_응답됨(ExtractableResponse<Response> response, int fare) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getFare()).isEqualTo(fare);
     }
 }

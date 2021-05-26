@@ -12,20 +12,18 @@ public class Line {
     private final String name;
     private final String color;
     private final Sections sections;
+    private final Integer extraFare;
 
-    public Line(Long id, String name, String color, Sections sections) {
+    public Line(Long id, String name, String color, Sections sections, Integer extraFare) {
         this.id = id;
         this.name = name;
         this.color = color;
         this.sections = sections;
+        this.extraFare = extraFare;
     }
 
-    public Line(Long id, String name, String color) {
-        this(id, name, color, Sections.empty());
-    }
-
-    public Line(String name, String color) {
-        this(null, name, color);
+    public Line(Long id, String name, String color, Integer extraFare) {
+        this(id, name, color, Sections.empty(), extraFare);
     }
 
     public void addSection(Station upStation, Station downStation, int distance) {
@@ -65,6 +63,10 @@ public class Line {
         return sections;
     }
 
+    public int getExtraFare() {
+        return extraFare;
+    }
+
     public List<Station> getStations() {
         return sections.getStations();
     }
@@ -85,5 +87,4 @@ public class Line {
     public int hashCode() {
         return Objects.hash(id, name);
     }
-
 }
