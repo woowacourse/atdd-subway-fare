@@ -6,9 +6,12 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.station.dto.StationResponse;
@@ -18,10 +21,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineAcceptanceTest extends AcceptanceTest {
+
+//    @MockBean
+//    JwtTokenProvider jwtTokenProvider;
 
     private StationResponse 강남역;
     private StationResponse downStation;
@@ -43,11 +51,31 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 노선을 생성한다.")
     @Test
     void createLine() {
+
         // when
         ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1);
 
         // then
         지하철_노선_생성됨(response);
+    }
+
+    @DisplayName("존재하지 않는 역으로 지하철 노선을 생성한다.")
+    @Test
+    void createLineWithNoneExistingStations() {
+        // given
+        LineRequest 잘못된요청 = new LineRequest(
+                "호남선",
+                "bg-pink-600",
+                100L,
+                101L,
+                10
+        );
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(잘못된요청);
+
+        // then
+        지하철_노선_생성_실패됨(response);
     }
 
     @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
