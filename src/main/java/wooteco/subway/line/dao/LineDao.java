@@ -1,12 +1,19 @@
 package wooteco.subway.line.dao;
 
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.domain.Sections;
+import wooteco.subway.line.exception.DuplicatedLineNameException;
+import wooteco.subway.line.exception.NoSuchLineException;
 import wooteco.subway.station.domain.Station;
+import wooteco.subway.station.exception.DuplicatedStationNameException;
 
 import javax.sql.DataSource;
 import java.util.Collections;
@@ -33,8 +40,12 @@ public class LineDao {
         params.put("name", line.getName());
         params.put("color", line.getColor());
 
-        Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new Line(lineId, line.getName(), line.getColor());
+        try {
+            Long lineId = insertAction.executeAndReturnKey(params).longValue();
+            return new Line(lineId, line.getName(), line.getColor());
+        } catch (DuplicateKeyException e) {
+            throw new DuplicatedLineNameException();
+        }
     }
 
     public Line findById(Long id) {
@@ -48,13 +59,19 @@ public class LineDao {
                 "left outer join STATION DST on S.down_station_id = DST.id " +
                 "WHERE L.id = ?";
 
-        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, new Object[]{id});
-        return mapLine(result);
+        try {
+            List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, new Object[]{id});
+            return mapLine(result);
+        } catch (EmptyResultDataAccessException e) {
+            throw new NoSuchLineException();
+        }
     }
 
     public void update(Line newLine) {
         String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
+        if (jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()}) == 0) {
+            throw new NoSuchLineException();
+        }
     }
 
     public List<Line> findAll() {
@@ -106,7 +123,9 @@ public class LineDao {
     }
 
     public void deleteById(Long id) {
-        jdbcTemplate.update("delete from Line where id = ?", id);
+        if (jdbcTemplate.update("delete from Line where id = ?", id) == 0) {
+            throw new NoSuchLineException();
+        }
     }
 
     public List<Line> findIncludingStation(Long stationId, Long lineId) {

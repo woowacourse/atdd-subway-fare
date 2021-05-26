@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import wooteco.subway.line.exception.LineException;
 import wooteco.subway.station.exception.StationException;
 
 @ControllerAdvice
@@ -15,6 +16,11 @@ public class BaseControllerAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(StationException.class)
     public ResponseEntity<ErrorResponse> stationExceptionHandling(Exception e) {
+        return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(LineException.class)
+    public ResponseEntity<ErrorResponse> lineExceptionHandling(Exception e) {
         return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
     }
 

@@ -36,9 +36,6 @@ public class StationService {
     }
 
     public void deleteStationById(Long id) {
-        if (sectionDao.isStationRegistered(id)) {
-            throw new StationAlreadyRegisteredInLineException();
-        }
         stationDao.deleteById(id);
     }
 }

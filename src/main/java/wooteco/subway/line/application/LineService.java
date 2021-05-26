@@ -1,5 +1,6 @@
 package wooteco.subway.line.application;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
@@ -16,16 +17,11 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 
 @Service
+@RequiredArgsConstructor
 public class LineService {
-    private LineDao lineDao;
-    private SectionDao sectionDao;
-    private StationService stationService;
-
-    public LineService(LineDao lineDao, SectionDao sectionDao, StationService stationService) {
-        this.lineDao = lineDao;
-        this.sectionDao = sectionDao;
-        this.stationService = stationService;
-    }
+    private final LineDao lineDao;
+    private final SectionDao sectionDao;
+    private final StationService stationService;
 
     public LineResponse saveLine(LineRequest request) {
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
