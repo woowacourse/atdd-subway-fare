@@ -76,9 +76,16 @@ public class LineService {
     public LineUpdateResponse updateLine(Long id, LineRequest lineUpdateRequest) {
         Line currentLine = lineDao.findById(id);
         validatesChangeName(lineUpdateRequest.getName(), currentLine.getName());
+        validatesChangeColor(lineUpdateRequest.getColor());
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
         Line line = lineDao.findById(id);
         return LineUpdateResponse.of(line);
+    }
+
+    private void validatesChangeColor(String color) {
+        if (lineDao.isExistsColor(color)) {
+            throw new InvalidInsertException("중복된 색상이 존재합니다.");
+        }
     }
 
     private void validatesChangeName(String newName, String currentName) {

@@ -40,7 +40,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         강남에서광교 = new SectionInLineResponse(강남역, 광교역, 10);
 
         신분당선 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
-        구신분당선 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15);
+        구신분당선 = new LineRequest("구신분당선", "bg-red-700", 강남역.getId(), 광교역.getId(), 15);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -133,12 +133,27 @@ public class LineAcceptanceTest extends AcceptanceTest {
     void updateLine() {
         // given
         LineResponse lineResponse = 지하철_노선_등록되어_있음(신분당선);
+        LineRequest 구호선 = new LineRequest("구호선", "gold-color", 강남역.getId(), 광교역.getId(), 15);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_수정_요청(사용자, lineResponse, 구신분당선);
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(사용자, lineResponse, 구호선);
 
         // then
         지하철_노선_수정됨(response);
+    }
+
+    @DisplayName("수정 - 이미 존재하는 색으로 수정요청 하는 경우 예외를 던진다.")
+    @Test
+    void updateLineWhenExistsColor() {
+        // given
+        LineResponse lineResponse = 지하철_노선_등록되어_있음(신분당선);
+        LineRequest 구호선 = new LineRequest("구호선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(사용자, lineResponse, 구호선);
+
+        // then
+        assertThat(response.as(ExceptionResponse.class).getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     @DisplayName("수정 - 로그인하지 않은 사용자나 유효하지 않은 회원이 요청시 예외를 발생한다.")
@@ -162,6 +177,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_등록되어_있음(구신분당선);
 
         LineRequest 중복노선 = new LineRequest("구신분당선", "빨간색", 2L, 1L, 2);
+
         // when
         ExtractableResponse<Response> response = 지하철_노선_수정_요청(사용자, lineResponse, 중복노선);
 

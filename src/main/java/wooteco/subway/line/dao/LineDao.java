@@ -107,11 +107,16 @@ public class LineDao {
     }
 
     public void deleteById(Long id) {
-        jdbcTemplate.update("delete from Line where id = ?", id);
+        jdbcTemplate.update("delete from LINE where id = ?", id);
     }
 
     public boolean existNewNameExceptCurrentName(String newName, String currentName) {
-        String query = "SELECT EXISTS (SELECT * FROM line WHERE name IN (?) AND name NOT IN (?))";
+        String query = "SELECT EXISTS (SELECT * FROM LINE WHERE name IN (?) AND name NOT IN (?))";
         return jdbcTemplate.queryForObject(query, Boolean.class, newName, currentName);
+    }
+
+    public boolean isExistsColor(String color) {
+        String query = "SELECT EXISTS (SELECT * FROM LINE WHERE color = ?)";
+        return jdbcTemplate.queryForObject(query, Boolean.class, color);
     }
 }
