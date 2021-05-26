@@ -2,9 +2,11 @@ package wooteco.subway.line.dto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 public class LineRequest {
     @NotBlank
+    @Pattern(regexp = "^[가-힣0-9]{2,20}$")
     private String name;
     @NotBlank
     private String color;
