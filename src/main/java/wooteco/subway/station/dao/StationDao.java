@@ -55,4 +55,9 @@ public class StationDao {
         String sql = "select count(*) from STATION where name = ?";
         return 0 < jdbcTemplate.queryForObject(sql, Integer.class, name);
     }
+
+    public boolean isHaveStationById(Long id) {
+        String sql = "select count(*) from STATION where id = ?";
+        return 0 < jdbcTemplate.queryForObject(sql, Integer.class, id);
+    }
 }

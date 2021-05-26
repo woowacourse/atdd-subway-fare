@@ -7,6 +7,7 @@ import wooteco.subway.auth.exception.InvalidEmailException;
 import wooteco.subway.auth.exception.InvalidPasswordException;
 import wooteco.subway.member.exception.DuplicatedIdException;
 import wooteco.subway.station.exception.DuplicatedStationNameException;
+import wooteco.subway.station.exception.NoSuchStationException;
 
 @ControllerAdvice
 public class controllerAdvice {
@@ -34,4 +35,9 @@ public class controllerAdvice {
         return ResponseEntity.badRequest().body(new ExceptionResponse(e));
     }
 
+    @ExceptionHandler(NoSuchStationException.class)
+    public ResponseEntity<ExceptionResponse> invalidPasswordExceptionHandle(
+        NoSuchStationException e) {
+        return ResponseEntity.badRequest().body(new ExceptionResponse(e));
+    }
 }

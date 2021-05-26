@@ -96,6 +96,18 @@ public class StationAcceptanceTest extends AcceptanceTest {
         ExceptionCheck.에러_문구_확인(response, "INVALID_NAME");
     }
 
+    @DisplayName("없는 역 삭제")
+    @Test
+    void deleteGhostStation() {
+        // given
+        // when
+        ExtractableResponse<Response> response = 지하철역_제거_요청(
+            new StationResponse(10L, "ghostStation"));
+        // then
+        ExceptionCheck.코드_400_응답됨(response);
+        ExceptionCheck.에러_문구_확인(response, "NO_SUCH_STATION");
+    }
+
     public static StationResponse 지하철역_등록되어_있음(String name) {
         return 지하철역_생성_요청(name).as(StationResponse.class);
     }
