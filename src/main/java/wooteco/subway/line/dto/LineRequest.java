@@ -6,7 +6,7 @@ import javax.validation.constraints.Pattern;
 
 public class LineRequest {
     @NotBlank
-    @Pattern(regexp = "^[가-힣0-9]{2,20}$")
+    @Pattern(regexp = "^[가-힣0-9]{2,10}$")
     private String name;
     @NotBlank
     private String color;
