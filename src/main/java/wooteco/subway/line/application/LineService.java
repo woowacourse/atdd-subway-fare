@@ -73,7 +73,9 @@ public class LineService {
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
+    @Transactional
     public void deleteLineById(Long id) {
+        sectionDao.deleteByLineId(id);
         lineDao.deleteById(id);
     }
 

@@ -23,7 +23,8 @@ public class StationController {
     }
 
     @PostMapping("/stations")
-    public ResponseEntity<StationResponse> createStation(@Valid @RequestBody StationRequest stationRequest) {
+    public ResponseEntity<StationResponse> createStation(
+            @Valid @RequestBody StationRequest stationRequest) {
         StationResponse station = stationService.saveStation(stationRequest);
         return ResponseEntity.created(URI.create("/stations/" + station.getId())).body(station);
     }
@@ -39,8 +40,8 @@ public class StationController {
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException() {
+    @ExceptionHandler({SQLException.class, IllegalArgumentException.class})
+    public ResponseEntity<Void> handleBadRequestException() {
         return ResponseEntity.badRequest().build();
     }
 }
