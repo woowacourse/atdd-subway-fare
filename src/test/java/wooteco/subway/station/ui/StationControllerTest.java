@@ -29,6 +29,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import wooteco.subway.auth.application.AuthService;
+import wooteco.subway.auth.infrastructure.JwtTokenProvider;
+import wooteco.subway.auth.infrastructure.LoginInterceptor;
 import wooteco.subway.exception.DuplicatedStationNameException;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.dto.StationRequest;
@@ -42,7 +44,9 @@ public class StationControllerTest {
     @MockBean
     private StationService stationService;
     @MockBean
-    private AuthService authService;
+    private LoginInterceptor loginInterceptor;
+    @MockBean
+    private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
     private MockMvc mockMvc;
@@ -56,6 +60,7 @@ public class StationControllerTest {
         StationRequest stationRequest = new StationRequest("잠실역");
         StationResponse stationResponse = new StationResponse(1L, "잠실역");
         given(stationService.saveStation(any(StationRequest.class))).willReturn(stationResponse);
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         //when
         mockMvc.perform(post("/api/stations")
@@ -85,6 +90,7 @@ public class StationControllerTest {
             new StationResponse(5L, "선릉역")
         );
         given(stationService.findAllStationResponses()).willReturn(stationResponses);
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         //when
         mockMvc.perform(get("/api/stations"))
@@ -104,7 +110,12 @@ public class StationControllerTest {
     @DisplayName("역 삭제 - 성공")
     @Test
     public void deleteStation() throws Exception {
+        // given
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
+
+        // when
         mockMvc.perform(delete("/api/stations/1"))
+            // then
             .andExpect(status().isNoContent())
             .andDo(print())
             .andDo(document("station-delete",
@@ -121,6 +132,7 @@ public class StationControllerTest {
         StationResponse stationResponse = new StationResponse(1L, "잠실역");
         given(stationService.updateStation(any(Long.class), any(StationRequest.class)))
             .willReturn(stationResponse);
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         //when
         mockMvc.perform(put("/api/stations/1")
@@ -145,6 +157,7 @@ public class StationControllerTest {
         StationRequest stationRequest = new StationRequest("잠실역");
         given(stationService.updateStation(any(Long.class), any(StationRequest.class)))
             .willThrow(new DuplicatedStationNameException());
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         // when
         mockMvc.perform(put("/api/stations/1")

@@ -19,6 +19,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {
+
+    private static final String TOKEN = 토큰_요청();
     private static final String 강남역 = "강남역";
     private static final String 역삼역 = "역삼역";
 
@@ -82,6 +84,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         return RestAssured
                 .given().log().all()
+                .header("Authorization", "Bearer " + TOKEN)
                 .body(stationRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/api/stations")
@@ -100,6 +103,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철역_제거_요청(StationResponse stationResponse) {
         return RestAssured
                 .given().log().all()
+                .header("Authorization", "Bearer " + TOKEN)
                 .when().delete("/api/stations/" + stationResponse.getId())
                 .then().log().all()
                 .extract();

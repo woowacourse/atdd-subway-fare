@@ -26,6 +26,7 @@ import wooteco.subway.station.dto.StationResponse;
 @DisplayName("지하철 구간 관련 기능")
 public class SectionAcceptanceTest extends AcceptanceTest {
 
+    private static final String TOKEN = 토큰_요청();
     private LineResponse 신분당선;
     private StationResponse 강남역;
     private StationResponse 양재역;
@@ -131,6 +132,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         return RestAssured
             .given().log().all()
+            .header("Authorization", "Bearer " + TOKEN)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(sectionRequest)
             .when().post("/api/lines/{lineId}/sections", line.getId())
@@ -156,6 +158,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         StationResponse station) {
         return RestAssured
             .given().log().all()
+            .header("Authorization", "Bearer " + TOKEN)
             .when().delete("/api/lines/{lineId}/sections?stationId={stationId}", line.getId(),
                 station.getId())
             .then().log().all()

@@ -1,5 +1,6 @@
 package wooteco.subway.path.ui;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
@@ -21,7 +22,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import wooteco.subway.TestDataLoader;
-import wooteco.subway.auth.application.AuthService;
+import wooteco.subway.auth.infrastructure.JwtTokenProvider;
+import wooteco.subway.auth.infrastructure.LoginInterceptor;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.path.application.PathService;
@@ -37,7 +39,9 @@ class PathControllerTest {
     @MockBean
     private PathService pathService;
     @MockBean
-    private AuthService authService;
+    private LoginInterceptor interceptor;
+    @MockBean
+    private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
     private MockMvc mockMvc;
@@ -64,6 +68,7 @@ class PathControllerTest {
         Long target = testDataLoader.정자역().getId();
 
         given(pathService.findPath(source, target)).willReturn(pathResponse);
+        given(interceptor.preHandle(any(), any(), any())).willReturn(true);
 
         // when
         mockMvc.perform(get("/api/paths?source=" + source + "&target=" + target))
