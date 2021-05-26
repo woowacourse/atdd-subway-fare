@@ -44,13 +44,31 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         에러가_발생한다(createResponse, SubwayMemberException.DUPLICATE_EMAIL_EXCEPTION);
     }
 
-    @DisplayName("잘못된 이메일을 보내면 에러가 발생한다.")
+    @DisplayName("잘못된 이메일을 이용하여 사용자를 생성하면 에러가 발생한다.")
     @ParameterizedTest
     @NullSource
     @ValueSource(strings = {"", "abc", "abc@jjj", "naver.com@abc", "abc@naver.", "ab @naver.com"})
     void createMemberWithInvalidEmail(String value) {
         ExtractableResponse<Response> createResponse = 회원_생성을_요청(value, PASSWORD, AGE);
         에러가_발생한다(createResponse, SubwayMemberException.INVALID_EMAIL_EXCEPTION);
+    }
+
+    @DisplayName("잘못된 비밀번호를 이용하여 사용자를 생성하면 에러가 발생한다.")
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = {"", "a"})
+    void createMemberWithInvalidPassword(String value) {
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, value, AGE);
+        에러가_발생한다(createResponse, SubwayMemberException.INVALID_PASSWORD_EXCEPTION);
+    }
+
+    @DisplayName("잘못된 나이를 이용하여 사용자를 생성하면 에러가 발생한다.")
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(ints = {-1, 0})
+    void createMemberWithInvalidAge(Integer value) {
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, value);
+        에러가_발생한다(createResponse, SubwayMemberException.INVALID_AGE_EXCEPTION);
     }
 
     @DisplayName("토큰을 이용하여 정보를 조회한다.")
