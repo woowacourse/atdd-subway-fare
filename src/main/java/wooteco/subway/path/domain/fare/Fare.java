@@ -1,7 +1,5 @@
 package wooteco.subway.path.domain.fare;
 
-import wooteco.subway.path.domain.SubwayPath;
-
 public class Fare {
     private final int fare;
 

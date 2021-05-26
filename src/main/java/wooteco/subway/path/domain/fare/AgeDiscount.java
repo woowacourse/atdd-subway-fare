@@ -5,8 +5,8 @@ import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 public enum AgeDiscount {
-    TEENAGER(age -> age >= 13 && age < 19, fare -> fare - (int) Math.ceil((fare - 350) * 0.5)),
-    KID(age -> age >= 6 && age < 13, fare -> fare - (int) Math.ceil((fare - 350) * 0.2)),
+    TEENAGER(age -> age >= 13 && age < 19, fare -> fare - (int) Math.ceil((fare - 350) * 0.2)),
+    KID(age -> age >= 6 && age < 13, fare -> fare - (int) Math.ceil((fare - 350) * 0.5)),
     NOT_APPLICABLE(age -> false, fare -> fare);
 
     AgeDiscount(Predicate<Integer> figureOutDiscount, UnaryOperator<Integer> discountPolicy) {
