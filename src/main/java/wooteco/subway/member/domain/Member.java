@@ -13,6 +13,7 @@ public class Member {
 
     private static final Pattern PATTERN =
             Pattern.compile("^[_a-z0-9-]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$");
+    private static final int PASSWORD_MIN_LENGTH = 2;
 
     private Long id;
     private String email;
@@ -48,9 +49,15 @@ public class Member {
     }
 
     private void validatePassword(String password) {
+        if(Objects.isNull(password) || password.length() < PASSWORD_MIN_LENGTH) {
+            throw new SubwayCustomException(MemberException.INVALID_PASSWORD);
+        }
     }
 
-    private void validateAge(int age) {
+    private void validateAge(Integer age) {
+        if(Objects.isNull(age) || age <= 0) {
+            throw new SubwayCustomException(MemberException.INVALID_AGE);
+        }
     }
 
     public Member(Long id, String email, Integer age) {

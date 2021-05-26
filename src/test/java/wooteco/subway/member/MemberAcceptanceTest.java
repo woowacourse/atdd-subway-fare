@@ -52,6 +52,24 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         이메일_형식에_맞지_않은_이메일은_생성_수정_불가(createResponse);
     }
 
+    @DisplayName("2글자 이하의 비밀번호를 보내면 에러가 발생한다.")
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = {"", "1"})
+    void createMemberWithInvalidPassword(String password) {
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, password, AGE);
+        비밀번호_2글자는이하는_생성_불가(createResponse);
+    }
+
+    @DisplayName("0이하의 나이를 보내면 에러가 발생한다.")
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(ints = {-1, -10234, 0})
+    void createMemberWithInvalidAge(Integer age) {
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, age);
+        나이가_0이하는_생성_불가(createResponse);
+    }
+
     @DisplayName("토큰을 이용하여 정보를 조회한다.")
     @Test
     void showMemberInfo() {
@@ -111,6 +129,20 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .isEqualTo(MemberException.INVALID_EMAIL.status());
         assertThat(response.body().asString())
                 .isEqualTo(MemberException.INVALID_EMAIL.message());
+    }
+
+    private void 비밀번호_2글자는이하는_생성_불가(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode())
+                .isEqualTo(MemberException.INVALID_PASSWORD.status());
+        assertThat(response.body().asString())
+                .isEqualTo(MemberException.INVALID_PASSWORD.message());
+    }
+
+    private void 나이가_0이하는_생성_불가(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode())
+                .isEqualTo(MemberException.INVALID_AGE.status());
+        assertThat(response.body().asString())
+                .isEqualTo(MemberException.INVALID_AGE.message());
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
