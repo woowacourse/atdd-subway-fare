@@ -5,6 +5,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
+import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -19,6 +20,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
@@ -42,7 +44,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @ParameterizedTest
     @ValueSource(strings = {"", " ", "일", "asdf", "일 ", "하나 역", "하나a역", "하나,역", "하나\t역", "일이삼사오육칠팔구십일이삼사오육칠팔구십일"})
     void createStationWithNotValidName(String name) {
-        지하철역_생성_요청_실패(name);
+        지하철역_생성_요청_실패_형식에_맞지_않는_역_이름(name);
     }
 
     @DisplayName("기존에 존재하는 지하철역 이름으로 지하철역을 생성한다.")
@@ -52,7 +54,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_등록되어_있음(강남역);
 
         // when
-        지하철역_생성_요청_실패(강남역);
+        지하철역_생성_요청_실패_이미_존재하는_역_이름(강남역);
     }
 
     @DisplayName("지하철역을 조회한다.")
@@ -90,7 +92,20 @@ public class StationAcceptanceTest extends AcceptanceTest {
         Long stationIdNotExists = 100L;
 
         // when
-        지하철역_제거_요청_Id로_실패(stationIdNotExists);
+        지하철역_제거_요청_Id로_실패_존재하지_않는_지하철역(stationIdNotExists);
+    }
+
+    @DisplayName("노선에 포함된 역을 삭제 - 404 에러")
+    @Test
+    void deleteStationInLine() {
+        // given
+        StationResponse 강남역 = 지하철역_등록되어_있음("강남역");
+        StationResponse 광교역 = 지하철역_등록되어_있음("광교역");
+
+        LineResponse 신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 광교역, 10);
+
+        // when
+        지하철역_제거_요청_Id로_실패_노선에_포함된_역(1L);
     }
 
     public static StationResponse 지하철역_등록되어_있음(String name) {
@@ -110,11 +125,27 @@ public class StationAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    public static void 지하철역_생성_요청_실패(String name) {
+    public static void 지하철역_생성_요청_실패_형식에_맞지_않는_역_이름(String name) {
         StationRequest stationRequest = new StationRequest(name);
 
         ExtractableResponse<Response> response = RestAssured
             .given(spec).log().all()
+            .filter(document("create-station-fail-invalid-name", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())))
+            .body(stationRequest)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().post("/stations")
+            .then().log().all()
+            .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    public static void 지하철역_생성_요청_실패_이미_존재하는_역_이름(String name) {
+        StationRequest stationRequest = new StationRequest(name);
+
+        ExtractableResponse<Response> response = RestAssured
+            .given(spec).log().all()
+            .filter(document("create-station-fail-name-duplicate", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())))
             .body(stationRequest)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when().post("/stations")
@@ -142,9 +173,21 @@ public class StationAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    public static void 지하철역_제거_요청_Id로_실패(Long id) {
+    public static void 지하철역_제거_요청_Id로_실패_존재하지_않는_지하철역(Long id) {
         ExtractableResponse<Response> response = RestAssured
             .given(spec).log().all()
+            .filter(document("delete-station-fail-not-exists", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())))
+            .when().delete("/stations/" + id)
+            .then().log().all()
+            .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    public static void 지하철역_제거_요청_Id로_실패_노선에_포함된_역(Long id) {
+        ExtractableResponse<Response> response = RestAssured
+            .given(spec).log().all()
+            .filter(document("delete-station-fail-in-line", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())))
             .when().delete("/stations/" + id)
             .then().log().all()
             .extract();

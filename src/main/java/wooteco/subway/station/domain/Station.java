@@ -23,7 +23,7 @@ public class Station {
 
     private void validate(String name) {
         if (!Pattern.matches(NAME_PATTERN, name)) {
-            throw new HttpException(HttpStatus.BAD_REQUEST, "역 이름은 " + NAME_PATTERN + " 형식이어야 합니다.");
+            throw new HttpException(HttpStatus.BAD_REQUEST, "역 이름은 2~20자 이하의 한글/숫자만 가능합니다");
         }
     }
 
