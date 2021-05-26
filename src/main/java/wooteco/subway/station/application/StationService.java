@@ -1,6 +1,7 @@
 package wooteco.subway.station.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.exception.StationException;
 import wooteco.subway.line.dao.LineDao;
@@ -12,6 +13,7 @@ import wooteco.subway.station.dto.StationResponse;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Transactional
 @Service
 public class StationService {
     private StationDao stationDao;
@@ -27,10 +29,12 @@ public class StationService {
         return StationResponse.of(station);
     }
 
+    @Transactional(readOnly = true)
     public Station findStationById(Long id) {
         return stationDao.findById(id);
     }
 
+    @Transactional(readOnly = true)
     public List<StationResponse> findAllStationResponses() {
         List<Station> stations = stationDao.findAll();
 
