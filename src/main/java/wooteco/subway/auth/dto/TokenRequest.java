@@ -1,6 +1,10 @@
 package wooteco.subway.auth.dto;
 
+import javax.validation.constraints.Email;
+
 public class TokenRequest {
+
+    @Email
     private String email;
     private String password;
 

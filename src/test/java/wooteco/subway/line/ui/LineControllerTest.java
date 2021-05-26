@@ -32,6 +32,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import wooteco.subway.TestDataLoader;
 import wooteco.subway.auth.application.AuthService;
+import wooteco.subway.auth.infrastructure.JwtTokenProvider;
+import wooteco.subway.auth.infrastructure.LoginInterceptor;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.dto.LineRequest;
@@ -49,7 +51,9 @@ class LineControllerTest {
     @MockBean
     private LineService lineService;
     @MockBean
-    private AuthService authService;
+    private LoginInterceptor loginInterceptor;
+    @MockBean
+    private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
     private MockMvc mockMvc;
@@ -72,6 +76,8 @@ class LineControllerTest {
         LineResponse lineResponse = new LineResponse(1L, "2호선", "bg-green-200",
             sections
         );
+
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
         given(lineService.saveLine(any(LineRequest.class))).willReturn(lineResponse);
 
         //when
@@ -105,6 +111,8 @@ class LineControllerTest {
         List<LineResponse> lineResponses = LineResponse.listOf(
             Arrays.asList(testDataLoader.신분당선(), testDataLoader.이호선())
         );
+
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
         given(lineService.findLineResponses()).willReturn(lineResponses);
 
         //when
@@ -171,6 +179,7 @@ class LineControllerTest {
                 .collect(Collectors.toList())
         );
 
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
         given(lineService.updateLine(any(Long.class), any(LineUpdateRequest.class)))
             .willReturn(lineResponse);
 
@@ -194,6 +203,9 @@ class LineControllerTest {
     @Test
     @DisplayName("노선 삭제 - 성공")
     public void deleteLine() throws Exception {
+        // given
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
+
         // when
         mockMvc.perform(
             delete("/api/lines/1")
@@ -212,6 +224,7 @@ class LineControllerTest {
     public void createSection() throws Exception {
         // given
         SectionRequest sectionRequest = new SectionRequest(1L, 2L, 5);
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         // when
         mockMvc.perform(
@@ -231,6 +244,9 @@ class LineControllerTest {
     @DisplayName("구간 삭제 - 성공")
     @Test
     public void removeLineStation() throws Exception {
+        // given
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
+
         // when
         mockMvc.perform(
             delete("/api/lines/1/sections?stationId=1")

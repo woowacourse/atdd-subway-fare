@@ -26,7 +26,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import wooteco.subway.auth.application.AuthService;
+import wooteco.subway.auth.infrastructure.JwtTokenProvider;
+import wooteco.subway.auth.infrastructure.LoginInterceptor;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.dto.MemberRequest;
@@ -40,7 +41,9 @@ public class MemberControllerTest {
     @MockBean
     private MemberService memberService;
     @MockBean
-    private AuthService authService;
+    private LoginInterceptor interceptor;
+    @MockBean
+    private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
     private MockMvc mockMvc;
@@ -81,9 +84,6 @@ public class MemberControllerTest {
         int age = 20;
         long id = 1L;
 
-        given(authService.findMemberByToken(token))
-            .willReturn(new LoginMember(id, email, age));
-
         given(memberService.findMember(any(LoginMember.class)))
             .willReturn(new MemberResponse(id, email, age));
 
@@ -108,15 +108,10 @@ public class MemberControllerTest {
         //given
         String token = "이것은토큰";
         String email = "test@test.com";
-        int age = 20;
         int newAge = 21;
-        long id = 1L;
 
         MemberRequest memberRequest = new MemberRequest(email, "password", newAge);
         MemberResponse memberResponse = new MemberResponse(1L, email, newAge);
-
-        given(authService.findMemberByToken(token))
-            .willReturn(new LoginMember(id, email, age));
 
         given(memberService.updateMember(any(LoginMember.class), any(MemberRequest.class)))
             .willReturn(memberResponse);
@@ -143,11 +138,7 @@ public class MemberControllerTest {
     void deleteMember() throws Exception {
         //given
         String token = "이것은토큰입니다";
-        long id = 1L;
         String email = "test@email.com";
-        int age = 20;
-        given(authService.findMemberByToken(token))
-            .willReturn(new LoginMember(id, email, age));
 
         // when
         mockMvc.perform(delete("/api/members/me")
@@ -165,9 +156,9 @@ public class MemberControllerTest {
     @Test
     @DisplayName("유저 중복 확인 - 성공")
     void duplicateMember() throws Exception {
-        final String email = "test@email.com";
+        String email = "test@email.com";
         given(memberService.isExistMember(email)).willReturn(true);
-        mockMvc.perform(get("/api/members?email="+email))
+        mockMvc.perform(get("/api/members?email=" + email))
             .andExpect(status().isOk())
             .andExpect(content().string("true"))
             .andDo(document("member-duplicate",
@@ -181,7 +172,7 @@ public class MemberControllerTest {
     void duplicateMemberFail() throws Exception {
         final String email = "test@email.com";
         given(memberService.isExistMember(email)).willReturn(false);
-        mockMvc.perform(get("/api/members?email="+email))
+        mockMvc.perform(get("/api/members?email=" + email))
             .andExpect(status().isOk())
             .andExpect(content().string("false"))
             .andDo(document("member-duplicate-fail",

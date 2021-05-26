@@ -24,6 +24,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
+import wooteco.subway.auth.infrastructure.JwtTokenProvider;
+import wooteco.subway.auth.infrastructure.LoginInterceptor;
 
 @WebMvcTest(controllers = AuthController.class)
 @ActiveProfiles("test")
@@ -32,6 +34,10 @@ public class AuthControllerTest {
 
     @MockBean
     private AuthService authService;
+    @MockBean
+    private LoginInterceptor loginInterceptor;
+    @MockBean
+    private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
     private MockMvc mockMvc;

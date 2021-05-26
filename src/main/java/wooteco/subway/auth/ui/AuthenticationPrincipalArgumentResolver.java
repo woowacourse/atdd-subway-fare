@@ -5,19 +5,21 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
-import wooteco.subway.auth.application.AuthService;
-import wooteco.subway.auth.application.AuthorizationException;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
+import wooteco.subway.auth.infrastructure.JwtTokenProvider;
+import wooteco.subway.member.domain.Authority;
 import wooteco.subway.member.domain.LoginMember;
 
 import javax.servlet.http.HttpServletRequest;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
-    private AuthService authService;
 
-    public AuthenticationPrincipalArgumentResolver(AuthService authService) {
-        this.authService = authService;
+    private JwtTokenProvider jwtTokenProvider;
+
+    public AuthenticationPrincipalArgumentResolver(
+        JwtTokenProvider jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
@@ -26,12 +28,20 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
-        LoginMember member = authService.findMemberByToken(credentials);
-        if (member.getId() == null) {
-            throw new AuthorizationException();
+    public Object resolveArgument(
+        MethodParameter parameter,
+        ModelAndViewContainer mavContainer,
+        NativeWebRequest webRequest,
+        WebDataBinderFactory binderFactory
+    ) {
+        String credentials = AuthorizationExtractor
+            .extract(webRequest.getNativeRequest(HttpServletRequest.class));
+
+        if (!jwtTokenProvider.validateToken(credentials)) {
+            return new LoginMember(Authority.ANONYMOUS);
         }
-        return member;
+
+        Long id = Long.parseLong(jwtTokenProvider.getPayload(credentials));
+        return new LoginMember(id, Authority.USER);
     }
 }
