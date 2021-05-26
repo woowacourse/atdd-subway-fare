@@ -105,9 +105,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_삭제_실패됨_BAD_REQUEST(response);
     }
 
+    @DisplayName("입력값이 빈 값, null, 특수 문자, 영어, 글자수는 2자 미만이거나 10자 초과면 안 된다.")
     @ParameterizedTest
-    @DisplayName("입력값이 빈 값, null, 2자 미만, 10자 초과면 안 된다.")
-    @ValueSource(strings = {"썬", "가나다라마바사아자차카타파하"})
+    @NullAndEmptySource
+    @ValueSource(strings = {"썬", "가나다라마바사아자차카타파하, %, )))"})
     void createStationFailWithInvalidException(String name) {
         ExtractableResponse<Response> response = 지하철역_생성_요청(name);
 
