@@ -1,5 +1,6 @@
 package wooteco.subway.member.dao;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -8,6 +9,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.member.domain.Member;
+import wooteco.subway.member.exception.DuplicatedIdException;
 import wooteco.subway.member.exception.MismatchIdPasswordException;
 
 import javax.sql.DataSource;
@@ -35,8 +37,13 @@ public class MemberDao {
 
     public Member insert(Member member) {
         SqlParameterSource params = new BeanPropertySqlParameterSource(member);
-        Long id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
-        return new Member(id, member.getEmail(), member.getPassword(), member.getAge());
+        try {
+            Long id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
+            return new Member(id, member.getEmail(), member.getPassword(), member.getAge());
+        } catch (DuplicateKeyException e) {
+            throw new DuplicatedIdException();
+        }
+
     }
 
     public void update(Member member) {

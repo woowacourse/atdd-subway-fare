@@ -13,7 +13,6 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/lines")
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class LineController {
 
     private final LineService lineService;
