@@ -19,6 +19,11 @@ public class ExceptionResponse {
         this.message = exception.getMessage();
     }
 
+    public ExceptionResponse(String error, String message) {
+        this.error = error;
+        this.message = message;
+    }
+
     public String getError() {
         return error;
     }

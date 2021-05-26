@@ -1,8 +1,10 @@
 package wooteco.subway.member.ui;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import java.net.URI;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import javax.validation.Valid;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import wooteco.subway.ExceptionResponse;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.LoginMember;
@@ -30,7 +33,7 @@ public class MemberController {
     }
 
     @PostMapping("/members")
-    public ResponseEntity createMember(@RequestBody MemberRequest request) {
+    public ResponseEntity createMember(@RequestBody @Valid MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
         return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
     }
@@ -70,5 +73,12 @@ public class MemberController {
                 , "Unprocessable Entity"
                 , ""
                 , "/members/check-validation"));
+    }
+
+    @ExceptionHandler(InvalidFormatException.class)
+    public ResponseEntity<ExceptionResponse> invalidAgeHandle() {
+        return ResponseEntity.badRequest().body(
+            new ExceptionResponse("INVALID_AGE", "잘못된 나이입니다.")
+        );
     }
 }
