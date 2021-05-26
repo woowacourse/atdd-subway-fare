@@ -89,7 +89,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철노선 이름에 공백이 있거나 길이가 3미만, 20 초과인경우, 400 에러를 받는다.")
     @ParameterizedTest
     @NullAndEmptySource
-    @ValueSource(strings = {"에", "예예", "우아한테크코스검프에어바다포츈우기화이팅짱"})
+    @ValueSource(strings = {"에", "우아한테크코스검프에어바다포츈우기화이팅짱"})
     void createStationFail(String name) {
         //given
         LineRequest lineRequest = new LineRequest(name, lineRequest1.getColor(), lineRequest1.getUpStationId(), lineRequest1.getDownStationId(), lineRequest1.getDistance(), 신분당선_추가요금);
