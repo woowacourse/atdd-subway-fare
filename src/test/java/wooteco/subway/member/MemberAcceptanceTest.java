@@ -17,11 +17,16 @@ import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
-    public static final String PASSWORD = "password";
-    public static final int AGE = 20;
     public static final String NEW_EMAIL = "new_email@email.com";
+
+    public static final String PASSWORD = "password";
     public static final String NEW_PASSWORD = "new_password";
+    public static final String INVALID_PASSWORD = "12";
+    public static final String INVALID_PASSWORD_OVER = "123456789012345678901234567890";
+
+    public static final int AGE = 20;
     public static final int NEW_AGE = 30;
+    public static final int INVALID_AGE = -1;
 
     @DisplayName("회원 정보를 관리한다.")
     @Test
@@ -49,6 +54,27 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> createResponseWithDuplicatedEmail = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
         이메일_중복_예외(createResponseWithDuplicatedEmail);
+    }
+
+    @DisplayName("회원 가입 시 비밀번호는 4자 이상, 20자 이하이여야한다.")
+    @Test
+    void validatePassword() {
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, INVALID_PASSWORD, AGE);
+        회원_생성되지_않음(createResponse);
+    }
+
+    @DisplayName("회원 가입 시 비밀번호는 4자 이상, 20자 이하이여야한다.")
+    @Test
+    void validatePassword2() {
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, INVALID_PASSWORD_OVER, AGE);
+        회원_생성되지_않음(createResponse);
+    }
+
+    @DisplayName("회원 가입 시 나이는 양수여야한다.")
+    @Test
+    void validateAge() {
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, INVALID_AGE);
+        회원_생성되지_않음(createResponse);
     }
 
     private void 이메일_중복_예외(ExtractableResponse<Response> response) {
@@ -102,6 +128,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 회원_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    public static void 회원_생성되지_않음(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
