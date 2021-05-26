@@ -13,6 +13,7 @@ import wooteco.subway.auth.dto.TokenResponse;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static wooteco.subway.member.MemberAcceptanceTest.회원_정보_조회됨;
 
@@ -50,7 +51,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .body(params)
                 .when().post("/api/login")
                 .then().log().all()
-                .statusCode(HttpStatus.UNAUTHORIZED.value());
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
@@ -102,6 +103,16 @@ public class AuthAcceptanceTest extends AcceptanceTest {
             .when().post("/api/members/exists")
             .then().log().all()
             .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("이메일 중복 확인 - 요청한 이메일이 이메일 형식이 아닌 경우 400")
+    @Test
+    void nonEmail() {
+        // given
+        String email = "testemail";
+        ExtractableResponse<Response> nonEmailCreateResponse = 회원_생성을_요청(email, PASSWORD, AGE);
+
+        assertThat(nonEmailCreateResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static ExtractableResponse<Response> 회원_등록되어_있음(String email, String password, Integer age) {

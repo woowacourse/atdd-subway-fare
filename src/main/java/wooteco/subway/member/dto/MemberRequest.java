@@ -7,7 +7,7 @@ import javax.validation.constraints.NotBlank;
 import wooteco.subway.member.domain.Member;
 
 public class MemberRequest {
-    @Email(message = "이메일 형식만 가능합니다")
+    @Email(message = "올바른 이메일 형식으로 입력해주세요")
     private String email;
     @NotBlank(message = "입력되지 않은 항목을 확인해주세요")
     private String password;
