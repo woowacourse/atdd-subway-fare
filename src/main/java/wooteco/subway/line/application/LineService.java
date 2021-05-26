@@ -1,6 +1,9 @@
 package wooteco.subway.line.application;
 
 import org.springframework.stereotype.Service;
+import wooteco.subway.exception.duplication.LineColorDuplicatedException;
+import wooteco.subway.exception.duplication.LineNameDuplicatedException;
+import wooteco.subway.exception.notfound.LineNotFoundException;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
@@ -8,11 +11,11 @@ import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.line.dto.SimpleLineResponse;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class LineService {
@@ -27,9 +30,29 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
+        validateDuplicatedName(request.getName());
+        validateDuplicatedColor(request.getColor());
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);
+    }
+
+    private void validateDuplicatedName(String name) {
+        if (lineDao.countByName(name) > 0) {
+            throw new LineNameDuplicatedException();
+        }
+    }
+
+    private void validateDuplicatedColor(String color) {
+        if (lineDao.countByColor(color) > 0) {
+            throw new LineColorDuplicatedException();
+        }
+    }
+
+    private void validateId(Long id) {
+        if (lineDao.countById(id) > 0) {
+            throw new LineNotFoundException();
+        }
     }
 
     private Section addInitSection(Line line, LineRequest request) {
@@ -42,11 +65,8 @@ public class LineService {
         return null;
     }
 
-    public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
-        return persistLines.stream()
-                .map(line -> LineResponse.of(line))
-                .collect(Collectors.toList());
+    public List<SimpleLineResponse> findSimpleLineResponses() {
+        return SimpleLineResponse.from(findLines());
     }
 
     public List<Line> findLines() {
@@ -59,14 +79,19 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
+        validateId(id);
         return lineDao.findById(id);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
+        validateDuplicatedName(lineUpdateRequest.getName());
+        validateDuplicatedColor(lineUpdateRequest.getColor());
+        validateId(id);
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
     public void deleteLineById(Long id) {
+        validateId(id);
         lineDao.deleteById(id);
     }
 

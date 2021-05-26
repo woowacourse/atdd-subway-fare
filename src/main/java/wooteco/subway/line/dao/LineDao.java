@@ -1,7 +1,10 @@
 package wooteco.subway.line.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
@@ -9,8 +12,8 @@ import wooteco.subway.line.domain.Sections;
 import wooteco.subway.station.domain.Station;
 
 import javax.sql.DataSource;
+import java.sql.PreparedStatement;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -28,14 +31,20 @@ public class LineDao {
     }
 
     public Line insert(Line line) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("id", line.getId());
-        params.put("name", line.getName());
-        params.put("color", line.getColor());
-        params.put("extra_fare", line.getExtraFare());
+        String query = "INSERT INTO LINE (name, color) VALUES (?, ?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        PreparedStatementCreator preparedStatementCreator = getPreparedStatementCreator(line, query);
+        jdbcTemplate.update(preparedStatementCreator, keyHolder);
+        return new Line(keyHolder.getKey().longValue(), line.getName(), line.getColor());
+    }
 
-        Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new Line(lineId, line.getName(), line.getColor(), line.getExtraFare());
+    private PreparedStatementCreator getPreparedStatementCreator(Line line, String query) {
+        return (connection) -> {
+            PreparedStatement prepareStatement = connection.prepareStatement(query, new String[]{"id"});
+            prepareStatement.setString(1, line.getName());
+            prepareStatement.setString(2, line.getColor());
+            return prepareStatement;
+        };
     }
 
     public Line findById(Long id) {
@@ -109,5 +118,20 @@ public class LineDao {
 
     public void deleteById(Long id) {
         jdbcTemplate.update("delete from Line where id = ?", id);
+    }
+
+    public int countByName(String name) {
+        String sql = "select count(*) from LINE where name = ?";
+        return jdbcTemplate.queryForObject(sql, int.class, name);
+    }
+
+    public int countByColor(String color) {
+        String sql = "select count(*) from LINE where name = ?";
+        return jdbcTemplate.queryForObject(sql, int.class, color);
+    }
+
+    public int countById(Long id) {
+        String sql = "select count(*) from LINE where id = ?";
+        return jdbcTemplate.queryForObject(sql, int.class, id);
     }
 }
