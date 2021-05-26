@@ -33,7 +33,7 @@ public class StationDaoTest {
 
     @DisplayName("중복되는 이름을 가지는 역을 추가할 시 DuplicateKeyException이 발생한다.")
     @Test
-    void throw_DuplicateKeyException_When_Insert_NonExists() {
+    void throw_DuplicateKeyException_When_Insert_DuplicateName() {
         stationDao.insert(new Station("잠실역"));
         assertThatThrownBy(() -> stationDao.insert(new Station("잠실역")))
                 .isInstanceOf(DuplicateKeyException.class);
