@@ -1,7 +1,17 @@
 package wooteco.subway.auth.dto;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+
 public class TokenRequest {
+
+    @Email(message = "이메일 형식에 맞지 않습니다.")
+    @NotBlank(message = "이메일은 공백이 아닙니다.")
+    @Pattern(regexp = "^[a-zA-Z0-9._%+]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]*$", message = "이메일에는 특수문자가 포함될 수 없습니다.")
     private String email;
+
+    @NotBlank(message = "비밀번호는 공백일 수 없습니다.")
     private String password;
 
     public TokenRequest() {

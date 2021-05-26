@@ -5,6 +5,11 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
@@ -43,6 +48,17 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_삭제됨(deleteResponse);
     }
 
+    @DisplayName("옳지 않은 입력으로 회원가입 시도")
+    @ParameterizedTest
+    @CsvSource(value = {"EMAIL:password:23", "email!!@email.com:password:19", "email@email.com:password:-1"}, delimiter = ':')
+    void createInvalidMember(String email, String password, Integer age) {
+        ExtractableResponse<Response> response = 회원_생성을_요청(email, password, age);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
+        assertThat(exceptionResponse.getError()).isEqualTo("INVALID_INPUT");
+    }
+
     @DisplayName("이미 존재하는 이메일인지 요청한다.")
     @Test
     void manageExistedEmail() {
@@ -51,15 +67,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> existResponse = 존재하는_이메일을_요청(EMAIL);
         존재하는_이메일_요청됨(existResponse);
-    }
-
-    public static ExtractableResponse<Response> 존재하는_이메일을_요청(String email) {
-        return RestAssured
-            .given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().get("/members/check-validation/?email=" + email)
-            .then().log().all()
-            .extract();
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
@@ -130,5 +137,14 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static ExtractableResponse<Response> 존재하는_이메일을_요청(String email) {
+        return RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/members/check-validation/?email=" + email)
+            .then().log().all()
+            .extract();
     }
 }

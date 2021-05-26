@@ -11,6 +11,8 @@ import wooteco.subway.member.dto.MemberResponse;
 
 import java.net.URI;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/members")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -22,7 +24,7 @@ public class MemberController {
     }
 
     @PostMapping
-    public ResponseEntity createMember(@RequestBody MemberRequest request) {
+    public ResponseEntity createMember(@RequestBody @Valid MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
         return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
     }

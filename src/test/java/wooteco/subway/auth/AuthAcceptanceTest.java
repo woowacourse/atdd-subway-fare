@@ -5,14 +5,19 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
+import wooteco.subway.exception.ExceptionResponse;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.*;
 import static wooteco.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static wooteco.subway.member.MemberAcceptanceTest.회원_정보_조회됨;
 
@@ -33,6 +38,19 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
         // then
         회원_정보_조회됨(response, EMAIL, AGE);
+    }
+
+    @DisplayName("옳지 않은 입력으로 로그인 시도")
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"email!!@email.com", "email"})
+    void myInfoWithInvalidInput(String value) {
+
+        // given
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+
+        // when
+        로그인_실패(value, PASSWORD);
     }
 
     @DisplayName("Bearer Auth 로그인 실패")
@@ -73,6 +91,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     public static TokenResponse 로그인되어_있음(String email, String password) {
         ExtractableResponse<Response> response = 로그인_요청(email, password);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         return response.as(TokenResponse.class);
     }
 
@@ -88,7 +107,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 post("/login/token").
                 then().
                 log().all().
-                statusCode(HttpStatus.OK.value()).
                 extract();
     }
 
@@ -102,5 +120,13 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 log().all().
                 statusCode(HttpStatus.OK.value()).
                 extract();
+    }
+
+    private void 로그인_실패(String email, String password) {
+        ExtractableResponse<Response> response = 로그인_요청(email, password);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
+        assertThat(exceptionResponse.getError()).isEqualTo("INVALID_INPUT");
     }
 }
