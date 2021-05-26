@@ -14,7 +14,6 @@ import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.dto.StationResponse;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,41 +34,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
-
-    /**
-     * 교대역    --- *2호선* ---   강남역
-     * |                        |
-     * *3호선*                   *신분당선*
-     * |                        |
-     * 남부터미널역  --- *3호선* ---   양재
-     */
-    @BeforeEach
-    public void setUp() {
-        super.setUp();
-
-        강남역 = 지하철역_등록되어_있음("강남역");
-        양재역 = 지하철역_등록되어_있음("양재역");
-        교대역 = 지하철역_등록되어_있음("교대역");
-        남부터미널역 = 지하철역_등록되어_있음("남부터미널역");
-
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5);
-
-        지하철_구간_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
-    }
-
-    @DisplayName("비회원으로 두 역의 최단 거리 경로를 조회한다.")
-    @Test
-    void findPathByDistance() {
-        //when
-        ExtractableResponse<Response> response = 거리_경로_조회_요청(3L, 2L, "");
-
-        //then
-        적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
-        총_거리가_응답됨(response, 5);
-        요금_응답됨(response, 1250);
-    }
+    private String loginToken;
 
     public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target, String token) {
         return RestAssured
@@ -105,12 +70,52 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(pathResponse.getFare()).isEqualTo(fare);
     }
 
+    /**
+     * 교대역    --- *2호선* ---   강남역
+     * |                        |
+     * *3호선*                   *신분당선*
+     * |                        |
+     * 남부터미널역  --- *3호선* ---   양재
+     */
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        회원_등록되어_있음("kevin@naver.com", "123", 7);
+        loginToken = 로그인되어_있음("kevin@naver.com", "123").getAccessToken();
+
+        강남역 = 지하철역_등록되어_있음("강남역", loginToken);
+        양재역 = 지하철역_등록되어_있음("양재역", loginToken);
+        교대역 = 지하철역_등록되어_있음("교대역", loginToken);
+        남부터미널역 = 지하철역_등록되어_있음("남부터미널역", loginToken);
+
+        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10, loginToken);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10, loginToken);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5, loginToken);
+
+        지하철_구간_등록되어_있음(삼호선, 교대역, 남부터미널역, 3, loginToken);
+    }
+
+    @DisplayName("비회원으로 두 역의 최단 거리 경로를 조회한다.")
+    @Test
+    void findPathByDistance() {
+        //when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/paths?source={sourceId}&target={targetId}", 3L, 2L)
+                .then().log().all()
+                .extract();
+
+        //then
+        적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
+        총_거리가_응답됨(response, 5);
+        요금_응답됨(response, 1250);
+    }
+
     @DisplayName("아동 나이 회원으로 경로 조회를 요청한다.")
     @Test
     void findPathWhenChildren() {
-        회원_등록되어_있음("abc@naver.com", "pass", 11);
-        TokenResponse token = 로그인되어_있음("abc@naver.com", "pass");
-        ExtractableResponse<Response> response = 거리_경로_조회_요청(3L, 2L, token.getAccessToken());
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(3L, 2L, loginToken);
 
         적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
         총_거리가_응답됨(response, 5);
