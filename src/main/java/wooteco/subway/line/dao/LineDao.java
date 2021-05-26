@@ -14,7 +14,6 @@ import wooteco.subway.station.domain.Station;
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -119,5 +118,20 @@ public class LineDao {
 
     public void deleteById(Long id) {
         jdbcTemplate.update("delete from Line where id = ?", id);
+    }
+
+    public int countByName(String name) {
+        String sql = "select count(*) from LINE where name = ?";
+        return jdbcTemplate.queryForObject(sql, int.class, name);
+    }
+
+    public int countByColor(String color) {
+        String sql = "select count(*) from LINE where name = ?";
+        return jdbcTemplate.queryForObject(sql, int.class, color);
+    }
+
+    public int countById(Long id) {
+        String sql = "select count(*) from LINE where id = ?";
+        return jdbcTemplate.queryForObject(sql, int.class, id);
     }
 }
