@@ -21,6 +21,8 @@ import wooteco.subway.station.dto.StationResponse;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -59,7 +61,8 @@ class PathControllerTest {
         final Long source = testDataLoader.강남역().getId();
         final Long target = testDataLoader.정자역().getId();
 
-        given(pathService.findPath(source, target)).willReturn(pathResponse);
+        given(pathService.findPath(any(), eq(source), eq(target)))
+            .willReturn(pathResponse);
 
         mockMvc.perform(get("/paths?source=" + source + "&target=" + target))
             .andExpect(status().isOk())

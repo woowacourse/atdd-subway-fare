@@ -22,15 +22,15 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
 import static wooteco.subway.line.SectionAcceptanceTest.지하철_구간_등록되어_있음_외부토큰;
-import static wooteco.subway.member.MemberAcceptanceTest.회원_생성됨;
-import static wooteco.subway.member.MemberAcceptanceTest.회원_생성을_요청;
+import static wooteco.subway.member.AuthorizationMemberAcceptanceTest.회원_생성됨;
+import static wooteco.subway.member.AuthorizationMemberAcceptanceTest.회원_생성을_요청;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음_외부토큰;
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
-    public static final int AGE = 20;
+    public static final int AGE = 13;
 
     private LineResponse 신분당선;
     private LineResponse 이호선;

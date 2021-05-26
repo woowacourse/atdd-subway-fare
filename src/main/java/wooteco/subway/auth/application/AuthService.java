@@ -6,14 +6,16 @@ import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
+import wooteco.subway.member.domain.AuthorizationMember;
+import wooteco.subway.member.domain.GuestMember;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
 
 @Service
 @Transactional(readOnly = true)
 public class AuthService {
-    private MemberDao memberDao;
-    private JwtTokenProvider jwtTokenProvider;
+    private final MemberDao memberDao;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public AuthService(MemberDao memberDao, JwtTokenProvider jwtTokenProvider) {
         this.memberDao = memberDao;
@@ -22,8 +24,8 @@ public class AuthService {
 
     public TokenResponse login(TokenRequest request) {
         try {
-            Member member = memberDao.findByEmail(request.getEmail());
-            member.checkPassword(request.getPassword());
+            AuthorizationMember authorizationMember = memberDao.findByEmail(request.getEmail());
+            authorizationMember.checkPassword(request.getPassword());
         } catch (Exception e) {
             throw new AuthorizationException();
         }
@@ -31,17 +33,17 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
-    public LoginMember findMemberByToken(String credentials) {
+    public Member findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
+            return new GuestMember();
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
         try {
-            Member member = memberDao.findByEmail(email);
-            return new LoginMember(member.getId(), member.getEmail(), member.getAge());
+            AuthorizationMember authorizationMember = memberDao.findByEmail(email);
+            return new LoginMember(authorizationMember.getId(), authorizationMember.getEmail(), authorizationMember.getAge());
         } catch (Exception e) {
-            return new LoginMember();
+            return new GuestMember();
         }
     }
 

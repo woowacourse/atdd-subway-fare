@@ -2,6 +2,7 @@ package wooteco.subway;
 
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
+import wooteco.subway.member.domain.Member;
 import wooteco.subway.station.domain.Station;
 
 public class TestDataLoader {
@@ -18,6 +19,11 @@ public class TestDataLoader {
     Line 신분당선;
     Line 이호선;
     Line 사호선;
+
+    Member 청소년;
+    Member 어린이;
+    Member 일반;
+    Member 게스트;
 
     public TestDataLoader() {
         강남역 = new Station(1L, "강남역");
@@ -41,6 +47,8 @@ public class TestDataLoader {
         사호선 = new Line(3L, "4호선", "blue lighten-1", zeroExtraFare);
         사호선.addSection(new Section(산본역, 금정역, 50));
         사호선.addSection(new Section(금정역, 범계역, 50));
+
+
     }
 
     public Line 신분당선() {
