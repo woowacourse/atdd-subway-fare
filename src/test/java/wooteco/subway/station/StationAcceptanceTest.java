@@ -68,7 +68,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     void createStationNameLength(String name) {
         ExtractableResponse<Response> response = 지하철역_생성_요청(name);
 
-        에러_발생함(response, StationException.INVALID_STATION_NAME_LENGTH);
+        에러_발생함(response, StationException.INVALID_STATION_NAME_LENGTH_EXCEPTION);
     }
 
     @DisplayName("지하철역을 조회한다.")
@@ -118,6 +118,18 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철역_삭제됨(response);
+    }
+
+    @DisplayName("존재하지 않는 역을 제거, 수정할 경우")
+    @Test
+    void notExistStationDeleteAndUpdate() {
+        ExtractableResponse<Response> deleteResponse = 지하철역_제거_요청(new StationResponse(0L, "없는역"));
+
+        에러_발생함(deleteResponse, StationException.NOT_FOUND_STATION_EXCEPTION);
+
+        ExtractableResponse<Response> updateResponse = 지하철역_수정_요청(new StationRequest("없는역"), 1L);
+
+        에러_발생함(updateResponse, StationException.NOT_FOUND_STATION_EXCEPTION);
     }
 
     public static StationResponse 지하철역_등록되어_있음(String name) {

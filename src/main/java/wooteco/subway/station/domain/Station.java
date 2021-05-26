@@ -28,17 +28,17 @@ public class Station {
 
     private void validateNameLength(String name) {
         if (Objects.isNull(name)) {
-            throw new SubwayCustomException(StationException.INVALID_STATION_NAME_LENGTH);
+            throw new SubwayCustomException(StationException.INVALID_STATION_NAME_LENGTH_EXCEPTION);
         }
 
         name = name.trim();
 
         if (name.length() < MIN_NAME_LENGTH || name.length() > MAX_NAME_LENGTH) {
-            throw new SubwayCustomException(StationException.INVALID_STATION_NAME_LENGTH);
+            throw new SubwayCustomException(StationException.INVALID_STATION_NAME_LENGTH_EXCEPTION);
         }
 
         if(!isNamePattern(name)) {
-            throw new SubwayCustomException(StationException.INVALID_STATION_NAME_LENGTH);
+            throw new SubwayCustomException(StationException.INVALID_STATION_NAME_LENGTH_EXCEPTION);
         }
     }
 
