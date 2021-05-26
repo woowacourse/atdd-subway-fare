@@ -68,10 +68,19 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("잘못된 나이가 입력되는 경우")
     @Test
     void ageIsNotDigit() {
-        ExtractableResponse<Response> createResponse = 잘못된_나이의_회원_생성을_요청(EMAIL, PASSWORD, "TEST");
+        ExtractableResponse<Response> createResponse = 잘못된_회원_생성을_요청(EMAIL, PASSWORD, "TEST");
 
         ExceptionCheck.코드_400_응답됨(createResponse);
         ExceptionCheck.에러_문구_확인(createResponse, "INVALID_AGE");
+    }
+
+    @DisplayName("null이 입력되는 경우")
+    @Test
+    void createHaveNull() {
+        ExtractableResponse<Response> createResponse = 잘못된_회원_생성을_요청(EMAIL, null, null);
+
+        ExceptionCheck.코드_400_응답됨(createResponse);
+        ExceptionCheck.에러_문구_확인(createResponse, "INVALID_INPUT");
     }
 
     private static ExtractableResponse<Response> 회원이_존재하는지_요청(String email) {
@@ -97,7 +106,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    public static ExtractableResponse<Response> 잘못된_나이의_회원_생성을_요청(String email, String password,
+    public static ExtractableResponse<Response> 잘못된_회원_생성을_요청(String email, String password,
         String age) {
         Map<String, String> invalidParam = new HashMap<>();
         invalidParam.put("email", email);

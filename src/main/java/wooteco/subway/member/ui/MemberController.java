@@ -5,6 +5,7 @@ import java.net.URI;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import javax.validation.Valid;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -79,6 +80,13 @@ public class MemberController {
     public ResponseEntity<ExceptionResponse> invalidAgeHandle() {
         return ResponseEntity.badRequest().body(
             new ExceptionResponse("INVALID_AGE", "잘못된 나이입니다.")
+        );
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ExceptionResponse> nullHandle() {
+        return ResponseEntity.badRequest().body(
+            new ExceptionResponse("INVALID_INPUT", "null 은 허용되지 않습니다.")
         );
     }
 }
