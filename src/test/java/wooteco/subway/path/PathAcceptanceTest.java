@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.dto.StationResponse;
@@ -18,6 +19,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
+import static wooteco.subway.auth.AuthAcceptanceTest.회원_등록되어_있음;
 import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static wooteco.subway.line.SectionAcceptanceTest.지하철_구간_등록되어_있음;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
@@ -69,7 +72,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_구간_등록되어_있음(이호선, 역삼역, 잠실역, 14);
     }
 
-    @DisplayName("두 역의 최단 거리 경로를 조회한다.")
+    @DisplayName("어린이, 청소년이 아닌 사용자의 경우, 두 역의 최단 거리 경로를 조회한다.")
     @Test
     void findPathByDistance() {
         //when
@@ -91,9 +94,74 @@ public class PathAcceptanceTest extends AcceptanceTest {
         총_요금이_응답됨(response3, 2050 + 1200);
     }
 
+
+    @DisplayName("청소년 사용자의 신분으로, 두 역의 최단 거리 경로를 조회한다.")
+    @Test
+    void findPathByDistanceWhenTeenager() {
+        //when
+        String teenagerEmail = "teen@ager.com";
+        String teenagerPassword = "teenager";
+        int teenagerAge = 18;
+        회원_등록되어_있음(teenagerEmail, teenagerPassword, teenagerAge);
+        final TokenResponse tokenResponse = 로그인되어_있음(teenagerEmail, teenagerPassword);
+        ExtractableResponse<Response> response = 토큰을_포함한_거리_경로_조회_요청(3L, 2L, tokenResponse);
+        ExtractableResponse<Response> response2 = 토큰을_포함한_거리_경로_조회_요청(4L, 6L, tokenResponse);
+        ExtractableResponse<Response> response3 = 토큰을_포함한_거리_경로_조회_요청(3L, 8L, tokenResponse);
+
+        //then
+        적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
+        총_거리가_응답됨(response, 5);
+        총_요금이_응답됨(response, 1070);
+
+        적절한_경로_응답됨(response2, Lists.newArrayList(남부터미널역, 양재역, 강남역, 판교역, 정자역));
+        총_거리가_응답됨(response2, 77);
+        총_요금이_응답됨(response2, 2030);
+
+        적절한_경로_응답됨(response3, Lists.newArrayList(교대역, 강남역, 역삼역, 잠실역));
+        총_거리가_응답됨(response3, 46);
+        총_요금이_응답됨(response3, 2670);
+    }
+
+    @DisplayName("어린이 사용자의 신분으로, 두 역의 최단 거리 경로를 조회한다.")
+    @Test
+    void findPathByDistanceWhenChildren() {
+        //when
+        String teenagerEmail = "child@ren.com";
+        String teenagerPassword = "children";
+        int teenagerAge = 12;
+        회원_등록되어_있음(teenagerEmail, teenagerPassword, teenagerAge);
+        final TokenResponse tokenResponse = 로그인되어_있음(teenagerEmail, teenagerPassword);
+        ExtractableResponse<Response> response = 토큰을_포함한_거리_경로_조회_요청(3L, 2L, tokenResponse);
+        ExtractableResponse<Response> response2 = 토큰을_포함한_거리_경로_조회_요청(4L, 6L, tokenResponse);
+        ExtractableResponse<Response> response3 = 토큰을_포함한_거리_경로_조회_요청(3L, 8L, tokenResponse);
+
+        //then
+        적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
+        총_거리가_응답됨(response, 5);
+        총_요금이_응답됨(response, 800);
+
+        적절한_경로_응답됨(response2, Lists.newArrayList(남부터미널역, 양재역, 강남역, 판교역, 정자역));
+        총_거리가_응답됨(response2, 77);
+        총_요금이_응답됨(response2, 1400);
+
+        적절한_경로_응답됨(response3, Lists.newArrayList(교대역, 강남역, 역삼역, 잠실역));
+        총_거리가_응답됨(response3, 46);
+        총_요금이_응답됨(response3, 1800);
+    }
+
     public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
         return RestAssured
                 .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/paths?source={sourceId}&target={targetId}", source, target)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 토큰을_포함한_거리_경로_조회_요청(long source, long target, TokenResponse tokenResponse) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/paths?source={sourceId}&target={targetId}", source, target)
                 .then().log().all()

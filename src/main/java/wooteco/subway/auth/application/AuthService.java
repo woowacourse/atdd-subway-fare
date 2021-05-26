@@ -44,4 +44,8 @@ public class AuthService {
             return new LoginMember();
         }
     }
+
+    public boolean validateToken(String token) {
+        return jwtTokenProvider.validateToken(token);
+    }
 }
