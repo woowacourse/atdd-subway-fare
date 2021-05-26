@@ -86,6 +86,16 @@ public class StationAcceptanceTest extends AcceptanceTest {
         ExceptionCheck.에러_문구_확인(response, "DUPLICATED_STATION_NAME");
     }
 
+    @DisplayName("이름 유효성 검증")
+    @Test
+    void validStationName() {
+        // given
+        // when
+        ExtractableResponse<Response> response = 지하철역_생성_요청("!@#T역");
+        ExceptionCheck.코드_400_응답됨(response);
+        ExceptionCheck.에러_문구_확인(response, "INVALID_NAME");
+    }
+
     public static StationResponse 지하철역_등록되어_있음(String name) {
         return 지하철역_생성_요청(name).as(StationResponse.class);
     }
