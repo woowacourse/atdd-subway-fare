@@ -14,7 +14,8 @@ import wooteco.subway.member.dto.MemberRequest;
 import java.util.HashMap;
 import java.util.Map;
 
-import static wooteco.subway.member.MemberAcceptanceTest.회원_생성을_요청;
+import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.member.MemberAcceptanceTest.회원_생성_요청;
 import static wooteco.subway.member.MemberAcceptanceTest.회원_정보_조회됨;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
@@ -23,7 +24,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     private static final Integer AGE = 20;
 
     public static ExtractableResponse<Response> 회원_등록되어_있음(String email, String password, Integer age) {
-        return 회원_생성을_요청(new MemberRequest(email, password, age));
+        return 회원_생성_요청(new MemberRequest(email, password, age));
     }
 
     public static TokenResponse 로그인되어_있음(String email, String password) {
@@ -45,6 +46,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 log().all().
                 statusCode(HttpStatus.OK.value()).
                 extract();
+    }
+
+    public static void 로그인_요청_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {
@@ -73,9 +78,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         회원_정보_조회됨(response, EMAIL, AGE);
     }
 
-    @DisplayName("Bearer Auth 로그인 실패")
+    @DisplayName("Bearer Auth 로그인 실패 - 이메일이 유효하지 않는 경우 400 에러를 발생한다.")
     @Test
-    void myInfoWithBadBearerAuth() {
+    void myInfoWithBadEmailBearerAuth() {
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
 
         Map<String, String> params = new HashMap<>();
@@ -88,7 +93,25 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .body(params)
                 .when().post("/api/login")
                 .then().log().all()
-                .statusCode(HttpStatus.UNAUTHORIZED.value());
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("Bearer Auth 로그인 실패 - 비밀번호가 유효하지 않는 경우 400 에러를 발생한다.")
+    @Test
+    void myInfoWithBadPasswordBearerAuth() {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("email", EMAIL);
+        params.put("password", PASSWORD + "OTHER");
+
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/api/login")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
@@ -103,5 +126,41 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .when().get("/api/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @DisplayName("Bearer Auth 로그인 실패 - 이메일이 빈 값인 경우 400 에러를 발생한다.")
+    @Test
+    void myInfoWithBlankEmailBearerAuth() {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("email", " ");
+        params.put("password", PASSWORD);
+
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/api/login")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("Bearer Auth 로그인 실패 - 비밀번호가 빈 값인 경우 400 에러를 발생한다.")
+    @Test
+    void myInfoWithBlankPasswordBearerAuth() {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("email", EMAIL);
+        params.put("password", " ");
+
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/api/login")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 }

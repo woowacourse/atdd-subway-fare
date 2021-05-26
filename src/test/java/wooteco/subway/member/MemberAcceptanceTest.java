@@ -21,7 +21,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final int AGE = 20;
     public static final int NEW_AGE = 30;
 
-    public static ExtractableResponse<Response> 회원_생성을_요청(MemberRequest memberRequest) {
+    public static ExtractableResponse<Response> 회원_생성_요청(MemberRequest memberRequest) {
         회원_이메일_중복_확인(memberRequest.getEmail());
 
         return RestAssured
@@ -43,6 +43,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .when().post("/api/members/exists")
                 .then().log().all()
                 .extract();
+    }
+
+    public static void 회원_생성_요청_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {
@@ -78,6 +82,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .when().put("/api/members/me")
                 .then().log().all()
                 .extract();
+    }
+
+    public static void 내_회원_정보_수정_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static ExtractableResponse<Response> 내_회원_삭제_요청(TokenResponse tokenResponse) {
@@ -132,7 +140,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void manageMember() {
         MemberRequest memberRequest = new MemberRequest(EMAIL, PASSWORD, AGE);
-        ExtractableResponse<Response> createResponse = 회원_생성을_요청(memberRequest);
+        ExtractableResponse<Response> createResponse = 회원_생성_요청(memberRequest);
         회원_생성됨(createResponse, memberRequest);
 
         TokenResponse 사용자 = 로그인되어_있음(EMAIL, PASSWORD);
@@ -150,5 +158,79 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> deleteResponse = 내_회원_삭제_요청(사용자);
         회원_삭제됨(deleteResponse);
+    }
+
+    @DisplayName("회원 가입 - 중복된 이메일인 경우 400 에러가 발생한다.")
+    @Test
+    void createMemberDuplicateEmailException() {
+        MemberRequest memberRequest = new MemberRequest(EMAIL, PASSWORD, AGE);
+        ExtractableResponse<Response> createResponse = 회원_생성_요청(memberRequest);
+        회원_생성됨(createResponse, memberRequest);
+
+        ExtractableResponse<Response> response = 회원_생성_요청(memberRequest);
+
+        회원_생성_요청_실패됨(response);
+    }
+
+    @DisplayName("회원 가입 - 이메일이 빈 값인 경우 400 에러가 발생한다.")
+    @Test
+    void createMemberBlankEmailException() {
+        MemberRequest memberRequest = new MemberRequest(" ", PASSWORD, AGE);
+        ExtractableResponse<Response> response = 회원_생성_요청(memberRequest);
+
+        회원_생성_요청_실패됨(response);
+    }
+
+    @DisplayName("회원 가입 - 비밀번호가 빈 값인 경우 400 에러가 발생한다.")
+    @Test
+    void createMemberBlankPasswordException() {
+        MemberRequest memberRequest = new MemberRequest(EMAIL, " ", AGE);
+        ExtractableResponse<Response> response = 회원_생성_요청(memberRequest);
+
+        회원_생성_요청_실패됨(response);
+    }
+
+    @DisplayName("회원 가입 - 나이가 1살 이상 150살 이하가 아닌 경우 400 에러가 발생한다.")
+    @Test
+    void createMemberAgeException() {
+        MemberRequest underAgeRequest = new MemberRequest(EMAIL, PASSWORD, 0);
+        ExtractableResponse<Response> underAgeResponse = 회원_생성_요청(underAgeRequest);
+
+        회원_생성_요청_실패됨(underAgeResponse);
+
+        MemberRequest overAgeRequest = new MemberRequest(EMAIL, PASSWORD, 151);
+        ExtractableResponse<Response> overAgeResponse = 회원_생성_요청(overAgeRequest);
+
+        회원_생성_요청_실패됨(overAgeResponse);
+    }
+
+    @DisplayName("회원 수정 - 현재 비밀번호가 틀린 경우 400 에러가 발생한다.")
+    @Test
+    void updateMemberInvalidPasswordException() {
+        MemberRequest memberRequest = new MemberRequest(EMAIL, PASSWORD, AGE);
+        ExtractableResponse<Response> createResponse = 회원_생성_요청(memberRequest);
+        회원_생성됨(createResponse, memberRequest);
+
+        TokenResponse 사용자 = 로그인되어_있음(EMAIL, PASSWORD);
+
+        MemberPasswordRequest memberPasswordRequest = new MemberPasswordRequest("1234", NEW_PASSWORD);
+        ExtractableResponse<Response> response = 내_회원_정보_수정_요청_비밀번호(사용자, memberPasswordRequest);
+
+        내_회원_정보_수정_실패됨(response);
+    }
+
+    @DisplayName("회원 수정 - 현재 비밀번호와 새로운 비밀번호가 같은 경우 400 에러가 발생한다.")
+    @Test
+    void updateMemberSamePasswordException() {
+        MemberRequest memberRequest = new MemberRequest(EMAIL, PASSWORD, AGE);
+        ExtractableResponse<Response> createResponse = 회원_생성_요청(memberRequest);
+        회원_생성됨(createResponse, memberRequest);
+
+        TokenResponse 사용자 = 로그인되어_있음(EMAIL, PASSWORD);
+
+        MemberPasswordRequest memberPasswordRequest = new MemberPasswordRequest(PASSWORD, PASSWORD);
+        ExtractableResponse<Response> response = 내_회원_정보_수정_요청_비밀번호(사용자, memberPasswordRequest);
+
+        내_회원_정보_수정_실패됨(response);
     }
 }

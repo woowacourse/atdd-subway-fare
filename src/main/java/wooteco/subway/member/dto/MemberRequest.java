@@ -2,19 +2,16 @@ package wooteco.subway.member.dto;
 
 import wooteco.subway.member.domain.Member;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.*;
 
 public class MemberRequest {
-    @NotBlank
-    @Email
+    @Email(message = "올바른 이메일 형식으로 입력해주세요")
     private String email;
-    @NotBlank
+    @NotBlank(message = "입력되지 않은 항목을 확인해주세요")
     private String password;
-    @NotNull
-    @Positive
+    @NotNull(message = "입력되지 않은 항목을 확인해주세요")
+    @Min(value = 1, message = "1부터 150 사이의 나이를 입력해주세요")
+    @Max(value = 150, message = "1부터 150 사이의 나이를 입력해주세요")
     private Integer age;
 
     public MemberRequest() {

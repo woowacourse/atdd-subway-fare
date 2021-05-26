@@ -4,6 +4,6 @@ import wooteco.subway.exception.SubwayException;
 
 public class InvalidTokenException extends SubwayException {
     public InvalidTokenException() {
-        super("유효하지 않은 토큰입니다.");
+        super("다시 로그인 후 시도해주세요");
     }
 }
