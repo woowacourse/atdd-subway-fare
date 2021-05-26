@@ -73,11 +73,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // given
         lineRequest1 = new LineRequest(name, "bg-red-600", 강남역.getId(), downStation.getId(), 10);
 
-        // when
-        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1);
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        // when, then
+        지하철_노선_생성_요청_실패(lineRequest1);
     }
 
     @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
@@ -185,6 +182,19 @@ public class LineAcceptanceTest extends AcceptanceTest {
             .when().post("/lines")
             .then().log().all().
                 extract();
+    }
+
+    public static void 지하철_노선_생성_요청_실패(LineRequest params) {
+        ExtractableResponse<Response> response = RestAssured
+            .given(spec).log().all()
+            .filter(document("create-line", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())))
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(params)
+            .when().post("/lines")
+            .then().log().all()
+            .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     private static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {

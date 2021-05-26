@@ -102,10 +102,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void removeLineSection2() {
         // when
-        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 강남역);
-
-        // then
-        지하철_노선에_지하철역_제외_실패됨(removeResponse);
+        지하철_노선에_지하철역_제외_요청_실패(신분당선, 강남역);
     }
 
     public static void 지하철_구간_등록되어_있음(LineResponse lineResponse, StationResponse upStation, StationResponse downStation, int distance) {
@@ -145,6 +142,16 @@ public class SectionAcceptanceTest extends AcceptanceTest {
             .when().delete("/lines/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
             .then().log().all()
             .extract();
+    }
+
+    public static void 지하철_노선에_지하철역_제외_요청_실패(LineResponse line, StationResponse station) {
+        ExtractableResponse<Response> response = RestAssured
+            .given(spec).log().all()
+            .when().delete("/lines/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
+            .then().log().all()
+            .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static void 지하철_구간_생성됨(ExtractableResponse<Response> response) {

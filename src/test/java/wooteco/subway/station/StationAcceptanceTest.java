@@ -42,11 +42,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @ParameterizedTest
     @ValueSource(strings = {"", " ", "일", "asdf", "일 ", "하나 역", "하나a역", "하나,역", "하나\t역", "일이삼사오육칠팔구십일이삼사오육칠팔구십일"})
     void createStationWithNotValidName(String name) {
-        // when
-        ExtractableResponse<Response> response = 지하철역_생성_요청(name);
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        지하철역_생성_요청_실패(name);
     }
 
     @DisplayName("기존에 존재하는 지하철역 이름으로 지하철역을 생성한다.")
@@ -56,10 +52,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_등록되어_있음(강남역);
 
         // when
-        ExtractableResponse<Response> response = 지하철역_생성_요청(강남역);
-
-        // then
-        지하철역_생성_실패됨(response);
+        지하철역_생성_요청_실패(강남역);
     }
 
     @DisplayName("지하철역을 조회한다.")
@@ -97,10 +90,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         Long stationIdNotExists = 100L;
 
         // when
-        ExtractableResponse<Response> response = 지하철역_제거_요청_Id로(stationIdNotExists);
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        지하철역_제거_요청_Id로_실패(stationIdNotExists);
     }
 
     public static StationResponse 지하철역_등록되어_있음(String name) {
@@ -118,6 +108,20 @@ public class StationAcceptanceTest extends AcceptanceTest {
             .when().post("/stations")
             .then().log().all()
             .extract();
+    }
+
+    public static void 지하철역_생성_요청_실패(String name) {
+        StationRequest stationRequest = new StationRequest(name);
+
+        ExtractableResponse<Response> response = RestAssured
+            .given(spec).log().all()
+            .body(stationRequest)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().post("/stations")
+            .then().log().all()
+            .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static ExtractableResponse<Response> 지하철역_목록_조회_요청() {
@@ -138,13 +142,14 @@ public class StationAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    public static ExtractableResponse<Response> 지하철역_제거_요청_Id로(Long id) {
-        return RestAssured
+    public static void 지하철역_제거_요청_Id로_실패(Long id) {
+        ExtractableResponse<Response> response = RestAssured
             .given(spec).log().all()
-            .filter(document("delete-station", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())))
             .when().delete("/stations/" + id)
             .then().log().all()
             .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static void 지하철역_생성됨(ExtractableResponse response) {
