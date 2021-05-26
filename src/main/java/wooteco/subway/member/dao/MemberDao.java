@@ -12,6 +12,8 @@ import javax.sql.DataSource;
 
 @Repository
 public class MemberDao {
+    private static int NO_ELEMENT_COUNT = 0;
+
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert simpleJdbcInsert;
 
@@ -29,6 +31,12 @@ public class MemberDao {
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("MEMBER")
                 .usingGeneratedKeyColumns("id");
+    }
+
+    public boolean existEmail(String email) {
+        String sql = "select count(*) from member where email = ?";
+        int count = jdbcTemplate.queryForObject(sql, Integer.class, email);
+        return count > NO_ELEMENT_COUNT;
     }
 
     public Member insert(Member member) {
