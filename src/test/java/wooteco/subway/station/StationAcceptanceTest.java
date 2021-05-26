@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
+import wooteco.subway.line.dto.LineRequest;
+import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
@@ -20,6 +22,7 @@ import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
 import static wooteco.subway.auth.AuthAcceptanceTest.회원_등록되어_있음;
+import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
 
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {
@@ -119,6 +122,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+    public static void 지하철역_삭제_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
     public static void 지하철역_목록_포함됨(ExtractableResponse<Response> response, List<StationResponse> createdResponses) {
         List<Long> expectedLineIds = createdResponses.stream()
                 .map(StationResponse::getId)
@@ -213,5 +220,24 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철역_삭제됨(response);
+    }
+
+    @DisplayName("역 제거 - 아무 구간에 존재하는 역을 삭제하는 경우 400 에러가 발생한다.")
+    @Test
+    void deleteStationInvalidDeletionException() {
+        // given
+        StationResponse 강남역 = 지하철역_등록되어_있음("강남역");
+        StationResponse 광교역 = 지하철역_등록되어_있음("광교역");
+
+        LineRequest 신분당선 =
+                new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
+
+        지하철_노선_등록되어_있음(신분당선);
+
+        // when
+        ExtractableResponse<Response> response = 지하철역_제거_요청(강남역);
+
+        // then
+        지하철역_삭제_실패됨(response);
     }
 }
