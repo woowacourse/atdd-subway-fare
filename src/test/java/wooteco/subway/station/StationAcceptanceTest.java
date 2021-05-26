@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.auth.AuthAcceptanceTest.*;
 import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_생성_요청;
+import static wooteco.subway.line.LineFactory.신분당선_추가요금;
 
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {
@@ -163,7 +164,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         StationResponse upStation = 지하철역_등록되어_있음(강남역, tokenResponse);
         StationResponse downStation = 지하철역_등록되어_있음(역삼역, tokenResponse);
 
-        LineRequest lineRequest1 = new LineRequest("신분당선", "bg-red-600", upStation.getId(), downStation.getId(), 10);
+        LineRequest lineRequest1 = new LineRequest("신분당선", "bg-red-600", upStation.getId(), downStation.getId(), 10, 신분당선_추가요금);
         지하철_노선_생성_요청(lineRequest1, tokenResponse);
 
         // when

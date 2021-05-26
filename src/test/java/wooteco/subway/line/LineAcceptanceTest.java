@@ -23,6 +23,8 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.auth.AuthAcceptanceTest.*;
+import static wooteco.subway.line.LineFactory.구신분당선_추가요금;
+import static wooteco.subway.line.LineFactory.신분당선_추가요금;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
 @DisplayName("지하철 노선 관련 기능")
@@ -42,8 +44,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         강남역 = 지하철역_등록되어_있음("강남역", tokenResponse);
         downStation = 지하철역_등록되어_있음("광교역", tokenResponse);
 
-        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 10);
-        lineRequest2 = new LineRequest("구신분당선", "bg-black-500", 강남역.getId(), downStation.getId(), 15);
+        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 10, 신분당선_추가요금);
+        lineRequest2 = new LineRequest("구신분당선", "bg-black-500", 강남역.getId(), downStation.getId(), 15, 구신분당선_추가요금);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -61,7 +63,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     void createLineWithDuplicateName() {
         // given
         지하철_노선_등록되어_있음(lineRequest1, tokenResponse);
-        LineRequest newRequest = new LineRequest(lineRequest1.getName(), lineRequest2.getColor(), lineRequest2.getUpStationId(), lineRequest2.getDownStationId(), lineRequest2.getDistance());
+        LineRequest newRequest = new LineRequest(lineRequest1.getName(), lineRequest2.getColor(), lineRequest2.getUpStationId(), lineRequest2.getDownStationId(), lineRequest2.getDistance(), 신분당선_추가요금);
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_생성_요청(newRequest, tokenResponse);
@@ -75,7 +77,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     void createLineWithDuplicateColor() {
         // given
         지하철_노선_등록되어_있음(lineRequest1, tokenResponse);
-        LineRequest newRequest = new LineRequest(lineRequest2.getName(), lineRequest1.getColor(), lineRequest2.getUpStationId(), lineRequest2.getDownStationId(), lineRequest2.getDistance());
+        LineRequest newRequest = new LineRequest(lineRequest2.getName(), lineRequest1.getColor(), lineRequest2.getUpStationId(), lineRequest2.getDownStationId(), lineRequest2.getDistance(), 신분당선_추가요금);
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_생성_요청(newRequest, tokenResponse);
@@ -90,7 +92,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @ValueSource(strings = {"에", "예예", "우아한테크코스검프에어바다포츈우기화이팅짱"})
     void createStationFail(String name) {
         //given
-        LineRequest lineRequest = new LineRequest(name, lineRequest1.getColor(), lineRequest1.getUpStationId(), lineRequest1.getDownStationId(), lineRequest1.getDistance());
+        LineRequest lineRequest = new LineRequest(name, lineRequest1.getColor(), lineRequest1.getUpStationId(), lineRequest1.getDownStationId(), lineRequest1.getDistance(), 신분당선_추가요금);
 
         //when
         ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest, tokenResponse);
@@ -153,8 +155,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_삭제됨(response);
     }
 
-    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance, TokenResponse tokenResponse) {
-        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance);
+    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance, int extraFare, TokenResponse tokenResponse) {
+        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance, extraFare);
         return 지하철_노선_등록되어_있음(lineRequest, tokenResponse);
     }
 
