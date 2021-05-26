@@ -140,4 +140,10 @@ public class Sections {
         upSection.ifPresent(it -> sections.remove(it));
         downSection.ifPresent(it -> sections.remove(it));
     }
+
+    public int getTotalDistance() {
+        return sections.stream()
+            .mapToInt(Section::getDistance)
+            .sum();
+    }
 }

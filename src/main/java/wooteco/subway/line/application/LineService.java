@@ -5,6 +5,7 @@ import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
+import wooteco.subway.line.dto.CustomLineResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
@@ -47,6 +48,13 @@ public class LineService {
         return persistLines.stream()
                 .map(line -> LineResponse.of(line))
                 .collect(Collectors.toList());
+    }
+
+    public List<CustomLineResponse> findCustomLineResponses() {
+        List<Line> persistLines = findLines();
+        return persistLines.stream()
+            .map(line -> CustomLineResponse.of(line))
+            .collect(Collectors.toList());
     }
 
     public List<Line> findLines() {

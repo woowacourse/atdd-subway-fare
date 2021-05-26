@@ -31,6 +31,20 @@ public class Line {
         this.sections = sections;
     }
 
+    public Station getStartStation() {
+        return getStations().get(0);
+    }
+
+    public Station getEndStation() {
+        List<Station> stations = getStations();
+        int endStationIndex = stations.size() - 1;
+        return stations.get(endStationIndex);
+    }
+
+    public int getTotalDistance() {
+        return sections.getTotalDistance();
+    }
+
     public Long getId() {
         return id;
     }

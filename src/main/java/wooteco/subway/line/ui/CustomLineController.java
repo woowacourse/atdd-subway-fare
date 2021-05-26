@@ -3,6 +3,7 @@ package wooteco.subway.line.ui;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.line.application.LineService;
+import wooteco.subway.line.dto.CustomLineResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
@@ -29,8 +30,8 @@ public class CustomLineController {
     }
 
     @GetMapping
-    public ResponseEntity<List<LineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findLineResponses());
+    public ResponseEntity<List<CustomLineResponse>> findAllLines() {
+        return ResponseEntity.ok(lineService.findCustomLineResponses());
     }
 
     @GetMapping("/{id}")
