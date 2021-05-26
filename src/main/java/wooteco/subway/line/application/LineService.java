@@ -1,6 +1,7 @@
 package wooteco.subway.line.application;
 
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.SubwayCustomException;
@@ -76,7 +77,11 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        return lineDao.findById(id);
+        try {
+            return lineDao.findById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new SubwayCustomException(LineException.NOT_EXIST_LINE_EXCEPTION);
+        }
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {

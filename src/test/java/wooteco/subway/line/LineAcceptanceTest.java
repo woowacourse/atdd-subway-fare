@@ -20,6 +20,7 @@ import wooteco.subway.line.exception.LineException;
 import wooteco.subway.line.exception.SectionException;
 import wooteco.subway.station.dto.StationResponse;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -134,6 +135,19 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_노선_응답됨(response, lineResponse);
+    }
+
+    @DisplayName("존재하지 않는 지하철 노선을 조회할 수 없다.")
+    @Test
+    void getLineWithNotExistLine() {
+        // given
+        지하철_노선_등록되어_있음(신분당선, tokenResponse);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_조회_요청(new LineResponse(3L, "2호선", "RED", new ArrayList<>()), tokenResponse);
+
+        // then
+        에러_발생함(response, LineException.NOT_EXIST_LINE_EXCEPTION);
     }
 
     @DisplayName("지하철 노선을 수정한다.")
