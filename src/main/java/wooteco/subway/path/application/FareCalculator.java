@@ -2,15 +2,15 @@ package wooteco.subway.path.application;
 
 import org.springframework.stereotype.Service;
 import wooteco.subway.member.domain.LoginMember;
-import wooteco.subway.path.domain.FareDiscountByAge;
 import wooteco.subway.path.domain.FareByDistance;
+import wooteco.subway.path.domain.FareDiscountByAge;
 import wooteco.subway.path.domain.SubwayPath;
 
-import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class FareCalculator {
-    public int calculateFare(LoginMember loginMember, SubwayPath subwayPath) {
+    public int calculateFare(Optional<LoginMember> loginMember, SubwayPath subwayPath) {
         final int fareByDistance = calculateFareByDistance(subwayPath);
         final int lineExtraFare = calculateLineExtraFare(subwayPath);
         final int totalFare = fareByDistance + lineExtraFare;
@@ -30,10 +30,8 @@ public class FareCalculator {
                 .orElseThrow(IllegalStateException::new);
     }
 
-    private int applyDiscountByMemberAge(LoginMember loginMember, int totalFare) {
-        if (Objects.isNull(loginMember.getAge())) {
-            return totalFare;
-        }
-        return FareDiscountByAge.calculate(loginMember.getAge(), totalFare);
+    private int applyDiscountByMemberAge(Optional<LoginMember> loginMember, int totalFare) {
+        return loginMember.map(member -> FareDiscountByAge.calculate(member.getAge(), totalFare))
+                .orElse(totalFare);
     }
 }

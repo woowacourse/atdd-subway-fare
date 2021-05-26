@@ -12,6 +12,7 @@ import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -28,7 +29,7 @@ public class PathService {
         this.fareCalculator = fareCalculator;
     }
 
-    public PathResponse findPath(LoginMember loginMember, Long source, Long target) {
+    public PathResponse findPath(Optional<LoginMember> loginMember, Long source, Long target) {
         try {
             List<Line> lines = lineService.findLines();
             Station sourceStation = stationService.findStationById(source);
