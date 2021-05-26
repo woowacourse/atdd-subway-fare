@@ -7,8 +7,8 @@ public class ExceptionResponse {
     public ExceptionResponse() {
     }
 
-    public ExceptionResponse(DuplicatedEmailException exception) {
-        this.error = exception.getKey();
+    public ExceptionResponse(SubwayException exception) {
+        this.error = exception.getError();
         this.message = exception.getMessage();
     }
 
