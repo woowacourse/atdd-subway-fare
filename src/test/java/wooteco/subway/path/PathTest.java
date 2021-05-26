@@ -30,7 +30,6 @@ public class PathTest {
         return RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-//                .header("Authorization", token.getAccessToken())
                 .auth().oauth2(token.getAccessToken())
                 .when().get("/paths?source={sourceId}&target={targetId}", source, target)
                 .then().log().all()
