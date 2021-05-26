@@ -121,4 +121,15 @@ public class LineDao {
 
         return jdbcTemplate.queryForObject(sql, Boolean.class, id, color);
     }
+
+    public List<Line> findAllSimple() {
+        String sql = "select * from LINE";
+
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Long id = rs.getLong("id");
+            String name = rs.getString("name");
+            String color = rs.getString("color");
+            return new Line(id, name, color);
+        });
+    }
 }

@@ -16,6 +16,7 @@ import wooteco.subway.auth.AuthAcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
+import wooteco.subway.line.dto.SectionResponse;
 import wooteco.subway.line.exception.LineException;
 import wooteco.subway.line.exception.SectionException;
 import wooteco.subway.station.dto.StationResponse;
@@ -157,7 +158,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_등록되어_있음(신분당선, tokenResponse);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_조회_요청(new LineResponse(3L, "존재하지않는노선", "RED", new ArrayList<>()), tokenResponse);
+        ExtractableResponse<Response> response = 지하철_노선_조회_요청(new LineResponse(3L, "존재하지않는노선", "RED", new ArrayList<>(), new ArrayList<>()), tokenResponse);
 
         // then
         에러_발생함(response, LineException.NOT_EXIST_LINE_EXCEPTION);
@@ -183,7 +184,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_등록되어_있음(신분당선, tokenResponse);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_수정_요청(new LineResponse(3L, "존재하지않는노선", "RED", new ArrayList<>()), 구신분당선, tokenResponse);
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(new LineResponse(3L, "존재하지않는노선", "RED", new ArrayList<>(), new ArrayList<>()), 구신분당선, tokenResponse);
 
         // then
         에러_발생함(response, LineException.NOT_EXIST_LINE_EXCEPTION);
@@ -239,7 +240,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_등록되어_있음(신분당선, tokenResponse);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_제거_요청(new LineResponse(3L, "존재하지않는노선", "RED", new ArrayList<>()), tokenResponse);
+        ExtractableResponse<Response> response = 지하철_노선_제거_요청(new LineResponse(3L, "존재하지않는노선", "RED", new ArrayList<>(), new ArrayList<>()), tokenResponse);
 
         // then
         에러_발생함(response, LineException.NOT_EXIST_LINE_EXCEPTION);

@@ -21,7 +21,50 @@ public class Sections {
     }
 
     public Sections(List<Section> sections) {
-        this.sections = sections;
+        this.sections = sortSections(sections);
+    }
+
+    public List<Section> sortSections(List<Section> sections) {
+        Section topSection = findTopSection(sections);
+        return sorting(sections, topSection);
+    }
+
+    private Section findTopSection(List<Section> sections) {
+        List<Station> downStationIds = sections.stream()
+                .map(Section::getDownStation)
+                .collect(Collectors.toList());
+
+        // todo 인덴트 2
+        for (Section section : sections) {
+            if (downStationIds.stream()
+                    .noneMatch(section::isUpStation)) {
+                return section;
+            }
+        }
+
+        throw new SubwayCustomException(SectionException.INVALID_SECTION_INFO_EXCEPTION);
+    }
+
+    private List<Section> sorting(List<Section> sections, Section topSection) {
+        List<Section> sortedSections = new ArrayList<>();
+
+        sortedSections.add(topSection);
+
+        int size = sections.size();
+        Station curDownStation = topSection.getDownStation();
+
+        // todo 인덴트 2
+        for (int i = 0; i < size - 1; i++) {
+            for (Section section : sections) {
+                if (section.isUpStation(curDownStation)) {
+                    sortedSections.add(section);
+                    curDownStation = section.getDownStation();
+                    break;
+                }
+            }
+        }
+
+        return sortedSections;
     }
 
     public void addSection(Section section) {

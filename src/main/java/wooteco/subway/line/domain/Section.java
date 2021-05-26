@@ -25,6 +25,10 @@ public class Section {
         this(0L, upStation, downStation, distance);
     }
 
+    public boolean isUpStation(Station station) {
+        return this.upStation.equals(station);
+    }
+
     private void validateDistance(int distance) {
         if (distance <= 0) {
             throw new SubwayCustomException(SectionException.INVALID_SECTION_DISTANCE_EXCEPTION);
@@ -45,5 +49,27 @@ public class Section {
 
     public int getDistance() {
         return distance;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Section)) return false;
+
+        Section section = (Section) o;
+
+        if (getDistance() != section.getDistance()) return false;
+        if (!getId().equals(section.getId())) return false;
+        if (!getUpStation().equals(section.getUpStation())) return false;
+        return getDownStation().equals(section.getDownStation());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getId().hashCode();
+        result = 31 * result + getUpStation().hashCode();
+        result = 31 * result + getDownStation().hashCode();
+        result = 31 * result + getDistance();
+        return result;
     }
 }

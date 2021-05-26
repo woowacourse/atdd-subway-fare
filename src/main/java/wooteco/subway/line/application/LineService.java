@@ -12,6 +12,7 @@ import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.line.dto.SimpleLineResponse;
 import wooteco.subway.line.exception.LineException;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
@@ -57,11 +58,15 @@ public class LineService {
         return sectionDao.insert(line, section);
     }
 
-    public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
+    public List<SimpleLineResponse> findLineResponses() {
+        List<Line> persistLines = findAllSimple();
         return persistLines.stream()
-                .map(LineResponse::of)
+                .map(SimpleLineResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    private List<Line> findAllSimple() {
+        return lineDao.findAllSimple();
     }
 
     public List<Line> findLines() {
