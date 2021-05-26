@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wooteco.subway.exception.ErrorResponse;
+import wooteco.subway.station.exception.StationDaoException;
 
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
@@ -13,6 +14,13 @@ import java.sql.SQLIntegrityConstraintViolationException;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice
 public class StationControllerAdvice {
+    @ExceptionHandler(StationDaoException.class)
+    public ResponseEntity<ErrorResponse> handleStationDaoException(StationDaoException e) {
+        e.printStackTrace();
+        return ResponseEntity.badRequest()
+                .body(new ErrorResponse(e.getMessage()));
+    }
+
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
     public ResponseEntity<ErrorResponse> handleSQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException e) {
         e.printStackTrace();
