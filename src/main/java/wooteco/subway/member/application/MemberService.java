@@ -1,6 +1,7 @@
 package wooteco.subway.member.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.AuthorizationException;
 import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.exception.MemberNotFoundException;
@@ -11,6 +12,7 @@ import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
 @Service
+@Transactional(readOnly = true)
 public class MemberService {
 
     private MemberDao memberDao;
