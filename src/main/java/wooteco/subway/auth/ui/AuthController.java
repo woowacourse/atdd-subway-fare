@@ -1,6 +1,7 @@
 package wooteco.subway.auth.ui;
 
 import javax.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
+import wooteco.subway.exception.HttpException;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -21,7 +23,13 @@ public class AuthController {
 
     @PostMapping("/login/token")
     public ResponseEntity<TokenResponse> login(@Valid @RequestBody TokenRequest request) {
-        TokenResponse token = authService.login(request);
-        return ResponseEntity.ok().body(token);
+        try {
+            TokenResponse token = authService.login(request);
+            return ResponseEntity.ok().body(token);
+        } catch (HttpException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, "로그인에 실패하였습니다. 잠시 후 다시 시도해주세요.");
+        }
     }
 }

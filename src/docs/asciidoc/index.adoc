@@ -42,6 +42,11 @@ API에 관계없이 아래 사항을 지켜주셔야 합니다.
 include::{snippets}/sign-up/http-request.adoc[]
 ==== Response
 include::{snippets}/sign-up/http-response.adoc[]
+=== 회원가입 실패 - 이메일 중복
+==== Request
+include::{snippets}/sign-up-email-duplicate-fail/http-request.adoc[]
+==== Response
+include::{snippets}/sign-up-email-duplicate-fail/http-response.adoc[]
 === 내 정보 수정
 ==== Request
 include::{snippets}/update-my-info/http-request.adoc[]
@@ -61,7 +66,7 @@ include::{snippets}/delete-my-account/http-response.adoc[]
 include::{snippets}/login/http-request.adoc[]
 ==== Response
 include::{snippets}/login/http-response.adoc[]
-=== 로그인 실패
+=== 로그인 실패 (틀린 정보 기입)
 ==== Request
 include::{snippets}/login-fail/http-request.adoc[]
 ==== Response
@@ -71,7 +76,7 @@ include::{snippets}/login-fail/http-response.adoc[]
 include::{snippets}/get-login-user-my-info/http-request.adoc[]
 ==== Response
 include::{snippets}/get-login-user-my-info/http-response.adoc[]
-=== 내 회원 정보 조회 실패 (유효하지 않은 토큰)
+=== 내 회원 정보 조회 실패 (잘못된 accessToken)
 ==== Request
 include::{snippets}/not-valid-login-token-when-get-login-user-my-info/http-request.adoc[]
 ==== Response

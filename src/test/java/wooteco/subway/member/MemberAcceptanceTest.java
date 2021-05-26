@@ -46,6 +46,15 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_삭제됨(deleteResponse);
     }
 
+    @DisplayName("이메일 중복 에러")
+    @Test
+    void signUpEmailDuplicateException() {
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성됨(createResponse);
+
+        회원_생성을_요청_실패(EMAIL, PASSWORD, AGE);
+    }
+
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
@@ -57,6 +66,21 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .when().post("/members")
             .then().log().all()
             .extract();
+    }
+
+    public static void 회원_생성을_요청_실패(String email, String password, Integer age) {
+        MemberRequest memberRequest = new MemberRequest(email, password, age);
+
+        ExtractableResponse<Response> response = RestAssured
+            .given(spec).log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .filter(document("sign-up-email-duplicate-fail", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())))
+            .body(memberRequest)
+            .when().post("/members")
+            .then().log().all()
+            .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static ExtractableResponse<Response> 내_회원_정보_수정_요청(TokenResponse tokenResponse, String email, String password, Integer age) {
