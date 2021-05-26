@@ -68,6 +68,13 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
+    @DisplayName("로그인이 필요한 기능에서 토큰이 없으면 에러가 발생한다.")
+    @Test
+    void showMemberInfoWithNotExistToken() {
+        ExtractableResponse<Response> deleteResponse = 토큰없이_조회_요청();
+        에러가_발생한다(deleteResponse, SubwayAuthException.NOT_EXIST_TOKEN_EXCEPTION);
+    }
+
     @DisplayName("이메일이 일치하지 않을 경우 에러가 발생한다.")
     @Test
     void loginWithNotExistEmail() {
@@ -118,5 +125,14 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 log().all().
                 statusCode(HttpStatus.OK.value()).
                 extract();
+    }
+
+    public ExtractableResponse<Response> 토큰없이_조회_요청() {
+        return RestAssured
+            .given().log().all()
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/members/me")
+            .then().log().all()
+            .extract();
     }
 }
