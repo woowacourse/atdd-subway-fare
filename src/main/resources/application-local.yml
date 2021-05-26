@@ -2,7 +2,7 @@ spring:
   config:
     activate:
       on-profile:
-        - prod
+        - local
   datasource:
     schema:
       - classpath:schema.sql
