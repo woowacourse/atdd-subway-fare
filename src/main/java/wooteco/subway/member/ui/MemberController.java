@@ -51,7 +51,7 @@ public class MemberController {
     }
 
     @PutMapping("/members/me/pw")
-    public ResponseEntity changePassword(@AuthenticationPrincipal LoginMember loginMember, @RequestBody ChangePasswordRequest request) {
+    public ResponseEntity changePassword(@AuthenticationPrincipal LoginMember loginMember, @Valid @RequestBody ChangePasswordRequest request) {
         memberService.changePassword(loginMember, request);
         return ResponseEntity.noContent().build();
     }

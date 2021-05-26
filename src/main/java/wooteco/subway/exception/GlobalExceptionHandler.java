@@ -23,6 +23,13 @@ public class GlobalExceptionHandler {
             .body(new ApiError(e.getErrorCode()));
     }
 
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ApiError> notFoundExceptionHandler(NotFoundException e) {
+        return ResponseEntity
+            .status(HttpStatus.NOT_FOUND)
+            .body(new ApiError(e.getErrorCode()));
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiError> methodArgumentNotValidException(MethodArgumentNotValidException e) {
         return ResponseEntity

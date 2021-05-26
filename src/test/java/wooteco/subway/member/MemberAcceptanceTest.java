@@ -87,7 +87,23 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> changePasswordResponse = 내_회원_정보_비밀번호_수정_요청(사용자, "틀린비밀번호", NEW_PASSWORD);
 
         // then
-        assertThat(changePasswordResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        assertThat(changePasswordResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("비밀번호 수정 - 현재 비밀번호와 변경하고자 하는 비밀번호가 같으면 400을 던진다.")
+    @Test
+    void changePasswordSamePassword() {
+        // given
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성됨(createResponse);
+
+        TokenResponse 사용자 = 로그인되어_있음(EMAIL, PASSWORD);
+
+        // when
+        ExtractableResponse<Response> changePasswordResponse = 내_회원_정보_비밀번호_수정_요청(사용자, PASSWORD, PASSWORD);
+
+        // then
+        assertThat(changePasswordResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     @DisplayName("나이 수정 - 회원 정보에서 나이를 수정할 수 있다.")
@@ -107,7 +123,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat((int) changeAgeResponse.body().jsonPath().get("age")).isEqualTo(NEW_AGE);
     }
 
-    @DisplayName("나이 수정 - 수정하고자 하는 나이가 음수거나 100살을 넘으면 400을 던진다.")
+    @DisplayName("나이 수정 - 수정하고자 하는 나이가 음수거나 150살을 넘으면 400을 던진다.")
     @Test
     void notValidChangeAge() {
         // given
@@ -118,7 +134,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> changeAgeResponse1 = 내_회원_정보_나이_수정_요청(사용자, -1);
-        ExtractableResponse<Response> changeAgeResponse2 = 내_회원_정보_나이_수정_요청(사용자, 101);
+        ExtractableResponse<Response> changeAgeResponse2 = 내_회원_정보_나이_수정_요청(사용자, 151);
 
         //
         assertThat(changeAgeResponse1.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());

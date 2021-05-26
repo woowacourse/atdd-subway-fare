@@ -8,10 +8,13 @@ public enum ErrorCode {
 
     // AUTH
     INVALID_LOGIN("이메일 혹은 비밀번호를 다시 확인해주세요", HttpStatus.BAD_REQUEST.value()),
-    INVALID_TOKEN("[ERROR] 유효하지 않는 토큰 정보입니다.", HttpStatus.UNAUTHORIZED.value()),
+    INVALID_TOKEN("다시 로그인 후 시도해주세요", HttpStatus.UNAUTHORIZED.value()),
 
     // MEMBER
     DUPLICATE_EMAIL("이미 가입된 이메일입니다", HttpStatus.BAD_REQUEST.value()),
+    NOTFOUND_MEMBER("존재하지 않는 회원입니다", HttpStatus.NOT_FOUND.value()),
+    SAME_PASSWORD("현재 사용 중인 비밀번호입니다. 다른 비밀번호를 입력해주세요", HttpStatus.BAD_REQUEST.value()),
+    INVALID_PASSWORD("현재 비밀번호를 다시 확인해주세요", HttpStatus.BAD_REQUEST.value()),
 
     // STATION
     DUPLICATE_STATION_NAME("[ERROR] 이미 존재하는 지하철 역 이름입니다. 다른 이름을 사용해주세요.", HttpStatus.BAD_REQUEST.value()),

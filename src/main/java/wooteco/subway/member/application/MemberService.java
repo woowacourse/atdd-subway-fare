@@ -11,6 +11,8 @@ import wooteco.subway.member.dto.ChangePasswordRequest;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 import wooteco.subway.member.exception.DuplicateEmailException;
+import wooteco.subway.member.exception.InvalidPasswordException;
+import wooteco.subway.member.exception.SamePasswordException;
 
 @Service
 public class MemberService {
@@ -41,7 +43,14 @@ public class MemberService {
 
     public void changePassword(LoginMember loginMember, ChangePasswordRequest request) {
         Member member = memberDao.findByEmail(loginMember.getEmail());
-        member.checkPassword(request.getCurrentPassword());
+        if (!member.getPassword().equals(request.getCurrentPassword())) {
+            throw new InvalidPasswordException();
+        }
+
+        if (request.getCurrentPassword().equals(request.getNewPassword())) {
+            throw new SamePasswordException();
+        }
+
         memberDao.update(new Member(member.getId(), member.getEmail(), request.getNewPassword(), member.getAge()));
     }
 
