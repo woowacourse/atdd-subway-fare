@@ -1,6 +1,7 @@
 package wooteco.subway.line.application;
 
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.SubwayCustomException;
@@ -17,6 +18,7 @@ import wooteco.subway.station.domain.Station;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import wooteco.subway.station.exception.SubwayStationException;
 
 @Service
 @Transactional
@@ -76,15 +78,27 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        return lineDao.findById(id);
+        try {
+            return lineDao.findById(id);
+        } catch (EmptyResultDataAccessException exception) {
+            throw new SubwayCustomException(SubwayLineException.NOT_EXIST_LINE_EXCEPTION);
+        }
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        int updateRow = lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        validateUpdate(updateRow);
+    }
+
+    private void validateUpdate(int updateRow) {
+        if (updateRow != 1) {
+            throw new SubwayCustomException(SubwayLineException.NOT_EXIST_LINE_EXCEPTION);
+        }
     }
 
     public void deleteLineById(Long id) {
-        lineDao.deleteById(id);
+        int updateRow = lineDao.deleteById(id);
+        validateUpdate(updateRow);
     }
 
     public void addLineStation(Long lineId, SectionRequest request) {
