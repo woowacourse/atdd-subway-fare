@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
+import static wooteco.subway.station.StationAcceptanceTest.지하철역_목록_조회_요청;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineAcceptanceTest extends AcceptanceTest {
@@ -71,6 +72,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청();
+        지하철역_목록_조회_요청();
 
         // then
         지하철_노선_목록_응답됨(response);

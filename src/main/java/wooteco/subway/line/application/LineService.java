@@ -34,7 +34,7 @@ public class LineService {
     public LineResponse saveLine(LineRequest request) {
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
         persistLine.addSection(addInitSection(persistLine, request));
-        return LineResponse.of(persistLine);
+        return LineResponse.of(persistLine, findLines());
     }
 
     private Section addInitSection(Line line, LineRequest request) {
@@ -52,7 +52,7 @@ public class LineService {
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
-                           .map(line -> LineResponse.of(line))
+                           .map(line -> LineResponse.of(line, persistLines))
                            .collect(Collectors.toList());
     }
 
@@ -67,7 +67,7 @@ public class LineService {
     @Transactional(readOnly = true)
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
+        return LineResponse.of(persistLine, findLines());
     }
 
     @Transactional(readOnly = true)

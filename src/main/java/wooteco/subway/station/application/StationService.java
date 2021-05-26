@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.exception.StationException;
 import wooteco.subway.line.dao.LineDao;
+import wooteco.subway.line.domain.Line;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;
@@ -26,7 +27,7 @@ public class StationService {
 
     public StationResponse saveStation(StationRequest stationRequest) {
         Station station = stationDao.insert(stationRequest.toStation());
-        return StationResponse.of(station);
+        return StationResponse.of(station, lineDao.findAll());
     }
 
     @Transactional(readOnly = true)
@@ -37,9 +38,10 @@ public class StationService {
     @Transactional(readOnly = true)
     public List<StationResponse> findAllStationResponses() {
         List<Station> stations = stationDao.findAll();
+        final List<Line> lines = lineDao.findAll();
 
         return stations.stream()
-                .map(StationResponse::of)
+                .map(station -> StationResponse.of(station, lines))
                 .collect(Collectors.toList());
     }
 
@@ -55,7 +57,7 @@ public class StationService {
     private void validate(Long id) {
         boolean isPresent = lineDao.findAll()
                                    .stream()
-                                   .anyMatch(it -> it.containsStation(id));
+                                   .anyMatch(it -> it.isIncludingStation(id));
         if (isPresent) {
             throw new StationException("이미 등록되어있는 역입니다.");
         }

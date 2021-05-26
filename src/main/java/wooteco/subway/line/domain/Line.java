@@ -3,6 +3,7 @@ package wooteco.subway.line.domain;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Line {
     private Long id;
@@ -79,7 +80,7 @@ public class Line {
         return sections.getStations();
     }
 
-    public boolean containsStation(Long id) {
+    public boolean isIncludingStation(Long id) {
         return getStations().stream()
                             .map(Station::getId)
                             .anyMatch(it -> it.equals(id));
