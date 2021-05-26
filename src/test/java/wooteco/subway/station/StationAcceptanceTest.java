@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -60,10 +61,14 @@ public class StationAcceptanceTest extends AcceptanceTest {
         에러_발생함(response, StationException.DUPLICATED_STATION_NAME_EXCEPTION);
     }
 
-    @DisplayName("역 이름은 2글자 이상 20글자 이하가 되어야한다. 공백이 불가하다.")
+    @DisplayName("역을 생성 할 때 이름은 2글자 이상 20글자 이하가 되어야한다. 공백이 불가하다.")
     @ParameterizedTest
-    @ValueSource(strings = {})
-    void createStationNameLength() {
+    @NullSource
+    @ValueSource(strings = {"", "a", "20글자이상의지하철역이름은생성을할수가없습니다.", "공백도 불가해요", " 앞뒤 공백 불가 ", "NotEnglish", "!!#$%^"})
+    void createStationNameLength(String name) {
+        ExtractableResponse<Response> response = 지하철역_생성_요청(name);
+
+        에러_발생함(response, StationException.INVALID_STATION_NAME_LENGTH);
     }
 
     @DisplayName("지하철역을 조회한다.")
@@ -100,11 +105,6 @@ public class StationAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철역_수정_요청(new StationRequest("역삼역"), stationResponse.getId());
 
         에러_발생함(response, StationException.DUPLICATED_STATION_NAME_EXCEPTION);
-    }
-
-    @DisplayName("역 이름을 수정할 때 역 이름은 2글자 이상 20글자 이하가 되어야한다. 공백이 불가하다")
-    @Test
-    void updateStationNameLength() {
     }
 
     @DisplayName("지하철역을 제거한다.")
