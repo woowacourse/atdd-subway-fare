@@ -7,7 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wooteco.subway.exception.ErrorResponse;
+import wooteco.subway.line.exception.LineDaoException;
 import wooteco.subway.line.exception.LineDomainException;
+import wooteco.subway.station.exception.StationDaoException;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice(assignableTypes = LineController.class)
@@ -16,6 +18,13 @@ public class LineControllerAdvice {
     public ResponseEntity<ErrorResponse> handleDuplicateKeyException(DuplicateKeyException e) {
         return ResponseEntity.badRequest()
                 .body(new ErrorResponse("이미 존재하는 노선 이름 혹은 색상입니다."));
+    }
+
+    @ExceptionHandler(LineDaoException.class)
+    public ResponseEntity<ErrorResponse> handleStationDaoException(LineDaoException e) {
+        e.printStackTrace();
+        return ResponseEntity.badRequest()
+                .body(new ErrorResponse(e.getMessage()));
     }
 
     @ExceptionHandler(LineDomainException.class)
