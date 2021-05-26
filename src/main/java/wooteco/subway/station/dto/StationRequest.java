@@ -5,7 +5,7 @@ import wooteco.subway.station.domain.Station;
 
 public class StationRequest {
 
-    @Pattern(regexp = "[0-9][a-z][A-Z][가-힣]")
+    @Pattern(regexp = "[0-9a-zA-Z가-힣ㄱ-ㅎㅏ-ㅣ]*")
     private String name;
 
     public StationRequest() {

@@ -8,6 +8,7 @@ import wooteco.subway.auth.exception.InvalidPasswordException;
 import wooteco.subway.member.exception.DuplicatedIdException;
 import wooteco.subway.station.exception.DuplicatedStationNameException;
 import wooteco.subway.station.exception.NoSuchStationException;
+import wooteco.subway.station.exception.StationAlreadyRegisteredInLineException;
 
 @ControllerAdvice
 public class controllerAdvice {
@@ -40,4 +41,11 @@ public class controllerAdvice {
         NoSuchStationException e) {
         return ResponseEntity.badRequest().body(new ExceptionResponse(e));
     }
+
+    @ExceptionHandler(StationAlreadyRegisteredInLineException.class)
+    public ResponseEntity<ExceptionResponse> invalidPasswordExceptionHandle(
+        StationAlreadyRegisteredInLineException e) {
+        return ResponseEntity.badRequest().body(new ExceptionResponse(e));
+    }
+
 }

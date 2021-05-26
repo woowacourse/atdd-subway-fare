@@ -99,4 +99,14 @@ public class LineService {
         sectionDao.insertSections(line);
     }
 
+    public boolean isRegisteredStation(Station station) {
+        List<Line> lines = lineDao.findAll();
+
+        for (Line line : lines) {
+            if (line.getStations().contains(station)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
