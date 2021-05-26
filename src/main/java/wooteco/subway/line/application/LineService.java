@@ -18,6 +18,7 @@ import wooteco.subway.station.domain.Station;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import wooteco.subway.station.exception.SubwayStationException;
 
 @Service
 @Transactional
@@ -51,13 +52,10 @@ public class LineService {
     }
 
     private Section addInitSection(Line line, LineRequest request) {
-        if (request.getUpStationId() != null && request.getDownStationId() != null) {
-            Station upStation = stationService.findStationById(request.getUpStationId());
-            Station downStation = stationService.findStationById(request.getDownStationId());
-            Section section = new Section(upStation, downStation, request.getDistance());
-            return sectionDao.insert(line, section);
-        }
-        return null;
+        Station upStation = stationService.findStationById(request.getUpStationId());
+        Station downStation = stationService.findStationById(request.getDownStationId());
+        Section section = new Section(upStation, downStation, request.getDistance());
+        return sectionDao.insert(line, section);
     }
 
     public List<LineResponse> findLineResponses() {

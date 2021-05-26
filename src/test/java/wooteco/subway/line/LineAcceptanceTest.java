@@ -1,8 +1,14 @@
 package wooteco.subway.line;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,13 +25,7 @@ import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.exception.SubwayLineException;
 import wooteco.subway.line.exception.SubwaySectionException;
 import wooteco.subway.station.dto.StationResponse;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
+import wooteco.subway.station.exception.SubwayStationException;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineAcceptanceTest extends AcceptanceTest {
@@ -114,6 +114,19 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         에러가_발생한다(response, SubwaySectionException.INVALID_SECTION_DISTANCE_EXCEPTION);
+    }
+
+    @DisplayName("존재하지 않는 역으로 지하철 노선을 생성하면 에러가 발생한다.")
+    @Test
+    void createLineWithNotExistStation() {
+        // given
+        LineRequest lineRequest = new LineRequest("구신분당선", "bg-red-600", 3L, 4L, 15);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest, tokenResponse);
+
+        // then
+        에러가_발생한다(response, SubwayStationException.NOT_EXIST_STATION_EXCEPTION);
     }
 
     @DisplayName("지하철 노선 목록을 조회한다.")
