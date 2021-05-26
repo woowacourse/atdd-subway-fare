@@ -70,7 +70,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_등록되어_있음(신분당선, tokenResponse);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_생성_요청(신분당선, tokenResponse);
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(new LineRequest("신분당선", "bg-blue-600", 강남역.getId(), 광교역.getId(), 10), tokenResponse);
 
         // then
         에러_발생함(response, LineException.DUPLICATED_LINE_NAME_EXCEPTION);
