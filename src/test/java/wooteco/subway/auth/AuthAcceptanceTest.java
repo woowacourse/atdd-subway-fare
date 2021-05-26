@@ -127,6 +127,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 extract();
     }
 
+    public static TokenResponse 회원가입_토큰가져오기() {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        return 로그인되어_있음(EMAIL, PASSWORD);
+    }
+
     public ExtractableResponse<Response> 토큰없이_조회_요청() {
         return RestAssured
             .given().log().all()
