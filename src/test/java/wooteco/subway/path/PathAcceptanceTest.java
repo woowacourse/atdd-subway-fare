@@ -112,6 +112,22 @@ public class PathAcceptanceTest extends AcceptanceTest {
         총_요금이_응답됨(response, fare);
     }
 
+    @DisplayName("여러 노선을 거칠시 가장 높은 노선 추가금액을 적용하여 계산")
+    @Test
+    void findHighestLineFareByDistance() {
+        // given
+        LineResponse 배달의민족선 = 지하철_노선_등록되어_있음("배달의민족선", "bg-red-800", 양재역, 리뷰잘부탁해요역, 3, 2000, tokenResponse);
+        지하철_구간_등록되어_있음(우아한테크코스선, 에어포츈바다우기검프사랑해역, 우린모두취업할거야역, 13, tokenResponse);
+
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(강남역.getId(), 리뷰잘부탁해요역.getId());
+
+        //then
+        적절한_경로_응답됨(response, Lists.newArrayList(강남역, 양재역, 리뷰잘부탁해요역));
+        총_거리가_응답됨(response, 13);
+        총_요금이_응답됨(response, 3350);
+    }
+
     @Test
     void findExtraFare() {
         // given
