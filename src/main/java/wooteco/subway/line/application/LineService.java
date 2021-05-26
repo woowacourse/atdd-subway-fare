@@ -28,6 +28,9 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
+        if (lineDao.existColor(request.getColor())) {
+            throw new DuplicateLineColorException("라인 색상이 중복되었습니다람쥐.");
+        }
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(),request.getExtraFare()));
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);

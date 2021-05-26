@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 
 @Repository
 public class LineDao {
+    private static int NO_ELEMENT_COUNT = 0;
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert insertAction;
 
@@ -25,6 +26,12 @@ public class LineDao {
         this.insertAction = new SimpleJdbcInsert(dataSource)
                 .withTableName("LINE")
                 .usingGeneratedKeyColumns("id");
+    }
+
+    public boolean existColor(String color) {
+        String sql = "select count(*) from line where color = ?";
+        int count = jdbcTemplate.queryForObject(sql, Integer.class, color);
+        return count > NO_ELEMENT_COUNT;
     }
 
     public Line insert(Line line) {
