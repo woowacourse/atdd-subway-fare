@@ -18,7 +18,6 @@ import wooteco.subway.station.domain.Station;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import wooteco.subway.station.exception.SubwayStationException;
 
 @Service
 @Transactional
@@ -86,8 +85,19 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        int updateRow = lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
-        validateUpdate(updateRow);
+        checkUpdateDuplicateLineColor(id, lineUpdateRequest);
+        try {
+            int updateRow = lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+            validateUpdate(updateRow);
+        } catch (DuplicateKeyException exception) {
+            throw new SubwayCustomException(SubwayLineException.DUPLICATE_LINE_NAME_EXCEPTION);
+        }
+    }
+
+    private void checkUpdateDuplicateLineColor(Long id, LineRequest lineUpdateRequest) {
+        if (lineDao.existColor(id, lineUpdateRequest.getColor())) {
+            throw new SubwayCustomException(SubwayLineException.DUPLICATE_LINE_COLOR_EXCEPTION);
+        }
     }
 
     private void validateUpdate(int updateRow) {

@@ -170,6 +170,36 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_수정됨(response);
     }
 
+    @DisplayName("존재하는 지하철 노선이름으로 수정하면 에러가 발생한다.")
+    @Test
+    void updateLineWithDuplicateName() {
+        // given
+        LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1, tokenResponse);
+        지하철_노선_등록되어_있음(lineRequest2, tokenResponse);
+        LineRequest lineRequest = new LineRequest("구신분당선", "bg-yellow-600", 강남역.getId(), downStation.getId(), 15);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse, lineRequest, tokenResponse);
+
+        // then
+        에러가_발생한다(response, SubwayLineException.DUPLICATE_LINE_NAME_EXCEPTION);
+    }
+
+    @DisplayName("존재하는 지하철 노선 색상으로 수정하면 에러가 발생한다.")
+    @Test
+    void updateLineWithDuplicateColor() {
+        // given
+        LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1, tokenResponse);
+        지하철_노선_등록되어_있음(lineRequest2, tokenResponse);
+        LineRequest lineRequest = new LineRequest("신림역", "bg-green-600", 강남역.getId(), downStation.getId(), 15);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse, lineRequest, tokenResponse);
+
+        // then
+        에러가_발생한다(response, SubwayLineException.DUPLICATE_LINE_COLOR_EXCEPTION);
+    }
+
     @DisplayName("존재하지 않는 지하철 노선을 수정하면 에러가 발생한다.")
     @Test
     void updateLineWithNotExistLine() {
