@@ -102,7 +102,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(사용자, NEW_EMAIL, NEW_PASSWORD,
             NEW_AGE);
-//        에러가_발생한다(updateResponse, SubwayMemberException.DUPLICATE_EMAIL_EXCEPTION);
+        에러가_발생한다(updateResponse, SubwayMemberException.DUPLICATE_EMAIL_EXCEPTION);
     }
 
     @DisplayName("토큰을 이용하여 회원정보를 삭제한다.")

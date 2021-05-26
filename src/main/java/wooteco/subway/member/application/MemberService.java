@@ -34,7 +34,11 @@ public class MemberService {
 
     public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
         Member member = memberDao.findByEmail(loginMember.getEmail());
-        memberDao.update(new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
+        try {
+            memberDao.update(new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
+        } catch (DuplicateKeyException exception) {
+            throw new SubwayCustomException(SubwayMemberException.DUPLICATE_EMAIL_EXCEPTION);
+        }
     }
 
     public void deleteMember(LoginMember loginMember) {
