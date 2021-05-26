@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Positive;
 
 @Getter
 @NoArgsConstructor
@@ -15,6 +16,7 @@ public class LineRequest {
     private String color;
     private Long upStationId;
     private Long downStationId;
+    @Positive(message = "INVALID_DISTANCE")
     private int distance;
 
     public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance) {

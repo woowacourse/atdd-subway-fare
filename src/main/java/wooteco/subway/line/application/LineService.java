@@ -65,6 +65,7 @@ public class LineService {
 
     public void deleteLineById(Long id) {
         lineDao.deleteById(id);
+        sectionDao.deleteByLineId(id);
     }
 
     public void addLineStation(Long lineId, SectionRequest request) {

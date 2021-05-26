@@ -1,4 +1,4 @@
-package wooteco.subway.line.exception;
+package wooteco.subway.line.exception.line;
 
 public class LineException extends RuntimeException {
 
