@@ -16,6 +16,7 @@ import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,11 +34,18 @@ public class LineService {
 
     public LineResponse saveLine(LineRequest request) {
         try {
+            checkDuplicatedLineColor(request.getColor());
             Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
             persistLine.addSection(addInitSection(persistLine, request));
             return LineResponse.of(persistLine);
         } catch (DuplicateKeyException e) {
-            throw new SubwayCustomException(LineException.DUPLICATED_LINE_EXCEPTION);
+            throw new SubwayCustomException(LineException.DUPLICATED_LINE_NAME_EXCEPTION);
+        }
+    }
+
+    private void checkDuplicatedLineColor(String color) {
+        if(lineDao.existColor(color)) {
+           throw new SubwayCustomException(LineException.DUPLICATED_LINE_COLOR_EXCEPTION);
         }
     }
 
@@ -54,7 +62,7 @@ public class LineService {
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
-                .map(line -> LineResponse.of(line))
+                .map(LineResponse::of)
                 .collect(Collectors.toList());
     }
 

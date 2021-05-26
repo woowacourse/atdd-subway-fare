@@ -9,10 +9,7 @@ import wooteco.subway.line.domain.Sections;
 import wooteco.subway.station.domain.Station;
 
 import javax.sql.DataSource;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
@@ -107,5 +104,11 @@ public class LineDao {
 
     public void deleteById(Long id) {
         jdbcTemplate.update("delete from Line where id = ?", id);
+    }
+
+    public boolean existColor(String color) {
+        String sql = "select exists (select * from LINE where color = ?)";
+
+        return jdbcTemplate.queryForObject(sql, Boolean.class, color);
     }
 }

@@ -46,7 +46,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         광교역 = 지하철역_등록되어_있음("광교역", tokenResponse);
 
         신분당선 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
-        구신분당선 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15);
+        구신분당선 = new LineRequest("구신분당선", "bg-green-600", 강남역.getId(), 광교역.getId(), 15);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -69,10 +69,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_노선_생성_요청(신분당선, tokenResponse);
 
         // then
-        에러_발생함(response, LineException.DUPLICATED_LINE_EXCEPTION);
+        에러_발생함(response, LineException.DUPLICATED_LINE_NAME_EXCEPTION);
     }
 
-    @DisplayName("잘못된 이름으로 지하철 노선을 생성하면 에러가 발생한다.")
+    @DisplayName("2-10의 길이와 한글, 숫자가 아닌 이름으로 지하철 노선을 생성하면 에러가 발생한다.")
     @ParameterizedTest
     @NullSource
     @ValueSource(strings = {"", " ", "a", "공백은 불가", "열글자가넘어도절대절대안되요", "!@$!^"})
@@ -80,6 +80,19 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_노선_생성_요청(new LineRequest(name, "bg-red-600", 강남역.getId(), 광교역.getId(), 10), tokenResponse);
 
         에러_발생함(response, LineException.INVALID_LINE_EXCEPTION);
+    }
+
+    @DisplayName("기존에 존재하는 지하철 노선 색깔로 지하철 노선을 생성한다.")
+    @Test
+    void createLineWithDuplicateColor() {
+        // given
+        지하철_노선_등록되어_있음(신분당선, tokenResponse);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(new LineRequest("신분당선2", "bg-red-600", 강남역.getId(), 광교역.getId(), 10), tokenResponse);
+
+        // then
+        에러_발생함(response, LineException.DUPLICATED_LINE_COLOR_EXCEPTION);
     }
 
     @DisplayName("지하철 노선 목록을 조회한다.")

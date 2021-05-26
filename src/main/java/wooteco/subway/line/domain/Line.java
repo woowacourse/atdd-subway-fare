@@ -13,9 +13,6 @@ public class Line {
 
     private static final Pattern PATTERN = Pattern.compile("^[ㄱ-ㅎ가-힣0-9]{1,10}$");
 
-    private static final int MIN_LENGTH = 2;
-    private static final int MAX_LENGTH = 10;
-
     private Long id;
     private String name;
     private String color;
@@ -46,7 +43,7 @@ public class Line {
     }
 
     private void validateColor(String color) {
-        if(Objects.isNull(color) || color.length() != 0) {
+        if(Objects.isNull(color) || color.length() == 0) {
             throw new SubwayCustomException(LineException.INVALID_LINE_COLOR);
         }
     }
