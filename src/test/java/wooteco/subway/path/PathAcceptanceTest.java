@@ -64,13 +64,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
         신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-400", 강남역, 양재역, 10, tokenResponse);
         이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-500", 교대역, 강남역, 10, tokenResponse);
         삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5, tokenResponse);
-        우아한테크코스선 = 지하철_노선_등록되어_있음("우아한테크코스선", "bg-red-700", 우린모두취업할거야역, 리뷰잘부탁해요역, 5, tokenResponse);
-
+        우아한테크코스선 = 지하철_노선_등록되어_있음("우아한테크코스선", "bg-red-700", 우린모두취업할거야역, 리뷰잘부탁해요역, 15, tokenResponse);
 
         지하철_구간_등록되어_있음(삼호선, 교대역, 남부터미널역, 3, tokenResponse);
     }
 
-    @DisplayName("두 역의 최단 거리 경로, 요금을 조회한다.")
+    @DisplayName("두 역의 최단 거리 경로를 구하고, 최단 거리가 10km 이하인 일때 요금을 조회한다.")
     @Test
     void findPathByDistance() {
         //when
@@ -81,6 +80,49 @@ public class PathAcceptanceTest extends AcceptanceTest {
         총_거리가_응답됨(response, 5);
         총_요금이_응답됨(response, 1250);
     }
+
+    @DisplayName("두 역의 거리가 10km 초과, 50km 이하의 요금을 조회한다.")
+    @Test
+    void findFareByUP10kmUnder51km() {
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(우린모두취업할거야역.getId(), 리뷰잘부탁해요역.getId());
+
+        //then
+        적절한_경로_응답됨(response, Lists.newArrayList(우린모두취업할거야역, 리뷰잘부탁해요역));
+        총_거리가_응답됨(response, 15);
+        총_요금이_응답됨(response, 1350);
+    }
+
+    @DisplayName("두 역의 거리가 50km 초과시 요금을 조회한다.")
+    @Test
+    void findFareByUP50km1() {
+        // given
+        지하철_구간_등록되어_있음(우아한테크코스선, 에어포츈바다우기검프사랑해역, 우린모두취업할거야역, 56, tokenResponse);
+
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(에어포츈바다우기검프사랑해역.getId(), 우린모두취업할거야역.getId());
+
+        //then
+        적절한_경로_응답됨(response, Lists.newArrayList(에어포츈바다우기검프사랑해역, 우린모두취업할거야역));
+        총_거리가_응답됨(response, 56);
+        총_요금이_응답됨(response, 2150);
+    }
+
+    @DisplayName("두 역의 거리가 50km 초과시 요금을 조회한다.")
+    @Test
+    void findFareByUP50km2() {
+        // given
+        지하철_구간_등록되어_있음(우아한테크코스선, 에어포츈바다우기검프사랑해역, 우린모두취업할거야역, 61, tokenResponse);
+
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(에어포츈바다우기검프사랑해역.getId(), 우린모두취업할거야역.getId());
+
+        //then
+        적절한_경로_응답됨(response, Lists.newArrayList(에어포츈바다우기검프사랑해역, 우린모두취업할거야역));
+        총_거리가_응답됨(response, 61);
+        총_요금이_응답됨(response, 2250);
+    }
+
 
     @DisplayName("departure와 arrival가 같은경우 예외가 발생한다.")
     @Test

@@ -27,9 +27,19 @@ public class SubwayPath {
 
     public int calculateFare() {
         int distance = calculateDistance();
+        int fare = 1250;
         if (distance <= 10) {
-            return 1250;
+            return fare;
         }
-        return 1250 + (int) ((Math.ceil((distance - 1) / 5) + 1) * 100);
+
+        if (distance > 50) {
+            return fare + calculateAdditionalFare(distance - (distance % 50) - 10, 5) + calculateAdditionalFare(distance - 50, 8);
+        }
+
+        return fare + calculateAdditionalFare(distance - 10, 5);
+    }
+
+    private int calculateAdditionalFare(int distance, int condition) {
+        return (int) ((Math.ceil((distance - 1) / condition) + 1) * 100);
     }
 }
