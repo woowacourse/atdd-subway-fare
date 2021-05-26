@@ -5,6 +5,7 @@ import wooteco.subway.exception.SubwayException;
 
 public enum AuthException implements SubwayException {
 
+    NOT_EXIST_TOKEN_EXCEPTION("로그인이 필요합니다.", HttpStatus.UNAUTHORIZED.value()),
     INVALID_TOKEN_EXCEPTION("유효하지 않은 토큰입니다.", HttpStatus.UNAUTHORIZED.value()),
     NOT_EXIST_EMAIL_EXCEPTION("잘못된 이메일입니다.", HttpStatus.UNAUTHORIZED.value()),
     WRONG_PASSWORD_EXCEPTION("비밀번호가 틀렸습니다.", HttpStatus.UNAUTHORIZED.value());

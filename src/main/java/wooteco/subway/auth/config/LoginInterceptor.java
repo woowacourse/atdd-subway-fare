@@ -19,9 +19,14 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        String extractor = AuthorizationExtractor.extract(request);
+        String accessToken = request.getHeader("Authorization");
 
-        if(!jwtTokenProvider.validateToken(extractor)) {
+        if (accessToken == null) {
+            throw new SubwayCustomException(AuthException.NOT_EXIST_TOKEN_EXCEPTION);
+        }
+
+        String extractor = AuthorizationExtractor.extract(request);
+        if (!jwtTokenProvider.validateToken(extractor)) {
             throw new SubwayCustomException(AuthException.INVALID_TOKEN_EXCEPTION);
         }
 
