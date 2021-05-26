@@ -23,7 +23,7 @@ public class LineController {
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
 
-    @GetMapping("/api")
+    @GetMapping
     public ResponseEntity<List<TotalLineResponse>> findAllLines() {
         return ResponseEntity.ok(lineService.findTotalLineResponses());
     }
