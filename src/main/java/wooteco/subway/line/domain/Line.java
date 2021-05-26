@@ -90,4 +90,8 @@ public class Line {
     public List<Station> getStations() {
         return sections.getStations();
     }
+
+    public List<Section> getEachSection() {
+        return sections.getSections();
+    }
 }
