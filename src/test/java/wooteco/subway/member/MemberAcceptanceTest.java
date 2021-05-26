@@ -46,14 +46,67 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> findResponse = 내_회원_정보_조회_요청(사용자);
         회원_정보_조회됨(findResponse, EMAIL, AGE);
 
+        ExtractableResponse<Response> findMemberStrangeToken = 잘못된_토큰으로_내_회원_정보_조회_요청(사용자);
+        잘못된_회원으로_회원정보를_조회하여_에러발생(findMemberStrangeToken);
+
         ExtractableResponse<Response> updateInfoResponse = 내_회원_정보_수정_요청(사용자, NEW_AGE);
         회원_정보_수정됨(updateInfoResponse);
+
+        ExtractableResponse<Response> updatePasswordResponseByFailPassword = 내_회원_비밀번호_수정_요청(사용자, PASSWORD + "Fail", NEW_PASSWORD);
+        잘못된_내_비밀번호로_비밀번호_수정_요청함(updatePasswordResponseByFailPassword);
+
+        ExtractableResponse<Response> updatePasswordResponseBySamePassword = 내_회원_비밀번호_수정_요청(사용자, PASSWORD, PASSWORD);
+        내_비밀번호와_같은_비밀번호로_수정_요청함(updatePasswordResponseBySamePassword);
+
+        ExtractableResponse<Response> updatePasswordResponseByEmptyPassword = 내_회원_비밀번호_수정_요청(사용자, "", NEW_PASSWORD);
+        비밀번호_수정시_입력값을_빈값으로_요청(updatePasswordResponseByEmptyPassword);
+
+        ExtractableResponse<Response> updatePasswordResponseByEmptyNewPassword = 내_회원_비밀번호_수정_요청(사용자, PASSWORD, "");
+        비밀번호_수정시_입력값을_빈값으로_요청(updatePasswordResponseByEmptyNewPassword);
 
         ExtractableResponse<Response> updatePasswordResponse = 내_회원_비밀번호_수정_요청(사용자, PASSWORD, NEW_PASSWORD);
         회원_비밀번호_수정됨(updatePasswordResponse);
 
         ExtractableResponse<Response> deleteResponse = 내_회원_삭제_요청(사용자);
         회원_삭제됨(deleteResponse);
+    }
+
+    private void 비밀번호_수정시_입력값을_빈값으로_요청(ExtractableResponse<Response> response) {
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
+
+        assertThat(exceptionResponse.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(exceptionResponse.getMessage()).isEqualTo("입력되지 않은 항목을 확인해주세요");
+    }
+
+    private void 잘못된_내_비밀번호로_비밀번호_수정_요청함(ExtractableResponse<Response> response) {
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
+
+        assertThat(exceptionResponse.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(exceptionResponse.getMessage()).isEqualTo("현재 비밀번호를 다시 확인해주세요");
+    }
+
+    private void 내_비밀번호와_같은_비밀번호로_수정_요청함(ExtractableResponse<Response> response) {
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
+
+        assertThat(exceptionResponse.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(exceptionResponse.getMessage()).isEqualTo("현재 사용 중인 비밀번호입니다. 다른 비밀번호를 입력해주세요");
+    }
+
+    private void 잘못된_회원으로_회원정보를_조회하여_에러발생(ExtractableResponse<Response> response) {
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
+
+        assertThat(exceptionResponse.getStatus()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        assertThat(exceptionResponse.getMessage()).isEqualTo("다시 로그인 후 시도해주세요");
+    }
+
+    private ExtractableResponse<Response> 잘못된_토큰으로_내_회원_정보_조회_요청(TokenResponse tokenResponse) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken() + "Strange")
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/api/members/me")
+                .then().log().all()
+                .extract();
     }
 
     public static void 잘못된_입력값으로_회원가입_요청() {

@@ -20,7 +20,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         if (isRequestIsPreflight(request)) {
             return true;
         }
-        if (isRequestMethodIsGet(request)) {
+        if (isRequestMethodIsGet(request) && isNotMemberLookUp(request)) {
             return true;
         }
         String accessToken = AuthorizationExtractor.extract(request);
@@ -34,5 +34,9 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     private boolean isRequestMethodIsGet(HttpServletRequest request) {
         return request.getMethod().equals(HttpMethod.GET.name());
+    }
+
+    private boolean isNotMemberLookUp(HttpServletRequest request) {
+        return !request.getRequestURI().equalsIgnoreCase("/api/members/me");
     }
 }

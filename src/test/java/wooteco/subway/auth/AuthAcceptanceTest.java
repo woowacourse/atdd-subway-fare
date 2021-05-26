@@ -27,6 +27,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithBearerAuth() {
         //given
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
         TokenResponse tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
 
         // when
