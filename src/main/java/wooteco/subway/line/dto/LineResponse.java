@@ -21,9 +21,15 @@ public class LineResponse {
 
     public static LineResponse of(Line line) {
         List<StationResponse> stations = line.getStations().stream()
-                .map(it -> StationResponse.of(it))
+                .map(StationResponse::of)
                 .collect(Collectors.toList());
         return new LineResponse(line.getId(), line.getName(), line.getColor(), stations);
+    }
+
+    public static List<LineResponse> fromList(List<Line> lines) {
+        return lines.stream()
+                .map(LineResponse::of)
+                .collect(Collectors.toList());
     }
 
     public Long getId() {
