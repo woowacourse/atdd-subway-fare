@@ -24,11 +24,12 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-//        registry.addInterceptor(new LoginInterceptor(jwtTokenProvider))
-//            .excludePathPatterns("/paths")
-//            .excludePathPatterns("/login/token")
-//            .excludePathPatterns("/members")
-//            .addPathPatterns("/**");
+        registry.addInterceptor(new LoginInterceptor(jwtTokenProvider))
+            .excludePathPatterns("/paths")
+            .excludePathPatterns("/login/token")
+            .excludePathPatterns("/members")
+            .excludePathPatterns("/error")
+            .addPathPatterns("/**");
     }
 
     @Override
