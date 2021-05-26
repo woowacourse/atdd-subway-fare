@@ -73,7 +73,7 @@ public class Sections {
         if (existSection.isShorterOrEqualTo(newSection)) {
             throw new RuntimeException();
         }
-        this.sections.add(new Section(existSection.getUpStation(), newSection.getUpStation(), existSection.getRemainingDistance(newSection)));
+        this.sections.add(new Section(existSection.getUpStation(), newSection.getUpStation(), existSection.getSubtractedDistance(newSection)));
         this.sections.remove(existSection);
     }
 
@@ -81,7 +81,7 @@ public class Sections {
         if (existSection.isShorterOrEqualTo(newSection)) {
             throw new RuntimeException();
         }
-        this.sections.add(new Section(newSection.getDownStation(), existSection.getDownStation(), existSection.getRemainingDistance(newSection)));
+        this.sections.add(new Section(newSection.getDownStation(), existSection.getDownStation(), existSection.getSubtractedDistance(newSection)));
         this.sections.remove(existSection);
     }
 

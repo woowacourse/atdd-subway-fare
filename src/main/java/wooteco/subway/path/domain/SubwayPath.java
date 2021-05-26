@@ -27,9 +27,7 @@ public class SubwayPath {
     }
 
     public Fare calculateFare(Distance distance, LoginMember loginMember) {
-        Fare defaultFare = Fare.createDefaultFare();
-        Fare totalFare = defaultFare.calculateTotalFare(sectionEdges, distance);
-
+        Fare totalFare = Fare.calculateTotalFare(sectionEdges, distance);
         return totalFare.calculateFareAfterDiscount(loginMember);
     }
 }

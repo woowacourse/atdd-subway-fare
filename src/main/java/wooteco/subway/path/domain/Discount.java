@@ -11,16 +11,16 @@ public enum Discount {
     public static final int DEFAULT_DISCOUNT_AMOUNT = 350;
 
     private final double discountRate;
-    private final IntPredicate discountCriteria;
+    private final IntPredicate discountScheme;
 
-    Discount(final double discountRate, final IntPredicate discountCriteria) {
+    Discount(final double discountRate, final IntPredicate discountScheme) {
         this.discountRate = discountRate;
-        this.discountCriteria = discountCriteria;
+        this.discountScheme = discountScheme;
     }
 
     public static int getDiscountAmount(final int age, final int fareAmount) {
         Double discountRate = Arrays.stream(values())
-                .filter(it -> it.discountCriteria.test(age))
+                .filter(it -> it.discountScheme.test(age))
                 .findFirst()
                 .map(it -> it.discountRate)
                 .orElseThrow(IllegalArgumentException::new);

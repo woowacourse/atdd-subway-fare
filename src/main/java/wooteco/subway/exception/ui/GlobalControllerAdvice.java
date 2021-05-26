@@ -1,4 +1,4 @@
-package wooteco.subway.exception.handler;
+package wooteco.subway.exception.ui;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;

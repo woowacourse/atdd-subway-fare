@@ -57,7 +57,7 @@ public class Section {
         return this.distance.isShorterOrEqualTo(that.distance);
     }
 
-    public Distance getRemainingDistance(final Section that) {
+    public Distance getSubtractedDistance(final Section that) {
         return this.distance.subtract(that.distance);
     }
 }

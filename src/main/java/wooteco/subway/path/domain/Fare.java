@@ -7,7 +7,6 @@ import java.util.Objects;
 
 public class Fare {
     private static final int DEFAULT_FARE_AMOUNT = 1250;
-    private static Fare DEFAULT_FARE;
 
     private final int fare;
 
@@ -15,25 +14,19 @@ public class Fare {
         this.fare = fare;
     }
 
-    public static Fare createDefaultFare() {
-        if (DEFAULT_FARE == null) {
-            DEFAULT_FARE = new Fare(DEFAULT_FARE_AMOUNT);
-        }
-        return DEFAULT_FARE;
-    }
 
     public int getFare() {
         return fare;
     }
 
-    public Fare calculateTotalFare(final List<SectionEdge> sectionEdges, final Distance distance) {
+    public static Fare calculateTotalFare(final List<SectionEdge> sectionEdges, final Distance distance) {
         int lineExtraFare = getLineExtraFare(sectionEdges);
-        int distanceFare = DistanceCharge.getDistanceCharge(distance);
+        int distanceCharge = DistanceCharge.getDistanceCharge(distance);
 
-        return new Fare(this.fare + lineExtraFare + distanceFare);
+        return new Fare(DEFAULT_FARE_AMOUNT + lineExtraFare + distanceCharge);
     }
 
-    private int getLineExtraFare(final List<SectionEdge> sectionEdges) {
+    private static int getLineExtraFare(final List<SectionEdge> sectionEdges) {
         return sectionEdges.stream()
                 .mapToInt(it -> it.getLine().getExtraFare().fare)
                 .max()
