@@ -29,19 +29,4 @@ public class AuthService {
         String token = jwtTokenProvider.createToken(String.valueOf(member.getId()));
         return new TokenResponse(token);
     }
-
-//    public LoginMember findMemberByToken(String credentials) {
-//        if (!jwtTokenProvider.validateToken(credentials)) {
-//            return new LoginMember();
-//        }
-//
-//        String email = jwtTokenProvider.getPayload(credentials);
-//        try {
-//            Member member = memberDao.findByEmail(email)
-//                .orElseThrow(MemberNotFoundException::new);
-//            return new LoginMember(member.getId(), member.getEmail(), member.getAge());
-//        } catch (Exception e) {
-//            return new LoginMember();
-//        }
-//    }
 }
