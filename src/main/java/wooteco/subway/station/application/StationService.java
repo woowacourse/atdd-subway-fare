@@ -1,5 +1,6 @@
 package wooteco.subway.station.application;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import wooteco.subway.exception.DuplicateNameException;
 import wooteco.subway.station.dao.StationDao;
@@ -20,17 +21,19 @@ public class StationService {
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
-        Station station;
         try {
-            station = stationDao.insert(stationRequest.toStation());
+            return StationResponse.of(stationDao.insert(stationRequest.toStation()));
         } catch (Exception e) {
             throw new DuplicateNameException("이미 존재하는 역입니다.");
         }
-        return StationResponse.of(station);
     }
 
     public Station findStationById(Long id) {
-        return stationDao.findById(id);
+        try {
+            return stationDao.findById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new NoSuchElementException("존재하지 않는 역입니다.");
+        }
     }
 
     public List<StationResponse> findAllStationResponses() {

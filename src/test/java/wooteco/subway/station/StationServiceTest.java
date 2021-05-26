@@ -11,7 +11,6 @@ import wooteco.subway.station.dto.StationRequest;
 
 import java.util.NoSuchElementException;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
@@ -20,18 +19,26 @@ public class StationServiceTest {
     @Autowired
     private StationService stationService;
 
-    @DisplayName("StationDao에서 반환하는 DuplicateKeyException을 커스텀 예외인 DuplicateNameException으로 변환한다.")
+    @DisplayName("중복되는 이름을 가지는 역을 추가할 시 DuplicateNameException이 발생한다.")
     @Test
-    void duplicateNameExceptionTest() {
+    void throw_DuplicateNameException_When_Find_NonExists() {
         stationService.saveStation(new StationRequest("잠실역"));
         assertThatThrownBy(() -> stationService.saveStation(new StationRequest("잠실역")))
                 .isInstanceOf(DuplicateNameException.class)
                 .hasMessage("이미 존재하는 역입니다.");
     }
 
+    @DisplayName("존재하지 않는 지하철 역을 검색할 시 NoSuchElementException이 발생한다.")
+    @Test
+    void throw_NoSuchElementException_When_Find_NonExists() {
+        assertThatThrownBy(() -> stationService.findStationById(1L))
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessage("존재하지 않는 역입니다.");
+    }
+
     @DisplayName("존재하지 않는 지하철 역을 삭제할 시 NoSuchElementException이 발생한다.")
     @Test
-    void noSuchElementExceptionTest() {
+    void throw_NoSuchElementException_When_Delete_NonExists() {
         assertThatThrownBy(() -> stationService.deleteStationById(1L))
                 .isInstanceOf(NoSuchElementException.class)
                 .hasMessage("존재하지 않는 역입니다.");
