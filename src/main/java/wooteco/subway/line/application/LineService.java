@@ -29,7 +29,8 @@ public class LineService {
             throw new DuplicateLineException();
         }
 
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
+
+        Line persistLine = lineDao.insert(request.toEntity());
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);
     }
@@ -74,7 +75,7 @@ public class LineService {
                     throw new DuplicateLineException();
                 });
 
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor(), lineUpdateRequest.getExtraFare()));
     }
 
     private void validateExistLine(Long id) {
@@ -112,6 +113,7 @@ public class LineService {
                 .map(line ->
                         new LinesResponse(
                                 line.getId(), line.getName(), line.getColor(),
+                                line.getExtraFare(),
                                 line.getSections()
                         )
                 )

@@ -44,8 +44,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         강남역 = 지하철역_등록되어_있음("강남역");
         광교역 = 지하철역_등록되어_있음("광교역");
 
-        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15);
+        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 900, 강남역.getId(), 광교역.getId(), 10);
+        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 500, 강남역.getId(), 광교역.getId(), 15);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -56,6 +56,13 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_노선_생성됨(response);
+        지하철_노선이_제대로_등록됨(response.as(LineResponse.class), lineRequest1);
+    }
+
+    private void 지하철_노선이_제대로_등록됨(LineResponse response, LineRequest lineRequest) {
+        assertThat(response.getName()).isEqualTo(lineRequest.getName());
+        assertThat(response.getColor()).isEqualTo(lineRequest.getColor());
+        assertThat(response.getExtraFare()).isEqualTo(lineRequest.getExtraFare());
     }
 
     @DisplayName("존재하는 노선을 생성하는 경우 예외 처리한다.")
@@ -178,7 +185,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         석촌역 = 지하철역_등록되어_있음("석촌역");
         잠실역 = 지하철역_등록되어_있음("잠실역");
 
-        LineRequest lineRequest3 = new LineRequest("2호선", "bg-blue-600", 석촌역.getId(), 잠실역.getId(), 3);
+        LineRequest lineRequest3 = new LineRequest("2호선", "bg-blue-600", 150, 석촌역.getId(), 잠실역.getId(), 3);
 
         LineResponse 신분당선 = 지하철_노선_등록되어_있음(lineRequest1);
         LineResponse 이호선 = 지하철_노선_등록되어_있음(lineRequest3);
@@ -191,6 +198,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // then
         지하철_노선_목록_응답됨(response);
         List<LinesResponse> linesResponses = response.jsonPath().getList(".", LinesResponse.class);
+        지하철_전체_노선_정보가_제대로_등록됨(linesResponses.get(0), lineRequest1);
+        지하철_전체_노선_정보가_제대로_등록됨(linesResponses.get(1), lineRequest3);
+
         assertThat(linesResponses.get(0).getSections()).usingRecursiveComparison().isEqualTo(
                 Arrays.asList(
                         new SectionResponse(역삼역, 강남역, 7),
@@ -199,6 +209,12 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 Arrays.asList(
                         new SectionResponse(송파나루역, 석촌역, 5),
                         new SectionResponse(석촌역, 잠실역, 3)));
+    }
+
+    private void 지하철_전체_노선_정보가_제대로_등록됨(LinesResponse response, LineRequest lineRequest) {
+        assertThat(response.getName()).isEqualTo(lineRequest.getName());
+        assertThat(response.getColor()).isEqualTo(lineRequest.getColor());
+        assertThat(response.getExtraFare()).isEqualTo(lineRequest.getExtraFare());
     }
 
     private ExtractableResponse<Response> 지하철_노선_전체_목록_조회_요청() {
