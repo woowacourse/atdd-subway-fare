@@ -7,6 +7,7 @@ import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
+import wooteco.subway.member.exception.MemberNotFoundException;
 
 @Service
 public class MemberService {
@@ -18,12 +19,11 @@ public class MemberService {
     }
 
     public MemberResponse createMember(MemberRequest request) {
-        try {
-            Member member = memberDao.insert(request.toMember());
-            return MemberResponse.of(member);
-        } catch (Exception e) {
+        if (memberDao.isExistByEmail(request.getEmail())) {
             throw new DuplicatedException(request.getEmail());
         }
+        final Member member = memberDao.insert(request.toMember());
+        return MemberResponse.of(member);
     }
 
     public MemberResponse findMember(LoginMember loginMember) {
@@ -34,10 +34,13 @@ public class MemberService {
     public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
         Member member = memberDao.findByEmail(loginMember.getEmail());
         memberDao.update(
-            new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
+                new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
     }
 
     public void deleteMember(LoginMember loginMember) {
+        if (memberDao.isExistByEmail(loginMember.getEmail())) {
+            throw new MemberNotFoundException(loginMember.getEmail());
+        }
         Member member = memberDao.findByEmail(loginMember.getEmail());
         memberDao.deleteById(member.getId());
     }

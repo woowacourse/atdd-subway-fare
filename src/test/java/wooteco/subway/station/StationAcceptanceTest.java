@@ -23,6 +23,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     private static final String 역삼역 = "역삼역";
     private static final String abc = "abc";
     private static final String _ = "1";
+    private static final String 공백이_포함된_역 = "공백 공백";
 
     @DisplayName("지하철역을 생성한다.")
     @Test
@@ -44,12 +45,12 @@ public class StationAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철역_생성_요청(강남역);
 
         // then
-        지하철역_생성_실패됨(response);
+        지하철역_생성_실패됨_중복(response);
     }
 
     @DisplayName("영어 이름으로 지하철역을 생성한다.")
     @Test
-    void createStationWithNotSatisfyPattern() {
+    void createStationWithInvalidPattern() {
         // given-when
         ExtractableResponse<Response> response = 지하철역_생성_요청(abc);
 
@@ -59,9 +60,19 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("한글자로 지하철역을 생성한다.")
     @Test
-    void createStationWithNotSatisfyPattern2() {
+    void createStationWithInvalidPattern2() {
         // given-when
         ExtractableResponse<Response> response = 지하철역_생성_요청(_);
+
+        // then
+        지하철역_생성_실패됨(response);
+    }
+
+    @DisplayName("공백이 포함된 역명으로 지하철역을 생성한다.")
+    @Test
+    void createStationWithEmptySpace() {
+        // given-when
+        ExtractableResponse<Response> response = 지하철역_생성_요청(공백이_포함된_역);
 
         // then
         지하철역_생성_실패됨(response);
@@ -130,6 +141,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
     public static void 지하철역_생성됨(ExtractableResponse response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
+    }
+
+    public static void 지하철역_생성_실패됨_중복(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CONFLICT.value());
     }
 
     public static void 지하철역_생성_실패됨(ExtractableResponse<Response> response) {
