@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.UNAUTHORIZED)
 public class AuthorizationException extends UnAuthorizedException {
-    private static final String MESSAGE = "회원 인증에 실패하였습니다.";
+    private static final String MESSAGE = "다시 로그인 후 시도해주세요";
 
     public AuthorizationException() {
         super(MESSAGE);

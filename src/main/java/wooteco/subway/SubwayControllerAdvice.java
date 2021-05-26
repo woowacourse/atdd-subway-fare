@@ -21,8 +21,6 @@ public class SubwayControllerAdvice {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponse> exception(Exception e) {
-        System.out.println("@@@@" + e.getCause());
-        e.printStackTrace();
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ExceptionResponse("서버에서 요청을 처리하지 못했습니다.", HttpStatus.INTERNAL_SERVER_ERROR.value()));

@@ -1,7 +1,7 @@
-package wooteco.subway.exception.unauthorized;
+package wooteco.subway.exception.badrequest;
 
-public class PasswordMissMatchException extends UnAuthorizedException {
-    private static final String MESSAGE = "입력하신 비밀번호가 일치하지 않습니다.";
+public class PasswordMissMatchException extends BadRequest {
+    private static final String MESSAGE = "현재 비밀번호를 다시 확인해주세요";
 
     public PasswordMissMatchException() {
         super(MESSAGE);
