@@ -1,6 +1,9 @@
 package wooteco.subway.station.application;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+
+import wooteco.subway.exception.DuplicatedStationException;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;
@@ -18,8 +21,12 @@ public class StationService {
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationDao.insert(stationRequest.toStation());
-        return StationResponse.of(station);
+        try {
+            Station station = stationDao.insert(stationRequest.toStation());
+            return StationResponse.of(station);
+        } catch (DataAccessException e){
+            throw new DuplicatedStationException();
+        }
     }
 
     public Station findStationById(Long id) {

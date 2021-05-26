@@ -35,6 +35,18 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_생성됨(response);
     }
 
+    @DisplayName("이미 존재하는 지하철역을 생성한다.")
+    @Test
+    void createDuplicatedStation() {
+        // when
+        지하철역_생성_요청(강남역);
+        ExtractableResponse<Response> response = 지하철역_생성_요청("강남역");
+
+        // then
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
+        assertThat(exceptionResponse.getError()).isEqualTo("DUPLICATED_STATION_NAME");
+    }
+
     @DisplayName("옳지 않은 이름으로 지하철역을 생성한다.")
     @ParameterizedTest
     @ValueSource(strings = {"", "강남역!", "  "})
