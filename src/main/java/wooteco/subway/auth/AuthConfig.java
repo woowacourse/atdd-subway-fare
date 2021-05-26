@@ -6,7 +6,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.ui.AuthPrincipalArgumentResolver;
-import wooteco.subway.auth.ui.LoginPrincipalArgumentResolver;
+import wooteco.subway.auth.ui.MustLoginPrincipalArgumentResolver;
 
 import java.util.List;
 
@@ -30,7 +30,7 @@ public class AuthConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public LoginPrincipalArgumentResolver createLoginPrincipalArgumentResolver() {
-        return new LoginPrincipalArgumentResolver(authService);
+    public MustLoginPrincipalArgumentResolver createLoginPrincipalArgumentResolver() {
+        return new MustLoginPrincipalArgumentResolver(authService);
     }
 }

@@ -8,6 +8,10 @@ public class LoginMember implements AuthMember {
     public LoginMember() {
     }
 
+    public LoginMember(Member member) {
+        this(member.getId(), member.getEmail(), new Age(member.getAge()));
+    }
+
     public LoginMember(Long id, String email, Integer age) {
         this(id, email, new Age(age));
     }

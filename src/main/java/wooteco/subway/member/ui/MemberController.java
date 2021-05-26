@@ -2,7 +2,7 @@ package wooteco.subway.member.ui;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import wooteco.subway.auth.domain.LoginPrincipal;
+import wooteco.subway.auth.domain.MustLoginPrincipal;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.dto.MemberRequest;
@@ -25,20 +25,20 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@LoginPrincipal LoginMember loginMember) {
+    public ResponseEntity<MemberResponse> findMemberOfMine(@MustLoginPrincipal LoginMember loginMember) {
         MemberResponse member = memberService.findMember(loginMember);
         return ResponseEntity.ok().body(member);
     }
 
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine(@LoginPrincipal LoginMember loginMember,
+    public ResponseEntity<MemberResponse> updateMemberOfMine(@MustLoginPrincipal LoginMember loginMember,
                                                              @RequestBody MemberRequest param) {
         memberService.updateMember(loginMember, param);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/members/me")
-    public ResponseEntity<MemberResponse> deleteMemberOfMine(@LoginPrincipal LoginMember loginMember) {
+    public ResponseEntity<MemberResponse> deleteMemberOfMine(@MustLoginPrincipal LoginMember loginMember) {
         memberService.deleteMember(loginMember);
         return ResponseEntity.noContent().build();
     }

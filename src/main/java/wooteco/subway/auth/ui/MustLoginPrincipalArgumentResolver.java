@@ -6,32 +6,33 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import wooteco.subway.auth.application.AuthService;
-import wooteco.subway.auth.application.AuthorizationException;
-import wooteco.subway.auth.domain.LoginPrincipal;
+import wooteco.subway.auth.domain.MustLoginPrincipal;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
+import wooteco.subway.config.exception.AuthorizationException;
+import wooteco.subway.member.domain.AuthMember;
 import wooteco.subway.member.domain.LoginMember;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class LoginPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
+public class MustLoginPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
     private final AuthService authService;
 
-    public LoginPrincipalArgumentResolver(AuthService authService) {
+    public MustLoginPrincipalArgumentResolver(AuthService authService) {
         this.authService = authService;
     }
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(LoginPrincipal.class);
+        return parameter.hasParameterAnnotation(MustLoginPrincipal.class);
     }
 
     @Override
-    public LoginMember resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+    public LoginMember resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
-        LoginMember member = authService.findMemberByToken(credentials);
-        if (member.getId() == null) {
-            throw new AuthorizationException();
+        AuthMember member = authService.findMemberByToken(credentials);
+        if (member.isLoggedIn()) {
+            return (LoginMember) member;
         }
-        return member;
+        throw new AuthorizationException();
     }
 }

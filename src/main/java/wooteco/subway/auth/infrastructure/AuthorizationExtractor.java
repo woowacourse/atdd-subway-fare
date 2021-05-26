@@ -25,9 +25,4 @@ public class AuthorizationExtractor {
 
         return null;
     }
-
-    public static boolean isAuthorizationExists(HttpServletRequest request) {
-        Enumeration<String> headers = request.getHeaders(AUTHORIZATION);
-        return headers.hasMoreElements();
-    }
 }
