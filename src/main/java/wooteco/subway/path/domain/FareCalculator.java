@@ -13,7 +13,7 @@ public class FareCalculator {
 
     public static int calculateFareWithLine(int basicFare, List<Line> lines) {
         return basicFare + lines.stream()
-            .mapToInt(Line::getFare)
+            .mapToInt(Line::getExtraFare)
             .max()
             .orElseThrow(() -> new IllegalArgumentException("노선이 존재하지 않습니다."));
     }
