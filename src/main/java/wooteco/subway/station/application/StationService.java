@@ -1,5 +1,6 @@
 package wooteco.subway.station.application;
 
+import java.util.Comparator;
 import org.springframework.stereotype.Service;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.domain.Line;
@@ -49,6 +50,7 @@ public class StationService {
         List<Station> stations = stationDao.findAll();
 
         return stations.stream()
+                .sorted(Comparator.comparing(Station::getId))
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
     }
