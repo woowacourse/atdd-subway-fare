@@ -10,7 +10,7 @@ import wooteco.subway.dto.ErrorResponse;
 import wooteco.subway.exception.DataNotFoundException;
 import wooteco.subway.line.exception.LineCompositionException;
 import wooteco.subway.line.exception.LineRemovalException;
-import wooteco.subway.member.exception.EmailAddressNotFoundException;
+import wooteco.subway.member.exception.DuplicatedEmailAddressException;
 
 @RestControllerAdvice
 public class SubwayControllerAdvice {
@@ -39,8 +39,9 @@ public class SubwayControllerAdvice {
             .body(new ErrorResponse(e.getMessage()));
     }
 
-    @ExceptionHandler(EmailAddressNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleEmailNotFoundException(EmailAddressNotFoundException e) {
+    @ExceptionHandler(DuplicatedEmailAddressException.class)
+    public ResponseEntity<ErrorResponse> handleEmailNotFoundException(
+        DuplicatedEmailAddressException e) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
             .body(new ErrorResponse(e.getMessage()));
     }

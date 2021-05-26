@@ -7,7 +7,7 @@ import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
-import wooteco.subway.member.exception.EmailAddressNotFoundException;
+import wooteco.subway.member.exception.DuplicatedEmailAddressException;
 
 @Service
 public class MemberService {
@@ -18,6 +18,7 @@ public class MemberService {
     }
 
     public MemberResponse createMember(MemberRequest request) {
+        checkEmail(request.getEmail());
         Member member = memberDao.insert(request.toMember());
         return MemberResponse.of(member);
     }
@@ -41,7 +42,8 @@ public class MemberService {
         try {
             memberDao.findByEmail(email);
         } catch (DataAccessException e) {
-            throw new EmailAddressNotFoundException(email);
+            return;
         }
+        throw new DuplicatedEmailAddressException(email);
     }
 }
