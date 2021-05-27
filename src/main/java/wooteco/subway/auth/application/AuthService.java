@@ -47,4 +47,8 @@ public class AuthService {
             return new LoginMember();
         }
     }
+
+    public boolean isNotValidToken(String token) {
+        return !jwtTokenProvider.validateToken(token);
+    }
 }

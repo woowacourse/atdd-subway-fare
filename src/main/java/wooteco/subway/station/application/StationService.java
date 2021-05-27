@@ -40,10 +40,13 @@ public class StationService {
     }
 
     public void deleteStationById(Long id) {
+
+        stationDao.deleteById(id);
+    }
+
+    public void isHaveStationById(Long id) {
         if (!stationDao.isHaveStationById(id)) {
             throw new NoSuchStationException("존재하지 않는 역은 삭제 할 수 없습니다.");
         }
-        stationDao.deleteById(id);
-
     }
 }

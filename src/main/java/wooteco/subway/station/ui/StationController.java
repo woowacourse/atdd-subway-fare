@@ -44,6 +44,7 @@ public class StationController extends SubwayController {
 
     @DeleteMapping("/stations/{id}")
     public ResponseEntity deleteStation(@PathVariable Long id) {
+        stationService.isHaveStationById(id);
         lineService.isRegisteredStation(stationService.findStationById(id));
         stationService.deleteStationById(id);
         return ResponseEntity.noContent().build();

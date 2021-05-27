@@ -12,6 +12,9 @@ public class LineDetailResponse {
     private StationResponse endStation;
     private int distance;
 
+    public LineDetailResponse() {
+    }
+
     public LineDetailResponse(Long id, String name, String color,
         StationResponse startStation, StationResponse endStation, int distance) {
         this.id = id;
