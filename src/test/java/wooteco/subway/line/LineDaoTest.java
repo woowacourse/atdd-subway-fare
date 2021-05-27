@@ -32,7 +32,7 @@ public class LineDaoTest {
 
     @DisplayName("중복되는 이름을 가지는 노선을 추가할 시 DuplicateKeyException이 발생한다.")
     @Test
-    void throw_DuplicateKeyException_When_Insert_NonExists() {
+    void throw_DuplicateKeyException_When_Insert_DuplicateName() {
         lineDao.insert(new Line("신분당선", "bg-red-600", 1200));
         assertThatThrownBy(() -> lineDao.insert(new Line("신분당선", "black", 1200)))
                 .isInstanceOf(DuplicateKeyException.class);
