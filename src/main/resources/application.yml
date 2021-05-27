@@ -9,4 +9,4 @@ security:
 
 spring:
   profiles:
-    active: test
+    active: local

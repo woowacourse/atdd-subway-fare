@@ -67,6 +67,13 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
+    public static TokenResponse 회원가입_후_로그인() {
+        String email = "pkeugine@gmail.com";
+        String password = "password";
+        회원_등록되어_있음(email, password, 20);
+        return 로그인되어_있음(email, password);
+    }
+
     public static ExtractableResponse<Response> 회원_등록되어_있음(String email, String password, Integer age) {
         return 회원_생성을_요청(email, password, age);
     }

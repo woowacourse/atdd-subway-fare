@@ -12,6 +12,10 @@ public class PathResponse {
     private int distance;
     private BigDecimal price;
 
+    public PathResponse() {
+
+    }
+
     public PathResponse(List<StationResponse> stations, int distance, Price price) {
         this.stations = stations;
         this.distance = distance;
