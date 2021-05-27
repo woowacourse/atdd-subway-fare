@@ -1,6 +1,5 @@
 package wooteco.subway.station.application;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.dao.DataAccessException;
@@ -52,14 +51,7 @@ public class StationService {
     }
 
     public List<StationTransferResponse> findAllStationWithTransfer() {
-        List<Station> stations = stationDao.findAllAscById();
-
-        List<StationTransferResponse> stationTransferResponses = new ArrayList<>();
-        for (final Station station : stations) {
-            List<String> transfer = stationDao.findTransfer(station.getId());
-            stationTransferResponses.add(StationTransferResponse.from(station, transfer));
-        }
-        return stationTransferResponses;
+        return stationDao.findAllWithTransfer();
     }
 
     public void deleteStationById(Long id) {

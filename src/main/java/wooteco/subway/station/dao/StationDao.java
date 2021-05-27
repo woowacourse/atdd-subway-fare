@@ -1,6 +1,9 @@
 package wooteco.subway.station.dao;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -10,6 +13,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.station.domain.Station;
+import wooteco.subway.station.dto.StationTransferResponse;
 
 @Repository
 public class StationDao {
@@ -72,8 +76,45 @@ public class StationDao {
         return jdbcTemplate.queryForObject(sql, Boolean.class, name);
     }
 
-    public List<String> findTransfer(Long id) {
-        String sql = "select distinct(LINE.name) from SECTION inner join LINE on LINE.id = SECTION.line_id where SECTION.up_station_id = ? OR SECTION.down_station_id = ?;";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> rs.getString("name"), id, id);
+    public List<StationTransferResponse> findAllWithTransfer() {
+        String sql = "select S.id AS station_id, S.name AS station_name, L.id AS line_id, L.name AS line_name, L.color AS line_color " +
+            "FROM STATION AS S " +
+            "LEFT JOIN SECTION AS SE ON (SE.up_station_id = S.id OR SE.down_station_id = S.id) " +
+            "LEFT JOIN LINE AS L ON L.id = SE.line_id";
+
+        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql);
+        Map<Long, List<Map<String, Object>>> resultByStation = result.stream()
+            .collect(Collectors.groupingBy(it -> (Long) it.get("station_id")));
+
+        return resultByStation.values()
+            .stream()
+            .map(this::mapStationLineResponse)
+            .collect(Collectors.toList());
+    }
+
+    private StationTransferResponse mapStationLineResponse(final List<Map<String, Object>> result) {
+        if (result.size() == 0) {
+            throw new RuntimeException();
+        }
+
+        List<String> lineNames = extractTransferLine(result);
+
+        return new StationTransferResponse(
+            (Long) result.get(0).get("station_id"),
+            (String) result.get(0).get("station_name"),
+            lineNames
+        );
+    }
+
+    private List<String> extractTransferLine(List<Map<String, Object>> result) {
+        if (result.isEmpty() || result.get(0).get("line_id") == null) {
+            return Collections.EMPTY_LIST;
+        }
+        return result.stream()
+            .collect(Collectors.groupingBy(it -> it.get("line_id")))
+            .entrySet()
+            .stream()
+            .map(it -> (String) it.getValue().get(0).get("line_name"))
+            .collect(Collectors.toList());
     }
 }
