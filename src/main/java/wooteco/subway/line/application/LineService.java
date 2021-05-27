@@ -8,10 +8,14 @@ import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.line.exception.DuplicateLineColorException;
+import wooteco.subway.line.exception.DuplicateLineNameException;
+import wooteco.subway.line.exception.LineNotFoundException;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,9 +31,25 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
+        validateDuplicateLineName(request.getName());
+        validateDuplicateLineColor(request.getColor());
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);
+    }
+
+    private void validateDuplicateLineName(String lineName) {
+        final Optional<Line> lineByName = lineDao.findByName(lineName);
+        if (lineByName.isPresent()) {
+            throw new DuplicateLineNameException();
+        }
+    }
+
+    private void validateDuplicateLineColor(String lineColor) {
+        final Optional<Line> lineByColor = lineDao.findByColor(lineColor);
+        if (lineByColor.isPresent()) {
+            throw new DuplicateLineColorException();
+        }
     }
 
     private Section addInitSection(Line line, LineRequest request) {
@@ -45,7 +65,7 @@ public class LineService {
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
-                .map(line -> LineResponse.of(line))
+                .map(LineResponse::of)
                 .collect(Collectors.toList());
     }
 
@@ -59,15 +79,25 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        return lineDao.findById(id);
+        return lineDao.findById(id)
+                .orElseThrow(LineNotFoundException::new);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
+        final Line line = findLineById(id);
+        if (!line.hasSameName(lineUpdateRequest.getName())) {
+            validateDuplicateLineName(lineUpdateRequest.getName());
+        }
+        if (!line.hasSameColor(lineUpdateRequest.getColor())) {
+            validateDuplicateLineColor(lineUpdateRequest.getColor());
+        }
+
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor(), lineUpdateRequest.getExtraFare()));
     }
 
     public void deleteLineById(Long id) {
-        lineDao.deleteById(id);
+        final Line line = findLineById(id);
+        lineDao.deleteById(line.getId());
     }
 
     public void addLineStation(Long lineId, SectionRequest request) {
