@@ -11,19 +11,22 @@ import wooteco.subway.member.dto.MemberResponse;
 
 @Service
 public class MemberService {
-    private MemberDao memberDao;
+
+    private final MemberDao memberDao;
 
     public MemberService(MemberDao memberDao) {
         this.memberDao = memberDao;
     }
 
     public MemberResponse createMember(MemberRequest request) {
-        int counts = memberDao.countByEmail(request.getEmail());
-        if (counts > 0) {
-            throw new EmailDuplicatedException();
-        }
+        validateDuplicatedEmail(request.getEmail());
         Member member = memberDao.insert(request.toMember());
         return MemberResponse.of(member);
+    }
+
+    private void validateDuplicatedEmail(String email) {
+        memberDao.findByEmail(email)
+                .ifPresent(member -> { throw new EmailDuplicatedException(); });
     }
 
     public MemberResponse findMember(LoginMember loginMember) {
@@ -35,7 +38,8 @@ public class MemberService {
     public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
         Member member = memberDao.findByEmail(loginMember.getEmail())
                 .orElseThrow(WrongEmailException::new);
-        memberDao.update(new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
+        Member newMember = new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge());
+        memberDao.update(newMember);
     }
 
     public void deleteMember(LoginMember loginMember) {

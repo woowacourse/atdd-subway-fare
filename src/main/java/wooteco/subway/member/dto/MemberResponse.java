@@ -10,7 +10,7 @@ public class MemberResponse {
     public MemberResponse() {
     }
 
-    public MemberResponse(Long id, String email, Integer age) {
+    private MemberResponse(Long id, String email, Integer age) {
         this.id = id;
         this.email = email;
         this.age = age;
