@@ -151,7 +151,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         // then
         지하철역_환승_포함_목록_응답됨(response);
         List<List<String>> expected = Arrays
-            .asList(Arrays.asList("신분당선", "2호선", "3호선"),
+            .asList(Arrays.asList("2호선", "3호선", "신분당선"),
                 Collections.singletonList("2호선"),
                 Collections.singletonList("3호선"),
                 Collections.singletonList("신분당선"));
