@@ -3,26 +3,15 @@ package wooteco.subway.auth;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.jdbc.core.JdbcTemplate;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthAcceptanceTest2 extends AcceptanceTest {
-
-    @Autowired
-    JdbcTemplate jdbcTemplate;
-
-    @BeforeEach
-    public void setRequestAndMemberInfo() {
-        jdbcTemplate.update("insert into MEMBER (email, password, age) values ('email@email.com', 'password', 20)");
-    }
 
     @Test
     @DisplayName("ID가 Email 형식이 아닐 경우의 로그인 요청")
