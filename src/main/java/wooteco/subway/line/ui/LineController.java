@@ -72,10 +72,4 @@ public class LineController {
         lineService.removeLineStation(lineId, stationId);
         return ResponseEntity.ok().build();
     }
-
-    @GetMapping("/maps")
-    public ResponseEntity<List<LineResponse>> findAllLines() {
-        List<LineResponse> lineResponses = lineService.findLineResponses();
-        return ResponseEntity.ok(lineResponses);
-    }
 }
