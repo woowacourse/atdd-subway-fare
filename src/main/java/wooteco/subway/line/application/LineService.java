@@ -30,10 +30,10 @@ public class LineService {
 
     public LineResponse saveLine(LineRequest request) {
         if (lineDao.existsByName(request.getName())) {
-            throw new DuplicateException("이미 존재하는 노선 이름 입니다.");
+            throw new DuplicateException("이미 존재하는 노선 이름 입니다. (입력된 이름 값: " + request.getName() + ")");
         }
         if (lineDao.existsByColor(request.getColor())) {
-            throw new DuplicateException("이미 존재하는 노선 색깔 입니다.");
+            throw new DuplicateException("이미 존재하는 노선 색깔 입니다. (입력된 이름 값: " + request.getColor() + ")");
         }
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
         persistLine.addSection(addInitSection(persistLine, request));

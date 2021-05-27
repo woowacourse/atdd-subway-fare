@@ -23,7 +23,7 @@ public class StationService {
 
     public StationResponse saveStation(StationRequest stationRequest) {
         if (stationDao.existsByName(stationRequest.getName())) {
-            throw new DuplicateException("이미 존재하는 역 이름 입니다.");
+            throw new DuplicateException("이미 존재하는 역 이름 입니다. (입력된 이름 값: " + stationRequest.getName() + ")");
         }
 
         Station station = stationDao.insert(stationRequest.toStation());
