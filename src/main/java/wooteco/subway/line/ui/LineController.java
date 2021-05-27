@@ -1,11 +1,14 @@
 package wooteco.subway.line.ui;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.dto.*;
+import wooteco.subway.validate.LineValidator;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -19,8 +22,13 @@ public class LineController {
         this.lineService = lineService;
     }
 
+    @InitBinder("lineRequest")
+    private void initBind(WebDataBinder webDataBinder) {
+        webDataBinder .addValidators(new LineValidator());
+    }
+
     @PostMapping
-    public ResponseEntity createLine(@RequestBody LineRequest lineRequest) {
+    public ResponseEntity createLine(@RequestBody @Valid LineRequest lineRequest) {
         LineResponse line = lineService.saveLine(lineRequest);
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
@@ -36,7 +44,7 @@ public class LineController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity updateLine(@PathVariable Long id, @RequestBody LineRequest lineUpdateRequest) {
+    public ResponseEntity updateLine(@PathVariable Long id, @RequestBody @Valid LineRequest lineUpdateRequest) {
         lineService.updateLine(id, lineUpdateRequest);
         return ResponseEntity.ok().build();
     }

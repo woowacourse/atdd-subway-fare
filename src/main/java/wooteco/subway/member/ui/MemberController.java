@@ -2,12 +2,15 @@ package wooteco.subway.member.ui;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
+import wooteco.subway.validate.LineValidator;
+import wooteco.subway.validate.MemberValidator;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -21,6 +24,11 @@ public class MemberController {
         this.memberService = memberService;
     }
 
+    @InitBinder("memberRequest")
+    private void initBind(WebDataBinder webDataBinder) {
+        webDataBinder .addValidators(new MemberValidator());
+    }
+
     @GetMapping("/members/check-validation")
     public ResponseEntity findDuplicatedEmail(@RequestParam String email) {
         memberService.checkDuplicatedEmail(email);
@@ -28,7 +36,7 @@ public class MemberController {
     }
 
     @PostMapping("/members")
-    public ResponseEntity createMember(@Valid @RequestBody MemberRequest request, BindingResult bindingResult) {
+    public ResponseEntity createMember(@RequestBody @Valid MemberRequest request, BindingResult bindingResult) {
         MemberResponse member = memberService.createMember(request);
         return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
     }
