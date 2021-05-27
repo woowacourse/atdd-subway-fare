@@ -46,7 +46,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 10);
         lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 15);
-
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -106,7 +105,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         LineResponse lineResponse = 지하철_노선_등록되어_있음(accessToken, lineRequest1);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_조회_요청(lineResponse);
+        ExtractableResponse<Response> response = 지하철_노선_조회_요청(accessToken, lineResponse);
 
         // then
         지하철_노선_응답됨(response, lineResponse);
@@ -168,7 +167,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_조회_요청(LineResponse response) {
+    public static ExtractableResponse<Response> 지하철_노선_조회_요청(String accessToken, LineResponse response) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(accessToken)

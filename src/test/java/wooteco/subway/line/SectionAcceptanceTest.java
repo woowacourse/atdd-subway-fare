@@ -37,6 +37,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
+
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
         TokenResponse tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
         accessToken = tokenResponse.getAccessToken();
@@ -47,7 +48,6 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         광교역 = 지하철역_등록되어_있음("광교역", accessToken);
 
         신분당선 = 지하철_노선_등록되어_있음(accessToken, "신분당선", "bg-red-600", 강남역, 광교역, 10, 1000);
-
     }
 
     @DisplayName("지하철 구간을 등록한다.")
@@ -136,9 +136,9 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         return RestAssured
                 .given().log().all()
-                .auth().oauth2(accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(sectionRequest)
+                .auth().oauth2(accessToken)
                 .when().post("/api/lines/{lineId}/sections", line.getId())
                 .then().log().all()
                 .extract();
@@ -172,13 +172,13 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
     private void 지하철_구간_생성됨(ExtractableResponse<Response> result, LineResponse lineResponse, List<StationResponse> stationResponses) {
         assertThat(result.statusCode()).isEqualTo(HttpStatus.OK.value());
-        ExtractableResponse<Response> response = 지하철_노선_조회_요청(lineResponse);
+        ExtractableResponse<Response> response = 지하철_노선_조회_요청(accessToken, lineResponse);
         지하철_노선에_지하철역_순서_정렬됨(response, stationResponses);
     }
 
     public static void 지하철_노선에_지하철역_제외됨(ExtractableResponse<Response> result, LineResponse lineResponse, List<StationResponse> stationResponses) {
         assertThat(result.statusCode()).isEqualTo(HttpStatus.OK.value());
-        ExtractableResponse<Response> response = 지하철_노선_조회_요청(lineResponse);
+        ExtractableResponse<Response> response = 지하철_노선_조회_요청(accessToken, lineResponse);
         지하철_노선에_지하철역_순서_정렬됨(response, stationResponses);
     }
 
