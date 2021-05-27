@@ -46,7 +46,5 @@ public class PriceTest {
         Section section = new Section(1L,new Station(), new Station(),10);
         Sections sections = new Sections(Collections.singletonList(section));
         new Line(1L,"testLine1","black",sections,900 );
-
-
     }
 }

@@ -31,11 +31,4 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
     public AuthenticationPrincipalArgumentResolver createAuthenticationPrincipalArgumentResolver() {
         return new AuthenticationPrincipalArgumentResolver(authService);
     }
-
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new LoginInterceptor(jwtTokenProvider))
-            .addPathPatterns("/paths");
-    }
-
 }
