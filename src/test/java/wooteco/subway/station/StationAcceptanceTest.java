@@ -137,8 +137,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
         응답코드_확인(deleteResponse, HttpStatus.BAD_REQUEST);
     }
 
-    public static StationResponse 지하철역_등록되어_있음(String name) {
-        return 지하철역_생성_요청(name).as(StationResponse.class);
+    public static StationResponse 지하철역_등록되어_있음(String lineName) {
+        ExtractableResponse<Response> response = 지하철역_생성_요청(lineName);
+        응답코드_확인(response, HttpStatus.CREATED);
+        return response.as(StationResponse.class);
     }
 
     public static StationResponse 지하철역_생성_응답으로부터_StationResponse_추출(ExtractableResponse<Response> response) {
