@@ -12,6 +12,7 @@ import wooteco.subway.exception.ValidationFailureException;
 import wooteco.subway.line.exception.LineCompositionException;
 import wooteco.subway.line.exception.LineRemovalException;
 import wooteco.subway.member.exception.DuplicatedEmailAddressException;
+import wooteco.subway.station.exception.ExistedStationOnPathException;
 
 @RestControllerAdvice
 public class SubwayControllerAdvice {
@@ -50,6 +51,13 @@ public class SubwayControllerAdvice {
     @ExceptionHandler(ValidationFailureException.class)
     public ResponseEntity<ErrorResponse> handleValidationFailureException(
         ValidationFailureException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(new ErrorResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(ExistedStationOnPathException.class)
+    public ResponseEntity<ErrorResponse> handleExistedStationOnPathException(
+        ExistedStationOnPathException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(new ErrorResponse(e.getMessage()));
     }

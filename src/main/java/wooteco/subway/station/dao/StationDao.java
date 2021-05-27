@@ -22,6 +22,9 @@ public class StationDao {
                     rs.getString("name")
             );
 
+    private RowMapper<Integer> countMapper = (rs, rowNum) ->(
+        rs.getInt("number"));
+
 
     public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
@@ -49,5 +52,12 @@ public class StationDao {
     public Station findById(Long id) {
         String sql = "select * from STATION where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    }
+
+    public int countStationOccurrenceOnPath(Long id) {
+        String sql = "select count(*) as number "
+            + "from section "
+            + "where (up_station_id = ?) or (down_station_id =  ?)";
+        return jdbcTemplate.queryForObject(sql, Integer.class, id, id);
     }
 }

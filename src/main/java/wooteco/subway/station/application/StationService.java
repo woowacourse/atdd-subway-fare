@@ -8,6 +8,7 @@ import wooteco.subway.station.dto.StationResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import wooteco.subway.station.exception.ExistedStationOnPathException;
 
 @Service
 public class StationService {
@@ -35,6 +36,10 @@ public class StationService {
     }
 
     public void deleteStationById(Long id) {
+        System.out.println(stationDao.countStationOccurrenceOnPath(id));
+        if (stationDao.countStationOccurrenceOnPath(id) != 0) {
+            throw new ExistedStationOnPathException();
+        }
         stationDao.deleteById(id);
     }
 }
