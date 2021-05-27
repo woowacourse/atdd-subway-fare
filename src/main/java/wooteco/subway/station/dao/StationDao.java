@@ -1,7 +1,5 @@
 package wooteco.subway.station.dao;
 
-import java.util.List;
-import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -9,6 +7,9 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.station.domain.Station;
+
+import javax.sql.DataSource;
+import java.util.List;
 
 @Repository
 public class StationDao {
@@ -56,8 +57,7 @@ public class StationDao {
     }
 
     public boolean isExistById(Long id) {
-        String sql = "select count(*) from STATION where id = ?";
-        final int counts = jdbcTemplate.queryForObject(sql, Integer.class, id);
-        return counts > 0;
+        String sql = "select EXISTS (select * from STATION where id = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, id);
     }
 }

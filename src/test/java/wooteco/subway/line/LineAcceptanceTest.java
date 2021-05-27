@@ -30,6 +30,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
     private LineRequest lineRequest2;
     private LineRequest lineRequest3;
     private LineRequest lineRequest4;
+    private LineRequest lineRequest5;
+    private LineRequest lineRequest6;
 
     @BeforeEach
     public void setUp() {
@@ -40,9 +42,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
         downStation = 지하철역_등록되어_있음("광교역");
 
         lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 10);
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 15);
-        lineRequest3 = new LineRequest("abc1", "bg-red-600", 강남역.getId(), downStation.getId(), 15);
-        lineRequest4 = new LineRequest("", "bg-red-600", 강남역.getId(), downStation.getId(), 15);
+        lineRequest2 = new LineRequest("구신분당선", "bg-green-600", 강남역.getId(), downStation.getId(), 15);
+        lineRequest3 = new LineRequest("abc1", "bg-blue-600", 강남역.getId(), downStation.getId(), 15);
+        lineRequest4 = new LineRequest("", "bg-white-600", 강남역.getId(), downStation.getId(), 15);
+        lineRequest5 = new LineRequest("신분당선2", "bg-red-600", 강남역.getId(), downStation.getId(), 10);
+        lineRequest6 = new LineRequest("신분당 당당 당당", "bg-white-600", 강남역.getId(), downStation.getId(), 15);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -75,6 +79,16 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_생성_실패됨(response);
     }
 
+    @DisplayName("공백이 섞인 이름으로 노선을 생성한다.")
+    @Test
+    void createLine4() {
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest6);
+
+        // then
+        지하철_노선_생성_실패됨(response);
+    }
+
     @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
     @Test
     void createLineWithDuplicateName() {
@@ -85,7 +99,20 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1);
 
         // then
-        지하철_노선_생성_실패됨(response);
+        지하철_노선_생성_실패됨_중복(response);
+    }
+
+    @DisplayName("기존에 존재하는 지하철 노선 색으로 지하철 노선을 생성한다.")
+    @Test
+    void createLineWithDuplicateColor() {
+        // given
+        지하철_노선_등록되어_있음(lineRequest1);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest5);
+
+        // then
+        지하철_노선_생성_실패됨_중복(response);
     }
 
     @DisplayName("지하철 노선 목록을 조회한다.")
@@ -210,6 +237,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철_노선_생성_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    public static void 지하철_노선_생성_실패됨_중복(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CONFLICT.value());
     }
 
     public static void 지하철_노선_목록_응답됨(ExtractableResponse<Response> response) {
