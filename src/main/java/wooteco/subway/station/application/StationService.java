@@ -7,6 +7,7 @@ import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,12 +19,18 @@ public class StationService {
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
+        final Optional<Station> stationByName = stationDao.findByName(stationRequest.getName());
+        if (stationByName.isPresent()) {
+            throw new DuplicateStationNameException();
+        }
+
         Station station = stationDao.insert(stationRequest.toStation());
         return StationResponse.of(station);
     }
 
     public Station findStationById(Long id) {
-        return stationDao.findById(id);
+        final Optional<Station> station = stationDao.findById(id);
+        return station.orElseThrow(StationNotFoundException::new);
     }
 
     public List<StationResponse> findAllStationResponses() {
@@ -35,6 +42,7 @@ public class StationService {
     }
 
     public void deleteStationById(Long id) {
-        stationDao.deleteById(id);
+        final Station station = findStationById(id);
+        stationDao.deleteById(station.getId());
     }
 }
