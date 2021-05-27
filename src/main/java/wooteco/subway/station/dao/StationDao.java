@@ -37,7 +37,7 @@ public class StationDao {
     }
 
     public List<Station> findAll() {
-        String sql = "select * from STATION";
+        String sql = "select * from STATION order by id asc";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
