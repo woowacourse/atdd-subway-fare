@@ -5,103 +5,216 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
-import wooteco.subway.auth.dto.TokenResponse;
+import wooteco.subway.auth.dto.TokenRequest;
+import wooteco.subway.member.dto.EmailRequest;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
+import static wooteco.subway.auth.AuthAcceptanceTest.loginRequest;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
-    public static final String EMAIL = "email@email.com";
-    public static final String PASSWORD = "password";
-    public static final int AGE = 20;
-    public static final String NEW_EMAIL = "new_email@email.com";
-    public static final String NEW_PASSWORD = "new_password";
-    public static final int NEW_AGE = 30;
 
-    @DisplayName("회원 정보를 관리한다.")
     @Test
-    void manageMember() {
-        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
-        회원_생성됨(createResponse);
-
-        TokenResponse 사용자 = 로그인되어_있음(EMAIL, PASSWORD);
-
-        ExtractableResponse<Response> findResponse = 내_회원_정보_조회_요청(사용자);
-        회원_정보_조회됨(findResponse, EMAIL, AGE);
-
-        ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(사용자, EMAIL, NEW_PASSWORD, NEW_AGE);
-        회원_정보_수정됨(updateResponse);
-
-        ExtractableResponse<Response> deleteResponse = 내_회원_삭제_요청(사용자);
-        회원_삭제됨(deleteResponse);
+    @DisplayName("Email 유효하지 않을 경우의 회원가입")
+    public void registerMemberWhenInvalidEmail() {
+        MemberRequest memberRequest = new MemberRequest("asdf", "password", 20);
+        ExtractableResponse<Response> response = createMemberRequest(memberRequest);
+        assertThat(response.statusCode()).isEqualTo(400);
+        assertThat((String) response.jsonPath().get("error")).isEqualTo("INVALID_INPUT");
     }
 
-    public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
-        MemberRequest memberRequest = new MemberRequest(email, password, age);
+    @Test
+    @DisplayName("Password 유효하지 않을 경우의 회원가입")
+    public void registerMemberWhenInvalidPassword() {
+        MemberRequest memberRequest = new MemberRequest("asdf@asdf.com", " ", 20);
+        ExtractableResponse<Response> response = createMemberRequest(memberRequest);
+        assertThat(response.statusCode()).isEqualTo(400);
+        assertThat((String) response.jsonPath().get("error")).isEqualTo("INVALID_INPUT");
+    }
 
-        return RestAssured
-                .given().log().all()
+    @Test
+    @DisplayName("Age 유효하지 않을 경우의 회원가입")
+    public void registerMemberWhenInvalidAge() {
+        MemberRequest memberRequest = new MemberRequest("asdf", "password", null);
+        ExtractableResponse<Response> response = createMemberRequest(memberRequest);
+        assertThat(response.statusCode()).isEqualTo(400);
+        assertThat((String) response.jsonPath().get("error")).isEqualTo("INVALID_INPUT");
+    }
+
+    @Test
+    @DisplayName("중복 이메일 경우의 회원가입")
+    public void registerMemberWhenDuplicatedEmail() {
+        MemberRequest memberRequest = new MemberRequest("email@email.com", "password", 20);
+        ExtractableResponse<Response> response = createMemberRequest(memberRequest);
+        assertThat(response.statusCode()).isEqualTo(400);
+        assertThat((String) response.jsonPath().get("error")).isEqualTo("DUPLICATED_ID");
+    }
+
+    @Test
+    @DisplayName("유효하지 않은 토큰일 때의 내 정보 조회")
+    public void findMyInfoWhenNotExistsToken() {
+        ExtractableResponse<Response> response = findMemberOfMineRequest("invalidToken");
+        assertThat(response.statusCode()).isEqualTo(401);
+        assertThat((String) response.jsonPath().get("error")).isEqualTo("INVALID_TOKEN");
+    }
+
+    @Test
+    @DisplayName("정상적인 토큰일 때의 내 정보 조회")
+    public void findMyInfoWhenValidToken() {
+        String accessToken = loginRequest(new TokenRequest("email@email.com", "password")).jsonPath().get("accessToken");
+        ExtractableResponse<Response> response = findMemberOfMineRequest(accessToken);
+        MemberResponse memberResponse = response.body().as(MemberResponse.class);
+
+        assertThat(response.statusCode()).isEqualTo(200);
+        assertThat(memberResponse).usingRecursiveComparison()
+                .ignoringFields("id")
+                .isEqualTo(new MemberResponse(null, "email@email.com", 20));
+    }
+
+    @Test
+    @DisplayName("유효하지 않은 토큰일 경우의 정보 수정")
+    public void updateMyInfoWhenInvalidToken() {
+        MemberRequest memberRequest = new MemberRequest("emailmail.com", "password", 30);
+        ExtractableResponse<Response> response = updateMemberOfMineRequest(memberRequest, "asdf");
+
+        assertThat(response.statusCode()).isEqualTo(401);
+        assertThat((String) response.jsonPath().get("error")).isEqualTo("INVALID_TOKEN");
+    }
+
+    @Test
+    @DisplayName("Email 유효하지 않을 경우의 정보 수정")
+    public void updateMyInfoWhenInvalidEmail() {
+        String accessToken = loginRequest(new TokenRequest("email@email.com", "password")).jsonPath().get("accessToken");
+        MemberRequest memberRequest = new MemberRequest("emailmail.com", "password", 30);
+        ExtractableResponse<Response> response = updateMemberOfMineRequest(memberRequest, accessToken);
+
+        assertThat(response.statusCode()).isEqualTo(400);
+        assertThat((String) response.jsonPath().get("error")).isEqualTo("INVALID_INPUT");
+    }
+
+    @Test
+    @DisplayName("Password 유효하지 않을 경우의 정보 수정")
+    public void updateMyInfoWhenInvalidPassword() {
+        String accessToken = loginRequest(new TokenRequest("email@email.com", "password")).jsonPath().get("accessToken");
+        MemberRequest memberRequest = new MemberRequest("email@email.com", " ", 30);
+        ExtractableResponse<Response> response = updateMemberOfMineRequest(memberRequest, accessToken);
+
+        assertThat(response.statusCode()).isEqualTo(400);
+        assertThat((String) response.jsonPath().get("error")).isEqualTo("INVALID_INPUT");
+    }
+
+    @Test
+    @DisplayName("Age 유효하지 않을 경우의 정보 수정")
+    public void updateMyInfoWhenInvalidAge() {
+        String accessToken = loginRequest(new TokenRequest("email@email.com", "password")).jsonPath().get("accessToken");
+        MemberRequest memberRequest = new MemberRequest("email@email.com", "password", -5);
+        ExtractableResponse<Response> response = updateMemberOfMineRequest(memberRequest, accessToken);
+
+        assertThat(response.statusCode()).isEqualTo(400);
+        assertThat((String) response.jsonPath().get("error")).isEqualTo("INVALID_INPUT");
+    }
+
+
+    @Test
+    @DisplayName("정상적인 내 정보 수정")
+    public void updateMyInfo() {
+        String accessToken = loginRequest(new TokenRequest("email@email.com", "password")).jsonPath().get("accessToken");
+        MemberRequest memberRequest = new MemberRequest("email@email.com", "password", 30);
+        ExtractableResponse<Response> response = updateMemberOfMineRequest(memberRequest, accessToken);
+
+        assertThat(response.statusCode()).isEqualTo(200);
+        int age = jdbcTemplate.queryForObject("select age from MEMBER where email = 'email@email.com'", Integer.class);
+        assertThat(age).isEqualTo(30);
+    }
+
+    @Test
+    @DisplayName("유효하지 않은 토큰일 때의 내 정보 삭제")
+    public void deleteMyInfoWhenInvalidToken() {
+        ExtractableResponse<Response> response = deleteMemberOfMineRequest("asdf");
+
+        assertThat(response.statusCode()).isEqualTo(401);
+        assertThat((String) response.jsonPath().get("error")).isEqualTo("INVALID_TOKEN");
+    }
+
+    @Test
+    @DisplayName("유효한은 토큰일 때의 내 정보 삭제")
+    public void deleteMyInfoWhenValidToken() {
+        String accessToken = loginRequest(new TokenRequest("email@email.com", "password")).jsonPath().get("accessToken");
+        ExtractableResponse<Response> response = deleteMemberOfMineRequest(accessToken);
+
+        assertThat(response.statusCode()).isEqualTo(204);
+    }
+
+    @Test
+    @DisplayName("이메일 중복체크 - 중복")
+    public void checkEmailDuplicatedResultDuplicated() {
+        EmailRequest emailRequest = new EmailRequest("email@email.com");
+        ExtractableResponse<Response> response = validateEmailRequest(emailRequest);
+
+        assertThat(response.statusCode()).isEqualTo(400);
+        assertThat((String) response.jsonPath().get("error")).isEqualTo("DUPLICATED_ID");
+    }
+
+    @Test
+    @DisplayName("이메일 중복체크 - 허용")
+    public void checkEmailDuplicatedResultApprove() {
+        EmailRequest emailRequest = new EmailRequest("kang@email.com");
+        ExtractableResponse<Response> response = validateEmailRequest(emailRequest);
+
+        assertThat(response.statusCode()).isEqualTo(204);
+    }
+
+
+    public ExtractableResponse<Response> createMemberRequest(MemberRequest memberRequest) {
+        return RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(memberRequest)
-                .when().post("/members")
-                .then().log().all()
-                .extract();
+                .when()
+                .post("/api/members")
+                .then().extract();
     }
 
-    public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(tokenResponse.getAccessToken())
+    public ExtractableResponse<Response> findMemberOfMineRequest(String token) {
+        return RestAssured.given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/me")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract();
+                .auth().oauth2(token)
+                .when()
+                .get("/api/members/me")
+                .then().extract();
     }
 
-    public static ExtractableResponse<Response> 내_회원_정보_수정_요청(TokenResponse tokenResponse, String email, String password, Integer age) {
-        MemberRequest memberRequest = new MemberRequest(email, password, age);
-
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(tokenResponse.getAccessToken())
+    public ExtractableResponse<Response> updateMemberOfMineRequest(MemberRequest memberRequest, String token) {
+        return RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(token)
                 .body(memberRequest)
-                .when().put("/members/me")
-                .then().log().all()
-                .extract();
+                .when()
+                .put("/api/members/me")
+                .then().extract();
     }
 
-    public static ExtractableResponse<Response> 내_회원_삭제_요청(TokenResponse tokenResponse) {
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(tokenResponse.getAccessToken())
-                .when().delete("/members/me")
-                .then().log().all()
-                .extract();
+    public ExtractableResponse<Response> deleteMemberOfMineRequest(String token) {
+        return RestAssured.given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(token)
+                .when()
+                .delete("/api/members/me")
+                .then().extract();
     }
 
-    public static void 회원_생성됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-    }
-
-    public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
-        MemberResponse memberResponse = response.as(MemberResponse.class);
-        assertThat(memberResponse.getId()).isNotNull();
-        assertThat(memberResponse.getEmail()).isEqualTo(email);
-        assertThat(memberResponse.getAge()).isEqualTo(age);
-    }
-
-    public static void 회원_정보_수정됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    public static void 회원_삭제됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    public ExtractableResponse<Response> validateEmailRequest(EmailRequest emailRequest) {
+        return RestAssured.given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .body(emailRequest)
+                .when()
+                .get("/api/members/check-validation")
+                .then().extract();
     }
 }
