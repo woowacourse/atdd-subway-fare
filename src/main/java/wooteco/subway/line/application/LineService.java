@@ -107,6 +107,7 @@ public class LineService {
     }
 
     public void deleteLineById(Long id) {
+        sectionDao.deleteByLineId(id);
         int updateRow = lineDao.deleteById(id);
         validateUpdate(updateRow);
     }
