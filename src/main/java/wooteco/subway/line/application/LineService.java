@@ -17,7 +17,7 @@ import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 public class LineService {
 
     private static final int ZERO_COUNT = 0;

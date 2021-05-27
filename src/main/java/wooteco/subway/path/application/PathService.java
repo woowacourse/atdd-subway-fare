@@ -15,7 +15,7 @@ import wooteco.subway.station.domain.Station;
 import java.util.List;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 public class PathService {
     private LineService lineService;
     private StationService stationService;

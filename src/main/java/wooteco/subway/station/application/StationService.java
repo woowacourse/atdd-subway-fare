@@ -13,7 +13,7 @@ import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 public class StationService {
 
     private static final int ZERO_COUNT = 0;
