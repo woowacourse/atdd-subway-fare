@@ -1,6 +1,7 @@
 package wooteco.subway.member.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.auth.WrongEmailException;
 import wooteco.subway.exception.duplication.EmailDuplicatedException;
 import wooteco.subway.member.dao.MemberDao;
@@ -10,6 +11,7 @@ import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
 @Service
+@Transactional(readOnly = true)
 public class MemberService {
 
     private final MemberDao memberDao;
@@ -18,38 +20,38 @@ public class MemberService {
         this.memberDao = memberDao;
     }
 
+    @Transactional
     public MemberResponse createMember(MemberRequest request) {
-        validateDuplicatedEmail(request.getEmail());
+        validateEmailDuplication(request.getEmail());
         Member member = memberDao.insert(request.toMember());
         return MemberResponse.of(member);
     }
 
-    private void validateDuplicatedEmail(String email) {
+    private void validateEmailDuplication(String email) {
         memberDao.findByEmail(email)
                 .ifPresent(member -> { throw new EmailDuplicatedException(); });
     }
 
     public MemberResponse findMember(LoginMember loginMember) {
-        Member member = memberDao.findByEmail(loginMember.getEmail())
-                .orElseThrow(WrongEmailException::new);
+        Member member = findMemberByEmail(loginMember.getEmail());
         return MemberResponse.of(member);
-    }
-
-    public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
-        Member member = memberDao.findByEmail(loginMember.getEmail())
-                .orElseThrow(WrongEmailException::new);
-        Member newMember = new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge());
-        memberDao.update(newMember);
-    }
-
-    public void deleteMember(LoginMember loginMember) {
-        Member member = memberDao.findByEmail(loginMember.getEmail())
-                .orElseThrow(WrongEmailException::new);
-        memberDao.deleteById(member.getId());
     }
 
     public Member findMemberByEmail(String email) {
         return memberDao.findByEmail(email)
                 .orElseThrow(WrongEmailException::new);
+    }
+
+    @Transactional
+    public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
+        Member member = findMemberByEmail(loginMember.getEmail());
+        Member newMember = new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge());
+        memberDao.update(newMember);
+    }
+
+    @Transactional
+    public void deleteMember(LoginMember loginMember) {
+        Member member = findMemberByEmail(loginMember.getEmail());
+        memberDao.deleteById(member.getId());
     }
 }

@@ -32,6 +32,13 @@ public class MemberDao {
                 .usingGeneratedKeyColumns("id");
     }
 
+    public Optional<Member> findByEmail(String email) {
+        String sql = "select * from MEMBER where email = ?";
+        return jdbcTemplate.query(sql, rowMapper, email)
+                .stream()
+                .findAny();
+    }
+
     public Member insert(Member member) {
         SqlParameterSource params = new BeanPropertySqlParameterSource(member);
         Long id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
@@ -46,12 +53,5 @@ public class MemberDao {
     public void deleteById(Long id) {
         String sql = "delete from MEMBER where id = ?";
         jdbcTemplate.update(sql, id);
-    }
-
-    public Optional<Member> findByEmail(String email) {
-        String sql = "select * from MEMBER where email = ?";
-        return jdbcTemplate.query(sql, rowMapper, email)
-                .stream()
-                .findAny();
     }
 }

@@ -45,6 +45,13 @@ public class StationService {
     }
 
     @Transactional
+    public void updateStationById(Long id, StationRequest stationRequest) {
+        findStationById(id);
+        validateNameDuplication(stationRequest.getName());
+        stationDao.update(stationRequest.getName(), id);
+    }
+
+    @Transactional
     public void deleteStationById(Long id) {
         findStationById(id);
         validateDeletableStatus(id);
@@ -55,12 +62,5 @@ public class StationService {
         if (stationDao.calculateRegisteredCountsById(id) != 0) {
             throw new StationCannotDeleteException();
         }
-    }
-
-    @Transactional
-    public void updateStationById(Long id, StationRequest stationRequest) {
-        findStationById(id);
-        validateNameDuplication(stationRequest.getName());
-        stationDao.update(stationRequest.getName(), id);
     }
 }
