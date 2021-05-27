@@ -19,7 +19,7 @@ public class Line {
     }
 
     public Line(Long id, String name, String color) {
-       this(id, name, color, 0);
+        this(id, name, color, 0);
     }
 
     public Line(String name, String color, int extraFare) {

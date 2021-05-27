@@ -1,5 +1,7 @@
 package wooteco.subway.member.domain;
 
+import static wooteco.subway.member.domain.MinimumAge.*;
+
 public class LoginMember {
     private Long id;
     private String email;
@@ -28,5 +30,17 @@ public class LoginMember {
 
     public Integer getAge() {
         return age;
+    }
+
+    public boolean isAdult() {
+        return this.age >= ADULT.getValue();
+    }
+
+    public boolean isTeenager() {
+        return this.age >= TEENAGER.getValue();
+    }
+
+    public boolean isChild() {
+        return this.age >= CHILD.getValue();
     }
 }

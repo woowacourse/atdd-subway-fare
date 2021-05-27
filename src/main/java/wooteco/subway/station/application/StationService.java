@@ -54,7 +54,7 @@ public class StationService {
     }
 
     public StationResponse updateStationById(Long id, StationRequest stationRequest) {
-       findStationById(id);
+        findStationById(id);
 
         stationDao.findByName(stationRequest.getName())
                 .filter(station -> station.getName().equals(stationRequest.getName()) && !station.getId().equals(id))
