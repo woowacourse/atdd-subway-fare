@@ -21,13 +21,16 @@ public class StationService {
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
-        final Optional<Station> stationByName = stationDao.findByName(stationRequest.getName());
+        validateDuplicateStationName(stationRequest.getName());
+        Station station = stationDao.insert(stationRequest.toStation());
+        return StationResponse.of(station);
+    }
+
+    private void validateDuplicateStationName(String stationName) {
+        final Optional<Station> stationByName = stationDao.findByName(stationName);
         if (stationByName.isPresent()) {
             throw new DuplicateStationNameException();
         }
-
-        Station station = stationDao.insert(stationRequest.toStation());
-        return StationResponse.of(station);
     }
 
     public Station findStationById(Long id) {
