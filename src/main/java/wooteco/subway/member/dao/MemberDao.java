@@ -56,4 +56,9 @@ public class MemberDao {
         String sql = "select * from MEMBER where email = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, email);
     }
+
+    public boolean findExistingEmail(String email) {
+        String sql = "select exists (select count(*) from MEMBER where email = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, email);
+    }
 }
