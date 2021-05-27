@@ -46,10 +46,10 @@ public class GlobalControllerAdvice {
                 .body(exceptionResponse);
     }
 
-//    @ExceptionHandler(Exception.class)
-//    public ResponseEntity<ExceptionResponse> handleUnhandledException() {
-//        ExceptionResponse exceptionResponse = new ExceptionResponse("Oops!! There's unhandled exception");
-//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                .body(exceptionResponse);
-//    }
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ExceptionResponse> handleUnhandledException() {
+        ExceptionResponse exceptionResponse = new ExceptionResponse("Oops!! There's unhandled exception");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(exceptionResponse);
+    }
 }
