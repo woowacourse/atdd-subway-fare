@@ -1,6 +1,7 @@
 package wooteco.subway.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.domain.Line;
@@ -9,10 +10,7 @@ import wooteco.subway.domain.Sections;
 import wooteco.subway.domain.Station;
 
 import javax.sql.DataSource;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
@@ -50,6 +48,20 @@ public class LineDao {
 
         List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, new Object[]{id});
         return mapLine(result);
+    }
+
+    public Optional<Line> findByName(String name) {
+        String sql = "select * from line where name = ?";
+        return jdbcTemplate.query(sql, lineRowMapper(), name)
+                .stream()
+                .findAny();
+    }
+
+    public Optional<Line> findByColor(String color) {
+        String sql = "select * from line where color = ?";
+        return jdbcTemplate.query(sql, lineRowMapper(), color)
+                .stream()
+                .findAny();
     }
 
     public void update(Line newLine) {
@@ -107,5 +119,14 @@ public class LineDao {
 
     public void deleteById(Long id) {
         jdbcTemplate.update("delete from Line where id = ?", id);
+    }
+
+    private RowMapper<Line> lineRowMapper() {
+        return (rs, rowNum) -> {
+            Long foundId = rs.getLong("id");
+            final String color = rs.getString("color");
+            final String name = rs.getString("name");
+            return new Line(foundId, name, color);
+        };
     }
 }

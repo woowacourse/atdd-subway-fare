@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.auth.acceptance.AuthAcceptanceTest.토큰;
 import static wooteco.subway.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static wooteco.subway.acceptance.LineAcceptanceTest.지하철_노선_조회_요청;
 import static wooteco.subway.acceptance.StationAcceptanceTest.지하철역_등록되어_있음;
@@ -100,7 +101,10 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
 
         // then
-        //지하철_노선에_지하철역_제외됨(removeResponse, 신분당선, Arrays.asList(강남역, 정자역, 광교역));
+        지하철_노선에_지하철역_제외됨(removeResponse, 신분당선, Arrays.asList(
+                new SectionResponse(강남역, 정자역),
+                new SectionResponse(정자역, 광교역)
+        ));
     }
 
     @DisplayName("지하철 노선에 등록된 지하철역이 두개일 때 한 역을 제외한다.")
@@ -113,6 +117,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_제외_실패됨(removeResponse);
     }
 
+
     public static void 지하철_구간_등록되어_있음(LineResponse lineResponse, StationResponse upStation, StationResponse downStation, int distance) {
         지하철_구간_생성_요청(lineResponse, upStation, downStation, distance);
     }
@@ -122,6 +127,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(토큰().getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(sectionRequest)
                 .when().post("/api/lines/{lineId}/sections", line.getId())
@@ -146,6 +152,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(LineResponse line, StationResponse station) {
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(토큰().getAccessToken())
                 .when().delete("/api/lines/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
                 .then().log().all()
                 .extract();

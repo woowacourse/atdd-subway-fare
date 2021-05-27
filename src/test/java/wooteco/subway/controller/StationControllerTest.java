@@ -16,6 +16,7 @@ import wooteco.auth.web.api.LoginInterceptor;
 import wooteco.common.ExceptionAdvice;
 import wooteco.auth.service.AuthService;
 import wooteco.common.exception.badrequest.StationDuplicateNameException;
+import wooteco.common.exception.unauthorizationexception.UnAuthorizationException;
 import wooteco.subway.service.StationService;
 import wooteco.subway.web.dto.request.StationRequest;
 import wooteco.subway.web.dto.response.StationResponse;
@@ -52,15 +53,14 @@ public class StationControllerTest {
     @MockBean
     private JwtTokenProvider jwtTokenProvider;
 
-
     @Test
     @DisplayName("역 생성 - 성공")
     public void create() throws Exception {
         //given
         StationRequest stationRequest = new StationRequest("잠실역");
         StationResponse stationResponse = new StationResponse(1L, "잠실역");
-        given(stationService.saveStation(any(StationRequest.class)))
-                .willReturn(stationResponse);
+        given(stationService.saveStation(any(StationRequest.class))).willReturn(stationResponse);
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         mockMvc.perform(post("/api/stations")
                 .content(objectMapper.writeValueAsBytes(stationRequest))
@@ -72,6 +72,31 @@ public class StationControllerTest {
                 .andExpect(jsonPath("name").value(stationResponse.getName()))
                 .andDo(print())
                 .andDo(document("station-create"));
+    }
+
+    @DisplayName("역 생성 - 실패(인증)")
+    @Test
+    public void createStationFail() throws Exception {
+        //given
+        StationRequest stationRequest = new StationRequest("잠실역");
+        StationResponse stationResponse = new StationResponse(1L, "잠실역");
+
+        given(stationService.saveStation(any(StationRequest.class))).willReturn(stationResponse);
+        given(loginInterceptor.preHandle(any(), any(), any()))
+                .willThrow(UnAuthorizationException.class);
+
+        //when
+        mockMvc.perform(post("/api/stations")
+                .content(objectMapper.writeValueAsString(stationRequest))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+        )
+                // then
+                .andExpect(status().isUnauthorized())
+                .andDo(print())
+                .andDo(document("station-create-fail",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())
+                ));
     }
 
     @Test
@@ -87,6 +112,7 @@ public class StationControllerTest {
         );
         given(stationService.findAllStationResponses())
                 .willReturn(stationResponses);
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         mockMvc.perform(get("/api/stations")
         )
@@ -109,6 +135,7 @@ public class StationControllerTest {
         StationResponse stationResponse = new StationResponse(1L, "잠실역");
         given(stationService.updateStation(any(Long.class), any(String.class)))
                 .willReturn(stationResponse);
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
         //when
         mockMvc.perform(put("/api/stations/1")
                 .content(objectMapper.writeValueAsString(name))
@@ -130,6 +157,7 @@ public class StationControllerTest {
     public void updateStations() throws Exception {
         given(stationService.updateStation(any(), any()))
                 .willThrow(new StationDuplicateNameException("newName"));
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
         final StationRequest stationRequest = new StationRequest("newName");
         mockMvc.perform(put("/api/stations/1")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -147,6 +175,9 @@ public class StationControllerTest {
     @DisplayName("역 삭제 - 성공")
     public void deleteStation() throws Exception {
         //given
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
+
+        //when
         mockMvc.perform(delete("/api/stations/1")
         )
                 .andExpect(status().isNoContent())

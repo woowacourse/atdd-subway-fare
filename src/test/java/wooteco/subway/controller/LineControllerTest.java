@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import wooteco.auth.util.JwtTokenProvider;
 import wooteco.auth.web.api.LoginInterceptor;
 import wooteco.subway.TestDataLoader;
+import wooteco.subway.domain.Line;
 import wooteco.subway.service.LineService;
 import wooteco.subway.web.api.LineController;
 import wooteco.subway.web.dto.request.LineRequest;
@@ -24,6 +25,7 @@ import wooteco.subway.web.dto.response.StationResponse;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -68,7 +70,10 @@ class LineControllerTest {
         LineResponse lineResponse = new LineResponse(1L, "2호선", "bg-green-200",
                 sections
         );
+
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
         given(lineService.saveLine(any(LineRequest.class))).willReturn(lineResponse);
+
         //when
         mockMvc.perform(post("/api/lines")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -100,7 +105,10 @@ class LineControllerTest {
         List<LineResponse> lineResponses = LineResponse.listOf(
                 Arrays.asList(testDataLoader.신분당선(), testDataLoader.이호선())
         );
+
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
         given(lineService.findLineResponses()).willReturn(lineResponses);
+
         //when
         mockMvc.perform(
                 get("/api/lines")
@@ -114,7 +122,7 @@ class LineControllerTest {
                 .andExpect(jsonPath("$[*].sections[*].downStation.name")
                         .value(containsInAnyOrder("정자역", "잠실역", "판교역", "역삼역")))
                 .andDo(print())
-                .andDo(document("line-find",
+                .andDo(document("line-findAll",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint())
                 ));
@@ -127,7 +135,10 @@ class LineControllerTest {
         TestDataLoader testDataLoader = new TestDataLoader();
         LineResponse lineResponse = LineResponse.of(testDataLoader.신분당선());
         Long id = testDataLoader.신분당선().getId();
+
         given(lineService.findLineResponseById(id)).willReturn(lineResponse);
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
+
         // when
         mockMvc.perform(
                 get("/api/lines/" + id)
@@ -146,19 +157,37 @@ class LineControllerTest {
                 ));
     }
 
+
     @Test
     @DisplayName("노선 수정 - 성공")
     public void updateLines() throws Exception {
         // given
+        TestDataLoader testDataLoader = new TestDataLoader();
+        Line line = testDataLoader.이호선();
         LineUpdateRequest lineUpdateRequest = new LineUpdateRequest("2호선", "bg-red-200");
+        LineResponse lineResponse = new LineResponse(
+                line.getId(),
+                line.getName(),
+                "bg-red-200",
+                line.getSortedSections().stream()
+                        .map(SectionResponse::of)
+                        .collect(Collectors.toList())
+        );
+
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
+        given(lineService.updateLine(any(Long.class), any(LineUpdateRequest.class)))
+                .willReturn(lineResponse);
+
         // when
         mockMvc.perform(
-                put("/api/lines/1")
+                put("/api/lines/2")
                         .content(objectMapper.writeValueAsString(lineUpdateRequest))
                         .contentType(MediaType.APPLICATION_JSON)
         )
                 // then
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("name").value(lineResponse.getName()))
+                .andExpect(jsonPath("color").value(lineResponse.getColor()))
                 .andDo(print())
                 .andDo(document("line-update",
                         preprocessRequest(prettyPrint()),
@@ -168,7 +197,10 @@ class LineControllerTest {
 
     @Test
     @DisplayName("노선 삭제 - 성공")
-    public void deleteLine() throws Exception {
+    public void removeLine() throws Exception {
+        // given
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
+
         // when
         mockMvc.perform(
                 delete("/api/lines/1")
@@ -187,6 +219,8 @@ class LineControllerTest {
     public void createSection() throws Exception {
         // given
         SectionRequest sectionRequest = new SectionRequest(1L, 2L, 5);
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
+
         // when
         mockMvc.perform(
                 post("/api/lines/1/sections")
@@ -204,7 +238,10 @@ class LineControllerTest {
 
     @DisplayName("구간 삭제 - 성공")
     @Test
-    public void removeLineStation() throws Exception {
+    public void removeSection() throws Exception {
+        // given
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
+
         // when
         mockMvc.perform(
                 delete("/api/lines/1/sections?stationId=1")

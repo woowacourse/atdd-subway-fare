@@ -12,18 +12,18 @@ import org.springframework.test.web.servlet.MockMvc;
 import wooteco.auth.util.JwtTokenProvider;
 import wooteco.auth.web.api.LoginInterceptor;
 import wooteco.subway.TestDataLoader;
-import wooteco.auth.service.AuthService;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
-import wooteco.subway.service.PathService;
-import wooteco.subway.web.dto.response.PathResponse;
-import wooteco.subway.web.api.PathController;
 import wooteco.subway.domain.Station;
+import wooteco.subway.service.PathService;
+import wooteco.subway.web.api.PathController;
+import wooteco.subway.web.dto.response.PathResponse;
 import wooteco.subway.web.dto.response.StationResponse;
 
 import java.util.Arrays;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
@@ -37,6 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class PathControllerTest {
     @Autowired
     private MockMvc mockMvc;
+
     @MockBean
     private PathService pathService;
     @MockBean
@@ -63,6 +64,7 @@ class PathControllerTest {
                 new PathResponse(StationResponse.listOf(stations), totalDistance);
         final Long source = testDataLoader.강남역().getId();
         final Long target = testDataLoader.정자역().getId();
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
         given(pathService.findPath(source, target)).willReturn(pathResponse);
         mockMvc.perform(get("/api/paths?source=" + source + "&target=" + target))
                 .andExpect(status().isOk())

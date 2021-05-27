@@ -2,6 +2,8 @@ package wooteco.subway.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wooteco.common.exception.badrequest.LineDuplicateColorException;
+import wooteco.common.exception.badrequest.LineDuplicateNameException;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.Line;
@@ -30,6 +32,7 @@ public class LineService {
 
     @Transactional
     public LineResponse saveLine(LineRequest request) {
+        validateLineNameOrColor(request.getName(), request.getColor());
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);
@@ -66,17 +69,20 @@ public class LineService {
     }
 
     @Transactional
-    public void updateLine(Long id, LineUpdateRequest lineUpdateRequest) {
+    public LineResponse updateLine(Long id, LineUpdateRequest lineUpdateRequest) {
+        validateLineNameOrColor(lineUpdateRequest.getName(), lineUpdateRequest.getColor());
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        return findLineResponseById(id);
     }
 
     @Transactional
-    public void deleteLineById(Long id) {
+    public void removeLineById(Long id) {
+        sectionDao.deleteByLineId(id);
         lineDao.deleteById(id);
     }
 
     @Transactional
-    public void addLineStation(Long lineId, SectionRequest request) {
+    public void addSection(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
@@ -87,12 +93,23 @@ public class LineService {
     }
 
     @Transactional
-    public void removeLineStation(Long lineId, Long stationId) {
+    public void removeSection(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
         line.removeSection(station);
 
         sectionDao.deleteByLineId(lineId);
         sectionDao.insertSections(line);
+    }
+
+    public void validateLineNameOrColor(String name, String color) {
+        if (lineDao.findByName(name)
+                .isPresent()) {
+            throw new LineDuplicateNameException(name);
+        }
+        if (lineDao.findByColor(color)
+                .isPresent()) {
+            throw new LineDuplicateColorException(color);
+        }
     }
 }

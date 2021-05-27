@@ -2,7 +2,9 @@ package wooteco.subway.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wooteco.common.exception.badrequest.NotRemovalStationException;
 import wooteco.common.exception.badrequest.StationDuplicateNameException;
+import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Station;
 import wooteco.subway.web.dto.request.StationRequest;
@@ -15,13 +17,20 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class StationService {
     private StationDao stationDao;
+    private SectionDao sectionDao;
 
-    public StationService(StationDao stationDao) {
+    public StationService(StationDao stationDao, SectionDao sectionDao) {
         this.stationDao = stationDao;
+        this.sectionDao = sectionDao;
     }
 
     @Transactional
     public StationResponse saveStation(StationRequest stationRequest) {
+        String name = stationRequest.getName();
+        if (stationDao.findByName(name)
+                .isPresent()) {
+            throw new StationDuplicateNameException(name);
+        }
         Station station = stationDao.insert(stationRequest.toStation());
         return StationResponse.of(station);
     }
@@ -40,6 +49,9 @@ public class StationService {
 
     @Transactional
     public void deleteStationById(Long id) {
+        if (sectionDao.existStation(id)) {
+            throw new NotRemovalStationException(id);
+        }
         stationDao.deleteById(id);
     }
 

@@ -45,6 +45,10 @@ public class Line {
         return sections;
     }
 
+    public List<Section> getSortedSections() {
+        return sections.getSortedSections();
+    }
+
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
