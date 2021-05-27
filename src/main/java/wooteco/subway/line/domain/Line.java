@@ -11,7 +11,7 @@ public class Line {
     private Long id;
     private String name;
     private String color;
-    private Fare extraFare;
+    private Fare extraFare = new Fare(0);
     private Sections sections = new Sections();
 
     public Line() {
