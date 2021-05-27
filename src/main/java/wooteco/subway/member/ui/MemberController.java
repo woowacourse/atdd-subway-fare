@@ -10,6 +10,7 @@ import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.Optional;
@@ -24,7 +25,7 @@ public class MemberController {
     }
 
     @PostMapping("/members")
-    public ResponseEntity<Void> createMember(@RequestBody MemberRequest request) {
+    public ResponseEntity<Void> createMember(@Valid @RequestBody MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
         return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
     }
@@ -55,10 +56,5 @@ public class MemberController {
             throw new AuthorizationException();
         }
         return loginMember.get();
-    }
-
-    @ExceptionHandler(AuthorizationException.class)
-    public ResponseEntity<Void> handleAuthorizationException() {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }
