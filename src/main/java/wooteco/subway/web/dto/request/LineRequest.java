@@ -3,23 +3,28 @@ package wooteco.subway.web.dto.request;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
-import wooteco.subway.web.dto.request.validator.LineName;
+import wooteco.subway.web.dto.validator.SubwayName;
 
 public class LineRequest {
-    @LineName
+
+    @SubwayName
     private String name;
     @NotEmpty
     private String color;
     @NotNull
     @Positive
     private Long upStationId;
+    @NotNull
+    @Positive
     private Long downStationId;
+    @Positive
     private int distance;
 
     public LineRequest() {
     }
 
-    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance) {
+    public LineRequest(String name, String color, Long upStationId, Long downStationId,
+        int distance) {
         this.name = name;
         this.color = color;
         this.upStationId = upStationId;

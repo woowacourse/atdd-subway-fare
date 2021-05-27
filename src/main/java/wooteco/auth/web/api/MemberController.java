@@ -1,5 +1,6 @@
 package wooteco.auth.web.api;
 
+import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.auth.web.AuthenticationPrincipal;
@@ -14,14 +15,14 @@ import java.net.URI;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/api/members")
 public class MemberController {
-    private MemberService memberService;
+    private final MemberService memberService;
 
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
     }
 
     @PostMapping
-    public ResponseEntity createMember(@RequestBody MemberRequest request) {
+    public ResponseEntity createMember(@RequestBody @Valid MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
         return ResponseEntity.created(URI.create("/api/members/" + member.getId())).build();
     }
@@ -33,7 +34,7 @@ public class MemberController {
     }
 
     @PutMapping("/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest param) {
+    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody @Valid MemberRequest param) {
         final MemberResponse memberResponse = memberService.updateMember(loginMember, param);
         return ResponseEntity.ok(memberResponse);
     }

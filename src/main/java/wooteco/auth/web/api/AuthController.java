@@ -1,5 +1,6 @@
 package wooteco.auth.web.api;
 
+import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,14 +13,14 @@ import wooteco.auth.web.dto.response.TokenResponse;
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class AuthController {
-    private AuthService authService;
+    private final AuthService authService;
 
     public AuthController(AuthService authService) {
         this.authService = authService;
     }
 
     @PostMapping("/api/login/token")
-    public ResponseEntity<TokenResponse> login(@RequestBody TokenRequest request) {
+    public ResponseEntity<TokenResponse> login(@RequestBody @Valid TokenRequest request) {
         TokenResponse token = authService.login(request);
         return ResponseEntity.ok().body(token);
     }

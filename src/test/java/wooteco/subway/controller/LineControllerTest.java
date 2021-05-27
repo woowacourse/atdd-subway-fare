@@ -196,4 +196,30 @@ class LineControllerTest {
                 preprocessResponse(prettyPrint())));
     }
 
+    @Test
+    @DisplayName("hello")
+    public void hello() throws Exception{
+        //given
+        final LineRequest lineRequest = new LineRequest("ㄴr는", "bg-red-200", 1L, 2L, 5);
+        final StationResponse 강남역 = new StationResponse(1L, "강남역");
+        final StationResponse 잠실역 = new StationResponse(2L, "잠실역");
+        final SectionResponse sectionResponse = new SectionResponse(1L, 강남역, 잠실역, 5);
+        final LineResponse lineResponse = new LineResponse(1L, "2호선", "bg-red-200",
+            Collections.singletonList(sectionResponse));
+
+        given(lineService.saveLine(any(LineRequest.class)))
+            .willReturn(lineResponse);
+
+        String token = "이것은토큰입니다";
+        given(jwtTokenProvider.validateToken(token)).willReturn(true);
+
+        mockMvc.perform(post("/api/lines")
+            .header("Authorization", "Bearer "+token)
+            .content(objectMapper.writeValueAsString(lineRequest))
+            .contentType(MediaType.APPLICATION_JSON)
+        )
+            .andExpect(status().isBadRequest())
+            .andDo(print());
+    }
+
 }

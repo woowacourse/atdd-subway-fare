@@ -55,7 +55,7 @@ public class MemberControllerTest {
     public void createMember() throws Exception{
         final String email = "test@email.com";
         final int age = 20;
-        final MemberRequest memberRequest = new MemberRequest(email, "1234", age);
+        final MemberRequest memberRequest = new MemberRequest(email, "password", age);
         final MemberResponse memberResponse = new MemberResponse(1L, email, age);
 
         given(memberService.createMember(any(MemberRequest.class)))
@@ -115,7 +115,7 @@ public class MemberControllerTest {
 
         mockMvc.perform(put("/api/members/me")
             .header("Authorization", "Bearer "+token)
-            .content(objectMapper.writeValueAsString(new MemberRequest(email, "1234", newAge)))
+            .content(objectMapper.writeValueAsString(new MemberRequest(email, "password", newAge)))
             .contentType(MediaType.APPLICATION_JSON)
         )
             .andExpect(status().isOk())

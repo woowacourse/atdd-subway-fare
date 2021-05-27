@@ -126,7 +126,7 @@ class StationControllerTest {
         given(stationService.updateStation(any(), any()))
             .willThrow(new StationNameDuplicateException());
 
-        final StationRequest stationRequest = new StationRequest("newName");
+        final StationRequest stationRequest = new StationRequest("새로운역");
 
         mockMvc.perform(put("/api/stations/1")
             .header("Authorization", "Bearer "+token)
@@ -145,7 +145,7 @@ class StationControllerTest {
     public void updateStations() throws Exception {
         String token = "이것은토큰입니다";
         given(jwtTokenProvider.validateToken(token)).willReturn(true);
-        final String newName = "newName";
+        final String newName = "새로운역";
         given(stationService.updateStation(any(), any()))
             .willReturn(new StationResponse(1L, newName));
 

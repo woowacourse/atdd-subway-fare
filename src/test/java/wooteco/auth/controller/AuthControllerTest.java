@@ -45,7 +45,7 @@ public class AuthControllerTest {
     public void login() throws Exception{
         final TokenResponse tokenResponse = new TokenResponse("이것은토큰비밀번호");
         given(authService.login(any())).willReturn(tokenResponse);
-        final TokenRequest tokenRequest = new TokenRequest("test@test.com", "1234");
+        final TokenRequest tokenRequest = new TokenRequest("test@test.com", "password");
 
         mockMvc.perform(post("/api/login/token")
             .content(objectMapper.writeValueAsString(tokenRequest))

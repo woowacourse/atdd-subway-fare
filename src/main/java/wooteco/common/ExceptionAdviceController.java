@@ -2,6 +2,8 @@ package wooteco.common;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wooteco.common.exception.badrequest.BadRequestException;
@@ -26,9 +28,13 @@ public class ExceptionAdviceController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
     }
 
-//     여기서는 어떤 에러를 던질 지 고민해봐야됨
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity serverError(Exception e) {
-        return ResponseEntity.status(500).body(e.getMessage());
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<BindingResult> argumentNotValid(MethodArgumentNotValidException e) {
+        return ResponseEntity.badRequest().body(e.getBindingResult());
     }
+
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity serverError(Exception e) {
+//        return ResponseEntity.status(500).body(e.getMessage());
+//    }
 }
