@@ -38,6 +38,7 @@ public class BaseControllerAdvice extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        return ResponseEntity.badRequest().body(new ErrorResponse(ex.getMessage()));
+        return ResponseEntity.badRequest()
+                .body(new ErrorResponse(ex.getBindingResult().getAllErrors().get(0).getDefaultMessage()));
     }
 }
