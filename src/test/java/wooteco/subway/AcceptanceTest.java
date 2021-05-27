@@ -23,8 +23,7 @@ public class AcceptanceTest {
 
     @LocalServerPort
     private int port;
-
-
+    
     @BeforeEach
     public void setUp(RestDocumentationContextProvider restDocumentation) {
         RestAssured.port = port;

@@ -6,9 +6,9 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
-import static wooteco.subway.auth.AuthAcceptanceTest.회원_등록되어_있음;
 import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static wooteco.subway.line.SectionAcceptanceTest.지하철_구간_등록되어_있음;
+import static wooteco.subway.member.MemberAcceptanceTest.회원_가입_요청;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
 import com.google.common.collect.Lists;
@@ -94,7 +94,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     })
     void findPathByDistanceWithLineExtraFareByDistanceAsLoginMember(String email, int age, int expectedFare, String testCaseName) {
         //when
-        회원_등록되어_있음(email, "PASSWORD", age);
+        회원_가입_요청(email, "PASSWORD", age, "sign-up");
         TokenResponse tokenResponse = 로그인되어_있음(email, "PASSWORD");
         ExtractableResponse<Response> response = 거리_경로_조회_요청_로그인(1L, 4L, tokenResponse.getAccessToken());
 
