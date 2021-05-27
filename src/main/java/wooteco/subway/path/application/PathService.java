@@ -1,5 +1,6 @@
 package wooteco.subway.path.application;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.line.application.LineService;
@@ -15,17 +16,12 @@ import wooteco.subway.station.domain.Station;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 @Transactional
 public class PathService {
-    private LineService lineService;
-    private StationService stationService;
-    private PathFinder pathFinder;
-
-    public PathService(LineService lineService, StationService stationService, PathFinder pathFinder) {
-        this.lineService = lineService;
-        this.stationService = stationService;
-        this.pathFinder = pathFinder;
-    }
+    private final LineService lineService;
+    private final StationService stationService;
+    private final PathFinder pathFinder;
 
     public PathResponse findPath(Long source, Long target, int age) {
         try {
