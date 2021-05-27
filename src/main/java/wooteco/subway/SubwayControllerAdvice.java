@@ -8,14 +8,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wooteco.subway.auth.application.AuthorizationException;
 import wooteco.subway.dto.ErrorResponse;
 import wooteco.subway.exception.DataNotFoundException;
-import wooteco.subway.line.exception.LineCompositionException;
-import wooteco.subway.line.exception.LineRemovalException;
 import wooteco.subway.member.exception.DuplicatedEmailAddressException;
 
 @RestControllerAdvice
 public class SubwayControllerAdvice {
 
-    @ExceptionHandler({LineCompositionException.class, LineRemovalException.class})
+    @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> handleBadRequestException(RuntimeException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(new ErrorResponse(e.getMessage()));
