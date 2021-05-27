@@ -1,6 +1,7 @@
 package wooteco.subway.line.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.duplication.LineColorDuplicatedException;
 import wooteco.subway.exception.duplication.LineNameDuplicatedException;
 import wooteco.subway.exception.notfound.LineNotFoundException;
@@ -18,6 +19,7 @@ import wooteco.subway.station.domain.Station;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class LineService {
 
     private final LineDao lineDao;
@@ -30,22 +32,23 @@ public class LineService {
         this.stationService = stationService;
     }
 
+    @Transactional
     public LineResponse saveLine(LineRequest request) {
-        validateDuplicatedName(request.getName());
-        validateDuplicatedColor(request.getColor());
+        validateNameDuplication(request.getName());
+        validateColorDuplication(request.getColor());
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);
     }
 
-    private void validateDuplicatedName(String name) {
-        if (lineDao.countByName(name) > 0) {
+    private void validateNameDuplication(String name) {
+        if (lineDao.countLineByName(name) > 0) {
             throw new LineNameDuplicatedException();
         }
     }
 
-    private void validateDuplicatedColor(String color) {
-        if (lineDao.countByColor(color) > 0) {
+    private void validateColorDuplication(String color) {
+        if (lineDao.countLineByColor(color) > 0) {
             throw new LineColorDuplicatedException();
         }
     }
@@ -83,23 +86,26 @@ public class LineService {
     }
 
     private void checkIfLineExists(Long id) {
-        if (lineDao.countById(id) == 0) {
+        if (lineDao.countLineById(id) == 0) {
             throw new LineNotFoundException();
         }
     }
 
+    @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         checkIfLineExists(id);
-        validateDuplicatedName(lineUpdateRequest.getName());
-        validateDuplicatedColor(lineUpdateRequest.getColor());
+        validateNameDuplication(lineUpdateRequest.getName());
+        validateColorDuplication(lineUpdateRequest.getColor());
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
+    @Transactional
     public void deleteLineById(Long id) {
         checkIfLineExists(id);
         lineDao.deleteById(id);
     }
 
+    @Transactional
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
@@ -110,6 +116,7 @@ public class LineService {
         sectionDao.insertSections(line);
     }
 
+    @Transactional
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);

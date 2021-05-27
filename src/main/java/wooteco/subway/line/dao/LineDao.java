@@ -2,7 +2,6 @@ package wooteco.subway.line.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -11,7 +10,6 @@ import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.domain.Sections;
 import wooteco.subway.station.domain.Station;
 
-import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.util.Collections;
 import java.util.List;
@@ -20,14 +18,11 @@ import java.util.stream.Collectors;
 
 @Repository
 public class LineDao {
-    private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcInsert insertAction;
 
-    public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    private final JdbcTemplate jdbcTemplate;
+
+    public LineDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("LINE")
-                .usingGeneratedKeyColumns("id");
     }
 
     public Line insert(Line line) {
@@ -120,17 +115,17 @@ public class LineDao {
         jdbcTemplate.update("delete from Line where id = ?", id);
     }
 
-    public int countByName(String name) {
+    public int countLineByName(String name) {
         String sql = "select count(*) from LINE where name = ?";
         return jdbcTemplate.queryForObject(sql, int.class, name);
     }
 
-    public int countByColor(String color) {
+    public int countLineByColor(String color) {
         String sql = "select count(*) from LINE where name = ?";
         return jdbcTemplate.queryForObject(sql, int.class, color);
     }
 
-    public int countById(Long id) {
+    public int countLineById(Long id) {
         String sql = "select count(*) from LINE where id = ?";
         return jdbcTemplate.queryForObject(sql, int.class, id);
     }
