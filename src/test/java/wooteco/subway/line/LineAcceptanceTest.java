@@ -183,7 +183,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(exceptionResponse.getError()).isEqualTo("NO_SUCH_LINE");
     }
 
-    @DisplayName("지하철 노선을 제거한다.")
+    @DisplayName("지하철 노선을 제거한다. 구간도 함께 제거된다.")
     @Test
     void deleteLine() {
         // given

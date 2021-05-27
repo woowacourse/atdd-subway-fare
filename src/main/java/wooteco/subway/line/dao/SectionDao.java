@@ -34,8 +34,8 @@ public class SectionDao {
         return new Section(sectionId, section.getUpStation(), section.getDownStation(), section.getDistance());
     }
 
-    public void deleteByLineId(Long lineId) {
-        jdbcTemplate.update("delete from SECTION where line_id = ?", lineId);
+    public int deleteByLineId(Long lineId) {
+        return jdbcTemplate.update("delete from SECTION where line_id = ?", lineId);
     }
 
     public void insertSections(Line line) {

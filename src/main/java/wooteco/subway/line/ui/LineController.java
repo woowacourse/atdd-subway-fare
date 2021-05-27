@@ -18,7 +18,6 @@ import javax.validation.Valid;
 @RequestMapping("/api/lines")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class LineController {
-
     private LineService lineService;
 
     public LineController(LineService lineService) {
@@ -49,6 +48,7 @@ public class LineController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity deleteLine(@PathVariable Long id) {
+        lineService.deleteSectionsByLineId(id);
         lineService.deleteLineById(id);
         return ResponseEntity.noContent().build();
     }
