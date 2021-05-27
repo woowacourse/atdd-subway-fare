@@ -1,18 +1,24 @@
 package wooteco.subway.validator;
 
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Pattern;
+import javax.validation.Constraint;
+import javax.validation.Payload;
 
-@NotEmpty
-@Pattern(regexp = "^[0-9A-Za-z@$!%*?&]{8,14}$")
+@Constraint(validatedBy = PasswordValidator.class)
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@Inherited
 public @interface SubwayPassword {
 
+    String message() default "비밀번호 형식이 유효하지 않습니다.";
+
+    Class<?>[] groups() default {};
+
+    Class<? extends Payload>[] payload() default {};
+
+    int min();
+
+    int max();
 }

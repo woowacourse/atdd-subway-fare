@@ -10,7 +10,7 @@ public class MemberRequest {
 
     @Email
     private String email;
-    @SubwayPassword
+    @SubwayPassword(min = 8, max = 14)
     private String password;
     @Positive
     @NotNull

@@ -7,7 +7,7 @@ public class TokenRequest {
 
     @Email
     private String email;
-    @SubwayPassword
+    @SubwayPassword(min = 8, max = 14)
     private String password;
 
     public TokenRequest() {
