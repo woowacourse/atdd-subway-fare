@@ -6,6 +6,8 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
@@ -82,6 +84,23 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // then
         지하철_노선_생성_실패됨(response);
     }
+
+    @DisplayName("옳지 않은 이름으로 지하철 노선을 생성한다.")
+    @ParameterizedTest
+    @CsvSource(value = {"!!:color:1:2:10", "name: :1:2:10", "name:color:1:2:-1"}, delimiter = ':')
+    void createInvalidStation(String name, String color, Long upStationId, Long downStationId, int distance) {
+        // given
+        LineRequest lineRequest = new LineRequest(name, color, upStationId, downStationId, distance);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(accessToken, lineRequest);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
+        assertThat(exceptionResponse.getError()).isEqualTo("INVALID_NAME");
+    }
+
 
     @DisplayName("지하철 노선 목록을 조회한다.")
     @Test

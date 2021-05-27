@@ -1,6 +1,7 @@
 package wooteco.subway.line.dto;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -11,12 +12,13 @@ public class LineRequest {
     private String name;
 
     @NotEmpty(message = "노선 색상은 공백이 아닙니다.")
+    @NotBlank(message = "노선 색상에 문자열이 없습니다.")
     private String color;
 
-    @NotEmpty(message = "상행 역은 공백이 아닙니다.")
+    @NotNull(message = "상행 역은 공백이 아닙니다.")
     private Long upStationId;
 
-    @NotEmpty(message = "하행 역은 공백이 아닙니다.")
+    @NotNull(message = "하행 역은 공백이 아닙니다.")
     private Long downStationId;
 
     @NotNull(message = "구간 거리는 공백이 아닙니다.")
