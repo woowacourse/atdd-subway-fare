@@ -14,6 +14,7 @@ import wooteco.subway.auth.AuthAcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
+import wooteco.subway.line.dto.LineWithSectionsResponse;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.ArrayList;
@@ -242,7 +243,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_삭제됨(response);
     }
 
-    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
+    public static LineWithSectionsResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
         LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance);
         return 지하철_노선_등록되어_있음(lineRequest);
     }
@@ -252,7 +253,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         return 로그인_사용자_지하철_노선_등록되어_있음(lineRequest);
     }
 
-    public static LineResponse 지하철_추가요금_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance, int fare) {
+    public static LineWithSectionsResponse 지하철_추가요금_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance, int fare) {
         LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance, fare);
         return 지하철_노선_등록되어_있음(lineRequest);
     }
@@ -262,8 +263,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         return 로그인_사용자_지하철_노선_등록되어_있음(lineRequest);
     }
 
-    public static LineResponse 지하철_노선_등록되어_있음(LineRequest lineRequest) {
-        return 지하철_노선_생성_요청(lineRequest).as(LineResponse.class);
+    public static LineWithSectionsResponse 지하철_노선_등록되어_있음(LineRequest lineRequest) {
+        return 지하철_노선_생성_요청(lineRequest).as(LineWithSectionsResponse.class);
     }
 
     public static LineResponse 로그인_사용자_지하철_노선_등록되어_있음(LineRequest lineRequest) {
@@ -388,7 +389,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철_노선_응답됨(ExtractableResponse<Response> response, LineResponse lineResponse) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        LineResponse resultResponse = response.as(LineResponse.class);
+        LineWithSectionsResponse resultResponse = response.as(LineWithSectionsResponse.class);
         assertThat(resultResponse.getId()).isEqualTo(lineResponse.getId());
     }
 
@@ -397,8 +398,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .map(it -> it.getId())
                 .collect(Collectors.toList());
 
-        List<Long> resultLineIds = response.jsonPath().getList(".", LineResponse.class).stream()
-                .map(LineResponse::getId)
+        List<Long> resultLineIds = response.jsonPath().getList(".", LineWithSectionsResponse.class).stream()
+                .map(LineWithSectionsResponse::getId)
                 .collect(Collectors.toList());
 
         assertThat(resultLineIds).containsAll(expectedLineIds);

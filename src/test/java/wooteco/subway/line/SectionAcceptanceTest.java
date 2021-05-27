@@ -13,6 +13,7 @@ import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.AuthAcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.line.dto.LineResponse;
+import wooteco.subway.line.dto.LineWithSectionsResponse;
 import wooteco.subway.line.dto.SectionRequest;
 import wooteco.subway.station.dto.StationResponse;
 

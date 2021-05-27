@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
+import wooteco.subway.line.dto.LineWithSectionsResponse;
 import wooteco.subway.line.dto.SectionRequest;
 
 import javax.validation.Valid;
@@ -34,14 +35,14 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity createLine(@Valid @RequestBody LineRequest lineRequest) {
+    public ResponseEntity<LineResponse> createLine(@Valid @RequestBody LineRequest lineRequest) {
         LineResponse line = lineService.saveLine(lineRequest);
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
 
     @GetMapping
-    public ResponseEntity<List<LineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findLineResponses());
+    public ResponseEntity<List<LineWithSectionsResponse>> findAllLines() {
+        return ResponseEntity.ok(lineService.findLineWithSectionsResponses());
     }
 
     @GetMapping("/{id}")
