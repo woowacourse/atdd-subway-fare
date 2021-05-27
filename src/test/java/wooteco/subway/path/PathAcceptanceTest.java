@@ -62,9 +62,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         건대입구역 = 지하철역_등록되어_있음("건대입구역", tokenResponse);
 
         신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10, tokenResponse);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10, tokenResponse);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5, tokenResponse);
-        사호선 = 지하철_노선_등록되어_있음("사호선", "bg-red-800", 잠실역, 교대역, 58, tokenResponse);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-500", 교대역, 강남역, 10, tokenResponse);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-400", 교대역, 양재역, 5, tokenResponse);
+        사호선 = 지하철_노선_등록되어_있음("사호선", "bg-red-300", 잠실역, 교대역, 58, tokenResponse);
 
         지하철_구간_등록되어_있음(삼호선, 교대역, 남부터미널역, 3, tokenResponse);
         지하철_구간_등록되어_있음(이호선, 강남역, 강북역, 49, tokenResponse);
