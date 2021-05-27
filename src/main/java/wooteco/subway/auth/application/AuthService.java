@@ -1,5 +1,6 @@
 package wooteco.subway.auth.application;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.auth.dto.TokenRequest;
@@ -22,12 +23,14 @@ public class AuthService {
     }
 
     public TokenResponse login(TokenRequest request) {
+        Member member;
         try {
-            Member member = memberDao.findByEmail(request.getEmail());
-            member.checkPassword(request.getPassword());
-        } catch (Exception e) {
+            member = memberDao.findByEmail(request.getEmail());
+        } catch (DataAccessException e) {
             throw new AuthorizationException("존재하지 않는 계정입니다.");
         }
+        member.checkPassword(request.getPassword());
+
         String token = jwtTokenProvider.createToken(request.getEmail());
         return new TokenResponse(token);
     }
