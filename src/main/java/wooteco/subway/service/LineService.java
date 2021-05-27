@@ -2,6 +2,8 @@ package wooteco.subway.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wooteco.common.exception.badrequest.LineColorDuplicateException;
+import wooteco.common.exception.badrequest.LineNameDuplicateException;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.Line;
@@ -30,9 +32,19 @@ public class LineService {
 
     @Transactional
     public LineResponse saveLine(LineRequest request) {
+        validateLineRequest(request);
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);
+    }
+
+    private void validateLineRequest(LineRequest request) {
+        if(lineDao.findByName(request.getName()).isPresent()) {
+            throw new LineNameDuplicateException();
+        }
+        if(lineDao.findByColor(request.getColor()).isPresent()) {
+            throw new LineColorDuplicateException();
+        }
     }
 
     private Section addInitSection(Line line, LineRequest request) {

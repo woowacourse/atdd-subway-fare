@@ -25,8 +25,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import wooteco.auth.util.JwtTokenProvider;
 import wooteco.common.ExceptionAdviceController;
-import wooteco.auth.service.AuthService;
-import wooteco.common.exception.badrequest.StationNameExistsException;
+import wooteco.common.exception.badrequest.StationNameDuplicateException;
 import wooteco.subway.service.StationService;
 import wooteco.subway.web.dto.request.StationRequest;
 import wooteco.subway.web.dto.response.StationResponse;
@@ -125,7 +124,7 @@ class StationControllerTest {
         given(jwtTokenProvider.validateToken(token)).willReturn(true);
 
         given(stationService.updateStation(any(), any()))
-            .willThrow(new StationNameExistsException());
+            .willThrow(new StationNameDuplicateException());
 
         final StationRequest stationRequest = new StationRequest("newName");
 

@@ -1,5 +1,6 @@
 package wooteco.subway.dao;
 
+import java.util.Optional;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -52,5 +53,11 @@ public class SectionDao {
                 .collect(Collectors.toList());
 
         simpleJdbcInsert.executeBatch(batchValues.toArray(new Map[sections.size()]));
+    }
+
+    public boolean existStation(Long id) {
+        String sql = "select count(*) from SECTION where up_station_id=? or down_station_id=?";
+        final Integer count = jdbcTemplate.queryForObject(sql, Integer.class, id, id);
+        return count > 0;
     }
 }

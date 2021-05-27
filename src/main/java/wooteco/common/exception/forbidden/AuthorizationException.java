@@ -1,14 +1,10 @@
 package wooteco.common.exception.forbidden;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
-@ResponseStatus(HttpStatus.UNAUTHORIZED)
 public class AuthorizationException extends RuntimeException {
-    public AuthorizationException() {
-    }
 
-    public AuthorizationException(String message) {
-        super(message);
+    private static final String MESSAGE = "잘못된 인증 정보입니다.";
+
+    public AuthorizationException() {
+        super(MESSAGE);
     }
 }

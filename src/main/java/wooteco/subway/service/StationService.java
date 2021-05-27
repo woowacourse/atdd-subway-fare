@@ -2,7 +2,9 @@ package wooteco.subway.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.common.exception.badrequest.StationNameExistsException;
+import wooteco.common.exception.badrequest.NotRemovalStationException;
+import wooteco.common.exception.badrequest.StationNameDuplicateException;
+import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
 import wooteco.subway.domain.Station;
 import wooteco.subway.web.dto.request.StationRequest;
@@ -15,13 +17,18 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class StationService {
     private final StationDao stationDao;
+    private final SectionDao sectionDao;
 
-    public StationService(StationDao stationDao) {
+    public StationService(StationDao stationDao, SectionDao sectionDao) {
         this.stationDao = stationDao;
+        this.sectionDao = sectionDao;
     }
 
     @Transactional
     public StationResponse saveStation(StationRequest stationRequest) {
+        if(stationDao.findByName(stationRequest.getName()).isPresent()) {
+            throw new StationNameDuplicateException();
+        }
         Station station = stationDao.insert(stationRequest.toStation());
         return StationResponse.of(station);
     }
@@ -40,13 +47,16 @@ public class StationService {
 
     @Transactional
     public void deleteStationById(Long id) {
+        if (sectionDao.existStation(id)) {
+            throw new NotRemovalStationException();
+        }
         stationDao.deleteById(id);
     }
 
     @Transactional
     public StationResponse updateStation(Long id, String name) {
         if (stationDao.findByName(name).isPresent()) {
-            throw new StationNameExistsException();
+            throw new StationNameDuplicateException();
         }
         stationDao.updateName(id, name);
         return new StationResponse(id, name);
