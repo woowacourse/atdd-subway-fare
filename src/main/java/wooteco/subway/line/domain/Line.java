@@ -1,8 +1,8 @@
 package wooteco.subway.line.domain;
 
-import wooteco.subway.station.domain.Station;
-
 import java.util.List;
+
+import wooteco.subway.station.domain.Station;
 
 public class Line {
     private Long id;

@@ -19,7 +19,8 @@ public class Price {
 
     private int price;
 
-    public Price() {}
+    public Price() {
+    }
 
     public Price(int price) {
         this.price = price;

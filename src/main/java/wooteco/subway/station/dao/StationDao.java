@@ -1,15 +1,17 @@
 package wooteco.subway.station.dao;
 
+import java.util.List;
+
+import javax.sql.DataSource;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import wooteco.subway.station.domain.Station;
 
-import javax.sql.DataSource;
-import java.util.List;
+import wooteco.subway.station.domain.Station;
 
 @Repository
 public class StationDao {
@@ -17,17 +19,16 @@ public class StationDao {
     private SimpleJdbcInsert insertAction;
 
     private RowMapper<Station> rowMapper = (rs, rowNum) ->
-            new Station(
-                    rs.getLong("id"),
-                    rs.getString("name")
-            );
-
+        new Station(
+            rs.getLong("id"),
+            rs.getString("name")
+        );
 
     public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("STATION")
-                .usingGeneratedKeyColumns("id");
+            .withTableName("STATION")
+            .usingGeneratedKeyColumns("id");
     }
 
     public Station insert(Station station) {

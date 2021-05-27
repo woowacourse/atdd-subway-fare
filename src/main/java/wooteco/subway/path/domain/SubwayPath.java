@@ -1,9 +1,9 @@
 package wooteco.subway.path.domain;
 
+import java.util.List;
+
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.station.domain.Station;
-
-import java.util.List;
 
 public class SubwayPath {
     private List<SectionEdge> sectionEdges;
@@ -28,7 +28,7 @@ public class SubwayPath {
             .sum();
     }
 
-    public int findMaxExtraPrice(){
+    public int findMaxExtraPrice() {
         return this.sectionEdges.stream()
             .map(SectionEdge::getLine)
             .mapToInt(Line::getExtraFare)
