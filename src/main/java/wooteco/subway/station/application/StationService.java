@@ -5,6 +5,8 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.DuplicatedStationNameException;
+import wooteco.subway.exception.cannotRemoveStationException;
+import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;
@@ -14,10 +16,13 @@ import wooteco.subway.station.dto.StationResponse;
 @Transactional(readOnly = true)
 public class StationService {
 
+    public static final int ZERO_COUNT = 0;
     private StationDao stationDao;
+    private SectionDao sectionDao;
 
-    public StationService(StationDao stationDao) {
+    public StationService(StationDao stationDao, SectionDao sectionDao) {
         this.stationDao = stationDao;
+        this.sectionDao = sectionDao;
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
@@ -38,6 +43,9 @@ public class StationService {
     }
 
     public void deleteStationById(Long id) {
+        if (sectionDao.countSectionByStationId(id) > ZERO_COUNT) {
+            throw new cannotRemoveStationException();
+        }
         stationDao.deleteById(id);
     }
 
