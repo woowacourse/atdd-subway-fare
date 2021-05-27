@@ -63,4 +63,8 @@ public class Section {
     public boolean isAfter(Section last) {
         return upStation.equals(last.getDownStation());
     }
+
+    public boolean isSameUpStation(Station station) {
+        return upStation.equals(station);
+    }
 }

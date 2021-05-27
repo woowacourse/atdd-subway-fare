@@ -115,8 +115,8 @@ public class LineDao {
         return jdbcTemplate.queryForObject(query, Boolean.class, newName, currentName);
     }
 
-    public boolean isExistsColor(String color) {
-        String query = "SELECT EXISTS (SELECT * FROM LINE WHERE color = ?)";
-        return jdbcTemplate.queryForObject(query, Boolean.class, color);
+    public boolean isExistsColor(String color, String currentColor) {
+        String query = "SELECT EXISTS (SELECT * FROM LINE WHERE color IN (?) AND color NOT IN (?))";
+        return jdbcTemplate.queryForObject(query, Boolean.class, color, currentColor);
     }
 }

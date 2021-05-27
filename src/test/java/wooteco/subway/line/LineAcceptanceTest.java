@@ -11,13 +11,12 @@ import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.exception.ExceptionResponse;
-import wooteco.subway.line.dto.LineRequest;
-import wooteco.subway.line.dto.LineResponse;
-import wooteco.subway.line.dto.SectionInLineResponse;
+import wooteco.subway.line.dto.*;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
@@ -133,10 +132,52 @@ public class LineAcceptanceTest extends AcceptanceTest {
     void updateLine() {
         // given
         LineResponse lineResponse = 지하철_노선_등록되어_있음(신분당선);
-        LineRequest 구호선 = new LineRequest("구호선", "gold-color", 강남역.getId(), 광교역.getId(), 15);
+        LineRequest 구호선 = new LineRequest("구호선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_수정_요청(사용자, lineResponse, 구호선);
+
+        // then
+        지하철_노선_수정됨(response);
+    }
+
+    @DisplayName("수정 - 이름과 색상에 변경 사항이 없는 경우")
+    @Test
+    void updateLineWhenNotExistsChanges() {
+        // given
+        LineResponse lineResponse = 지하철_노선_등록되어_있음(신분당선);
+        LineRequest 구호선 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(사용자, lineResponse, 구호선);
+
+        // then
+        지하철_노선_수정됨(response);
+    }
+
+    @DisplayName("수정 - 이름만 변경된 경우")
+    @Test
+    void updateLineWhenChangeName() {
+        // given
+        LineResponse lineResponse = 지하철_노선_등록되어_있음(신분당선);
+        LineRequest 새로운노선 = new LineRequest("새로운노선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(사용자, lineResponse, 새로운노선);
+
+        // then
+        지하철_노선_수정됨(response);
+    }
+
+    @DisplayName("수정 - 색상만 변경된 경우")
+    @Test
+    void updateLineWhenChangeColor() {
+        // given
+        LineResponse lineResponse = 지하철_노선_등록되어_있음(신분당선);
+        LineRequest 새로운노선 = new LineRequest("신분당선", "bg-red-700", 강남역.getId(), 광교역.getId(), 10);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(사용자, lineResponse, 새로운노선);
 
         // then
         지하철_노선_수정됨(response);
@@ -147,10 +188,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
     void updateLineWhenExistsColor() {
         // given
         LineResponse lineResponse = 지하철_노선_등록되어_있음(신분당선);
-        LineRequest 구호선 = new LineRequest("구호선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15);
+        지하철_노선_등록되어_있음(구신분당선);
+        LineRequest 새로운노선 = new LineRequest("신분당선", "bg-red-700", 강남역.getId(), 광교역.getId(), 15);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_수정_요청(사용자, lineResponse, 구호선);
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(사용자, lineResponse, 새로운노선);
 
         // then
         assertThat(response.as(ExceptionResponse.class).getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -287,15 +329,15 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철_노선_응답됨(ExtractableResponse<Response> response, LineResponse lineResponse) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        LineResponse resultResponse = response.as(LineResponse.class);
+        LineWithTransferLinesAndStationsResponse resultResponse = response.as(LineWithTransferLinesAndStationsResponse.class);
 
         assertThat(resultResponse.getId()).isEqualTo(lineResponse.getId());
         assertThat(resultResponse.getName()).isEqualTo("신분당선");
         assertThat(resultResponse.getColor()).isEqualTo("bg-red-600");
 
-        assertThat(resultResponse.getStations())
-                .usingRecursiveComparison()
-                .isEqualTo(Arrays.asList(강남역, 광교역));
+        assertThat(resultResponse.getStations().stream()
+                .map(StationsResponseInLine::getName)
+                .collect(Collectors.toList())).isEqualTo(Arrays.asList("강남역", "광교역"));
     }
 
     public static void 지하철_노선_목록_포함됨(ExtractableResponse<Response> response, List<LineResponse> createdResponses) {

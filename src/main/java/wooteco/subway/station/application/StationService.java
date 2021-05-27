@@ -2,6 +2,7 @@ package wooteco.subway.station.application;
 
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import wooteco.subway.exception.InvalidInsertException;
 import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
@@ -25,7 +26,7 @@ public class StationService {
             Station station = stationDao.insert(stationRequest.toStation());
             return StationResponse.of(station);
         } catch (DuplicateKeyException e) {
-            throw new IllegalArgumentException("이미 존재하는 지하철 역입니다");
+            throw new InvalidInsertException("이미 존재하는 지하철 역입니다");
         }
     }
 
@@ -46,16 +47,20 @@ public class StationService {
 
     public void deleteStationById(Long id) {
         if (stationDao.isOnSection(id)) {
-            throw new IllegalArgumentException("이미 노선에 등록된 지하철 역입니다");
+            throw new InvalidInsertException("이미 노선에 등록된 지하철 역입니다");
         }
         stationDao.deleteById(id);
     }
 
     public StationResponse updateName(Long id, StationNameRequest req) {
         if (stationDao.findByName(req.getName()) != null) {
-            throw new IllegalArgumentException("이미 존재하는 지하철 역입니다");
+            throw new InvalidInsertException("이미 존재하는 지하철 역입니다");
         }
         Station station = stationDao.updateName(id, req.getName());
         return StationResponse.of(station);
+    }
+
+    public List<Station> findAll() {
+        return stationDao.findAll();
     }
 }

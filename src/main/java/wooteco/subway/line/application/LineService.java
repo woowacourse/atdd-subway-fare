@@ -32,7 +32,7 @@ public class LineService {
             persistLine.addSection(addInitSection(persistLine, request));
             return LineResponse.of(persistLine);
         } catch (DuplicateKeyException e) {
-            throw new IllegalArgumentException("지하철 노선 이름이 이미 존재합니다");
+            throw new InvalidInsertException("지하철 노선 이름이 이미 존재합니다");
         }
     }
 
@@ -46,27 +46,60 @@ public class LineService {
         return null;
     }
 
-    private void validateStationsInSection(Station upStation, Station downStation) {
-        if (upStation.equals(downStation)) {
-            throw new InvalidInsertException("유효하지 않는 요청 값입니다");
-        }
-    }
-
-    public List<LineResponse> findLineResponses() {
+    public List<LineWithTransferLinesAndStationsResponse> findLineResponses() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
-                .map(line -> LineResponse.of(line))
+                .map(this::getLineWithTransferLinesAndStationsResponse)
                 .collect(Collectors.toList());
     }
 
     public List<Line> findLines() {
-        return lineDao.findAll();
+        List<Line> lines = lineDao.findAll();
+        return lines;
     }
 
-    public LineResponse findLineResponseById(Long id) {
+    public LineWithTransferLinesAndStationsResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
+        return getLineWithTransferLinesAndStationsResponse(persistLine);
     }
+
+    private LineWithTransferLinesAndStationsResponse getLineWithTransferLinesAndStationsResponse(Line persistLine) {
+        List<Line> persistLines = lineDao.findAll();
+        List<Station> stationInLine = persistLine.getStations();
+
+        List<StationsResponseInLine> stationsResponseInLines = stationInLine.stream()
+                .map(station -> createResponse(persistLine, persistLines, station))
+                .collect(Collectors.toList());
+
+        return LineWithTransferLinesAndStationsResponse.of(persistLine, stationsResponseInLines);
+    }
+
+    private StationsResponseInLine createResponse(Line persistLine, List<Line> persistLines, Station station) {
+        List<TransferLinesResponse> transferLinesResponse = makeLineWithTransferLineResponse(persistLine, persistLines, station);
+        int nextStationDistance = persistLine.getNextStationDistance(station);
+        return StationsResponseInLine.of(station, nextStationDistance, transferLinesResponse);
+    }
+
+    private List<TransferLinesResponse> makeLineWithTransferLineResponse(Line persistLine, List<Line> persistLines, Station station) {
+        List<Line> transferLine = persistLines.stream()
+                .filter(line -> line.contain(station))
+                .collect(Collectors.toList());
+        transferLine.remove(persistLine);
+        return transferLine.stream()
+                .map(TransferLinesResponse::of)
+                .collect(Collectors.toList());
+    }
+
+//    private List<LineWithTransferLineResponse> createTransferLineResponse(Line persistLine, List<Station> stationInLine, List<Line> lines) {
+//        List<Line> transferLine = stationInLine.stream()
+//                .flatMap(station -> lines.stream()
+//                        .filter(line -> line.contain(station)))
+//                .collect(Collectors.toList());
+//        transferLine.remove(persistLine);
+//        return transferLine.stream()
+//                .map(LineWithTransferLineResponse::of)
+//                .collect(Collectors.toList());
+//    }
 
     public Line findLineById(Long id) {
         return lineDao.findById(id);
@@ -75,21 +108,21 @@ public class LineService {
     public LineUpdateResponse updateLine(Long id, LineRequest lineUpdateRequest) {
         Line currentLine = lineDao.findById(id);
         validatesChangeName(lineUpdateRequest.getName(), currentLine.getName());
-        validatesChangeColor(lineUpdateRequest.getColor());
+        validatesChangeColor(lineUpdateRequest.getColor(), currentLine.getColor());
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
         Line line = lineDao.findById(id);
         return LineUpdateResponse.of(line);
     }
 
-    private void validatesChangeColor(String color) {
-        if (lineDao.isExistsColor(color)) {
-            throw new InvalidInsertException("중복된 색상이 존재합니다.");
+    private void validatesChangeColor(String newColor, String currentColor) {
+        if (lineDao.isExistsColor(newColor, currentColor)) {
+            throw new InvalidInsertException("지하철 노선 색깔이 이미 존재합니다");
         }
     }
 
     private void validatesChangeName(String newName, String currentName) {
         if (lineDao.existNewNameExceptCurrentName(newName, currentName)) {
-            throw new IllegalArgumentException("지하철 노선 이름이 이미 존재합니다");
+            throw new InvalidInsertException("지하철 노선 이름이 이미 존재합니다");
         }
     }
 

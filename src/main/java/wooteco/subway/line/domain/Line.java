@@ -47,11 +47,6 @@ public class Line {
         return sections;
     }
 
-    public void update(Line line) {
-        this.name = line.getName();
-        this.color = line.getColor();
-    }
-
     public void addSection(Station upStation, Station downStation, int distance) {
         Section section = new Section(upStation, downStation, distance);
         sections.addSection(section);
@@ -80,5 +75,13 @@ public class Line {
         return sections.getSections().stream()
                 .mapToInt(Section::getDistance)
                 .sum();
+    }
+
+    public boolean contain(Station station) {
+        return sections.getStations().stream().anyMatch(st -> st.equals(station));
+    }
+
+    public int getNextStationDistance(Station station) {
+        return sections.getNextStationDistance(station);
     }
 }

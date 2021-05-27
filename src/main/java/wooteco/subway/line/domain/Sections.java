@@ -115,7 +115,7 @@ public class Sections {
 
     public void removeStation(Station station) {
         if (sections.size() <= 1) {
-            throw new IllegalArgumentException("유효하지 않는 요청 값입니다");
+            throw new InvalidInsertException("유효하지 않는 요청 값입니다");
         }
 
         Optional<Section> upSection = sections.stream()
@@ -177,5 +177,13 @@ public class Sections {
             return;
         }
         waiting.add(current);
+    }
+
+    public int getNextStationDistance(Station station) {
+        return sections.stream()
+                .filter(section -> section.isSameUpStation(station))
+                .mapToInt(Section::getDistance)
+                .findFirst()
+                .orElse(0);
     }
 }
