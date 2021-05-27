@@ -67,7 +67,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     void testChangePasswordWhenInvalidPassword() {
         ExtractableResponse<Response> notValidPwRes = 내_비밀번호_수정_요청(신규회원, PASSWORD + "!", NEW_PASSWORD);
 
-        assertThat(notValidPwRes.as(ExceptionResponse.class).getMessage()).isEqualTo("현재 비밀번호를 다시 확인해주세요");
+        assertThat(notValidPwRes.as(ExceptionResponse.class).getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
@@ -255,7 +255,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
         MemberResponse memberResponse = response.as(MemberResponse.class);
-        assertThat(memberResponse.getId()).isEqualTo(1);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(memberResponse.getEmail()).isEqualTo(email);
         assertThat(memberResponse.getAge()).isEqualTo(age);
     }
