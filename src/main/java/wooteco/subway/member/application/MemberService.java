@@ -1,8 +1,11 @@
 package wooteco.subway.member.application;
 
 import org.apache.commons.logging.Log;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
@@ -36,4 +39,11 @@ public class MemberService {
         Member member = memberDao.findByEmail(loginMember.getEmail());
         memberDao.deleteById(member.getId());
     }
+
+    public void checkEmail(String email) {
+        if (memberDao.isDuplicateEmail(email)) {
+            throw new IllegalArgumentException("이미 사용된 이메일입니다.");
+        }
+    }
+
 }

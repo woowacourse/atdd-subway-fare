@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import wooteco.subway.member.domain.Member;
 
 import javax.sql.DataSource;
+import java.util.Objects;
 
 @Repository
 public class MemberDao {
@@ -55,5 +56,10 @@ public class MemberDao {
     public Member findByEmail(String email) {
         String sql = "select * from MEMBER where email = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, email);
+    }
+
+    public boolean isDuplicateEmail(String email) {
+        String sql = "SELECT EXISTS (SELECT * FROM member WHERE email = ?)";
+        return Objects.requireNonNull(jdbcTemplate.queryForObject(sql, Boolean.class, email));
     }
 }

@@ -1,5 +1,6 @@
 package wooteco.subway.member.ui;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.auth.application.AuthorizationException;
@@ -22,6 +23,7 @@ public class MemberController {
 
     @PostMapping("/members")
     public ResponseEntity createMember(@RequestBody MemberRequest request) {
+        System.out.println(request.getEmail());
         MemberResponse member = memberService.createMember(request);
         return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
     }
@@ -47,9 +49,21 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
+    @PostMapping("/members/email-check")
+    public ResponseEntity emailCheck(@RequestBody MemberRequest memberRequest) {
+        String email = memberRequest.getEmail();
+        memberService.checkEmail(email);
+        return ResponseEntity.ok().build();
+    }
+
     private void checkAuth(LoginMember loginMember) {
         if (loginMember.getId() == null) {
             throw new AuthorizationException();
         }
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity duplicateEmail(Exception e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
     }
 }
