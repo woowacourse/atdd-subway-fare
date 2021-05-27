@@ -110,6 +110,6 @@ public class LineDao {
     }
 
     public int deleteById(Long id) {
-        return jdbcTemplate.update("delete from Line where id = ?", id);
+        return jdbcTemplate.update("delete from LINE where id = ?", id);
     }
 }
