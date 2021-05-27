@@ -11,6 +11,7 @@ import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.dto.*;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
+import wooteco.subway.station.dto.StationTransferLinesDto;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -65,9 +66,18 @@ public class LineService {
         return lineDao.findAll();
     }
 
-    public LineResponse findLineResponseById(Long id) {
+    public List<LineStationWithTransferLinesResponse> findLinesWithStationsTransferLines() {
+        List<Line> persistLines = findLines();
+        List<StationTransferLinesDto> allStationWithTransferLines = stationService.findAllWithTransferLines();
+        return persistLines.stream()
+                .map(line -> LineStationWithTransferLinesResponse.of(line, allStationWithTransferLines))
+                .collect(Collectors.toList());
+    }
+
+    public LineStationWithTransferLinesResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
+        List<StationTransferLinesDto> allStationWithTransferLines = stationService.findAllWithTransferLines();
+        return LineStationWithTransferLinesResponse.of(persistLine, allStationWithTransferLines);
     }
 
     public Line findLineById(Long id) {

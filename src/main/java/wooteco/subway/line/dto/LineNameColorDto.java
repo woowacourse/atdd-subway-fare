@@ -1,18 +1,17 @@
 package wooteco.subway.line.dto;
 
-public class LineNameColorResponse {
+public class LineNameColorDto {
     private Long id;
     private String name;
     private String color;
 
-    public LineNameColorResponse(Long id, String name, String color) {
+    public LineNameColorDto() {
+    }
+
+    public LineNameColorDto(Long id, String name, String color) {
         this.id = id;
         this.name = name;
         this.color = color;
-    }
-
-    public static LineNameColorResponse of(LineNameColorDto transferLine) {
-        return new LineNameColorResponse(transferLine.getId(), transferLine.getName(), transferLine.getColor());
     }
 
     public Long getId() {

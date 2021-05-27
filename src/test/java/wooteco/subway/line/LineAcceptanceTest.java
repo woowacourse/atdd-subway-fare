@@ -13,6 +13,7 @@ import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.exception.dto.ExceptionResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
+import wooteco.subway.line.dto.LineStationWithTransferLinesResponse;
 import wooteco.subway.line.dto.LineUpdateRequest;
 import wooteco.subway.member.MemberAcceptanceTest;
 import wooteco.subway.station.dto.StationResponse;
@@ -27,7 +28,7 @@ import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록�
 @DisplayName("지하철 노선 관련 기능")
 public class LineAcceptanceTest extends AcceptanceTest {
     private StationResponse 강남역;
-    private StationResponse downStation;
+    private StationResponse 광교역;
     private LineRequest lineRequest1;
     private LineRequest lineRequest2;
     private static TokenResponse tokenResponse;
@@ -39,10 +40,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // given
         tokenResponse = MemberAcceptanceTest.회원_로그인된_상태();
         강남역 = 지하철역_등록되어_있음("강남역", tokenResponse);
-        downStation = 지하철역_등록되어_있음("광교역", tokenResponse);
+        광교역 = 지하철역_등록되어_있음("광교역", tokenResponse);
 
-        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 10);
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-400", 강남역.getId(), downStation.getId(), 15);
+        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
+        lineRequest2 = new LineRequest("구신분당선", "bg-red-400", 강남역.getId(), 광교역.getId(), 15);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -110,13 +111,13 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void createLineWithInvalidValue() {
         // given
-        LineRequest 노선이름_빈값 = new LineRequest("", "bg-red-600", 강남역.getId(), downStation.getId(), 10);
-        LineRequest 노선색깔_빈값 = new LineRequest("신분당선", "", 강남역.getId(), downStation.getId(), 10);
-        LineRequest 상행역_NULL = new LineRequest("신분당선", "bg-red-600", null, downStation.getId(), 10);
-        LineRequest 상행역_음수 = new LineRequest("신분당선", "bg-red-600", -1L, downStation.getId(), 10);
+        LineRequest 노선이름_빈값 = new LineRequest("", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
+        LineRequest 노선색깔_빈값 = new LineRequest("신분당선", "", 강남역.getId(), 광교역.getId(), 10);
+        LineRequest 상행역_NULL = new LineRequest("신분당선", "bg-red-600", null, 광교역.getId(), 10);
+        LineRequest 상행역_음수 = new LineRequest("신분당선", "bg-red-600", -1L, 광교역.getId(), 10);
         LineRequest 하행역_NULL = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), null, 10);
         LineRequest 하행역_음수 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), -1L, 10);
-        LineRequest 구간거리_음수 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), -1);
+        LineRequest 구간거리_음수 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), -1);
 
         // when
         ExtractableResponse<Response> 노선이름_빈값_응답 = 지하철_노선_생성_요청(노선이름_빈값, tokenResponse);
@@ -285,13 +286,13 @@ public class LineAcceptanceTest extends AcceptanceTest {
         잘못된_토큰으로_요청을_보냄(response);
     }
 
-    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
-        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance);
+    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse 광교역, int distance) {
+        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), 광교역.getId(), distance);
         return 지하철_노선_등록되어_있음(lineRequest);
     }
 
-    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance, TokenResponse tokenResponse) {
-        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance);
+    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse 광교역, int distance, TokenResponse tokenResponse) {
+        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), 광교역.getId(), distance);
         return 지하철_노선_등록되어_있음(lineRequest, tokenResponse);
     }
 
@@ -340,7 +341,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/api/lines")
+                .when().log().all().get("/api/lines")
                 .then().log().all()
                 .extract();
     }
@@ -349,7 +350,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/api/lines/{lineId}", response.getId())
+                .pathParam("lineId", response.getId())
+                .when().get("/api/lines/{lineId}")
                 .then().log().all()
                 .extract();
     }
@@ -432,7 +434,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철_노선_응답됨(ExtractableResponse<Response> response, LineResponse lineResponse) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        LineResponse resultResponse = response.as(LineResponse.class);
+        LineStationWithTransferLinesResponse resultResponse = response.as(LineStationWithTransferLinesResponse.class);
         assertThat(resultResponse.getId()).isEqualTo(lineResponse.getId());
     }
 
@@ -445,8 +447,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .map(LineResponse::getId)
                 .collect(Collectors.toList());
 
-        List<Long> resultLineIds = response.jsonPath().getList(".", LineResponse.class).stream()
-                .map(LineResponse::getId)
+        List<Long> resultLineIds = response.jsonPath().getList(".", LineStationWithTransferLinesResponse.class).stream()
+                .map(LineStationWithTransferLinesResponse::getId)
                 .collect(Collectors.toList());
 
         assertThat(resultLineIds).containsAll(expectedLineIds);
