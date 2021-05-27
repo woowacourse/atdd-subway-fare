@@ -13,14 +13,14 @@ public class SubwayRoute {
     public SubwayRoute(List<SectionEdge> sectionEdges, List<Station> stations) {
         this.stations = stations;
         this.distance = sectionEdges.stream()
-                                    .mapToInt(it -> it.getSection()
-                                                      .getDistance())
-                                    .sum();
+                .mapToInt(it -> it.getSection()
+                        .getDistance())
+                .sum();
         this.extraFare = sectionEdges.stream()
-                                     .mapToInt(it -> it.getLine()
-                                                       .getExtraFare())
-                                     .max()
-                                     .orElse(0);
+                .mapToInt(it -> it.getLine()
+                        .getExtraFare())
+                .max()
+                .orElse(0);
     }
 
     public List<Station> stations() {

@@ -19,7 +19,7 @@ public class FareService {
     public int calculate(int distance, int extraFare, MemberType memberType) {
         int fareByPath = fareByDistance(distance) + extraFare;
         return FareType.of(memberType)
-                       .price(fareByPath);
+                .price(fareByPath);
     }
 
     private int fareByDistance(int distance) {

@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
+import wooteco.subway.member.dto.EmailExistsResponse;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
@@ -43,5 +44,9 @@ public class MemberService {
     public void deleteMember(LoginMember loginMember) {
         Member member = memberDao.findByEmail(loginMember.getEmail());
         memberDao.deleteById(member.getId());
+    }
+
+    public EmailExistsResponse isExistsEmail(String email) {
+        return new EmailExistsResponse(memberDao.isExistEmail(email));
     }
 }

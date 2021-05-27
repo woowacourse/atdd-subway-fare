@@ -21,9 +21,9 @@ public enum FareType {
 
     public static FareType of(MemberType memberType) {
         return Arrays.stream(values())
-                     .filter(fareType -> fareType.memberTypes.contains(memberType))
-                     .findFirst()
-                     .orElse(ZERO);
+                .filter(fareType -> fareType.memberTypes.contains(memberType))
+                .findFirst()
+                .orElse(ZERO);
     }
 
     public int price(int fare) {

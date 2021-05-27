@@ -13,11 +13,11 @@ public class AuthorizationExtractor {
         while (headers.hasMoreElements()) {
             String value = headers.nextElement();
             if ((value.toLowerCase()
-                      .startsWith(BEARER_TYPE.toLowerCase()))) {
+                    .startsWith(BEARER_TYPE.toLowerCase()))) {
                 String authHeaderValue = value.substring(BEARER_TYPE.length())
-                                              .trim();
+                        .trim();
                 request.setAttribute(ACCESS_TOKEN_TYPE, value.substring(0, BEARER_TYPE.length())
-                                                             .trim());
+                        .trim());
                 int commaIndex = authHeaderValue.indexOf(',');
                 if (commaIndex > 0) {
                     authHeaderValue = authHeaderValue.substring(0, commaIndex);

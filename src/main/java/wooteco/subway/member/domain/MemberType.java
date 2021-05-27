@@ -27,11 +27,11 @@ public enum MemberType {
         }
 
         int age = member.get()
-                        .getAge();
+                .getAge();
         return Arrays.stream(values())
-                     .filter(memberType -> memberType.is(age))
-                     .findFirst()
-                     .orElse(NONE);
+                .filter(memberType -> memberType.is(age))
+                .findFirst()
+                .orElse(NONE);
     }
 
     private boolean is(int age) {

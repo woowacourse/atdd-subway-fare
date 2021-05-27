@@ -16,8 +16,8 @@ public class SimpleLineResponse {
 
     public static List<SimpleLineResponse> listOf(List<Line> lines) {
         return lines.stream()
-                    .map(SimpleLineResponse::of)
-                    .collect(Collectors.toList());
+                .map(SimpleLineResponse::of)
+                .collect(Collectors.toList());
     }
 
     public SimpleLineResponse() {

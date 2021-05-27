@@ -43,7 +43,7 @@ public class StationDao {
     public Station insert(Station station) {
         SqlParameterSource params = new BeanPropertySqlParameterSource(station);
         Long id = insertAction.executeAndReturnKey(params)
-                              .longValue();
+                .longValue();
         return new Station(id, station.getName());
     }
 

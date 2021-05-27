@@ -15,25 +15,18 @@ import wooteco.subway.station.application.StationException;
 @ControllerAdvice
 public class GlobalControllerAdvice {
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ExceptionResponse> handleUnhandledException() {
-        ExceptionResponse exceptionResponse = new ExceptionResponse("Oops!! There's unhandled exception");
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(exceptionResponse);
-    }
-
     @ExceptionHandler(AuthorizationException.class)
     public ResponseEntity<ExceptionResponse> handleAuthorizationException(AuthorizationException e) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                             .body(exceptionResponse);
+                .body(exceptionResponse);
     }
 
     @ExceptionHandler({StationException.class, LineException.class, MemberException.class})
     public ResponseEntity<ExceptionResponse> handleException(RuntimeException e) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                             .body(exceptionResponse);
+                .body(exceptionResponse);
     }
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
@@ -41,6 +34,13 @@ public class GlobalControllerAdvice {
         FieldError fieldError = bindingResult.getFieldError();
         ExceptionResponse exceptionResponse = new ExceptionResponse(fieldError.getDefaultMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                             .body(exceptionResponse);
+                .body(exceptionResponse);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ExceptionResponse> handleUnhandledException() {
+        ExceptionResponse exceptionResponse = new ExceptionResponse("Oops!! There's unhandled exception");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(exceptionResponse);
     }
 }
