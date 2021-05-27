@@ -6,7 +6,7 @@ import javax.validation.constraints.Pattern;
 
 public class LineRequest {
     @NotBlank
-    @Pattern(regexp = "^[가-힣0-9]{2,20}$", message = "노선 이름은 2~20자 이하의 한글/숫자만 가능합니다")
+    @Pattern(regexp = "^[가-힣0-9]{2,10}$", message = "노선 이름은 2~20자 이하의 한글/숫자만 가능합니다")
     private String name;
     @NotBlank
     private String color;
