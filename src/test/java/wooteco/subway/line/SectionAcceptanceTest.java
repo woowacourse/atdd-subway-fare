@@ -83,12 +83,12 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_순서_정렬됨(response, stationResponses);
     }
 
-    public static void 지하철_구간_등록_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    public static void 지하철_구간_등록_실패됨(ExtractableResponse<Response> response, HttpStatus httpStatus) {
+        assertThat(response.statusCode()).isEqualTo(httpStatus.value());
     }
 
-    public static void 지하철_노선에_지하철역_제외_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    public static void 지하철_노선에_지하철역_제외_실패됨(ExtractableResponse<Response> response, HttpStatus httpStatus) {
+        assertThat(response.statusCode()).isEqualTo(httpStatus.value());
     }
 
     @BeforeEach
@@ -133,7 +133,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_구간_생성_요청(신분당선, 강남역, 광교역, 3, loginToken);
 
         // then
-        지하철_구간_등록_실패됨(response);
+        지하철_구간_등록_실패됨(response, HttpStatus.BAD_REQUEST);
     }
 
     @DisplayName("지하철 노선에 등록되지 않은 역을 기준으로 등록한다.")
@@ -143,7 +143,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_구간_생성_요청(신분당선, 정자역, 양재역, 3, loginToken);
 
         // then
-        지하철_구간_등록_실패됨(response);
+        지하철_구간_등록_실패됨(response, HttpStatus.BAD_REQUEST);
     }
 
     @DisplayName("지하철 노선에 등록된 지하철역을 제외한다.")
@@ -167,7 +167,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 강남역, loginToken);
 
         // then
-        지하철_노선에_지하철역_제외_실패됨(removeResponse);
+        지하철_노선에_지하철역_제외_실패됨(removeResponse, HttpStatus.BAD_REQUEST);
     }
 
     private void 지하철_구간_생성됨(ExtractableResponse<Response> result, LineResponse lineResponse, List<StationResponse> stationResponses) {

@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
+import wooteco.subway.line.dto.SimpleLineResponse;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.Arrays;
@@ -115,8 +116,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .map(it -> it.getId())
                 .collect(Collectors.toList());
 
-        List<Long> resultLineIds = response.jsonPath().getList(".", LineResponse.class).stream()
-                .map(LineResponse::getId)
+        List<Long> resultLineIds = response.jsonPath().getList(".", SimpleLineResponse.class).stream()
+                .map(SimpleLineResponse::getId)
                 .collect(Collectors.toList());
 
         assertThat(resultLineIds).containsAll(expectedLineIds);
@@ -141,7 +142,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         downStation = 지하철역_등록되어_있음("광교역", loginToken);
 
         lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 900, 10);
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 900, 15);
+        lineRequest2 = new LineRequest("구신분당선", "bg-red-602", 강남역.getId(), downStation.getId(), 900, 15);
     }
 
     @DisplayName("지하철 노선을 생성한다.")

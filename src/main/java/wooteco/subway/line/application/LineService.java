@@ -50,7 +50,7 @@ public class LineService {
     }
 
     private void validateId(Long id) {
-        if (lineDao.countById(id) > 0) {
+        if (lineDao.countById(id) == 0) {
             throw new LineNotFoundException();
         }
     }
