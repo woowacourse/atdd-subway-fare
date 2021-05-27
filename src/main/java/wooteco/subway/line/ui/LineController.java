@@ -1,15 +1,15 @@
 package wooteco.subway.line.ui;
 
+import java.net.URI;
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
-
-import java.net.URI;
-import java.sql.SQLException;
-import java.util.List;
 
 @RestController
 @RequestMapping("/lines")
