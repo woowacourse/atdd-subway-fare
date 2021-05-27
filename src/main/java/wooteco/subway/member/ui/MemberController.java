@@ -1,6 +1,5 @@
 package wooteco.subway.member.ui;
 
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
@@ -9,8 +8,6 @@ import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.dto.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 import java.net.URI;
 
 @RestController
