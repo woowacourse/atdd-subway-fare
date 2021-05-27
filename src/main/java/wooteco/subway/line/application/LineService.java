@@ -2,7 +2,8 @@ package wooteco.subway.line.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.exception.line.DuplicateLineException;
+import wooteco.subway.exception.line.DuplicateColorException;
+import wooteco.subway.exception.line.DuplicateNameException;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
@@ -78,8 +79,11 @@ public class LineService {
     }
 
     private void existsLine(LineRequest request) {
-        if (lineDao.exists(request.getName())) {
-            throw new DuplicateLineException();
+        if (lineDao.existsName(request.getName())) {
+            throw new DuplicateNameException();
+        }
+        if (lineDao.existsColor(request.getColor())) {
+            throw new DuplicateColorException();
         }
     }
 

@@ -173,7 +173,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         광교역 = 지하철역_등록되어_있음("광교역");
 
         lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15);
+        lineRequest2 = new LineRequest("구신분당선", "bg-old-red-600", 강남역.getId(), 광교역.getId(), 15);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -275,9 +275,26 @@ public class LineAcceptanceTest extends AcceptanceTest {
     void updateLineWithDuplicateName() {
         // given
         LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1);
+        LineRequest 신분당선_불가능 =
+                new LineRequest("신분당선", "bg-blue-600", 강남역.getId(), 광교역.getId(), 10);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse, lineRequest1);
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse, 신분당선_불가능);
+
+        // then
+        지하철_노선_수정_실패됨(response);
+    }
+
+    @DisplayName("노선 수정 - 기존에 존재하는 노선 색깔로 수정하는 경우 400 에러가 발생한다.")
+    @Test
+    void updateLineWithDuplicateColor() {
+        // given
+        LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1);
+        LineRequest 신분당선_불가능 =
+                new LineRequest("분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse, 신분당선_불가능);
 
         // then
         지하철_노선_수정_실패됨(response);
