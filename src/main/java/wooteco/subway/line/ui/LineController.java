@@ -4,7 +4,6 @@ import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +24,6 @@ import wooteco.subway.station.ui.SubwayController;
 
 @RestController
 @RequestMapping("/api/lines")
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class LineController extends SubwayController {
 
     public LineController(StationService stationService,

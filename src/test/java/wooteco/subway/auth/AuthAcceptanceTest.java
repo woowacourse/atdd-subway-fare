@@ -100,7 +100,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
             when().post("/api/login/token").
             then().log().all().
             statusCode(HttpStatus.OK.value()).
-                extract();
+            extract();
     }
 
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {

@@ -7,7 +7,6 @@ import javax.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +23,6 @@ import wooteco.subway.station.dto.StationResponse;
 
 @RestController
 @RequestMapping("/api/stations")
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class StationController extends SubwayController {
 
     public StationController(StationService stationService,
