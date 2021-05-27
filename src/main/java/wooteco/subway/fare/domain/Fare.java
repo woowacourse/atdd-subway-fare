@@ -12,15 +12,15 @@ public class Fare {
     }
 
     public int calculateBasicFare() {
+        int basicFare = DEFAULT_FARE + lineExtraFare;
         if (totalDistance <= 10) {
-            return DEFAULT_FARE + lineExtraFare;
+            return basicFare;
         }
         if (totalDistance <= 50) {
-            return DEFAULT_FARE + calculateExtraFare(totalDistance - 10, 5) + lineExtraFare;
+            return basicFare + calculateExtraFare(totalDistance - 10, 5);
         }
-        return DEFAULT_FARE + calculateExtraFare(40, 5) +
-                calculateExtraFare(totalDistance - 50, 8)
-                + lineExtraFare;
+        return basicFare + calculateExtraFare(40, 5) +
+                calculateExtraFare(totalDistance - 50, 8);
     }
 
     private int calculateExtraFare(int distance, int unitDistance) {
