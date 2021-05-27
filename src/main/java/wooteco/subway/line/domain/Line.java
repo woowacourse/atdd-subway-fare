@@ -25,11 +25,17 @@ public class Line {
         this.fare = fare;
     }
 
-
     public Line(Long id, String name, String color) {
         this.id = id;
         this.name = name;
         this.color = color;
+    }
+
+    public Line(Long id, String name, String color, int fare) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
+        this.fare = fare;
     }
 
     public Line(Long id, String name, String color, Sections sections) {
