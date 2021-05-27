@@ -19,4 +19,10 @@ public class ExceptionAdviceController {
     public ResponseEntity badRequest(BadRequestException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
+
+    // 여기서는 어떤 에러를 던질 지 고민해봐야됨
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity serverError(Exception e) {
+        return ResponseEntity.status(500).body(e.getMessage());
+    }
 }

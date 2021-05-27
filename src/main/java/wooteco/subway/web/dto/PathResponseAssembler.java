@@ -10,7 +10,7 @@ import wooteco.subway.web.dto.response.StationResponse;
 public class PathResponseAssembler {
     public static PathResponse assemble(SubwayPath subwayPath) {
         List<StationResponse> stationResponses = subwayPath.getStations().stream()
-                .map(it -> StationResponse.of(it))
+                .map(StationResponse::of)
                 .collect(Collectors.toList());
 
         int distance = subwayPath.calculateDistance();

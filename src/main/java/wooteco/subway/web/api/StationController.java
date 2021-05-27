@@ -15,7 +15,7 @@ import java.util.List;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/api/stations")
 public class StationController {
-    private StationService stationService;
+    private final StationService stationService;
 
     public StationController(StationService stationService) {
         this.stationService = stationService;
@@ -41,10 +41,5 @@ public class StationController {
     @PutMapping("/{id}")
     public ResponseEntity<StationResponse> updateStation(@PathVariable Long id, @RequestBody StationRequest stationRequest) {
         return ResponseEntity.ok(stationService.updateStation(id, stationRequest.getName()));
-    }
-
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity handleSQLException(SQLException e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
     }
 }

@@ -13,7 +13,7 @@ import wooteco.subway.web.dto.response.PathResponse;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/api/paths")
 public class PathController {
-    private PathService pathService;
+    private final PathService pathService;
 
     public PathController(PathService pathService) {
         this.pathService = pathService;
