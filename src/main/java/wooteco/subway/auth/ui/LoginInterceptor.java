@@ -4,10 +4,10 @@ import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
-import wooteco.subway.exception.auth.LoginRequiredException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Objects;
 
 public class LoginInterceptor implements HandlerInterceptor {
 
@@ -18,18 +18,23 @@ public class LoginInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if (HttpMethod.OPTIONS.matches(request.getMethod())) {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        if (isPreflightRequest(request)) {
             return true;
         }
         String credentials = AuthorizationExtractor.extract(request);
-        if (credentials == null && request.getRequestURI().equals("/paths")) {
-            return true;
-        }
-        if (credentials == null) {
-            throw new LoginRequiredException();
+        if (Objects.isNull(credentials)) {
+            return checkIfAnonymousPermissible(request);
         }
         authService.validate(credentials);
         return true;
+    }
+
+    private boolean isPreflightRequest(HttpServletRequest request) {
+        return HttpMethod.OPTIONS.matches(request.getMethod());
+    }
+
+    private boolean checkIfAnonymousPermissible(HttpServletRequest request) {
+        return "/paths".equals(request.getRequestURI());
     }
 }

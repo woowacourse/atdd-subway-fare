@@ -44,8 +44,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         params.put("email", EMAIL + "OTHER");
         params.put("password", PASSWORD);
 
-        RestAssured
-                .given().log().all()
+        RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().post("/login/token")
@@ -58,8 +57,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     void myInfoWithWrongBearerAuth() {
         TokenResponse tokenResponse = new TokenResponse("accesstoken");
 
-        RestAssured
-                .given().log().all()
+        RestAssured.given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")

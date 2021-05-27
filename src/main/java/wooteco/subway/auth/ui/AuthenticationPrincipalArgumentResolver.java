@@ -10,9 +10,11 @@ import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Objects;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
-    private AuthService authService;
+
+    private final AuthService authService;
 
     public AuthenticationPrincipalArgumentResolver(AuthService authService) {
         this.authService = authService;
@@ -25,10 +27,15 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
-        if (credentials == null && webRequest.getNativeRequest(HttpServletRequest.class).getRequestURI().equals("/paths")) {
+        HttpServletRequest httpRequest = webRequest.getNativeRequest(HttpServletRequest.class);
+        String credentials = AuthorizationExtractor.extract(httpRequest);
+        if (isAnonymousPermissible(httpRequest, credentials)) {
             return null;
         }
         return authService.findMemberByToken(credentials);
+    }
+
+    private boolean isAnonymousPermissible(HttpServletRequest httpRequest, String credentials) {
+        return Objects.isNull(credentials) && "/paths".equals(httpRequest.getRequestURI());
     }
 }

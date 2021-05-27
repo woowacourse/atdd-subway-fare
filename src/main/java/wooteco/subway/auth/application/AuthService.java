@@ -11,7 +11,7 @@ import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class AuthService {
 
     private final MemberService memberService;
@@ -36,8 +36,8 @@ public class AuthService {
     }
 
     public void validate(String credentials) {
-        boolean isValid = jwtTokenProvider.validateToken(credentials);
-        if (!isValid) {
+        boolean isValidToken = jwtTokenProvider.validateToken(credentials);
+        if (!isValidToken) {
             throw new InvalidTokenException();
         }
     }
