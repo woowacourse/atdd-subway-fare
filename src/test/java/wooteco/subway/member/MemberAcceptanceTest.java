@@ -41,6 +41,65 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_삭제됨(deleteResponse);
     }
 
+    @DisplayName("이메일 전 글자수는 30자를 넘을 수 없다.")
+    @Test
+    void createMemberWhenEmailOverLength() throws Exception {
+        //given
+        String overEmail = "abcdefghijklnmopqrstuvwxyz123456789@google.com";
+
+        //when
+        ExtractableResponse<Response> createFailResponse = 회원_생성을_요청(overEmail, PASSWORD, AGE);
+
+        //then
+        회원_생성되지않음(createFailResponse);
+
+    }
+
+    @DisplayName("비밀번호는 4글자 이상 20글자 이하이어야 한다.")
+    @Test
+    void createMemberWhenErrorPassword () throws Exception {
+        //given
+        String errorPassword = "abc";
+
+        //when
+        ExtractableResponse<Response> createFailResponse = 회원_생성을_요청(EMAIL, errorPassword, AGE);
+
+        //then
+        회원_생성되지않음(createFailResponse);
+
+        //given
+        errorPassword = "abcdefghijklnmopqrstuvwxyz";
+
+        //when
+        createFailResponse = 회원_생성을_요청(EMAIL, errorPassword, AGE);
+
+        //then
+        회원_생성되지않음(createFailResponse);
+    }
+
+    @DisplayName("나이는 음수일 수 없으며 200살을 넘을 수 없다.")
+    @Test
+    void createMemberErrorAge () throws Exception {
+        //given
+        int age = -1;
+
+        //when
+        ExtractableResponse<Response> createFailResponse = 회원_생성을_요청(EMAIL, PASSWORD, age);
+
+        //then
+        회원_생성되지않음(createFailResponse);
+
+        //given
+        age = 201;
+
+        //when
+        createFailResponse = 회원_생성을_요청(EMAIL, PASSWORD, age);
+
+        //then
+        회원_생성되지않음(createFailResponse);
+
+    }
+
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
@@ -103,5 +162,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static void 회원_생성되지않음(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
