@@ -21,6 +21,16 @@ public class Sections {
     }
 
     public List<Section> getSections() {
+        if (sections.isEmpty()) {
+            return Arrays.asList();
+        }
+
+        List<Section> sections = new ArrayList<>();
+        Section nextSection = findUpEndSection();
+        while (nextSection != null) {
+            sections.add(nextSection);
+            nextSection = findSectionByNextUpStation(nextSection.getDownStation());
+        }
         return sections;
     }
 
