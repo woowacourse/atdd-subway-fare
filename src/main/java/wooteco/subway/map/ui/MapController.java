@@ -23,6 +23,5 @@ public class MapController {
     public ResponseEntity<List<MapDetailResponse>> showMap() {
         List<MapDetailResponse> mapDetailResponse = lineService.showMap();
         return ResponseEntity.ok().body(mapDetailResponse);
-//        return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
 }

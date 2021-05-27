@@ -2,6 +2,7 @@ package wooteco.subway;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import wooteco.subway.auth.exception.InvalidEmailException;
 import wooteco.subway.auth.exception.InvalidPasswordException;
@@ -11,7 +12,9 @@ import wooteco.subway.station.exception.DuplicatedStationNameException;
 import wooteco.subway.station.exception.NoSuchStationException;
 import wooteco.subway.station.exception.StationAlreadyRegisteredInLineException;
 
+
 @ControllerAdvice
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class controllerAdvice {
 
     @ExceptionHandler(InvalidEmailException.class)
