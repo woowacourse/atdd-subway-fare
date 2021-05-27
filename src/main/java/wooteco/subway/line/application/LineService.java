@@ -2,6 +2,7 @@ package wooteco.subway.line.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 import wooteco.subway.exception.DuplicatedException;
 import wooteco.subway.line.dao.LineDao;
@@ -11,6 +12,7 @@ import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.line.exception.LineNotFoundException;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
@@ -66,14 +68,23 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
+        if (!lineDao.isExistById(id)) {
+            throw new LineNotFoundException(String.valueOf(id));
+        }
         return lineDao.findById(id);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
+        if (!lineDao.isExistById(id)) {
+            throw new LineNotFoundException(String.valueOf(id));
+        }
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
     public void deleteLineById(Long id) {
+        if (!lineDao.isExistById(id)) {
+            throw new LineNotFoundException(String.valueOf(id));
+        }
         lineDao.deleteById(id);
     }
 

@@ -14,6 +14,7 @@ import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.station.dto.StationResponse;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,6 +33,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     private LineRequest lineRequest4;
     private LineRequest lineRequest5;
     private LineRequest lineRequest6;
+    private LineResponse lineResponse;
 
     @BeforeEach
     public void setUp() {
@@ -47,6 +49,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         lineRequest4 = new LineRequest("", "bg-white-600", 강남역.getId(), downStation.getId(), 15);
         lineRequest5 = new LineRequest("신분당선2", "bg-red-600", 강남역.getId(), downStation.getId(), 10);
         lineRequest6 = new LineRequest("신분당 당당 당당", "bg-white-600", 강남역.getId(), downStation.getId(), 15);
+
+        lineResponse = new LineResponse(1L, "신분당선", "bg-red-600", new ArrayList<>());
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -143,6 +147,26 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_응답됨(response, lineResponse);
     }
 
+    @DisplayName("존재하지 않는 지하철 노선을 조회한다.")
+    @Test
+    void getNonExistenceLine() {
+        // given - when
+        ExtractableResponse<Response> response = 지하철_노선_조회_요청(lineResponse);
+
+        // then
+        지하철_노선_404_응답됨(response);
+    }
+
+    @DisplayName("존재하지 않는 지하철 노선을 수정한다.")
+    @Test
+    void updateNonExistenceLine() {
+        // given - when
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse, lineRequest1);
+
+        // then
+        지하철_노선_404_응답됨(response);
+    }
+
     @DisplayName("지하철 노선을 수정한다.")
     @Test
     void updateLine() {
@@ -154,6 +178,16 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_노선_수정됨(response);
+    }
+
+    @DisplayName("존재하지 않는 지하철 노선을 삭제한다.")
+    @Test
+    void deleteNonExistenceLine() {
+        // given - when
+        ExtractableResponse<Response> response = 지하철_노선_제거_요청(lineResponse);
+
+        // then
+        지하철_노선_404_응답됨(response);
     }
 
     @DisplayName("지하철 노선을 제거한다.")
@@ -237,6 +271,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철_노선_생성_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    private void 지하철_노선_404_응답됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
     public static void 지하철_노선_생성_실패됨_중복(ExtractableResponse<Response> response) {
