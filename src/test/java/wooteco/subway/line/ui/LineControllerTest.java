@@ -142,6 +142,7 @@ class LineControllerTest {
         LineResponse lineResponse = LineResponse.of(testDataLoader.신분당선());
         Long id = testDataLoader.신분당선().getId();
 
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
         given(lineService.findLineResponseById(id)).willReturn(lineResponse);
 
         // when

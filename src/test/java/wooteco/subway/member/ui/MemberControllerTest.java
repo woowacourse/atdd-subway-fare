@@ -41,7 +41,7 @@ public class MemberControllerTest {
     @MockBean
     private MemberService memberService;
     @MockBean
-    private LoginInterceptor interceptor;
+    private LoginInterceptor loginInterceptor;
     @MockBean
     private JwtTokenProvider jwtTokenProvider;
 
@@ -86,6 +86,7 @@ public class MemberControllerTest {
 
         given(memberService.findMember(any(LoginMember.class)))
             .willReturn(new MemberResponse(id, email, age));
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         //when
         mockMvc.perform(get("/api/members/me")
@@ -115,6 +116,7 @@ public class MemberControllerTest {
 
         given(memberService.updateMember(any(LoginMember.class), any(MemberRequest.class)))
             .willReturn(memberResponse);
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         //when
         mockMvc.perform(put("/api/members/me")
@@ -139,6 +141,8 @@ public class MemberControllerTest {
         //given
         String token = "이것은토큰입니다";
         String email = "test@email.com";
+
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         // when
         mockMvc.perform(delete("/api/members/me")
