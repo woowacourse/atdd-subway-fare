@@ -28,12 +28,12 @@ public class SectionDao {
         Map<String, Object> params = new HashMap();
         params.put("line_id", line.getId());
         params.put("up_station_id", section.getUpStation()
-                                           .getId());
+                .getId());
         params.put("down_station_id", section.getDownStation()
-                                             .getId());
+                .getId());
         params.put("distance", section.getDistance());
         Long sectionId = simpleJdbcInsert.executeAndReturnKey(params)
-                                         .longValue();
+                .longValue();
         return new Section(sectionId, section.getUpStation(), section.getDownStation(), section.getDistance());
     }
 
@@ -43,19 +43,19 @@ public class SectionDao {
 
     public void insertSections(Line line) {
         List<Section> sections = line.getSections()
-                                     .getSections();
+                .getSections();
         List<Map<String, Object>> batchValues = sections.stream()
-                                                        .map(section -> {
-                                                            Map<String, Object> params = new HashMap<>();
-                                                            params.put("line_id", line.getId());
-                                                            params.put("up_station_id", section.getUpStation()
-                                                                                               .getId());
-                                                            params.put("down_station_id", section.getDownStation()
-                                                                                                 .getId());
-                                                            params.put("distance", section.getDistance());
-                                                            return params;
-                                                        })
-                                                        .collect(Collectors.toList());
+                .map(section -> {
+                    Map<String, Object> params = new HashMap<>();
+                    params.put("line_id", line.getId());
+                    params.put("up_station_id", section.getUpStation()
+                            .getId());
+                    params.put("down_station_id", section.getDownStation()
+                            .getId());
+                    params.put("distance", section.getDistance());
+                    return params;
+                })
+                .collect(Collectors.toList());
 
         simpleJdbcInsert.executeBatch(batchValues.toArray(new Map[sections.size()]));
     }

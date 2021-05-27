@@ -49,9 +49,9 @@ public class LineService {
 
     public List<LineResponse> findLineResponses() {
         return findLines().stream()
-                          .map(this::toLineResponse)
-                          .sorted(Comparator.comparing(LineResponse::getName))
-                          .collect(Collectors.toList());
+                .map(this::toLineResponse)
+                .sorted(Comparator.comparing(LineResponse::getName))
+                .collect(Collectors.toList());
     }
 
     public List<Line> findLines() {
@@ -64,7 +64,7 @@ public class LineService {
 
     public Line findLineById(Long id) {
         return lineDao.findById(id)
-                      .orElseThrow(() -> new LineException("존재하지 않는 노선입니다."));
+                .orElseThrow(() -> new LineException("존재하지 않는 노선입니다."));
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
@@ -120,9 +120,9 @@ public class LineService {
 
     private LineResponse toLineResponse(Line line) {
         List<StationResponse> stations = line.getStations()
-                                             .stream()
-                                             .map(stationService::toStationResponse)
-                                             .collect(Collectors.toList());
+                .stream()
+                .map(stationService::toStationResponse)
+                .collect(Collectors.toList());
         return LineResponse.of(line, stations);
     }
 }
