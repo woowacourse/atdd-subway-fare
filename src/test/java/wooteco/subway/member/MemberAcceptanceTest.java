@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
+import wooteco.subway.member.dto.EmailCheckRequest;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
@@ -51,7 +52,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("이메일이 이미 저장되어있는지 확인한다.")
     @Test
     void confirmEmail() {
-        ExtractableResponse<Response> createResponse = 이메일_중복_확인_요청(EMAIL);
+        EmailCheckRequest emailCheckRequest = new EmailCheckRequest(EMAIL);
+        ExtractableResponse<Response> createResponse = 이메일_중복_확인_요청(emailCheckRequest);
         이메일_중복되지_않음(createResponse);
     }
 
@@ -61,7 +63,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
         회원_생성됨(createResponse);
 
-        ExtractableResponse<Response> confirmEmailResponse = 이메일_중복_확인_요청(EMAIL);
+        EmailCheckRequest emailCheckRequest = new EmailCheckRequest(EMAIL);
+        ExtractableResponse<Response> confirmEmailResponse = 이메일_중복_확인_요청(emailCheckRequest);
         이메일_중복_예외(confirmEmailResponse);
     }
 
@@ -108,10 +111,12 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 이메일_중복_확인_요청 (String email) {
+    public static ExtractableResponse<Response> 이메일_중복_확인_요청 (EmailCheckRequest emailCheckRequest) {
         return RestAssured
                 .given().log().all()
-                .when().get("/members?email={email}",email)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(emailCheckRequest)
+                .when().post("/members/email-check")
                 .then().log().all()
                 .extract();
     }

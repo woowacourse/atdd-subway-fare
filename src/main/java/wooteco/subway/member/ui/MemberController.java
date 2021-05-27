@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.dto.EmailCheckRequest;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
@@ -34,9 +35,9 @@ public class MemberController {
         return ResponseEntity.ok().body(member);
     }
 
-    @GetMapping("/members")
-    public ResponseEntity<Void> confirmEmail(@RequestParam String email) {
-        memberService.confirmEmailIsValid(email);
+    @PostMapping("/members/email-check")
+    public ResponseEntity<Void> confirmEmail(@RequestBody EmailCheckRequest emailCheckRequest) {
+        memberService.confirmEmailIsValid(emailCheckRequest);
         return ResponseEntity.ok().build();
     }
 

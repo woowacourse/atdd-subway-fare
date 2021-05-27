@@ -5,6 +5,7 @@ import wooteco.subway.exception.DuplicatedException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
+import wooteco.subway.member.dto.EmailCheckRequest;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 import wooteco.subway.member.exception.MemberNotFoundException;
@@ -45,9 +46,9 @@ public class MemberService {
         memberDao.deleteById(member.getId());
     }
 
-    public void confirmEmailIsValid(String email) {
-        if (memberDao.isExistByEmail(email)) {
-            throw new DuplicatedException(email);
+    public void confirmEmailIsValid(EmailCheckRequest emailCheckRequest) {
+        if (memberDao.isExistByEmail(emailCheckRequest.getEmail())) {
+            throw new DuplicatedException(emailCheckRequest.getEmail());
         }
     }
 }
