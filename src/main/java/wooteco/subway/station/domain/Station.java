@@ -6,7 +6,7 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class Station {
-    private static String NAME_PATTERN = "^[가-힣|0-9]*$";
+    private static final String NAME_PATTERN = "^[가-힣|0-9]*$";
 
     private Long id;
     private String name;
