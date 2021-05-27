@@ -19,8 +19,8 @@ public class SubwayAdvice {
     }
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<Void> handleNotFoundException(NotFoundException e) {
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<MessageDto> handleNotFoundException(NotFoundException e) {
+        return ResponseEntity.badRequest().body(new MessageDto(e.getMessage()));
     }
 
     @ExceptionHandler(AuthorizationException.class)
