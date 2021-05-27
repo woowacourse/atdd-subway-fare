@@ -26,18 +26,34 @@ public class SubwayPath {
         return sectionEdges.stream().mapToInt(it -> it.getSection().getDistance()).sum();
     }
 
-    public int calculateFare() {
+    public int calculateFare(int age) {
         int distance = calculateDistance();
         int fare = 1250 + extraFare();
 
         if (distance <= 10) {
-            return fare;
+            return fare(fare, age);
         }
         if (distance <= 50) {
-            return fare + calculateOverFare(distance - 10, 5);
+            return fare(fare + calculateOverFare(distance - 10, 5), age);
         }
         fare += calculateOverFare(40, 5);
-        return fare + calculateOverFare(distance - 50, 8);
+        return fare(fare + calculateOverFare(distance - 50, 8), age);
+    }
+
+    private int fare(int fare, int age) {
+        if (age == 0) {
+            return fare;
+        }
+        if (age < 6) {
+            return 0;
+        }
+        if (age < 13) {
+            return (int) ((fare - 350) * 0.5);
+        }
+        if (age < 19) {
+            return (int) ((fare - 350) * 0.8);
+        }
+        return fare;
     }
 
     private int calculateOverFare(int distance, int unit) {

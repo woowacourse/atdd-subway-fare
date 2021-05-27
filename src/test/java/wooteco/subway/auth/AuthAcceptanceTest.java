@@ -35,9 +35,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         회원_정보_조회됨(response, EMAIL, AGE);
     }
 
-    @DisplayName("Bearer Auth 로그인 실패 - 이메일")
+    @DisplayName("Bearer Auth 로그인 실패 - 잘못된 이메일")
     @Test
-    void myInfoWithBadBearerAuth() {
+    void myInfoWithBadBearerAuthWrongEmail() {
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
 
         Map<String, String> params = new HashMap<>();
@@ -53,9 +53,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
-    @DisplayName("Bearer Auth 로그인 실패 - 비밀번호")
+    @DisplayName("Bearer Auth 로그인 실패 - 잘못된 비밀번호")
     @Test
-    void myInfoWithBadPassword() {
+    void myInfoWithBadBearerAuthWrongPassword() {
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
 
         Map<String, String> params = new HashMap<>();

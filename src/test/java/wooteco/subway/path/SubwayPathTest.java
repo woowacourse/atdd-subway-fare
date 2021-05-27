@@ -35,10 +35,10 @@ public class SubwayPathTest {
         SubwayPath subwayPath = new SubwayPath(sectionEdges, Collections.emptyList());
 
         // when
-        int fare = subwayPath.calculateFare();
+        int fare = subwayPath.calculateFare(19);
 
         // then
-        assertThat(fare).isEqualTo(2150);
+        assertThat(fare).isEqualTo(2150 + 1500);
     }
 
     @DisplayName("요금 계산 - 10km ~ 50km")
@@ -58,10 +58,10 @@ public class SubwayPathTest {
         SubwayPath subwayPath = new SubwayPath(sectionEdges, Collections.emptyList());
 
         // when
-        int fare = subwayPath.calculateFare();
+        int fare = subwayPath.calculateFare(19);
 
         // then
-        assertThat(fare).isEqualTo(2050);
+        assertThat(fare).isEqualTo(2050 + 1500);
     }
 
     @DisplayName("요금 계산 - 10km 이내")
@@ -77,13 +77,13 @@ public class SubwayPathTest {
         SubwayPath subwayPath = new SubwayPath(sectionEdges, Collections.emptyList());
 
         // when
-        int fare = subwayPath.calculateFare();
+        int fare = subwayPath.calculateFare(19);
 
         // then
-        assertThat(fare).isEqualTo(1250);
+        assertThat(fare).isEqualTo(1250 + 1500);
     }
 
-    @DisplayName("노선 환승 시 추가가요금 용 확인")
+    @DisplayName("노선 환승 시 추가요금 확인")
     @Test
     void transferFare() {
         // given
@@ -104,7 +104,7 @@ public class SubwayPathTest {
         SubwayPath subwayPath = new SubwayPath(sectionEdges, Collections.emptyList());
 
         // when
-        int fare = subwayPath.calculateFare();
+        int fare = subwayPath.calculateFare(19);
 
         // then
         assertThat(fare).isEqualTo(4150);
