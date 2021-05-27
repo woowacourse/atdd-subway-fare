@@ -19,7 +19,7 @@ public class StationService {
 
     public StationResponse saveStation(StationRequest stationRequest) {
         if (stationDao.findByName(stationRequest.getName()).isPresent()) {
-            throw new StationNameDuplicationException();
+            throw new StationNameDuplicationRuntimeException();
         }
         Station station = stationDao.insert(stationRequest.toStation());
         return StationResponse.from(station);
@@ -27,7 +27,7 @@ public class StationService {
 
     public Station findStationById(Long id) {
         return stationDao.findById(id)
-                .orElseThrow(() -> new StationNotExistException());
+                .orElseThrow(() -> new StationNotExistRuntimeException());
     }
 
     public List<StationResponse> findAllStationResponses() {

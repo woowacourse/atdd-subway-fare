@@ -17,7 +17,7 @@ public class MemberService {
 
     public MemberResponse createMember(MemberRequest request) {
         if (memberDao.findByEmail(request.getEmail()).isPresent()) {
-            throw new DuplicateEmailException();
+            throw new DuplicateEmailRuntimeException();
         }
         Member member = memberDao.insert(request.toMember());
         return MemberResponse.of(member);
@@ -40,6 +40,6 @@ public class MemberService {
 
     private Member findMemberByEmail(LoginMember loginMember) {
         return memberDao.findByEmail(loginMember.getEmail())
-                .orElseThrow(EmailNotFoundException::new);
+                .orElseThrow(EmailNotFoundRuntimeException::new);
     }
 }

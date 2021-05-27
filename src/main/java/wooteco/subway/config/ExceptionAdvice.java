@@ -8,14 +8,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import wooteco.subway.auth.application.InvalidTokenException;
+import wooteco.subway.auth.application.InvalidTokenRuntimeException;
+import wooteco.subway.exception.SubwayAuthorizationException;
+import wooteco.subway.exception.SubwayRuntimeException;
 import wooteco.subway.line.application.*;
-import wooteco.subway.member.application.DuplicateEmailException;
-import wooteco.subway.member.application.EmailNotFoundException;
-import wooteco.subway.member.application.InvalidPasswordException;
-import wooteco.subway.path.application.InvalidPathException;
-import wooteco.subway.station.application.StationNameDuplicationException;
-import wooteco.subway.station.application.StationNotExistException;
+import wooteco.subway.member.application.DuplicateEmailRuntimeException;
+import wooteco.subway.member.application.EmailNotFoundRuntimeException;
+import wooteco.subway.member.application.InvalidPasswordRuntimeException;
+import wooteco.subway.path.application.InvalidPathRuntimeException;
+import wooteco.subway.station.application.StationNameDuplicationRuntimeException;
+import wooteco.subway.station.application.StationNotExistRuntimeException;
 
 import java.util.stream.Collectors;
 
@@ -24,7 +26,7 @@ public class ExceptionAdvice {
     private final Logger logger = LoggerFactory.getLogger(ExceptionAdvice.class);
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorMessage> handleException(Exception e) {
+    public ResponseEntity<ErrorMessage> handleServerErrorException(Exception e) {
         logger.error("method argument not valid exception occurred. message=[{}]", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorMessage("관리자에게 문의해주세요."));
     }
@@ -41,16 +43,14 @@ public class ExceptionAdvice {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessage(message));
     }
 
-    @ExceptionHandler({InvalidPathException.class, DuplicateEmailException.class, StationNotExistException.class,
-            StationNameDuplicationException.class, NotAbleToDeleteStationInLineException.class, NotAbleToAddStationInLineException.class,
-            SectionDistanceInvalidException.class, LineNotExistException.class, NotAbleToDeleteInSectionException.class})
-    public ResponseEntity<ErrorMessage> handleInvalidPathException(Exception e) {
+    @ExceptionHandler(SubwayRuntimeException.class)
+    public ResponseEntity<ErrorMessage> handleRuntimeException(SubwayRuntimeException e) {
         logger.error("method argument not valid exception occurred. message=[{}]", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessage(e.getMessage()));
     }
 
-    @ExceptionHandler({InvalidPasswordException.class, InvalidTokenException.class, EmailNotFoundException.class})
-    public ResponseEntity<ErrorMessage> handleAuthException(Exception e) {
+    @ExceptionHandler(SubwayAuthorizationException.class)
+    public ResponseEntity<ErrorMessage> handleAuthorizationException(SubwayAuthorizationException e) {
         logger.error("method argument not valid exception occurred. message=[{}]", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorMessage(e.getMessage()));
     }

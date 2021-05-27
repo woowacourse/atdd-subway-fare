@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class PathFinder {
     public SubwayPath findPath(List<Line> lines, Station source, Station target) {
         if (source.equals(target)) {
-            throw new InvalidPathException();
+            throw new InvalidPathRuntimeException();
         }
         SubwayGraph graph = new SubwayGraph(SectionEdge.class);
         graph.addVertexWith(lines);
@@ -28,7 +28,7 @@ public class PathFinder {
         DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         GraphPath<Station, SectionEdge> path = dijkstraShortestPath.getPath(source, target);
         if (path == null) {
-            throw new InvalidPathException();
+            throw new InvalidPathRuntimeException();
         }
 
         return convertSubwayPath(path);

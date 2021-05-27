@@ -37,7 +37,7 @@ public class PathService {
             SubwayPathFare subwayPathFare = new SubwayPathFare(age, distance, lineFare);
             return PathResponseAssembler.assemble(subwayPath, subwayPathFare);
         } catch (Exception e) {
-            throw new InvalidPathException();
+            throw new InvalidPathRuntimeException();
         }
     }
 }
