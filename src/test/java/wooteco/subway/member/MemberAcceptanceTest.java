@@ -21,6 +21,7 @@ import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
+@DisplayName("회원 정보 관련 기능")
 public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
     public static final int AGE = 20;
