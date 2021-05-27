@@ -247,6 +247,18 @@ public class LineAcceptanceTest extends AcceptanceTest {
         return 지하철_노선_등록되어_있음(lineRequest);
     }
 
+    public static ExtractableResponse<Response> 지하철_노선_생성_요청(String name, String color, StationResponse upStationResponse, StationResponse downStationResponse, int distance, int extraFare, String docsIdentifier) {
+        LineRequest lineCreateRequest = new LineRequest(name, color, upStationResponse.getId(), downStationResponse.getId(), distance, extraFare);
+        return RestAssured
+            .given(spec).log().all()
+            .filter(document(docsIdentifier, preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())))
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(lineCreateRequest)
+            .when().post("/lines")
+            .then().log().all()
+            .extract();
+    }
+
     public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
         LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance);
         return 지하철_노선_등록되어_있음(lineRequest);
