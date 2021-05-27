@@ -38,7 +38,7 @@ public class MemberService {
     }
 
     public void deleteMember(LoginMember loginMember) {
-        if (memberDao.isExistByEmail(loginMember.getEmail())) {
+        if (!memberDao.isExistByEmail(loginMember.getEmail())) {
             throw new MemberNotFoundException(loginMember.getEmail());
         }
         Member member = memberDao.findByEmail(loginMember.getEmail());

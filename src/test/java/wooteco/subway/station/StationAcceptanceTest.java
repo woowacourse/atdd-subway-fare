@@ -24,6 +24,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     private static final String abc = "abc";
     private static final String _ = "1";
     private static final String 공백이_포함된_역 = "공백 공백";
+    private static final StationResponse 예시_지하철역_응답 = new StationResponse(100L, 역삼역);
 
     @DisplayName("지하철역을 생성한다.")
     @Test
@@ -106,6 +107,19 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_삭제됨(response);
     }
 
+    @DisplayName("존재하지 않는 지하철역을 제거한다.")
+    @Test
+    void deleteWithNotFoundStation() {
+        //given
+        StationResponse stationResponse = 지하철역_등록되어_있음(강남역);
+
+        // when
+        ExtractableResponse<Response> response = 지하철역_제거_요청(예시_지하철역_응답);
+
+        // then
+        지하철역_삭제안됨_존재하지_않는_역(response);
+    }
+
     public static StationResponse 지하철역_등록되어_있음(String name) {
         return 지하철역_생성_요청(name).as(StationResponse.class);
     }
@@ -157,6 +171,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철역_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static void 지하철역_삭제안됨_존재하지_않는_역(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
     public static void 지하철역_목록_포함됨(ExtractableResponse<Response> response, List<StationResponse> createdResponses) {
