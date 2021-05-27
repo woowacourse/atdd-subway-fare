@@ -1,7 +1,7 @@
 package wooteco.auth.domain;
 
 import org.apache.commons.lang3.StringUtils;
-import wooteco.common.exception.unauthorizationexception.AuthorizationException;
+import wooteco.common.exception.unauthorizationexception.UnAuthorizationException;
 
 public class Member {
     private Long id;
@@ -49,7 +49,7 @@ public class Member {
 
     public void checkPassword(String password) {
         if (!StringUtils.equals(this.password, password)) {
-            throw new AuthorizationException();
+            throw new UnAuthorizationException();
         }
     }
 }

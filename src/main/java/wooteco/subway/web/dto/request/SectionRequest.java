@@ -1,8 +1,15 @@
 package wooteco.subway.web.dto.request;
 
+import wooteco.subway.web.dto.validator.SubwayId;
+
+import javax.validation.constraints.Positive;
+
 public class SectionRequest {
+    @SubwayId
     private Long upStationId;
+    @SubwayId
     private Long downStationId;
+    @Positive
     private int distance;
 
     public SectionRequest() {

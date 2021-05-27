@@ -7,7 +7,7 @@ import wooteco.auth.domain.Member;
 import wooteco.auth.util.JwtTokenProvider;
 import wooteco.auth.web.dto.request.TokenRequest;
 import wooteco.auth.web.dto.response.TokenResponse;
-import wooteco.common.exception.unauthorizationexception.AuthorizationException;
+import wooteco.common.exception.unauthorizationexception.UnAuthorizationException;
 
 @Service
 @Transactional
@@ -22,11 +22,11 @@ public class AuthService {
 
     public TokenResponse login(TokenRequest request) {
         Member member = memberDao.findByEmail(request.getEmail())
-                .orElseThrow(AuthorizationException::new);
+                .orElseThrow(UnAuthorizationException::new);
         try {
             member.checkPassword(request.getPassword());
         } catch (Exception e) {
-            throw new AuthorizationException();
+            throw new UnAuthorizationException();
         }
         String token = jwtTokenProvider.createToken(member.getId().toString());
         return new TokenResponse(token);

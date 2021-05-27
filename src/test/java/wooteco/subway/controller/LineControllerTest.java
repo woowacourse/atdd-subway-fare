@@ -24,6 +24,7 @@ import wooteco.subway.web.dto.response.SectionResponse;
 import wooteco.subway.web.dto.response.StationResponse;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -95,6 +96,30 @@ class LineControllerTest {
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint())
                 ));
+    }
+
+
+    @Test
+    @DisplayName("노선 생성 - 실패(잘못된 이름 형식 사용)")
+    public void createLineWithWrongName() throws Exception {
+        //given
+        final LineRequest lineRequest = new LineRequest("ㄴr는@", "bg-red-200", 1L, 2L, 5);
+        final StationResponse 강남역 = new StationResponse(1L, "강남역");
+        final StationResponse 잠실역 = new StationResponse(2L, "잠실역");
+        final SectionResponse sectionResponse = new SectionResponse(1L, 강남역, 잠실역, 5);
+        final LineResponse lineResponse = new LineResponse(1L, "2호선", "bg-red-200",
+                Collections.singletonList(sectionResponse));
+
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
+        given(lineService.saveLine(any(LineRequest.class)))
+                .willReturn(lineResponse);
+
+        mockMvc.perform(post("/api/lines")
+                .content(objectMapper.writeValueAsString(lineRequest))
+                .contentType(MediaType.APPLICATION_JSON)
+        )
+                .andExpect(status().isBadRequest())
+                .andDo(print());
     }
 
     @DisplayName("전체 노선 조회 - 성공")

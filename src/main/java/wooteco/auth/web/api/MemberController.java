@@ -8,20 +8,21 @@ import wooteco.auth.service.MemberService;
 import wooteco.auth.web.dto.request.MemberRequest;
 import wooteco.auth.web.dto.response.MemberResponse;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
 @RequestMapping("/api/members")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class MemberController {
-    private MemberService memberService;
+    private final MemberService memberService;
 
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
     }
 
     @PostMapping
-    public ResponseEntity createMember(@RequestBody MemberRequest request) {
+    public ResponseEntity<Void> createMember(@Valid @RequestBody MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
         return ResponseEntity.created(URI.create("/api/members/" + member.getId())).build();
     }
@@ -38,7 +39,7 @@ public class MemberController {
     }
 
     @PutMapping("/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest param) {
+    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @Valid @RequestBody MemberRequest param) {
         final MemberResponse memberResponse = memberService.updateMember(loginMember, param);
         return ResponseEntity.ok(memberResponse);
     }

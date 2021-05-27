@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import wooteco.auth.util.AuthorizationExtractor;
 import wooteco.auth.util.JwtTokenProvider;
-import wooteco.common.exception.unauthorizationexception.AuthorizationException;
+import wooteco.common.exception.unauthorizationexception.UnAuthorizationException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,6 +33,6 @@ public class LoginInterceptor implements HandlerInterceptor {
         if (jwtTokenProvider.validateToken(token)) {
             return true;
         }
-        throw new AuthorizationException();
+        throw new UnAuthorizationException();
     }
 }

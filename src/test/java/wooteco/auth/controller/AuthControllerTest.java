@@ -52,7 +52,7 @@ public class AuthControllerTest {
         //given
         TokenResponse tokenResponse = new TokenResponse("이것은토큰비밀번호");
         given(authService.login(any())).willReturn(tokenResponse);
-        TokenRequest tokenRequest = new TokenRequest("test@test.com", "1234");
+        TokenRequest tokenRequest = new TokenRequest("test@test.com", "12345678");
 
         mockMvc.perform(post("/api/login/token")
                 .content(objectMapper.writeValueAsBytes(tokenRequest))

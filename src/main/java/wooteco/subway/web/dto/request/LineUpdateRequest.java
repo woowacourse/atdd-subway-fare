@@ -1,7 +1,13 @@
 package wooteco.subway.web.dto.request;
 
+import wooteco.subway.web.dto.validator.SubwayName;
+
+import javax.validation.constraints.NotEmpty;
+
 public class LineUpdateRequest {
+    @SubwayName
     private String name;
+    @NotEmpty
     private String color;
 
     public LineUpdateRequest() {

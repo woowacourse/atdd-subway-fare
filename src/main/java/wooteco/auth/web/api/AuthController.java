@@ -6,6 +6,8 @@ import wooteco.auth.service.AuthService;
 import wooteco.auth.web.dto.request.TokenRequest;
 import wooteco.auth.web.dto.response.TokenResponse;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -17,7 +19,7 @@ public class AuthController {
     }
 
     @PostMapping("/login/token")
-    public ResponseEntity<TokenResponse> login(@RequestBody TokenRequest request) {
+    public ResponseEntity<TokenResponse> login(@Valid @RequestBody TokenRequest request) {
         TokenResponse token = authService.login(request);
         return ResponseEntity.ok().body(token);
     }

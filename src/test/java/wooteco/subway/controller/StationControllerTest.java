@@ -156,15 +156,15 @@ public class StationControllerTest {
     @DisplayName("역 수정 - 실패(중복 이름)")
     public void updateStations() throws Exception {
         given(stationService.updateStation(any(), any()))
-                .willThrow(new StationDuplicateNameException("newName"));
+                .willThrow(new StationDuplicateNameException("새로운역"));
         given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
-        final StationRequest stationRequest = new StationRequest("newName");
+        final StationRequest stationRequest = new StationRequest("새로운역");
         mockMvc.perform(put("/api/stations/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(stationRequest))
         )
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("newName은 이미 존재하는 역 이름입니다."))
+                .andExpect(content().string("새로운역은 이미 존재하는 역 이름입니다."))
                 .andDo(document("station-update-duplicate",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint())
