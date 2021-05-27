@@ -19,7 +19,7 @@ public class StationService {
 
     public StationResponse saveStation(StationRequest stationRequest) {
         Station station = stationDao.insert(stationRequest.toStation());
-        return StationResponse.of(station);
+        return StationResponse.from(station);
     }
 
     public Station findStationById(Long id) {
@@ -30,7 +30,7 @@ public class StationService {
         List<Station> stations = stationDao.findAll();
 
         return stations.stream()
-                .map(StationResponse::of)
+                .map(StationResponse::from)
                 .collect(Collectors.toList());
     }
 

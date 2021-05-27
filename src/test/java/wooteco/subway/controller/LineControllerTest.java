@@ -37,7 +37,7 @@ public class LineControllerTest extends ControllerTest {
     void create() throws Exception {
         long lineId = 1L;
         LineRequest lineRequest = new LineRequest("테스트선", "주황색", 1L, 2L, 10, 100);
-        LineResponse lineResponse = new LineResponse(lineId, "테스트선", "주황색", Collections.emptyList());
+        LineResponse lineResponse = new LineResponse(lineId, "테스트선", "주황색", Collections.emptyList(), Collections.emptyList());
         String json = new ObjectMapper().writeValueAsString(lineRequest);
         given(lineService.saveLine(any(LineRequest.class))).willReturn(lineResponse);
         mockMvc.perform(post("/lines")
@@ -54,8 +54,8 @@ public class LineControllerTest extends ControllerTest {
     @DisplayName("전체 조회 - 성공")
     void findAllLines() throws Exception {
         List<LineResponse> lineResponses = Arrays.asList(
-                new LineResponse(1L, "테스트1선", "주황색", Collections.emptyList()),
-                new LineResponse(2L, "테스트2선", "주황색", Collections.emptyList())
+                new LineResponse(1L, "테스트1선", "주황색", Collections.emptyList(), Collections.emptyList()),
+                new LineResponse(2L, "테스트2선", "주황색", Collections.emptyList(), Collections.emptyList())
         );
         given(lineService.findLineResponses()).willReturn(lineResponses);
         mockMvc.perform(get("/lines"))
@@ -69,7 +69,7 @@ public class LineControllerTest extends ControllerTest {
     @Test
     @DisplayName("id 조회 - 성공")
     void findById() throws Exception {
-        LineResponse lineResponse = new LineResponse(1L, "테스트1선", "주황색", Collections.emptyList());
+        LineResponse lineResponse = new LineResponse(1L, "테스트1선", "주황색", Collections.emptyList(), Collections.emptyList());
         long lineId = 1L;
         given(lineService.findLineResponseById(lineId)).willReturn(lineResponse);
         mockMvc.perform(get("/lines/" + lineId))
