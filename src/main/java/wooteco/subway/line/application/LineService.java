@@ -2,7 +2,7 @@ package wooteco.subway.line.application;
 
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
-import wooteco.subway.exception.badrequest.DuplicateNameException;
+import wooteco.subway.exception.badrequest.DuplicateUniqueKeyException;
 import wooteco.subway.exception.notfound.LineNotFoundException;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
@@ -33,7 +33,14 @@ public class LineService {
             persistLine.addSection(addInitSection(persistLine, request));
             return LineResponse.of(persistLine);
         } catch (DuplicateKeyException e) {
-            throw new DuplicateNameException("이미 존재하는 노선 이름입니다.");
+            String message = "";
+            if(e.getMessage().contains("LINE(NAME)")) {
+                message = "지하철 노선 이름이 이미 존재합니다";
+            }
+            if(e.getMessage().contains("LINE(COLOR)")) {
+                message = "지하철 노선 색깔이 이미 존재합니다";
+            }
+            throw new DuplicateUniqueKeyException(message);
         }
     }
 
@@ -50,7 +57,7 @@ public class LineService {
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
-                .map(line -> LineResponse.of(line))
+                .map(LineResponse::of)
                 .collect(Collectors.toList());
     }
 
@@ -72,7 +79,14 @@ public class LineService {
             lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
             return new LineNameColorResponse(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor());
         } catch (DuplicateKeyException e) {
-            throw new DuplicateNameException("지하철 노선 이름이 이미 존재합니다");
+            String message = "";
+            if(e.getMessage().contains("LINE(NAME)")) {
+                message = "지하철 노선 이름이 이미 존재합니다";
+            }
+            if(e.getMessage().contains("LINE(COLOR)")) {
+                message = "지하철 노선 색깔이 이미 존재합니다";
+            }
+            throw new DuplicateUniqueKeyException(message);
         }
     }
 

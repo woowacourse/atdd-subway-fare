@@ -83,12 +83,27 @@ public class LineAcceptanceTest extends AcceptanceTest {
     void createLineWithDuplicateName() {
         // given
         지하철_노선_등록되어_있음(lineRequest1);
+        LineRequest lineRequest = new LineRequest(lineRequest1.getName(), lineRequest2.getColor(), lineRequest2.getUpStationId(), lineRequest2.getDownStationId(), lineRequest2.getDistance());
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1, tokenResponse);
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest, tokenResponse);
 
         // then
         지하철_노선_생성_이름중복으로_실패됨(response);
+    }
+
+    @DisplayName("기존에 존재하는 지하철 노선 색깔로 지하철 노선을 생성한다.")
+    @Test
+    void createLineWithDuplicateColor() {
+        // given
+        지하철_노선_등록되어_있음(lineRequest1);
+        LineRequest lineRequest = new LineRequest(lineRequest2.getName(), lineRequest1.getColor(), lineRequest2.getUpStationId(), lineRequest2.getDownStationId(), lineRequest2.getDistance());
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest, tokenResponse);
+
+        // then
+        지하철_노선_생성_색깔중복으로_실패됨(response);
     }
 
     @DisplayName("지하철 노선을 생성요청에 유효하지 않은 값을 넣는다.")
@@ -197,13 +212,28 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // given
         지하철_노선_등록되어_있음(lineRequest1);
         LineResponse lineResponse2 = 지하철_노선_등록되어_있음(lineRequest2);
-        LineUpdateRequest lineUpdateRequest = new LineUpdateRequest(lineRequest1.getName(), "bg-red-600");
+        LineUpdateRequest lineUpdateRequest = new LineUpdateRequest(lineRequest1.getName(), lineRequest2.getColor());
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse2, lineUpdateRequest);
 
         // then
         지하철_노선_이름_중복됨(response);
+    }
+
+    @DisplayName("지하철 노선 이름을 이미 존재하는 색깔로 수정한다.")
+    @Test
+    void updateLineByDuplicateColor() {
+        // given
+        지하철_노선_등록되어_있음(lineRequest1);
+        LineResponse lineResponse2 = 지하철_노선_등록되어_있음(lineRequest2);
+        LineUpdateRequest lineUpdateRequest = new LineUpdateRequest(lineRequest2.getName(), lineRequest1.getColor());
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse2, lineUpdateRequest);
+
+        // then
+        지하철_노선_색깔_중복됨(response);
     }
 
     @DisplayName("지하철 노선 유효하지 않은 값으로 수정한다.")
@@ -385,6 +415,15 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat(exceptionResponse.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(exceptionResponse.getMessage()).isEqualTo("지하철 노선 이름이 이미 존재합니다");
+    }
+
+    public static void 지하철_노선_생성_색깔중복으로_실패됨(ExtractableResponse<Response> response) {
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(exceptionResponse.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(exceptionResponse.getMessage()).isEqualTo("지하철 노선 색깔이 이미 존재합니다");
     }
 
     public static void 지하철_노선_목록_응답됨(ExtractableResponse<Response> response) {
@@ -427,6 +466,14 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat(exceptionResponse.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat(exceptionResponse.getMessage()).isEqualTo("지하철 노선 이름이 이미 존재합니다");
+    }
+
+    public static void 지하철_노선_색깔_중복됨(ExtractableResponse<Response> response) {
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(exceptionResponse.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(exceptionResponse.getMessage()).isEqualTo("지하철 노선 색깔이 이미 존재합니다");
     }
 
     public static void 지하철_역ID_음수요청됨(ExtractableResponse<Response> response) {
