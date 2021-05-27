@@ -1,7 +1,7 @@
 package wooteco.subway.line.application;
 
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import wooteco.subway.exception.DuplicateColorException;
 import wooteco.subway.exception.DuplicateNameException;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
@@ -31,11 +31,16 @@ public class LineService {
 
     public LineResponse saveLine(LineRequest request) {
         Line persistLine;
-        try {
-            persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
-        } catch (DuplicateKeyException e) {
+
+        if (lineDao.isExistByName(request.getName())) {
             throw new DuplicateNameException("이미 존재하는 노선입니다.");
         }
+
+        if (lineDao.isExistByColor(request.getColor())) {
+            throw new DuplicateColorException("이미 존재하는 노선 색깔입니다.");
+        }
+
+        persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);
     }
@@ -103,5 +108,4 @@ public class LineService {
         sectionDao.deleteByLineId(lineId);
         sectionDao.insertSections(line);
     }
-
 }

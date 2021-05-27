@@ -1,8 +1,6 @@
 package wooteco.subway.exception;
 
-import org.springframework.dao.DuplicateKeyException;
-
-public class DuplicateNameException extends DuplicateKeyException {
+public class DuplicateNameException extends IllegalArgumentException {
     public DuplicateNameException(String errorMessage) {
         super(errorMessage);
     }

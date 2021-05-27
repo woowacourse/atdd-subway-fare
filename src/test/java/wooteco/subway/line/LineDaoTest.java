@@ -38,6 +38,14 @@ public class LineDaoTest {
                 .isInstanceOf(DuplicateKeyException.class);
     }
 
+    @DisplayName("중복되는 색깔을 가지는 노선을 추가할 시 DuplicateKeyException이 발생한다.")
+    @Test
+    void throw_DuplicateKeyException_When_Insert_DuplicateColor() {
+        lineDao.insert(new Line("신분당선", "bg-red-600", 1200));
+        assertThatThrownBy(() -> lineDao.insert(new Line("2호선", "bg-red-600", 1200)))
+                .isInstanceOf(DuplicateKeyException.class);
+    }
+
     @DisplayName("존재하지 않는 지하철 노선을 검색할 시 RuntimeException이 발생한다.")
     @Test
     void throw_NoSuchElementException_When_Find_NonExists() {

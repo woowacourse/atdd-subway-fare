@@ -38,6 +38,16 @@ public class LineDao {
         return new Line(lineId, line.getName(), line.getColor(), line.getExtraFare());
     }
 
+    public boolean isExistByColor(String color) {
+        String sql = "select EXISTS (select * from LINE where color = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, color);
+    }
+
+    public boolean isExistByName(String name) {
+        String sql = "select EXISTS (select * from LINE where name = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, name);
+    }
+
     public Line findById(Long id) {
         String sql = "select L.id as line_id, L.name as line_name, L.color as line_color, L.extra_fare as line_extra_fare, " +
                 "S.id as section_id, S.distance as section_distance, " +

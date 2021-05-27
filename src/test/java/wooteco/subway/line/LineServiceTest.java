@@ -7,6 +7,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.exception.DuplicateColorException;
 import wooteco.subway.exception.DuplicateNameException;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.dto.LineRequest;
@@ -37,11 +38,20 @@ public class LineServiceTest {
 
     @DisplayName("중복되는 이름을 가지는 노선을 추가할 시 DuplicateNameException이 발생한다.")
     @Test
-    void throw_DuplicateNameException_When_Find_NonExists() {
+    void throw_DuplicateNameException_When_Insert_DuplicateName() {
         lineService.saveLine(new LineRequest("2호선", "bg-red-600", 1L, 2L, 10));
         assertThatThrownBy(() -> lineService.saveLine(new LineRequest("2호선", "black", 3L, 4L, 20)))
                 .isInstanceOf(DuplicateNameException.class)
                 .hasMessage("이미 존재하는 노선입니다.");
+    }
+
+    @DisplayName("중복되는 색깔을 가지는 노선을 추가할 시 DuplicateColorException이 발생한다.")
+    @Test
+    void throw_DuplicateColorException_When_Insert_DuplicateColor() {
+        lineService.saveLine(new LineRequest("2호선", "bg-red-600", 1L, 2L, 10));
+        assertThatThrownBy(() -> lineService.saveLine(new LineRequest("3호선", "bg-red-600", 3L, 4L, 20)))
+                .isInstanceOf(DuplicateColorException.class)
+                .hasMessage("이미 존재하는 노선 색깔입니다.");
     }
 
     @DisplayName("존재하지 않는 지하철 노선을 검색할 시 NoSuchElementException이 발생한다.")
