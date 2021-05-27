@@ -27,7 +27,7 @@ public class FareCalculator {
                 .stream()
                 .mapToInt(sectionEdge -> sectionEdge.getLine().getExtraFare())
                 .max()
-                .orElseThrow(IllegalStateException::new);
+                .orElseThrow(FareCalculationException::new);
     }
 
     private int applyDiscountByMemberAge(Optional<LoginMember> loginMember, int totalFare) {

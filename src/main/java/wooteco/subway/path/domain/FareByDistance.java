@@ -1,5 +1,7 @@
 package wooteco.subway.path.domain;
 
+import wooteco.subway.path.application.FareCalculationException;
+
 import java.util.Arrays;
 import java.util.function.Function;
 
@@ -60,7 +62,7 @@ public enum FareByDistance {
         final FareByDistance chosenFareByDistance = Arrays.stream(FareByDistance.values())
                 .filter(fareByDistance -> fareByDistance.distanceFrom < distance && distance <= fareByDistance.distanceTo)
                 .findAny()
-                .orElseThrow(IllegalStateException::new);
+                .orElseThrow(FareCalculationException::new);
 
         return chosenFareByDistance.farePolicy.apply(distance);
     }
