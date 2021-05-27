@@ -15,7 +15,6 @@ import wooteco.subway.station.domain.Station;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class LineService {
@@ -55,9 +54,7 @@ public class LineService {
 
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
-        return persistLines.stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList());
+        return LineResponse.listOf(persistLines);
     }
 
     public List<Line> findLines() {

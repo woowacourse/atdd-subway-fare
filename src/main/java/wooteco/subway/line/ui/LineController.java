@@ -3,10 +3,8 @@ package wooteco.subway.line.ui;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.line.application.LineService;
-import wooteco.subway.line.dto.LineRequest;
-import wooteco.subway.line.dto.LineResponse;
-import wooteco.subway.line.dto.SectionRequest;
-import wooteco.subway.line.dto.SectionResponse;
+import wooteco.subway.line.domain.Line;
+import wooteco.subway.line.dto.*;
 
 import java.net.URI;
 import java.util.List;
@@ -15,7 +13,6 @@ import java.util.List;
 @RequestMapping("/lines")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class LineController {
-
     private LineService lineService;
 
     public LineController(LineService lineService) {
@@ -60,6 +57,12 @@ public class LineController {
     public ResponseEntity removeLineStation(@PathVariable Long lineId, @RequestParam Long stationId) {
         lineService.removeLineStation(lineId, stationId);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/map")
+    public ResponseEntity<List<MapResponse>> findAllLine() {
+        List<Line> lines = lineService.findLines();
+        return ResponseEntity.ok(MapResponse.listOf(lines));
     }
 }
 
