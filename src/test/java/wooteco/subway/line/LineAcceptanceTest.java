@@ -40,8 +40,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
     private LineRequest lineRequest1;
     private LineRequest lineRequest2;
     private LineRequest lineRequest3;
-
     private TokenResponse tokenResponse;
+
     @BeforeEach
     public void setUp() {
         super.setUp();

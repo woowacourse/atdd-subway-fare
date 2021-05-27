@@ -1,5 +1,6 @@
 package wooteco.subway.station.application;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.dao.DataAccessException;
@@ -11,6 +12,7 @@ import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
+import wooteco.subway.station.dto.StationTransferResponse;
 
 @Service
 public class StationService {
@@ -47,6 +49,17 @@ public class StationService {
         return stations.stream()
             .map(StationResponse::of)
             .collect(Collectors.toList());
+    }
+
+    public List<StationTransferResponse> findAllStationWithTransfer() {
+        List<Station> stations = stationDao.findAllAscById();
+
+        List<StationTransferResponse> stationTransferResponses = new ArrayList<>();
+        for (final Station station : stations) {
+            List<String> transfer = stationDao.findTransfer(station.getId());
+            stationTransferResponses.add(StationTransferResponse.from(station, transfer));
+        }
+        return stationTransferResponses;
     }
 
     public void deleteStationById(Long id) {

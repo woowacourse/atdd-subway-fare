@@ -47,6 +47,11 @@ public class StationDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
+    public List<Station> findAllAscById() {
+        String sql = "select * from STATION order by id";
+        return jdbcTemplate.query(sql, rowMapper);
+    }
+
     public void deleteById(Long id) {
         String sql = "delete from STATION where id = ?";
         jdbcTemplate.update(sql, id);
@@ -65,5 +70,10 @@ public class StationDao {
     public boolean existsByName(String name) {
         String sql = "select exists(select * from STATION where name = ?)";
         return jdbcTemplate.queryForObject(sql, Boolean.class, name);
+    }
+
+    public List<String> findTransfer(Long id) {
+        String sql = "select LINE.name from SECTION inner join LINE on LINE.id = SECTION.line_id where SECTION.up_station_id = ? OR SECTION.down_station_id = ?;";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> rs.getString("name"), id, id);
     }
 }
