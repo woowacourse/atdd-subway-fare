@@ -126,7 +126,7 @@ public class LineDao {
     }
 
     public int countByColor(String color) {
-        String sql = "select count(*) from LINE where name = ?";
+        String sql = "select count(*) from LINE where color = ?";
         return jdbcTemplate.queryForObject(sql, int.class, color);
     }
 
