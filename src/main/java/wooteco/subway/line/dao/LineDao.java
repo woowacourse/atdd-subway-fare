@@ -127,7 +127,7 @@ public class LineDao {
     }
 
     public void deleteById(Long id) {
-        if (jdbcTemplate.update("delete from Line where id = ?", id) == 0) {
+        if (jdbcTemplate.update("delete from LINE where id = ?", id) == 0) {
             throw new NoSuchLineException();
         }
     }
