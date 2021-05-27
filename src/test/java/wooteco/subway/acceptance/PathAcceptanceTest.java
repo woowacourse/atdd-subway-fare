@@ -86,6 +86,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .map(StationResponse::getId)
                 .collect(Collectors.toList());
 
+        int fare = pathResponse.getFare();
+        assertThat(fare).isEqualTo(1250);
+
         assertThat(stationIds).containsExactlyElementsOf(expectedPathIds);
     }
 
