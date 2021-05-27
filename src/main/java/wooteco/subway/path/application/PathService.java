@@ -35,7 +35,7 @@ public class PathService {
             Station targetStation = stationService.findStationById(target);
             SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
 
-            return PathResponseAssembler.assemble(subwayPath, age);
+            return PathResponseAssembler.assemble(subwayPath, age, lines);
         } catch (EmptyResultDataAccessException e) {
             throw new InvalidPathException("출발지 또는 도착지가 존재하지 않습니다.");
         }
