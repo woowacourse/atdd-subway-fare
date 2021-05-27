@@ -6,6 +6,7 @@ import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.line.exception.SectionRelatedException;
 
 import java.net.URI;
 import java.sql.SQLException;
@@ -65,5 +66,10 @@ public class LineController {
     @ExceptionHandler(SQLException.class)
     public ResponseEntity handleSQLException() {
         return ResponseEntity.badRequest().build();
+    }
+
+    @ExceptionHandler(SectionRelatedException.class)
+    public ResponseEntity sectionException(Exception e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 }
