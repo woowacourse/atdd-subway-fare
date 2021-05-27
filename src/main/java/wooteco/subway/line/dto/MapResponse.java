@@ -10,13 +10,13 @@ public class MapResponse {
     private Long id;
     private String name;
     private String color;
-    private Integer extraFare;
+    private int extraFare;
     private List<StationResponse> stations;
     private List<SectionResponse> sections;
 
-    public MapResponse(Long id, String name, String color, Integer extraFare,
-        List<StationResponse> stations,
+    public MapResponse(Long id, String name, String color, int extraFare, List<StationResponse> stations,
         List<SectionResponse> sections) {
+
         this.id = id;
         this.name = name;
         this.color = color;
@@ -48,6 +48,10 @@ public class MapResponse {
 
     public String getColor() {
         return color;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 
     public List<StationResponse> getStations() {
