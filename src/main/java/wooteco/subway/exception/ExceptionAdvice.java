@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class ExceptionAdvice {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<String> handleBindException(MethodArgumentNotValidException methodArgumentNotValidException) {
+    public ResponseEntity<String> handleBindingException(MethodArgumentNotValidException methodArgumentNotValidException) {
         String message = methodArgumentNotValidException.getFieldErrors()
                 .stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
@@ -30,11 +30,12 @@ public class ExceptionAdvice {
 
     @ExceptionHandler({CannotAddException.class, CannotDeleteException.class, DuplicatedException.class})
     public ResponseEntity<String> handleBadRequest(RuntimeException runtimeException) {
-        return ResponseEntity.badRequest().body(runtimeException.getMessage());
+        return ResponseEntity.badRequest()
+                .body(runtimeException.getMessage());
     }
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<String> handNotFound(RuntimeException runtimeException) {
+    public ResponseEntity<String> handleNotFound(RuntimeException runtimeException) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(runtimeException.getMessage());
     }
