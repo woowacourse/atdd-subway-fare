@@ -80,4 +80,9 @@ public class StationDao {
                 "left outer join SECTION S WHERE L.id = S.line_id AND (S.up_station_id =? OR S.down_station_id = ?)";
         return jdbcTemplate.query(sql, lineInfoRowMapper, station.getId(), station.getId());
     }
+
+    public void updateById(Long id, String name) {
+        String sql = "update station set name = ? where id = ?";
+        jdbcTemplate.update(sql, name, id);
+    }
 }
