@@ -102,6 +102,7 @@ public class LineService {
     public void deleteLineById(Long id) {
         checkIfLineExists(id);
         lineDao.deleteById(id);
+        sectionDao.deleteByLineId(id);
     }
 
     @Transactional

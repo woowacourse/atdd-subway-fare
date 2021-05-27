@@ -198,9 +198,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
     void updateLine() {
         // given
         LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1, loginToken);
+        LineRequest lineRequest = new LineRequest("완전새로운선", "bl-old-800");
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse, lineRequest2, loginToken);
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse, lineRequest, loginToken);
 
         // then
         지하철_노선_수정됨(response);
