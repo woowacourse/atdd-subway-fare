@@ -55,9 +55,8 @@ public class StationService {
     }
 
     public void deleteStationById(Long id) {
-        Long validatedId = validateStationExistAndGetId(id);
-        sectionDao.findSectionByStationId(validatedId);
-        stationDao.deleteById(validatedId);
+        validateDeleteStation(id);
+        stationDao.deleteById(id);
     }
 
     private void validateDeleteStation(Long id) {
@@ -73,7 +72,7 @@ public class StationService {
     public Long validateStationExistAndGetId(Long id) {
         return stationDao
                 .findById(id)
-                .orElseThrow(StationDuplicatedException::new)
+                .orElseThrow(StationNotFoundException::new)
                 .getId();
     }
 
