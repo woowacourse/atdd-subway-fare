@@ -6,8 +6,10 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
+import wooteco.subway.member.dto.EmailRequest;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
+import wooteco.subway.member.exception.DuplicatedIdException;
 
 @Service
 @RequiredArgsConstructor
@@ -34,11 +36,9 @@ public class MemberService {
         memberDao.deleteById(member.getId());
     }
 
-    public void checkEmail(String email) {
-        try {
-            memberDao.findByEmail(email);
-        } catch (EmptyResultDataAccessException e) {
-            throw new RuntimeException();
+    public void checkEmail(EmailRequest emailRequest) {
+        if (memberDao.checkEmailDuplicated(emailRequest.getEmail())) {
+            throw new DuplicatedIdException();
         }
     }
 }

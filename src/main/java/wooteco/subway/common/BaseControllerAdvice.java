@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import wooteco.subway.auth.exception.InvalidTokenException;
 import wooteco.subway.line.exception.line.LineException;
 import wooteco.subway.line.exception.section.SectionException;
 import wooteco.subway.member.exception.MemberException;
@@ -34,6 +35,11 @@ public class BaseControllerAdvice extends ResponseEntityExceptionHandler {
     @ExceptionHandler(MemberException.class)
     public ResponseEntity<ErrorResponse> memberExceptionHandling(Exception e) {
         return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(InvalidTokenException.class)
+    public ResponseEntity<ErrorResponse> invalidTokenExceptionHandling(Exception e) {
+        return ResponseEntity.status(401).body(new ErrorResponse(e.getMessage()));
     }
 
     @Override

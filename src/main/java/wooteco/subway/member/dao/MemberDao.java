@@ -77,4 +77,9 @@ public class MemberDao {
             throw new MismatchIdPasswordException ();
         }
     }
+
+    public boolean checkEmailDuplicated(String email) {
+        String sql = "select exists (select * from MEMBER where email = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, email);
+    }
 }

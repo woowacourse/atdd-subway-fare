@@ -17,7 +17,7 @@ public class AcceptanceTest {
     int port;
 
     @Autowired
-    JdbcTemplate jdbcTemplate;
+    public JdbcTemplate jdbcTemplate;
 
     @BeforeEach
     public void setUp() {

@@ -6,6 +6,7 @@ import wooteco.subway.member.domain.Member;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.PositiveOrZero;
 
 @Getter
 @NoArgsConstructor
@@ -14,6 +15,7 @@ public class MemberRequest {
     private String email;
     @NotBlank(message = "INVALID_INPUT")
     private String password;
+    @PositiveOrZero(message = "INVALID_INPUT")
     private Integer age;
 
     public MemberRequest(String email, String password, Integer age) {
