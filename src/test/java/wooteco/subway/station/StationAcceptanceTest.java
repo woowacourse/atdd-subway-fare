@@ -48,7 +48,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void createStation() {
         // when
-        ExtractableResponse<Response> response = 지하철역_생성_요청_내부토큰(강남역);
+        ExtractableResponse<Response> response = 지하철역_생성_요청(tokenResponse, 강남역);
 
         // then
         지하철역_생성됨(response);
@@ -61,7 +61,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_등록되어_있음_내부토큰(강남역);
 
         // when
-        ExtractableResponse<Response> response = 지하철역_생성_요청_내부토큰(강남역);
+        ExtractableResponse<Response> response = 지하철역_생성_요청(tokenResponse, 강남역);
 
         // then
         지하철역_생성_실패됨(response);
@@ -96,27 +96,14 @@ public class StationAcceptanceTest extends AcceptanceTest {
     }
 
     public static StationResponse 지하철역_등록되어_있음_내부토큰(String name) {
-        return 지하철역_생성_요청_내부토큰(name).as(StationResponse.class);
-    }
-
-    public static ExtractableResponse<Response> 지하철역_생성_요청_내부토큰(String name) {
-        StationRequest stationRequest = new StationRequest(name);
-
-        return RestAssured
-            .given().log().all()
-            .auth().oauth2(tokenResponse.getAccessToken())
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(stationRequest)
-            .when().post("/stations")
-            .then().log().all()
-            .extract();
+        return 지하철역_생성_요청(tokenResponse, name).as(StationResponse.class);
     }
 
     public static StationResponse 지하철역_등록되어_있음_외부토큰(TokenResponse tokenResponse, String name) {
-        return 지하철역_생성_요청_외부토큰(tokenResponse, name).as(StationResponse.class);
+        return 지하철역_생성_요청(tokenResponse, name).as(StationResponse.class);
     }
 
-    public static ExtractableResponse<Response> 지하철역_생성_요청_외부토큰(TokenResponse tokenResponse, String name) {
+    public static ExtractableResponse<Response> 지하철역_생성_요청(TokenResponse tokenResponse, String name) {
         StationRequest stationRequest = new StationRequest(name);
 
         return RestAssured

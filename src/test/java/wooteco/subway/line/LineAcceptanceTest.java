@@ -37,18 +37,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     private LineRequest lineRequest3;
 
     public static LineResponse 지하철_노선_등록되어_있음_내부토큰(LineRequest lineRequest) {
-        return 지하철_노선_생성_요청_내부토큰(lineRequest).as(LineResponse.class);
-    }
-
-    public static ExtractableResponse<Response> 지하철_노선_생성_요청_내부토큰(LineRequest params) {
-        return RestAssured
-            .given().log().all()
-            .auth().oauth2(tokenResponse.getAccessToken())
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(params)
-            .when().post("/lines")
-            .then().log().all().
-                extract();
+        return 지하철_노선_생성_요청(tokenResponse, lineRequest).as(LineResponse.class);
     }
 
     public static LineResponse 지하철_노선_등록되어_있음_외부토큰(TokenResponse tokenResponse, String name, String color, StationResponse upStation, StationResponse downStation, int extraFare, int distance) {
@@ -57,10 +46,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
     }
 
     public static LineResponse 지하철_노선_등록되어_있음_외부토큰(TokenResponse tokenResponse, LineRequest lineRequest) {
-        return 지하철_노선_생성_요청_외부토큰(tokenResponse, lineRequest).as(LineResponse.class);
+        return 지하철_노선_생성_요청(tokenResponse, lineRequest).as(LineResponse.class);
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_생성_요청_외부토큰(TokenResponse tokenResponse, LineRequest params) {
+    public static ExtractableResponse<Response> 지하철_노선_생성_요청(TokenResponse tokenResponse, LineRequest params) {
         return RestAssured
             .given().log().all()
             .auth().oauth2(tokenResponse.getAccessToken())
@@ -81,17 +70,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_조회_요청_내부토큰(LineResponse response) {
-        return RestAssured
-            .given().log().all()
-            .auth().oauth2(tokenResponse.getAccessToken())
-            .accept(MediaType.APPLICATION_JSON_VALUE)
-            .when().get("/lines/{lineId}", response.getId())
-            .then().log().all()
-            .extract();
-    }
-
-    public static ExtractableResponse<Response> 지하철_노선_조회_요청_외부토큰(TokenResponse tokenResponse, LineResponse response) {
+    public static ExtractableResponse<Response> 지하철_노선_조회_요청(TokenResponse tokenResponse, LineResponse response) {
         return RestAssured
             .given().log().all()
             .auth().oauth2(tokenResponse.getAccessToken())
@@ -185,7 +164,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void createLine() {
         // when
-        ExtractableResponse<Response> response = 지하철_노선_생성_요청_내부토큰(lineRequest1);
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(tokenResponse, lineRequest1);
 
         // then
         지하철_노선_생성됨(response);
@@ -198,7 +177,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_등록되어_있음_내부토큰(lineRequest1);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_생성_요청_내부토큰(lineRequest1);
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(tokenResponse, lineRequest1);
 
         // then
         지하철_노선_생성_실패됨(response);
@@ -211,7 +190,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_등록되어_있음_내부토큰(lineRequest1);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_생성_요청_내부토큰(lineRequest3);
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(tokenResponse, lineRequest3);
 
         // then
         지하철_노선_생성_실패됨(response);
@@ -239,7 +218,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         LineResponse lineResponse = 지하철_노선_등록되어_있음_내부토큰(lineRequest1);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_조회_요청_내부토큰(lineResponse);
+        ExtractableResponse<Response> response = 지하철_노선_조회_요청(tokenResponse, lineResponse);
 
         // then
         지하철_노선_응답됨(response, lineResponse);
