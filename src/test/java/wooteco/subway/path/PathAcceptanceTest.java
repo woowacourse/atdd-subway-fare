@@ -21,10 +21,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.subway.line.LineAcceptanceTest.*;
-import static wooteco.subway.line.SectionAcceptanceTest.지하철_구간_등록되어_있음;
+import static wooteco.subway.line.LineAcceptanceTest.로그인_사용자_지하철_추가요금_노선_등록되어_있음;
 import static wooteco.subway.station.StationAcceptanceTest.로그인_사용자_지하철역_등록되어_있음;
-import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
 @DisplayName("지하철 경로 조회")
 @Sql("classpath:tableInit.sql")

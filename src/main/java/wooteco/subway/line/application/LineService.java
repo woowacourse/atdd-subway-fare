@@ -1,9 +1,7 @@
 package wooteco.subway.line.application;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.DuplicatedException;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
@@ -12,9 +10,13 @@ import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.line.exception.InvalidSectionRequestException;
 import wooteco.subway.line.exception.LineNotFoundException;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LineService {
@@ -29,6 +31,7 @@ public class LineService {
         this.stationService = stationService;
     }
 
+    @Transactional
     public LineResponse saveLine(LineRequest request) {
         if (lineDao.isExistByName(request.getName())) {
             throw new DuplicatedException(request.getName());
@@ -43,12 +46,19 @@ public class LineService {
 
     private Section addInitSection(Line line, LineRequest request) {
         if (request.getUpStationId() != null && request.getDownStationId() != null) {
+            checkSameEndStations(request);
             Station upStation = stationService.findStationById(request.getUpStationId());
             Station downStation = stationService.findStationById(request.getDownStationId());
             Section section = new Section(upStation, downStation, request.getDistance());
             return sectionDao.insert(line, section);
         }
         return null;
+    }
+
+    private void checkSameEndStations(LineRequest request) {
+        if (request.getUpStationId().equals(request.getDownStationId())) {
+            throw new InvalidSectionRequestException("상행역과 하행역은 같을 수 없습니다.");
+        }
     }
 
     public List<LineResponse> findLineResponses() {
