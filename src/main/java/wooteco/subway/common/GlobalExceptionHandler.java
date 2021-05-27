@@ -55,10 +55,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(new ErrorResponse(exception.getMessage()));
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ErrorResponse> serverExceptionHandler(RuntimeException exception) {
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> serverExceptionHandler(Exception exception) {
         logger.error(exception.getMessage());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse(exception.getMessage()));
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(new ErrorResponse("서버에서 에러가 발생했습니다."));
     }
 
     private String bindingResultMessage(MethodArgumentNotValidException exception) {
