@@ -172,13 +172,13 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
     private void 지하철_구간_생성됨(ExtractableResponse<Response> result, LineResponse lineResponse, List<StationResponse> stationResponses) {
         assertThat(result.statusCode()).isEqualTo(HttpStatus.OK.value());
-        ExtractableResponse<Response> response = 지하철_노선_조회_요청(accessToken, lineResponse);
+        ExtractableResponse<Response> response = 지하철_노선_조회_요청(accessToken, lineResponse.getId());
         지하철_노선에_지하철역_순서_정렬됨(response, stationResponses);
     }
 
     public static void 지하철_노선에_지하철역_제외됨(ExtractableResponse<Response> result, LineResponse lineResponse, List<StationResponse> stationResponses) {
         assertThat(result.statusCode()).isEqualTo(HttpStatus.OK.value());
-        ExtractableResponse<Response> response = 지하철_노선_조회_요청(accessToken, lineResponse);
+        ExtractableResponse<Response> response = 지하철_노선_조회_요청(accessToken, lineResponse.getId());
         지하철_노선에_지하철역_순서_정렬됨(response, stationResponses);
     }
 

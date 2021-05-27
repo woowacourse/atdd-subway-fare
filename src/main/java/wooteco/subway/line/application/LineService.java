@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.exception.DuplicatedLineException;
+import wooteco.subway.exception.NoSuchLineException;
+import wooteco.subway.exception.NoSuchStationException;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
@@ -70,15 +72,25 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        return lineDao.findById(id);
+        try {
+            return lineDao.findById(id);
+        } catch (DataAccessException e) {
+            throw new NoSuchLineException();
+        }
+
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        Line line = new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor());
+        if(lineDao.update(line) == 0) {
+            throw new NoSuchLineException();
+        }
     }
 
     public void deleteLineById(Long id) {
-        lineDao.deleteById(id);
+        if(lineDao.deleteById(id) == 0) {
+            throw new NoSuchLineException();
+        }
     }
 
     public void addLineStation(Long lineId, SectionRequest request) {

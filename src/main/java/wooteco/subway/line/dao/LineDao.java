@@ -3,6 +3,8 @@ package wooteco.subway.line.dao;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+
+import wooteco.subway.exception.NoSuchLineException;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.domain.Sections;
@@ -53,9 +55,9 @@ public class LineDao {
         return mapLine(result);
     }
 
-    public void update(Line newLine) {
+    public int update(Line newLine) {
         String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
+        return jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
     }
 
     public List<Line> findAll() {
@@ -77,7 +79,7 @@ public class LineDao {
 
     private Line mapLine(List<Map<String, Object>> result) {
         if (result.size() == 0) {
-            throw new RuntimeException();
+            throw new NoSuchLineException();
         }
 
         List<Section> sections = extractSections(result);
@@ -107,7 +109,7 @@ public class LineDao {
                 .collect(Collectors.toList());
     }
 
-    public void deleteById(Long id) {
-        jdbcTemplate.update("delete from Line where id = ?", id);
+    public int deleteById(Long id) {
+        return jdbcTemplate.update("delete from Line where id = ?", id);
     }
 }

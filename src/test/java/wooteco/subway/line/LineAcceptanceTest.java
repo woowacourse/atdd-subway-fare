@@ -124,10 +124,22 @@ public class LineAcceptanceTest extends AcceptanceTest {
         LineResponse lineResponse = 지하철_노선_등록되어_있음(accessToken, lineRequest1);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_조회_요청(accessToken, lineResponse);
+        ExtractableResponse<Response> response = 지하철_노선_조회_요청(accessToken, lineResponse.getId());
 
         // then
         지하철_노선_응답됨(response, lineResponse);
+    }
+
+    @DisplayName("존재하지 않는 지하철 노선을 조회한다.")
+    @Test
+    void getNotExistLine() {
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_조회_요청(accessToken, 11L);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
+        assertThat(exceptionResponse.getError()).isEqualTo("NO_SUCH_LINE");
     }
 
     @DisplayName("지하철 노선을 수정한다.")
@@ -137,10 +149,22 @@ public class LineAcceptanceTest extends AcceptanceTest {
         LineResponse lineResponse = 지하철_노선_등록되어_있음(accessToken, lineRequest1);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse, lineRequest2);
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse.getId(), lineRequest2);
 
         // then
         지하철_노선_수정됨(response);
+    }
+
+    @DisplayName("존재하지 않는 지하철 노선을 수정한다.")
+    @Test
+    void updateNotExistLine() {
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(11L, lineRequest2);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
+        assertThat(exceptionResponse.getError()).isEqualTo("NO_SUCH_LINE");
     }
 
     @DisplayName("지하철 노선을 제거한다.")
@@ -150,10 +174,22 @@ public class LineAcceptanceTest extends AcceptanceTest {
         LineResponse lineResponse = 지하철_노선_등록되어_있음(accessToken, lineRequest1);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_제거_요청(lineResponse);
+        ExtractableResponse<Response> response = 지하철_노선_제거_요청(lineResponse.getId());
 
         // then
         지하철_노선_삭제됨(response);
+    }
+
+    @DisplayName("존재하지 않는 지하철 노선을 삭제한다.")
+    @Test
+    void deleteNotExistLine() {
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_제거_요청(11L);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
+        assertThat(exceptionResponse.getError()).isEqualTo("NO_SUCH_LINE");
     }
 
     public static LineResponse 지하철_노선_등록되어_있음(String accessToken, String name, String color, StationResponse upStation, StationResponse downStation, int distance, int extraFare) {
@@ -186,32 +222,32 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_조회_요청(String accessToken, LineResponse response) {
+    public static ExtractableResponse<Response> 지하철_노선_조회_요청(String accessToken, Long lineId) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(accessToken)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/api/lines/{lineId}", response.getId())
+                .when().get("/api/lines/{lineId}", lineId)
                 .then().log().all()
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_수정_요청(LineResponse response, LineRequest params) {
+    public static ExtractableResponse<Response> 지하철_노선_수정_요청(Long lineId, LineRequest params) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
-                .when().put("/api/lines/" + response.getId())
+                .when().put("/api/lines/" + lineId)
                 .then().log().all()
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_제거_요청(LineResponse lineResponse) {
+    public static ExtractableResponse<Response> 지하철_노선_제거_요청(Long lineId) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(accessToken)
-                .when().delete("/api/lines/" + lineResponse.getId())
+                .when().delete("/api/lines/" + lineId)
                 .then().log().all()
                 .extract();
     }
