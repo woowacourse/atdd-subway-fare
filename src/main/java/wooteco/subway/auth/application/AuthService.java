@@ -24,7 +24,6 @@ public class AuthService {
     public TokenResponse login(TokenRequest request) {
         Member member = memberDao.findByEmail(request.getEmail())
                 .orElseThrow(EmailNotFoundException::new);
-        ;
         member.checkPassword(request.getPassword());
         String token = jwtTokenProvider.createToken(request.getEmail());
         return new TokenResponse(token);

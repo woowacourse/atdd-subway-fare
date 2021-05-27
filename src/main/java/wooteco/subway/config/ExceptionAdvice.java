@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wooteco.subway.auth.application.InvalidTokenException;
 import wooteco.subway.member.application.DuplicateEmailException;
+import wooteco.subway.member.application.EmailNotFoundException;
 import wooteco.subway.member.application.InvalidPasswordException;
 import wooteco.subway.path.application.InvalidPathException;
 
@@ -37,10 +38,15 @@ public class ExceptionAdvice {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessage(message));
     }
 
-    @ExceptionHandler({InvalidPathException.class, DuplicateEmailException.class, InvalidPasswordException.class,
-            InvalidTokenException.class})
-    public ResponseEntity<ErrorMessage> handleInvalidPathException(InvalidPathException e) {
+    @ExceptionHandler({InvalidPathException.class, DuplicateEmailException.class})
+    public ResponseEntity<ErrorMessage> handleInvalidPathException(Exception e) {
         logger.error("method argument not valid exception occurred. message=[{}]", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessage(e.getMessage()));
+    }
+
+    @ExceptionHandler({InvalidPasswordException.class, InvalidTokenException.class, EmailNotFoundException.class})
+    public ResponseEntity<ErrorMessage> handleAuthException(Exception e) {
+        logger.error("method argument not valid exception occurred. message=[{}]", e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorMessage(e.getMessage()));
     }
 }
