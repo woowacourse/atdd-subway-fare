@@ -28,7 +28,8 @@ create table if not exists SECTION
     distance int not null,
     primary key(id),
     foreign key (up_station_id) references STATION(id),
-    foreign key (down_station_id) references STATION(id)
+    foreign key (down_station_id) references STATION(id),
+    foreign key (line_id) references LINE(id) on delete cascade
 );
 
 create table if not exists MEMBER
