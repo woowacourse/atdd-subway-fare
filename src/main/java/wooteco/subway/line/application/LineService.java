@@ -121,12 +121,22 @@ public class LineService {
 
     public LineSectionResponse findSectionsById(Long lineId) {
         Line line = lineDao.findById(lineId);
-        List<StationTransferResponse> stationResponses = stationService
-            .findStationsWithTransferLine(lineId);
-        List<SectionResponse> sectionResponses = convertToSectionResponse(line.getSections().sort());
-        LineSectionResponse response = new LineSectionResponse(lineId, line.getName(),
+        List<StationTransferResponse> stationResponses = sortStations(line, stationService
+            .findStationsWithTransferLine(lineId));
+        List<SectionResponse> sectionResponses = convertToSectionResponse(
+            line.getSections().sort());
+        return new LineSectionResponse(lineId, line.getName(),
             line.getColor(), stationResponses, sectionResponses);
-        return response;
+    }
+
+    private List<StationTransferResponse> sortStations(Line line,
+        List<StationTransferResponse> stationResponses) {
+        return line.getStations().stream()
+            .map(station -> stationResponses.stream()
+                .filter(response -> response.getId().equals(station.getId()))
+                .findFirst()
+                .get())
+            .collect(Collectors.toList());
     }
 
     private List<SectionResponse> convertToSectionResponse(Sections sections) {

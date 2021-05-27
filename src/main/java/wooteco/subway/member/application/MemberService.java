@@ -1,6 +1,5 @@
 package wooteco.subway.member.application;
 
-import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.DuplicateEmailException;
@@ -12,7 +11,8 @@ import wooteco.subway.member.dto.MemberResponse;
 
 @Service
 public class MemberService {
-    private MemberDao memberDao;
+
+    private final MemberDao memberDao;
 
     public MemberService(MemberDao memberDao) {
         this.memberDao = memberDao;
@@ -20,7 +20,7 @@ public class MemberService {
 
     @Transactional
     public MemberResponse createMember(MemberRequest request) {
-        if(isExistingEmail(request)){
+        if (isExistingEmail(request)) {
             throw new DuplicateEmailException();
         }
         Member member = memberDao.insert(request.toMember());
@@ -28,7 +28,7 @@ public class MemberService {
     }
 
     private boolean isExistingEmail(MemberRequest request) {
-        return memberDao.findExistingEmail(request.getEmail());
+        return !memberDao.findExistingEmail(request.getEmail());
     }
 
     public MemberResponse findMember(LoginMember loginMember) {
@@ -39,7 +39,9 @@ public class MemberService {
     @Transactional
     public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
         Member member = memberDao.findByEmail(loginMember.getEmail());
-        memberDao.update(new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
+        memberDao.update(
+            new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(),
+                memberRequest.getAge()));
     }
 
     @Transactional

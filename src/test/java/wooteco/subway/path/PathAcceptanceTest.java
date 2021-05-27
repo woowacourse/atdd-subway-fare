@@ -140,7 +140,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         총_요금이_응답됨(response, 1870);
     }
 
-    @DisplayName("로그인 - 나이 할인 + 경로에 따른 요금 정책을 적용한다. (청소년)")
+    @DisplayName("로그인 - 나이 할인 + 경로에 따른 요금 정책을 적용한다. (성인)")
     @Test
     void findFareByDistanceWithAdult() {
         회원_등록되어_있음(EMAIL, PASSWORD, 25);
