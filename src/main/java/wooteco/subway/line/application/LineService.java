@@ -114,4 +114,8 @@ public class LineService {
         sectionDao.deleteByLineId(lineId);
         sectionDao.insertSections(line);
     }
+
+    public void deleteSectionByLineId(Long id) {
+        sectionDao.deleteByLineId(id);
+    }
 }
