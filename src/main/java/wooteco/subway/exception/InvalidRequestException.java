@@ -1,6 +1,6 @@
 package wooteco.subway.exception;
 
-public class InvalidRequestException extends RuntimeException{
+public class InvalidRequestException extends RuntimeException {
     public InvalidRequestException() {
     }
 

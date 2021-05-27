@@ -13,7 +13,6 @@ import wooteco.subway.line.dto.LineWithSectionsResponse;
 import wooteco.subway.line.dto.SectionRequest;
 import wooteco.subway.line.exception.InvalidSectionRequestException;
 import wooteco.subway.line.exception.LineNotFoundException;
-import wooteco.subway.line.exception.SectionNotFoundException;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
@@ -66,8 +65,8 @@ public class LineService {
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
-            .map(line -> LineResponse.of(line))
-            .collect(Collectors.toList());
+                .map(line -> LineResponse.of(line))
+                .collect(Collectors.toList());
     }
 
     public List<LineWithSectionsResponse> findLineWithSectionsResponses() {

@@ -1,7 +1,7 @@
 package wooteco.subway.auth.infrastructure;
 
-import java.util.Enumeration;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
 
 public class AuthorizationExtractor {
 

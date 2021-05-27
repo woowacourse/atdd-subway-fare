@@ -1,7 +1,5 @@
 package wooteco.subway.member.ui;
 
-import java.net.URI;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
@@ -12,6 +10,7 @@ import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
 import javax.validation.Valid;
+import java.net.URI;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -43,7 +42,7 @@ public class MemberController {
 
     @PutMapping("/members/me")
     public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember,
-        @RequestBody MemberRequest param) {
+                                                             @RequestBody MemberRequest param) {
         memberService.updateMember(loginMember, param);
         return ResponseEntity.ok().build();
     }

@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(DuplicatedException.class)
-    public ResponseEntity<ErrorResponse>  handle(DuplicatedException e) {
+    public ResponseEntity<ErrorResponse> handle(DuplicatedException e) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponse(e.getMessage()));
     }
 

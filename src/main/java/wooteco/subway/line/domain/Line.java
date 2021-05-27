@@ -1,7 +1,8 @@
 package wooteco.subway.line.domain;
 
-import java.util.List;
 import wooteco.subway.station.domain.Station;
+
+import java.util.List;
 
 public class Line {
 
@@ -15,7 +16,7 @@ public class Line {
     }
 
     public Line(String name, String color) {
-        this(null, name, color, new Sections() , 0);
+        this(null, name, color, new Sections(), 0);
     }
 
     public Line(String name, String color, int extraFare) {

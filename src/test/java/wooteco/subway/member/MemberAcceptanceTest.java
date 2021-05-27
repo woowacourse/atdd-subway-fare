@@ -31,74 +31,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final int NEW_AGE = 30;
     public static final int INVALID_AGE = -1;
 
-    @DisplayName("회원 정보를 관리한다.")
-    @Test
-    void manageMember() {
-        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
-        회원_생성됨(createResponse);
-
-        TokenResponse 사용자 = 로그인되어_있음(EMAIL, PASSWORD);
-
-        ExtractableResponse<Response> findResponse = 내_회원_정보_조회_요청(사용자);
-        회원_정보_조회됨(findResponse, EMAIL, AGE);
-
-        ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(사용자, EMAIL, NEW_PASSWORD, NEW_AGE);
-        회원_정보_수정됨(updateResponse);
-
-        ExtractableResponse<Response> deleteResponse = 내_회원_삭제_요청(사용자);
-        회원_삭제됨(deleteResponse);
-    }
-
-    @DisplayName("이메일이 이미 저장되어있는지 확인한다.")
-    @Test
-    void confirmEmail() {
-        EmailCheckRequest emailCheckRequest = new EmailCheckRequest(EMAIL);
-        ExtractableResponse<Response> createResponse = 이메일_중복_확인_요청(emailCheckRequest);
-        이메일_중복되지_않음(createResponse);
-    }
-
-    @DisplayName("이메일이 이미 저장되어있는지 확인한다.")
-    @Test
-    void confirmEmailWhenDuplicated() {
-        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
-        회원_생성됨(createResponse);
-
-        EmailCheckRequest emailCheckRequest = new EmailCheckRequest(EMAIL);
-        ExtractableResponse<Response> confirmEmailResponse = 이메일_중복_확인_요청(emailCheckRequest);
-        이메일_중복_예외(confirmEmailResponse);
-    }
-
-    @DisplayName("회원 가입 시 이메일은 중복될 수 없다.")
-    @Test
-    void duplicatedEmail() {
-        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
-        회원_생성됨(createResponse);
-
-        ExtractableResponse<Response> createResponseWithDuplicatedEmail = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
-        이메일_중복_예외(createResponseWithDuplicatedEmail);
-    }
-
-    @DisplayName("회원 가입 시 비밀번호는 4자 이상, 20자 이하이여야한다.")
-    @Test
-    void validatePassword() {
-        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, INVALID_PASSWORD, AGE);
-        회원_생성되지_않음(createResponse);
-    }
-
-    @DisplayName("회원 가입 시 비밀번호는 4자 이상, 20자 이하이여야한다.")
-    @Test
-    void validatePassword2() {
-        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, INVALID_PASSWORD_OVER, AGE);
-        회원_생성되지_않음(createResponse);
-    }
-
-    @DisplayName("회원 가입 시 나이는 양수여야한다.")
-    @Test
-    void validateAge() {
-        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, INVALID_AGE);
-        회원_생성되지_않음(createResponse);
-    }
-
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
@@ -111,7 +43,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 이메일_중복_확인_요청 (EmailCheckRequest emailCheckRequest) {
+    public static ExtractableResponse<Response> 이메일_중복_확인_요청(EmailCheckRequest emailCheckRequest) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -179,6 +111,74 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 이메일_중복되지_않음(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @DisplayName("회원 정보를 관리한다.")
+    @Test
+    void manageMember() {
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성됨(createResponse);
+
+        TokenResponse 사용자 = 로그인되어_있음(EMAIL, PASSWORD);
+
+        ExtractableResponse<Response> findResponse = 내_회원_정보_조회_요청(사용자);
+        회원_정보_조회됨(findResponse, EMAIL, AGE);
+
+        ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(사용자, EMAIL, NEW_PASSWORD, NEW_AGE);
+        회원_정보_수정됨(updateResponse);
+
+        ExtractableResponse<Response> deleteResponse = 내_회원_삭제_요청(사용자);
+        회원_삭제됨(deleteResponse);
+    }
+
+    @DisplayName("이메일이 이미 저장되어있는지 확인한다.")
+    @Test
+    void confirmEmail() {
+        EmailCheckRequest emailCheckRequest = new EmailCheckRequest(EMAIL);
+        ExtractableResponse<Response> createResponse = 이메일_중복_확인_요청(emailCheckRequest);
+        이메일_중복되지_않음(createResponse);
+    }
+
+    @DisplayName("이메일이 이미 저장되어있는지 확인한다.")
+    @Test
+    void confirmEmailWhenDuplicated() {
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성됨(createResponse);
+
+        EmailCheckRequest emailCheckRequest = new EmailCheckRequest(EMAIL);
+        ExtractableResponse<Response> confirmEmailResponse = 이메일_중복_확인_요청(emailCheckRequest);
+        이메일_중복_예외(confirmEmailResponse);
+    }
+
+    @DisplayName("회원 가입 시 이메일은 중복될 수 없다.")
+    @Test
+    void duplicatedEmail() {
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성됨(createResponse);
+
+        ExtractableResponse<Response> createResponseWithDuplicatedEmail = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        이메일_중복_예외(createResponseWithDuplicatedEmail);
+    }
+
+    @DisplayName("회원 가입 시 비밀번호는 4자 이상, 20자 이하이여야한다.")
+    @Test
+    void validatePassword() {
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, INVALID_PASSWORD, AGE);
+        회원_생성되지_않음(createResponse);
+    }
+
+    @DisplayName("회원 가입 시 비밀번호는 4자 이상, 20자 이하이여야한다.")
+    @Test
+    void validatePassword2() {
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, INVALID_PASSWORD_OVER, AGE);
+        회원_생성되지_않음(createResponse);
+    }
+
+    @DisplayName("회원 가입 시 나이는 양수여야한다.")
+    @Test
+    void validateAge() {
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, INVALID_AGE);
+        회원_생성되지_않음(createResponse);
     }
 
     private void 이메일_중복_예외(ExtractableResponse<Response> response) {

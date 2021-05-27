@@ -1,6 +1,6 @@
 package wooteco.subway.exception;
 
-public class NotPermittedException extends RuntimeException{
+public class NotPermittedException extends RuntimeException {
     public NotPermittedException() {
     }
 

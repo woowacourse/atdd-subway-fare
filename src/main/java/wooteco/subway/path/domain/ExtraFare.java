@@ -15,7 +15,7 @@ public enum ExtraFare {
     private final UnaryOperator<Integer> calculator;
 
     ExtraFare(int minRange, int maxRange, int overDistance, int overFare,
-        UnaryOperator<Integer> calculator) {
+              UnaryOperator<Integer> calculator) {
         this.minRange = minRange;
         this.maxRange = maxRange;
         this.overDistance = overDistance;
@@ -25,26 +25,26 @@ public enum ExtraFare {
 
     public static int calculateFare(int distance) {
         final ExtraFare extraFare = Arrays.stream(values())
-            .filter(element -> element.minRange < distance && element.maxRange >= distance)
-            .findAny()
-            .orElseThrow(() -> new IllegalArgumentException("해당하는 FareForDistance 객체가 없습니다."));
+                .filter(element -> element.minRange < distance && element.maxRange >= distance)
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 FareForDistance 객체가 없습니다."));
 
         return extraFare.calculator.apply(distance);
     }
 
     private static int getExtraFareOfFirstRange(int distance) {
         return calculateOverFare(distance - BASIC_FARE.maxRange,
-            FIRST_RANGE_FARE.overDistance,
-            FIRST_RANGE_FARE.overFare
+                FIRST_RANGE_FARE.overDistance,
+                FIRST_RANGE_FARE.overFare
         );
     }
 
     private static int getExtraFareOfSecondRange(int distance) {
         int beforeFare = getExtraFareOfFirstRange(FIRST_RANGE_FARE.maxRange);
         return beforeFare + calculateOverFare(
-            distance - FIRST_RANGE_FARE.maxRange,
-            SECOND_RANGE_FARE.overDistance,
-            SECOND_RANGE_FARE.overFare
+                distance - FIRST_RANGE_FARE.maxRange,
+                SECOND_RANGE_FARE.overDistance,
+                SECOND_RANGE_FARE.overFare
         );
     }
 
