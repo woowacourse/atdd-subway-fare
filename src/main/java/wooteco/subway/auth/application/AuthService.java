@@ -1,7 +1,10 @@
 package wooteco.subway.auth.application;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
@@ -25,7 +28,7 @@ public class AuthService {
             Member member = memberDao.findByEmail(request.getEmail());
             member.checkPassword(request.getPassword());
         } catch (Exception e) {
-            throw new AuthorizationException();
+            throw new AuthorizationException("이메일 혹은 비밀번호를 다시 확인해주세요");
         }
         String token = jwtTokenProvider.createToken(request.getEmail());
         return new TokenResponse(token);
@@ -44,4 +47,5 @@ public class AuthService {
             return new LoginMember();
         }
     }
+
 }
