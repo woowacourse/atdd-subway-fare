@@ -17,7 +17,7 @@ public class SimpleLineResponse {
         this.color = color;
     }
 
-    public static List<SimpleLineResponse> from(List<Line> lines) {
+    public static List<SimpleLineResponse> listOf(List<Line> lines) {
         return lines.stream()
                 .map(line -> new SimpleLineResponse(line.getId(), line.getName(), line.getColor()))
                 .collect(Collectors.toList());
