@@ -111,18 +111,6 @@ public class StationAcceptanceTest extends AcceptanceTest {
         return 지하철역_생성_요청(name, tokenResponse).as(StationResponse.class);
     }
 
-//    public static ExtractableResponse<Response> 지하철역_생성_요청(String name) {
-//        StationRequest stationRequest = new StationRequest(name);
-//
-//        return RestAssured
-//                .given().log().all()
-//                .body(stationRequest)
-//                .contentType(MediaType.APPLICATION_JSON_VALUE)
-//                .when().post("/stations")
-//                .then().log().all()
-//                .extract();
-//    }
-
     public static ExtractableResponse<Response> 지하철역_생성_요청(String name, TokenResponse tokenResponse) {
         StationRequest stationRequest = new StationRequest(name);
 
