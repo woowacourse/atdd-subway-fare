@@ -23,7 +23,7 @@ public class SectionResponse {
 
     public static SectionResponse of(Section section) {
         return new SectionResponse(StationResponse.of(section.getUpStation()),
-                StationResponse.of(section.getUpStation()), section.getDistance());
+                StationResponse.of(section.getDownStation()), section.getDistance());
     }
 
     public static List<SectionResponse> listOf(List<Section> sections) {
