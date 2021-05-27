@@ -51,4 +51,8 @@ public class AuthService {
     public boolean isNotValidToken(String token) {
         return !jwtTokenProvider.validateToken(token);
     }
+
+    public boolean isValidToken(String token) {
+        return jwtTokenProvider.validateToken(token);
+    }
 }
