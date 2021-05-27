@@ -1,9 +1,5 @@
 package wooteco.subway.path.domain.fare;
 
-import wooteco.subway.member.domain.LoginMember;
-
-import java.util.List;
-
 import static wooteco.subway.path.application.FarePrincipalFinder.FARE_PER_KM;
 
 public interface FarePrincipal {

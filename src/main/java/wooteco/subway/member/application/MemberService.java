@@ -9,7 +9,6 @@ import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
-import java.util.Objects;
 import java.util.Optional;
 
 @Service

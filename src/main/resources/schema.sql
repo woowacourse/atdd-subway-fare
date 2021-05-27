@@ -1,6 +1,6 @@
 DROP TABLE if exists SECTION;
 DROP TABLE if exists LINE;
-DROP TABLE if exists  MEMBER;
+DROP TABLE if exists MEMBER;
 DROP TABLE if exists STATION;
 
 create table if not exists STATION

@@ -2,7 +2,6 @@ package wooteco.subway.line.application;
 
 import org.springframework.stereotype.Service;
 import wooteco.subway.exception.duplicate.LineDuplicatedException;
-import wooteco.subway.exception.duplicate.StationDuplicatedException;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
@@ -13,10 +12,8 @@ import wooteco.subway.line.dto.SectionRequest;
 import wooteco.subway.line.dto.SectionResponse;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
-import wooteco.subway.station.dto.StationRequest;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 

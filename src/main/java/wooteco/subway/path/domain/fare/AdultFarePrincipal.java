@@ -1,9 +1,5 @@
 package wooteco.subway.path.domain.fare;
 
-import wooteco.subway.path.domain.SectionEdge;
-
-import java.util.List;
-
 import static wooteco.subway.path.application.FarePrincipalFinder.*;
 
 public class AdultFarePrincipal implements FarePrincipal {

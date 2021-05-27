@@ -1,9 +1,6 @@
 package wooteco.subway.path.domain.fare;
 
-import wooteco.subway.path.domain.fare.FarePrincipal;
-
 import static wooteco.subway.path.application.FarePrincipalFinder.*;
-import static wooteco.subway.path.application.FarePrincipalFinder.SECOND_OVER_FARE_DISTANCE;
 
 public class NoneLoginFarePrincipal implements FarePrincipal {
     @Override

@@ -1,6 +1,5 @@
 package wooteco.subway.path.dto;
 
-import wooteco.subway.path.application.FarePrincipalFinder;
 import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.path.domain.fare.FarePrincipal;
 import wooteco.subway.station.dto.StationResponse;

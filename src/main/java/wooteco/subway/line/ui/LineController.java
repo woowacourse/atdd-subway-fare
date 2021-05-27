@@ -9,7 +9,6 @@ import wooteco.subway.line.dto.SectionRequest;
 import wooteco.subway.line.dto.SectionResponse;
 
 import java.net.URI;
-import java.sql.SQLException;
 import java.util.List;
 
 @RestController

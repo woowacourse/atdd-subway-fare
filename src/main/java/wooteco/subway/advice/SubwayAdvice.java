@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wooteco.subway.exception.dto.ErrorResponse;
-import wooteco.subway.exception.duplicate.DuplicatedException;
 
 @RestControllerAdvice
 public class SubwayAdvice {

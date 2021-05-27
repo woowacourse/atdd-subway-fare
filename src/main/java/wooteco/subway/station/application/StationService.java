@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.exception.delete.StationDeleteException;
 import wooteco.subway.exception.duplicate.StationDuplicatedException;
 import wooteco.subway.exception.not_found.StationNotFoundException;
-import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.dto.SectionEntity;
 import wooteco.subway.station.dao.StationDao;
@@ -13,7 +12,6 @@ import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
