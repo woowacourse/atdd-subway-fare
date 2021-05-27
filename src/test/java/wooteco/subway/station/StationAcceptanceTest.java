@@ -160,6 +160,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .auth().oauth2(loginToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(stationRequest)
                 .when().put("/stations/" + stationResponse.getId())
                 .then().log().all()

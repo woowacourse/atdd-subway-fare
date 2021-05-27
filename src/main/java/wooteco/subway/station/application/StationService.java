@@ -55,6 +55,8 @@ public class StationService {
 
     private void validateDuplicatedName(StationRequest stationRequest) {
         stationDao.findByName(stationRequest.getName())
-                .orElseThrow(StationNameDuplicatedException::new);
+                .ifPresent(station -> {
+                    throw new StationNameDuplicatedException();
+                });
     }
 }
