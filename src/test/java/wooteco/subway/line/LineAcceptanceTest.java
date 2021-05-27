@@ -185,7 +185,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_응답됨(response, lineResponse);
     }
 
-    @DisplayName("노선 수정 - 지하철 노선을 수정한다.")
+    @DisplayName("노선 수정 - 지하철 노선의 이름과 색을 모두 수정한다.")
     @Test
     void updateLine() {
         // given
@@ -199,15 +199,30 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_수정됨(response);
     }
 
-    @DisplayName("노선 수정 - 이미 존재하는 이름이면 노선을 생성할 수 없다. (400)")
+    @DisplayName("노선 수정 - 이미 존재하는 이름이면 노선을 수정할 수 없다. (400)")
     @Test
-    void updateLineWithDuplicate() {
+    void updateLineWithDuplicateName() {
         // given
         LineResponse lineResponse1 = 지하철_노선_등록되어_있음_withToken(사용자, lineRequest1);
         LineResponse lineResponse2 = 지하철_노선_등록되어_있음_withToken(사용자, lineRequest2);
 
         // when
-        LineUpdateRequest updateRequest = new LineUpdateRequest(lineResponse2.getName(), lineResponse2.getColor());
+        LineUpdateRequest updateRequest = new LineUpdateRequest(lineResponse2.getName(), lineResponse1.getColor());
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청_withToken(사용자, lineResponse1, updateRequest);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("노선 수정 - 이미 존재하는 색이면 노선을 수정할 수 없다. (400)")
+    @Test
+    void updateLineWithDuplicateColor() {
+        // given
+        LineResponse lineResponse1 = 지하철_노선_등록되어_있음_withToken(사용자, lineRequest1);
+        LineResponse lineResponse2 = 지하철_노선_등록되어_있음_withToken(사용자, lineRequest2);
+
+        // when
+        LineUpdateRequest updateRequest = new LineUpdateRequest(lineResponse1.getName(), lineResponse2.getColor());
         ExtractableResponse<Response> response = 지하철_노선_수정_요청_withToken(사용자, lineResponse1, updateRequest);
 
         // then
