@@ -67,7 +67,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_구간_생성_요청_withToken(사용자, 신분당선, 강남역, 양재역, 3);
 
         // then
-        지하철_구간_생성됨(response, 신분당선, Arrays.asList(강남역, 양재역, 광교역));
+        지하철_노선_조회_요청(신분당선);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     @DisplayName("구간 추가 - 지하철 노선에 여러개의 역을 순서 상관 없이 등록한다.")
@@ -78,7 +79,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_구간_생성_요청_withToken(사용자, 신분당선, 정자역, 강남역, 5);
 
         // then
-        지하철_구간_생성됨(response, 신분당선, Arrays.asList(정자역, 강남역, 양재역, 광교역));
+        지하철_노선_조회_요청(신분당선);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     @DisplayName("구간 추가 - 이미 등록되어있는 역을 등록하면 구간을 추가할 수 없다. (400)")
@@ -112,7 +114,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청_withToken(사용자, 신분당선, 양재역);
 
         // then
-        지하철_노선에_지하철역_제외됨(removeResponse, 신분당선, Arrays.asList(강남역, 정자역, 광교역));
+        assertThat(removeResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     @DisplayName("구간 제거 - 지하철 노선에 등록된 지하철역이 두개일 때 한 역을 제외한다.")
