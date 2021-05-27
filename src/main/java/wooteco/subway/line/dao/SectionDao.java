@@ -56,4 +56,9 @@ public class SectionDao {
 
         simpleJdbcInsert.executeBatch(batchValues.toArray(new Map[sections.size()]));
     }
+
+    public boolean isStationExistInSection(Long stationId) {
+        String sql = "select exists (select * from SECTION where up_station_id = ? or down_station_id = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, stationId, stationId);
+    }
 }

@@ -2,10 +2,12 @@ package wooteco.subway.station.application;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
+import wooteco.subway.station.exception.StationAlreadyRegisteredInLineException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,6 +16,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class StationService {
     private final StationDao stationDao;
+    private final SectionDao sectionDao;
 
     public StationResponse saveStation(StationRequest stationRequest) {
         Station station = stationDao.insert(stationRequest.toStation());
@@ -33,6 +36,9 @@ public class StationService {
     }
 
     public void deleteStationById(Long id) {
+        if (sectionDao.isStationExistInSection(id)) {
+            throw new StationAlreadyRegisteredInLineException();
+        }
         stationDao.deleteById(id);
     }
 }
