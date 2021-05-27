@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.dto.EmailExistResponse;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
@@ -41,5 +42,10 @@ public class MemberController {
     public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         memberService.deleteMember(loginMember);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/members/exists/{email}")
+    public ResponseEntity<EmailExistResponse> isExistEmail(@PathVariable String email) {
+        return ResponseEntity.ok(memberService.isExistEmail(email));
     }
 }
