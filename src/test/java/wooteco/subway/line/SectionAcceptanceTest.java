@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.line.dto.SectionResponse;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.Arrays;
@@ -50,6 +51,14 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_구간_생성됨(response, 신분당선, Arrays.asList(강남역, 양재역, 광교역));
+        지하철_구간_등록_성공(response, 강남역, 양재역, 3);
+    }
+
+    private void 지하철_구간_등록_성공(ExtractableResponse<Response> response, StationResponse upStation, StationResponse downStation, int distance) {
+        SectionResponse sectionResponse = response.as(SectionResponse.class);
+        assertThat(sectionResponse.getUpStation().getId()).isEqualTo(upStation.getId());
+        assertThat(sectionResponse.getDownStation().getId()).isEqualTo(downStation.getId());
+        assertThat(sectionResponse.getDistance()).isEqualTo(distance);
     }
 
     @DisplayName("지하철 노선에 여러개의 역을 순서 상관 없이 등록한다.")
@@ -61,6 +70,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_구간_생성됨(response, 신분당선, Arrays.asList(정자역, 강남역, 양재역, 광교역));
+        지하철_구간_등록_성공(response, 정자역, 강남역, 5);
     }
 
     @DisplayName("지하철 노선에 이미 등록되어있는 역을 등록한다.")
@@ -73,7 +83,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         지하철_구간_등록_실패됨(response);
     }
 
-    @DisplayName("지하철 노선에 등록되지 않은 역을 기준으로 등록한다.")
+    @DisplayName("지하철 노선에 등록되지 않은 역을 기준으로 등록하는 경우 예외처리한다.")
     @Test
     void addLineSectionWithNoStation() {
         // when
@@ -142,10 +152,6 @@ public class SectionAcceptanceTest extends AcceptanceTest {
                 .when().delete("/lines/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
                 .then().log().all()
                 .extract();
-    }
-
-    public static void 지하철_구간_생성됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     private void 지하철_구간_생성됨(ExtractableResponse<Response> result, LineResponse lineResponse, List<StationResponse> stationResponses) {
