@@ -1,4 +1,7 @@
+# 공통(default: local)
 spring:
+  profiles:
+    active: local
   datasource:
     initialization-mode: always
 handlebars:
@@ -11,6 +14,7 @@ security:
       expire-length: 3600000
 
 ---
+# test 프로파일
 spring:
   config:
     activate:
@@ -25,23 +29,25 @@ spring:
         enabled: true
 
 ---
+# local 프로파일
 spring:
   config:
     activate:
       on-profile: local
   datasource:
-    driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:13306/subway_local?useSSL=false&serverTimezone=UTC&characterEncoding=utf8
-    username: bada
-    password: bada
+    username: root
+    password: root
 
 ---
+# prod 프로파일
 spring:
   config:
     activate:
       on-profile: prod
   datasource:
-    driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/subway?useSSL=false&serverTimezone=UTC&characterEncoding=utf8
     username: bada
     password: bada
