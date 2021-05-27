@@ -33,8 +33,8 @@ public class ExceptionAdviceController {
         return ResponseEntity.badRequest().body(e.getBindingResult());
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> serverError(Exception e) {
-        return ResponseEntity.status(500).body(e.getMessage());
-    }
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<String> serverError(Exception e) {
+//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+//    }
 }

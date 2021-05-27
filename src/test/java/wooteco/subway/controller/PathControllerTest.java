@@ -14,6 +14,7 @@ import wooteco.subway.TestDataLoader;
 import wooteco.auth.service.AuthService;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
+import wooteco.subway.service.FareCalculator;
 import wooteco.subway.service.PathService;
 import wooteco.subway.web.PathController;
 import wooteco.subway.web.dto.response.PathResponse;
@@ -55,10 +56,11 @@ class PathControllerTest {
                         .stream()
                         .mapToInt(Section::getDistance)
                         .sum();
+        final FareCalculator fareCalculator = new FareCalculator();
         final List<Station> stations = Arrays
                 .asList(testDataLoader.강남역(), testDataLoader.판교역(), testDataLoader.정자역());
         final PathResponse pathResponse =
-                new PathResponse(StationResponse.listOf(stations), totalDistance);
+                new PathResponse(StationResponse.listOf(stations), totalDistance, fareCalculator.calculateFare(totalDistance));
         final Long source = testDataLoader.강남역().getId();
         final Long target = testDataLoader.정자역().getId();
 

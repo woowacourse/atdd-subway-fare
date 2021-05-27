@@ -67,12 +67,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
     public static void 적절한_경로_응답됨(ExtractableResponse<Response> response, ArrayList<StationResponse> expectedPath) {
         PathResponse pathResponse = response.as(PathResponse.class);
+
         List<Long> stationIds = pathResponse.getStations().stream()
                 .map(StationResponse::getId)
                 .collect(Collectors.toList());
+
         List<Long> expectedPathIds = expectedPath.stream()
                 .map(StationResponse::getId)
                 .collect(Collectors.toList());
+
+        assertThat(pathResponse.getFare()).isEqualTo(0);
         assertThat(stationIds).containsExactlyElementsOf(expectedPathIds);
     }
     public static void 총_거리가_응답됨(ExtractableResponse<Response> response, int totalDistance) {
