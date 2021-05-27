@@ -169,59 +169,11 @@ public class StationAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    public static void 지하철역_생성_요청_실패_형식에_맞지_않는_역_이름(String name) {
-        StationRequest stationRequest = new StationRequest(name);
-
-        ExtractableResponse<Response> response = RestAssured
-            .given(spec).log().all()
-            .filter(document("create-station-fail-invalid-name", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())))
-            .body(stationRequest)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().post("/stations")
-            .then().log().all()
-            .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
-    public static void 지하철역_생성_요청_실패_이미_존재하는_역_이름(String name) {
-        StationRequest stationRequest = new StationRequest(name);
-
-        ExtractableResponse<Response> response = RestAssured
-            .given(spec).log().all()
-            .filter(document("create-station-fail-name-duplicate", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())))
-            .body(stationRequest)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().post("/stations")
-            .then().log().all()
-            .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
     public static ExtractableResponse<Response> 지하철역_목록_조회_요청(String docsIdentifier) {
         return RestAssured
             .given(spec).log().all()
             .filter(document(docsIdentifier, preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())))
             .when().get("/stations")
-            .then().log().all()
-            .extract();
-    }
-
-    public static ExtractableResponse<Response> 지하철역_제거_요청(StationResponse stationResponse, String docsIdentifier) {
-        return RestAssured
-            .given(spec).log().all()
-            .filter(document(docsIdentifier, preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())))
-            .when().delete("/stations/" + stationResponse.getId())
-            .then().log().all()
-            .extract();
-    }
-
-    public static ExtractableResponse<Response> 지하철역_제거_요청(Long stationId, String docsIdentifier) {
-        return RestAssured
-            .given(spec).log().all()
-            .filter(document(docsIdentifier, preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())))
-            .when().delete("/stations/" + stationId)
             .then().log().all()
             .extract();
     }
@@ -233,40 +185,6 @@ public class StationAcceptanceTest extends AcceptanceTest {
             .when().delete("/stations/" + id)
             .then().log().all()
             .extract();
-    }
-
-    public static void 지하철역_Id로_제거_요청_Id로_실패_존재하지_않는_지하철역(Long id) {
-        ExtractableResponse<Response> response = RestAssured
-            .given(spec).log().all()
-            .filter(document("delete-station-fail-not-exists", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())))
-            .when().delete("/stations/" + id)
-            .then().log().all()
-            .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
-    public static void 지하철역_제거_요청_Id로_실패_노선에_포함된_역(Long id) {
-        ExtractableResponse<Response> response = RestAssured
-            .given(spec).log().all()
-            .filter(document("delete-station-fail-in-line", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())))
-            .when().delete("/stations/" + id)
-            .then().log().all()
-            .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
-    public static void 지하철역_생성_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
-    public static void 지하철역_목록_응답됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    public static void 지하철역_삭제됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     public static void 지하철역_목록_포함됨(ExtractableResponse<Response> getAllLinesListResponse, List<StationResponse> createdResponses) {

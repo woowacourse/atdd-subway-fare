@@ -337,33 +337,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
         return 지하철_노선_생성_요청(lineRequest, "create-line").as(LineResponse.class);
     }
 
-    public static void 지하철_노선_생성_요청_실패(LineRequest params, String documentIdentifier) {
-        ExtractableResponse<Response> response = RestAssured
-            .given(spec).log().all()
-            .filter(document(documentIdentifier, preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())))
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(params)
-            .when().post("/lines")
-            .then().log().all()
-            .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
-    public static void 지하철_노선_수정_요청_실패(LineResponse lineResponse, LineUpdateRequest params, String documentIdentifier) {
-        ExtractableResponse<Response> response = RestAssured
-            .given(spec).log().all()
-            .filter(document(documentIdentifier, preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())))
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(params)
-            .when().put("/lines/" + lineResponse.getId())
-            .then().log().all()
-            .extract();
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
     private static ExtractableResponse<Response> 지하철_노선_목록_조회_요청(String docsIdentifier) {
         return RestAssured
             .given(spec).log().all()
@@ -413,19 +386,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    public static void 지하철_노선_생성됨(ExtractableResponse response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(response.header("Location")).isNotBlank();
-    }
-
-    public static void 지하철_노선_생성_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
-    public static void 지하철_노선_목록_응답됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
     public static void 지하철_노선_응답_일치_확인(ExtractableResponse<Response> response, LineResponse lineResponse) {
         LineResponse resultResponse = response.as(LineResponse.class);
         assertThat(resultResponse.getId()).isEqualTo(lineResponse.getId());
@@ -441,13 +401,5 @@ public class LineAcceptanceTest extends AcceptanceTest {
             .collect(Collectors.toList());
 
         assertThat(actualLineIds).containsExactlyInAnyOrderElementsOf(expectedLineIds);
-    }
-
-    public static void 지하철_노선_수정됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    public static void 지하철_노선_삭제됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }
