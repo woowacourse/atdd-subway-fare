@@ -1,11 +1,9 @@
 package wooteco.subway.member.application;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import wooteco.subway.SubwayException;
 
-@ResponseStatus(HttpStatus.BAD_REQUEST)
-public class DuplicateMemberEmailException extends RuntimeException {
-    public DuplicateMemberEmailException(String msg) {
-        super(msg);
+public class DuplicateMemberEmailException extends SubwayException {
+    public DuplicateMemberEmailException() {
+        super("중복된 이메일이 있습니다.", "Duplication");
     }
 }

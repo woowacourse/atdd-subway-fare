@@ -14,14 +14,16 @@ import java.util.stream.Collectors;
 
 @Repository
 public class SectionDao {
+    private static final int NO_ELEMENT_COUNT = 0;
+
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert simpleJdbcInsert;
 
     public SectionDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
-                .withTableName("SECTION")
-                .usingGeneratedKeyColumns("id");
+            .withTableName("SECTION")
+            .usingGeneratedKeyColumns("id");
     }
 
     public Section insert(Line line, Section section) {
@@ -34,6 +36,12 @@ public class SectionDao {
         return new Section(sectionId, section.getUpStation(), section.getDownStation(), section.getDistance());
     }
 
+    public boolean existSectionByStationId(Long stationId) {
+        String sql = "select count(*) from SECTION where up_station_id = ? or down_station_id = ?";
+        int count = jdbcTemplate.queryForObject(sql, Integer.class, stationId, stationId);
+        return count > NO_ELEMENT_COUNT;
+    }
+
     public void deleteByLineId(Long lineId) {
         jdbcTemplate.update("delete from SECTION where line_id = ?", lineId);
     }
@@ -41,8 +49,8 @@ public class SectionDao {
     public void insertSections(Line line) {
         List<Section> sections = line.getSections().getSections();
         List<Map<String, Object>> batchValues = sections.stream()
-                .map(section -> {
-                    Map<String, Object> params = new HashMap<>();
+            .map(section -> {
+                Map<String, Object> params = new HashMap<>();
                     params.put("line_id", line.getId());
                     params.put("up_station_id", section.getUpStation().getId());
                     params.put("down_station_id", section.getDownStation().getId());

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -20,7 +19,6 @@ import wooteco.subway.station.dto.StationResponse;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -42,9 +40,10 @@ class StationControllerTest {
     private AuthService authService;
     @Autowired
     private ObjectMapper objectMapper;
+
     @Test
     @DisplayName("역 생성 - 성공")
-    public void createStation() throws Exception{
+    public void createStation() throws Exception {
         //given
         StationRequest stationRequest = new StationRequest("잠실역");
         StationResponse stationResponse = new StationResponse(1L, "잠실역");
@@ -63,7 +62,7 @@ class StationControllerTest {
 
     @Test
     @DisplayName("역 조회 성공")
-    public void showStations() throws Exception{
+    public void showStations() throws Exception {
         //given
         List<StationResponse> stationResponses = Arrays.asList(
             new StationResponse(1L, "잠실역"),
@@ -88,7 +87,7 @@ class StationControllerTest {
 
     @Test
     @DisplayName("역 삭제 성공")
-    public void deleteStation() throws Exception{
+    public void deleteStation() throws Exception {
         mockMvc.perform(delete("/stations/1")
         )
             .andExpect(status().isNoContent())

@@ -32,13 +32,16 @@ public class SubwayPath {
         FarePolicy farePolicy = FarePolicy.of(totalDistance);
 
         int fare = farePolicy.calculateFare(totalDistance);
+        fare += calculateExtraFare();
 
-        fare += sectionEdges.stream()
+        return fare;
+    }
+
+    private int calculateExtraFare() {
+        return sectionEdges.stream()
             .map(SectionEdge::getLine)
             .mapToInt(Line::getExtraFare)
             .max()
-            .orElseThrow(() -> new InvalidPathException("빈 구간 그래프입니다."));
-
-        return fare;
+            .orElseThrow(InvalidPathException::new);
     }
 }

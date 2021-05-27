@@ -32,27 +32,29 @@ public class LineService {
     @Transactional
     public LineResponse saveLine(LineRequest request) {
         if (lineDao.existColor(request.getColor())) {
-            throw new DuplicateLineColorException("라인 색상이 중복되었습니다람쥐.");
+            throw new DuplicateLineException("중복되는 노선 색상이 존재합니다람쥐.");
         }
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(),request.getExtraFare()));
+
+        if (lineDao.existName(request.getName())) {
+            throw new DuplicateLineException("중복되는 노선 이름이 존재합니다람쥐.");
+        }
+
+        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);
     }
 
     private Section addInitSection(Line line, LineRequest request) {
-        if (request.getUpStationId() != null && request.getDownStationId() != null) {
-            Station upStation = stationService.findStationById(request.getUpStationId());
-            Station downStation = stationService.findStationById(request.getDownStationId());
-            Section section = new Section(upStation, downStation, request.getDistance());
-            return sectionDao.insert(line, section);
-        }
-        return null;
+        Station upStation = stationService.findStationById(request.getUpStationId());
+        Station downStation = stationService.findStationById(request.getDownStationId());
+        Section section = new Section(upStation, downStation, request.getDistance());
+        return sectionDao.insert(line, section);
     }
 
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
-                .map(line -> LineResponse.of(line))
+            .map(LineResponse::of)
                 .collect(Collectors.toList());
     }
 

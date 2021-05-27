@@ -1,14 +1,9 @@
 package wooteco.subway.station.application;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import wooteco.subway.SubwayException;
 
-@ResponseStatus(HttpStatus.BAD_REQUEST)
-public class NotFoundStationException extends RuntimeException {
+public class NotFoundStationException extends SubwayException {
     public NotFoundStationException() {
-    }
-
-    public NotFoundStationException(String message) {
-        super(message);
+        super("역이 존재하지 않습니다.", "Empty");
     }
 }

@@ -25,13 +25,21 @@ public class LineDao {
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("LINE")
-                .usingGeneratedKeyColumns("id");
+            .withTableName("LINE")
+            .usingGeneratedKeyColumns("id");
     }
 
     public boolean existColor(String color) {
-        String sql = "select count(*) from line where color = ?";
-        int count = jdbcTemplate.queryForObject(sql, Integer.class, color);
+        return existColumn(color, "color");
+    }
+
+    public boolean existName(String name) {
+        return existColumn(name, "name");
+    }
+
+    private boolean existColumn(String value, String column) {
+        String sql = "select count(*) from line where " + column + " = ?";
+        int count = jdbcTemplate.queryForObject(sql, Integer.class, value);
         return count > NO_ELEMENT_COUNT;
     }
 
@@ -78,8 +86,8 @@ public class LineDao {
 
         List<Map<String, Object>> result = jdbcTemplate.queryForList(sql);
         Map<Long, List<Map<String, Object>>> resultByLine = result.stream().collect(Collectors.groupingBy(it -> (Long) it.get("line_id")));
-        return resultByLine.entrySet().stream()
-                .map(it -> mapLine(it.getValue()))
+        return resultByLine.values().stream()
+                .map(this::mapLine)
                 .collect(Collectors.toList());
     }
 

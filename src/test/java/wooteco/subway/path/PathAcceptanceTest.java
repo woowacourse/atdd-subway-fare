@@ -31,7 +31,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
     public static final int AGE = 13;
-
+    private static TokenResponse tokenResponse;
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
@@ -41,7 +41,33 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 남부터미널역;
     private StationResponse 정자역;
 
-    private static TokenResponse tokenResponse;
+    public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
+        return RestAssured
+            .given().log().all()
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/paths?source={sourceId}&target={targetId}", source, target)
+            .then().log().all()
+            .extract();
+    }
+
+    public static void 적절한_경로_응답됨(ExtractableResponse<Response> response, ArrayList<StationResponse> expectedPath) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+
+        List<Long> stationIds = pathResponse.getStations().stream()
+            .map(StationResponse::getId)
+            .collect(Collectors.toList());
+
+        List<Long> expectedPathIds = expectedPath.stream()
+            .map(StationResponse::getId)
+            .collect(Collectors.toList());
+
+        assertThat(stationIds).containsExactlyElementsOf(expectedPathIds);
+    }
+
+    public static void 총_거리가_응답됨(ExtractableResponse<Response> response, int totalDistance) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getDistance()).isEqualTo(totalDistance);
+    }
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -105,33 +131,5 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private void 적절한_요금_응답됨(ExtractableResponse<Response> response, int fare) {
         PathResponse pathResponse = response.as(PathResponse.class);
         assertThat(pathResponse.getFare()).isEqualTo(fare);
-    }
-
-    public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
-        return RestAssured
-            .given().log().all()
-            .accept(MediaType.APPLICATION_JSON_VALUE)
-            .when().get("/paths?source={sourceId}&target={targetId}", source, target)
-            .then().log().all()
-            .extract();
-    }
-
-    public static void 적절한_경로_응답됨(ExtractableResponse<Response> response, ArrayList<StationResponse> expectedPath) {
-        PathResponse pathResponse = response.as(PathResponse.class);
-
-        List<Long> stationIds = pathResponse.getStations().stream()
-            .map(StationResponse::getId)
-            .collect(Collectors.toList());
-
-        List<Long> expectedPathIds = expectedPath.stream()
-            .map(StationResponse::getId)
-            .collect(Collectors.toList());
-
-        assertThat(stationIds).containsExactlyElementsOf(expectedPathIds);
-    }
-
-    public static void 총_거리가_응답됨(ExtractableResponse<Response> response, int totalDistance) {
-        PathResponse pathResponse = response.as(PathResponse.class);
-        assertThat(pathResponse.getDistance()).isEqualTo(totalDistance);
     }
 }
