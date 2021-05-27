@@ -19,9 +19,19 @@ public class LoginInterceptor implements HandlerInterceptor {
         if (HttpMethod.OPTIONS.matches(request.getMethod())) {
             return true; // preflight 설정
         }
-
+        if (isGetMethod(request) && isNotMemberRequest(request)) {
+            return true;
+        }
         final String credentials = AuthorizationExtractor.extract(request);
         authService.validateToken(credentials);
         return true;
+    }
+
+    private boolean isGetMethod(HttpServletRequest request) {
+        return request.getMethod().equalsIgnoreCase(HttpMethod.GET.toString());
+    }
+
+    private boolean isNotMemberRequest(HttpServletRequest request) {
+        return !request.getRequestURI().equalsIgnoreCase("/members/me");
     }
 }

@@ -3,11 +3,17 @@ package wooteco.subway.station;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.auth.AuthAcceptanceTest;
+import wooteco.subway.auth.dto.TokenResponse;
+import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
@@ -18,6 +24,7 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철역 관련 기능")
+@Sql("classpath:tableInit.sql")
 public class StationAcceptanceTest extends AcceptanceTest {
     private static final String 강남역 = "강남역";
     private static final String 역삼역 = "역삼역";
@@ -33,6 +40,16 @@ public class StationAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철역_생성_요청(강남역);
 
         // then
+        지하철역_401_실패됨(response);
+    }
+
+    @DisplayName("로그인 사용자가 지하철역을 생성한다.")
+    @Test
+    void createStationWithLoginMember() {
+        // when
+        ExtractableResponse<Response> response = 로그인_사용자_지하철역_생성_요청(강남역);
+
+        // then
         지하철역_생성됨(response);
     }
 
@@ -40,10 +57,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void createStationWithDuplicateName() {
         //given
-        지하철역_등록되어_있음(강남역);
+        로그인_사용자_지하철역_등록되어_있음(강남역);
 
         // when
-        ExtractableResponse<Response> response = 지하철역_생성_요청(강남역);
+        ExtractableResponse<Response> response = 로그인_사용자_지하철역_생성_요청(강남역);
 
         // then
         지하철역_생성_실패됨_중복(response);
@@ -53,7 +70,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void createStationWithInvalidPattern() {
         // given-when
-        ExtractableResponse<Response> response = 지하철역_생성_요청(abc);
+        ExtractableResponse<Response> response = 로그인_사용자_지하철역_생성_요청(abc);
 
         // then
         지하철역_생성_실패됨(response);
@@ -63,7 +80,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void createStationWithInvalidPattern2() {
         // given-when
-        ExtractableResponse<Response> response = 지하철역_생성_요청(_);
+        ExtractableResponse<Response> response = 로그인_사용자_지하철역_생성_요청(_);
 
         // then
         지하철역_생성_실패됨(response);
@@ -73,7 +90,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void createStationWithEmptySpace() {
         // given-when
-        ExtractableResponse<Response> response = 지하철역_생성_요청(공백이_포함된_역);
+        ExtractableResponse<Response> response = 로그인_사용자_지하철역_생성_요청(공백이_포함된_역);
 
         // then
         지하철역_생성_실패됨(response);
@@ -83,8 +100,8 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void getStations() {
         // given
-        StationResponse stationResponse1 = 지하철역_등록되어_있음(강남역);
-        StationResponse stationResponse2 = 지하철역_등록되어_있음(역삼역);
+        StationResponse stationResponse1 = 로그인_사용자_지하철역_등록되어_있음(강남역);
+        StationResponse stationResponse2 = 로그인_사용자_지하철역_등록되어_있음(역삼역);
 
         // when
         ExtractableResponse<Response> response = 지하철역_목록_조회_요청();
@@ -98,10 +115,23 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteStation() {
         // given
-        StationResponse stationResponse = 지하철역_등록되어_있음(강남역);
+        StationResponse stationResponse = 로그인_사용자_지하철역_등록되어_있음(강남역);
 
         // when
         ExtractableResponse<Response> response = 지하철역_제거_요청(stationResponse);
+
+        // then
+        지하철역_401_실패됨(response);
+    }
+
+    @DisplayName("로그인한 사용자가 지하철역을 제거한다.")
+    @Test
+    void deleteStationWithLoginMember() {
+        // given
+        StationResponse stationResponse = 로그인_사용자_지하철역_등록되어_있음(강남역);
+
+        // when
+        ExtractableResponse<Response> response = 로그인_사용자_지하철역_제거_요청(stationResponse);
 
         // then
         지하철역_삭제됨(response);
@@ -111,10 +141,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteWithNotFoundStation() {
         //given
-        StationResponse stationResponse = 지하철역_등록되어_있음(강남역);
+        StationResponse stationResponse = 로그인_사용자_지하철역_등록되어_있음(강남역);
 
         // when
-        ExtractableResponse<Response> response = 지하철역_제거_요청(예시_지하철역_응답);
+        ExtractableResponse<Response> response = 로그인_사용자_지하철역_제거_요청(예시_지하철역_응답);
 
         // then
         지하철역_삭제안됨_존재하지_않는_역(response);
@@ -124,12 +154,31 @@ public class StationAcceptanceTest extends AcceptanceTest {
         return 지하철역_생성_요청(name).as(StationResponse.class);
     }
 
+    public static StationResponse 로그인_사용자_지하철역_등록되어_있음(String name) {
+        return 로그인_사용자_지하철역_생성_요청(name).as(StationResponse.class);
+    }
+
     public static ExtractableResponse<Response> 지하철역_생성_요청(String name) {
         StationRequest stationRequest = new StationRequest(name);
 
         return RestAssured
                 .given().log().all()
                 .body(stationRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/stations")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 로그인_사용자_지하철역_생성_요청(String name) {
+        AuthAcceptanceTest.회원_등록되어_있음("email@email.com","1234",15);
+        final TokenResponse tokenResponse
+                = AuthAcceptanceTest.로그인되어_있음("email@email.com", "1234");
+
+        return RestAssured
+                .given().log().all()
+                .body(new StationRequest(name))
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/stations")
                 .then().log().all()
@@ -152,6 +201,20 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 로그인_사용자_지하철역_제거_요청(StationResponse stationResponse) {
+        AuthAcceptanceTest.회원_등록되어_있음("email@email.com","1234",15);
+        final TokenResponse tokenResponse
+                = AuthAcceptanceTest.로그인되어_있음("email@email.com", "1234");
+
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete("/stations/" + stationResponse.getId())
+                .then().log().all()
+                .extract();
+    }
+
     public static void 지하철역_생성됨(ExtractableResponse response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
@@ -163,6 +226,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철역_생성_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    public static void 지하철역_401_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     public static void 지하철역_목록_응답됨(ExtractableResponse<Response> response) {

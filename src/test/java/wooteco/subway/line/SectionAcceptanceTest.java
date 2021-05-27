@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
@@ -18,11 +19,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
-import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_조회_요청;
+import static wooteco.subway.line.LineAcceptanceTest.*;
+import static wooteco.subway.station.StationAcceptanceTest.로그인_사용자_지하철역_등록되어_있음;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
 @DisplayName("지하철 구간 관련 기능")
+@Sql("classpath:tableInit.sql")
 public class SectionAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
     private StationResponse 강남역;
@@ -34,12 +36,12 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        강남역 = 지하철역_등록되어_있음("강남역");
-        양재역 = 지하철역_등록되어_있음("양재역");
-        정자역 = 지하철역_등록되어_있음("정자역");
-        광교역 = 지하철역_등록되어_있음("광교역");
+        강남역 = 로그인_사용자_지하철역_등록되어_있음("강남역");
+        양재역 = 로그인_사용자_지하철역_등록되어_있음("양재역");
+        정자역 = 로그인_사용자_지하철역_등록되어_있음("정자역");
+        광교역 = 로그인_사용자_지하철역_등록되어_있음("광교역");
 
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 광교역, 10);
+        신분당선 = 로그인_사용자_지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 광교역, 10);
     }
 
     @DisplayName("지하철 구간을 등록한다.")

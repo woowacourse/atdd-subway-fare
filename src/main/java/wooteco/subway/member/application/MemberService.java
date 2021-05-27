@@ -44,4 +44,10 @@ public class MemberService {
         Member member = memberDao.findByEmail(loginMember.getEmail());
         memberDao.deleteById(member.getId());
     }
+
+    public void confirmEmailIsValid(String email) {
+        if (memberDao.isExistByEmail(email)) {
+            throw new DuplicatedException(email);
+        }
+    }
 }

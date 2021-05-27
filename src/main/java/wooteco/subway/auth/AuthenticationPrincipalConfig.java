@@ -22,7 +22,7 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        final List<String> patterns = Collections.singletonList("/members/me");
+        final List<String> patterns = Arrays.asList("/members/me/**", "/lines/**", "/stations/**");
         registry.addInterceptor(new LoginInterceptor(authService))
                 .addPathPatterns(patterns);
     }
