@@ -10,6 +10,7 @@ import wooteco.subway.auth.exception.InvalidEmailException;
 import wooteco.subway.auth.exception.InvalidPasswordException;
 import wooteco.subway.auth.exception.InvalidTokenException;
 import wooteco.subway.line.exception.DuplicatedLineNameException;
+import wooteco.subway.line.exception.NoSuchLineException;
 import wooteco.subway.member.exception.DuplicatedIdException;
 import wooteco.subway.station.exception.DuplicatedStationNameException;
 import wooteco.subway.station.exception.NoSuchStationException;
@@ -72,5 +73,11 @@ public class controllerAdvice {
         return ResponseEntity.badRequest().body(
             new ExceptionResponse(new InvalidNameException("이름에 특수문자는 허용되지 않습니다."))
         );
+    }
+
+    @ExceptionHandler(NoSuchLineException.class)
+    public ResponseEntity<ExceptionResponse> invalidPasswordExceptionHandle(
+        NoSuchLineException e) {
+        return ResponseEntity.badRequest().body(new ExceptionResponse(e));
     }
 }

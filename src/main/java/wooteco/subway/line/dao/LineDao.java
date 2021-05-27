@@ -14,6 +14,7 @@ import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.domain.Sections;
 import wooteco.subway.line.exception.DuplicatedLineNameException;
+import wooteco.subway.line.exception.NoSuchLineException;
 import wooteco.subway.station.domain.Station;
 
 @Repository
@@ -120,5 +121,12 @@ public class LineDao {
         String sql = "select DISTINCT line_id from SECTION where (up_station_id = ? or down_station_id = ?) and line_id <> ?;";
         return jdbcTemplate
             .queryForList(sql, Long.class, station.getId(), station.getId(), lineId);
+    }
+
+    public void checkHaveLine(Long id) {
+        String sql = "select COUNT(id) from LINE where id = ?";
+        if (jdbcTemplate.queryForObject(sql, Integer.class, id) < 1) {
+            throw new NoSuchLineException("잘못된 노선입니다.");
+        }
     }
 }

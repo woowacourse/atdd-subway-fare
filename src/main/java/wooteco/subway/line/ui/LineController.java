@@ -45,17 +45,20 @@ public class LineController extends SubwayController {
 
     @GetMapping("/{id}")
     public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
+        lineService.checkRegisteredLine(id);
         return ResponseEntity.ok(lineService.findLineResponseById(id));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity updateLine(@PathVariable Long id, @RequestBody LineRequest lineUpdateRequest) {
+        lineService.checkRegisteredLine(id);
         lineService.updateLine(id, lineUpdateRequest);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity deleteLine(@PathVariable Long id) {
+        lineService.checkRegisteredLine(id);
         lineService.deleteLineById(id);
         return ResponseEntity.noContent().build();
     }

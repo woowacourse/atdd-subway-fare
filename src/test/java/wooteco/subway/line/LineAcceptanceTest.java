@@ -6,6 +6,7 @@ import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록�
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,6 +29,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
     private StationResponse 광교역;
     private LineRequest lineRequest1;
     private LineRequest lineRequest2;
+    private LineResponse ghostResponse;
+
 
     public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation,
         StationResponse downStation, int distance) {
@@ -145,6 +148,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
         lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15);
+        ghostResponse = new LineResponse(20L, "name", "color", new ArrayList<StationResponse>());
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -254,4 +258,41 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExceptionCheck.코드_400_응답됨(response);
         ExceptionCheck.에러_문구_확인(response, "INVALID_NAME");
     }
+
+    @DisplayName("없는 노선을 삭제하는 경우")
+    @Test
+    void deleteGhostLine() {
+        // given
+        지하철_노선_등록되어_있음(lineRequest1);
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_제거_요청(ghostResponse);
+        // then
+        ExceptionCheck.코드_400_응답됨(response);
+        ExceptionCheck.에러_문구_확인(response, "NO_SUCH_LINE");
+    }
+
+    @DisplayName("없는 노선을 조회하는 경우")
+    @Test
+    void findGhostLine() {
+        // given
+        지하철_노선_등록되어_있음(lineRequest1);
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_조회_요청(ghostResponse);
+        // then
+        ExceptionCheck.코드_400_응답됨(response);
+        ExceptionCheck.에러_문구_확인(response, "NO_SUCH_LINE");
+    }
+
+    @DisplayName("없는 노선을 수정하는 경우")
+    @Test
+    void updateGhostLine() {
+        // given
+        지하철_노선_등록되어_있음(lineRequest1);
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(ghostResponse, lineRequest1);
+        // then
+        ExceptionCheck.코드_400_응답됨(response);
+        ExceptionCheck.에러_문구_확인(response, "NO_SUCH_LINE");
+    }
+
 }
