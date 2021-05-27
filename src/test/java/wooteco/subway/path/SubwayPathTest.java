@@ -82,4 +82,31 @@ public class SubwayPathTest {
         // then
         assertThat(fare).isEqualTo(1250);
     }
+
+    @DisplayName("노선 환승 시 추가가요금 용 확인")
+    @Test
+    void transferFare() {
+        // given
+        List<SectionEdge> sectionEdges = Arrays.asList(
+                new SectionEdge(
+                        왕십리_잠실_거리22,
+                        신분당선
+                ),
+                new SectionEdge(
+                        잠실_강남_거리25,
+                        이호선
+                ),
+                new SectionEdge(
+                        강남_구의_거리10,
+                        사호선
+                )
+        );
+        SubwayPath subwayPath = new SubwayPath(sectionEdges, Collections.emptyList());
+
+        // when
+        int fare = subwayPath.calculateFare();
+
+        // then
+        assertThat(fare).isEqualTo(4150);
+    }
 }
