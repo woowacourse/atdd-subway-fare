@@ -2,6 +2,7 @@ package wooteco.subway.station.ui;
 
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -13,6 +14,12 @@ import java.sql.SQLIntegrityConstraintViolationException;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice
 public class StationControllerAdvice {
+    @ExceptionHandler(DuplicateKeyException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateKeyException(DuplicateKeyException e) {
+        return ResponseEntity.badRequest()
+                .body(new ErrorResponse("이미 존재하는 역 이름입니다."));
+    }
+
     @ExceptionHandler(StationDaoException.class)
     public ResponseEntity<ErrorResponse> handleStationDaoException(StationDaoException e) {
         e.printStackTrace();

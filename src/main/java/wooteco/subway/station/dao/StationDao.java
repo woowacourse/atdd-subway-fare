@@ -1,6 +1,7 @@
 package wooteco.subway.station.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -10,6 +11,7 @@ import wooteco.subway.station.domain.Station;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class StationDao {
@@ -22,6 +24,16 @@ public class StationDao {
                     rs.getString("name")
             );
 
+    public ResultSetExtractor<Optional<Station>> resultSetExtractor = (rs) -> {
+        if (rs.next()) {
+            Station station = new Station(
+                    rs.getLong("id"),
+                    rs.getString("name")
+            );
+            return Optional.of(station);
+        }
+        return Optional.empty();
+    };
 
     public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
@@ -49,5 +61,10 @@ public class StationDao {
     public Station findById(Long id) {
         String sql = "select * from STATION where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    }
+
+    public Optional<Station> findByName(String name) {
+        String sql = "select * from STATION where name = ?";
+        return jdbcTemplate.query(sql, resultSetExtractor, name);
     }
 }

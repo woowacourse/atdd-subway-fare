@@ -5,6 +5,7 @@ import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
+import wooteco.subway.station.exception.DuplicateStationNameException;
 import wooteco.subway.station.exception.InvalidStationIdException;
 
 import java.util.List;
@@ -19,8 +20,16 @@ public class StationService {
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
+        validateDuplicateStationName(stationRequest.getName());
+
         Station station = stationDao.insert(stationRequest.toStation());
         return StationResponse.of(station);
+    }
+
+    private void validateDuplicateStationName(String name) {
+        stationDao.findByName(name).ifPresent(station -> {
+            throw new DuplicateStationNameException();
+        });
     }
 
     public Station findStationById(Long id) {
