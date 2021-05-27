@@ -47,4 +47,12 @@ public class Section {
     public boolean isAfter(Section section) {
         return upStation.equals(section.getDownStation());
     }
+
+    public Long getUpStationId() {
+        return upStation.getId();
+    }
+
+    public Long getDownStationId() {
+        return downStation.getId();
+    }
 }

@@ -11,10 +11,10 @@ import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.dto.*;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
+import wooteco.subway.station.dto.StationWithTransferLinesAndNextDistanceResponse;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import static java.util.stream.Collectors.toList;
 
 @Service
 @Transactional
@@ -49,22 +49,40 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
-    public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
-        return persistLines.stream()
-                .map(LineResponse::of)
-                .collect(toList());
-    }
-
-    @Transactional(readOnly = true)
     public List<Line> findLines() {
         return lineDao.findAll();
     }
 
     @Transactional(readOnly = true)
-    public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
+    public List<LineWithTransferLinesAndNextDistanceResponse> findLinesWithTransferLinesAndNextDistance() {
+        List<LineWithTransferLinesAndNextDistanceResponse> lineWithTransferLinesAndNextDistance = new ArrayList<>();
+
+        for (Line line : lineDao.findAll()) {
+            List<StationWithTransferLinesAndNextDistanceResponse> stations = findStations(line);
+            lineWithTransferLinesAndNextDistance.add(LineWithTransferLinesAndNextDistanceResponse.of(line, stations));
+        }
+        return lineWithTransferLinesAndNextDistance;
+    }
+
+    @Transactional(readOnly = true)
+    public LineWithTransferLinesAndNextDistanceResponse findLineWithTransferLinesAndNextDistance(Long id) {
+        Line line = lineDao.findById(id);
+        List<StationWithTransferLinesAndNextDistanceResponse> stations = findStations(line);
+        return LineWithTransferLinesAndNextDistanceResponse.of(line, stations);
+    }
+
+    private List<StationWithTransferLinesAndNextDistanceResponse> findStations(Line line) {
+        List<StationWithTransferLinesAndNextDistanceResponse> stationWithTransferLinesAndNextDistance = new ArrayList<>();
+
+        for (Station station : line.getStations()) {
+            int distance = line.getDistance(station);
+            List<LineWithTransferLinesResponse> lineWithTransferLines =
+                    lineDao.findTransferLinesByStationId(line.getId(), station.getId());
+
+            stationWithTransferLinesAndNextDistance.add(
+                    StationWithTransferLinesAndNextDistanceResponse.of(station, distance, lineWithTransferLines));
+        }
+        return stationWithTransferLinesAndNextDistance;
     }
 
     @Transactional(readOnly = true)

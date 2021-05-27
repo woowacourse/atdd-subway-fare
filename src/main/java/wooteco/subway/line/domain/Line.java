@@ -71,4 +71,12 @@ public class Line {
     public List<Station> getStations() {
         return sections.getStations();
     }
+
+    public int getDistance(Station station) {
+        return sections.getSections().stream()
+                .filter(section -> section.getUpStation().equals(station))
+                .findAny()
+                .map(Section::getDistance)
+                .orElse(0);
+    }
 }

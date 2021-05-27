@@ -1,11 +1,13 @@
 package wooteco.subway.line.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.domain.Sections;
+import wooteco.subway.line.dto.LineWithTransferLinesResponse;
 import wooteco.subway.station.domain.Station;
 
 import javax.sql.DataSource;
@@ -21,6 +23,12 @@ import static java.util.stream.Collectors.toList;
 public class LineDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
+    private final RowMapper<Line> rowMapper = (rs, rowNum) ->
+            new Line(
+                    rs.getLong("id"),
+                    rs.getString("name"),
+                    rs.getString("color")
+            );
 
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
@@ -119,5 +127,12 @@ public class LineDao {
 
     public void deleteById(Long id) {
         jdbcTemplate.update("delete from Line where id = ?", id);
+    }
+
+    public List<LineWithTransferLinesResponse> findTransferLinesByStationId(Long lineId, Long stationId) {
+        String sql = "select * from LINE where id in (select line_id from SECTION where (up_station_id = ? or down_station_id = ?)) and id != ?";
+        return jdbcTemplate.query(sql, rowMapper, stationId, stationId, lineId).stream()
+                .map(LineWithTransferLinesResponse::of)
+                .collect(toList());
     }
 }

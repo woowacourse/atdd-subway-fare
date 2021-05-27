@@ -28,13 +28,13 @@ public class LineController {
     }
 
     @GetMapping
-    public ResponseEntity<List<LineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findLineResponses());
+    public ResponseEntity<List<LineWithTransferLinesAndNextDistanceResponse>> findAllLines() {
+        return ResponseEntity.ok(lineService.findLinesWithTransferLinesAndNextDistance());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
-        return ResponseEntity.ok(lineService.findLineResponseById(id));
+    public ResponseEntity<LineWithTransferLinesAndNextDistanceResponse> findLineById(@PathVariable Long id) {
+        return ResponseEntity.ok(lineService.findLineWithTransferLinesAndNextDistance(id));
     }
 
     @PutMapping("/{id}")

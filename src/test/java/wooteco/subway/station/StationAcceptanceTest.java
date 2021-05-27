@@ -142,7 +142,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         super.setUp();
     }
 
-    @DisplayName("지하철역을 생성한다.")
+    @DisplayName("역 생성 - 지하철역을 생성한다.")
     @Test
     void createStation() {
         // when
@@ -152,7 +152,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_생성됨(response);
     }
 
-    @DisplayName("기존에 존재하는 지하철역 이름으로 지하철역을 생성한다.")
+    @DisplayName("역 생성 - 기존에 존재하는 지하철역 이름으로 지하철역을 생성한다.")
     @Test
     void createStationWithDuplicateName() {
         //given
@@ -165,7 +165,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_생성_실패됨(response);
     }
 
-    @DisplayName("지하철역을 조회한다.")
+    @DisplayName("역 조회 - 지하철역을 조회한다.")
     @Test
     void getStations() {
         // given
@@ -180,7 +180,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_목록_포함됨(response, Arrays.asList(stationResponse1, stationResponse2));
     }
 
-    @DisplayName("지하철역을 수정한다.")
+    @DisplayName("역 수정 - 지하철역을 수정한다.")
     @Test
     void updateStation() {
         // given
@@ -208,7 +208,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_수정_실패됨(response);
     }
 
-    @DisplayName("지하철역을 제거한다.")
+    @DisplayName("역 삭제 - 지하철역을 제거한다.")
     @Test
     void deleteStation() {
         // given
@@ -221,7 +221,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_삭제됨(response);
     }
 
-    @DisplayName("역 제거 - 아무 구간에 존재하는 역을 삭제하는 경우 400 에러가 발생한다.")
+    @DisplayName("역 삭제 - 아무 구간에 존재하는 역을 삭제하는 경우 400 에러가 발생한다.")
     @Test
     void deleteStationInvalidDeletionException() {
         // given
