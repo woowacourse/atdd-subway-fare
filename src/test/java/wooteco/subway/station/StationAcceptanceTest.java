@@ -43,6 +43,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철역_생성_실패됨(response);
+        assertThat((String) response.body().jsonPath().get("message")).isEqualTo("이미 존재하는 지하철 역입니다.");
     }
 
     @DisplayName("지하철역을 조회한다.")
@@ -84,6 +85,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철역_삭제되지_않음(response);
+        assertThat((String) response.body().jsonPath().get("message")).isEqualTo("존재하지 않는 지하철 역입니다.");
     }
 
     @DisplayName("지하철역을 수정한다.")
@@ -110,6 +112,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철역_수정되지_않음(response);
+        assertThat((String) response.body().jsonPath().get("message")).isEqualTo("존재하지 않는 지하철 역입니다.");
     }
 
     @DisplayName("이미 존재하는 지하철역 이름으로 수정 시 예외가 발생한다.")
@@ -124,6 +127,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철역_수정되지_않음(response);
+        assertThat((String) response.body().jsonPath().get("message")).isEqualTo("이미 존재하는 지하철 역입니다.");
     }
 
     private void 지하철역_삭제되지_않음(ExtractableResponse<Response> response) {
