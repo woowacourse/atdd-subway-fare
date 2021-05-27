@@ -32,4 +32,24 @@ public class MapResponse {
                 .map(MapResponse::of)
                 .collect(Collectors.toList());
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public Long getExtraFare() {
+        return extraFare;
+    }
+
+    public List<SectionResponse> getSections() {
+        return sections;
+    }
 }
