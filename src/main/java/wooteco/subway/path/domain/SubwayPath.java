@@ -1,10 +1,10 @@
 package wooteco.subway.path.domain;
 
 import wooteco.subway.line.domain.Line;
+import wooteco.subway.exception.path.InvalidPathException;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
-import java.util.OptionalInt;
 
 public class SubwayPath {
     private List<SectionEdge> sectionEdges;
@@ -32,7 +32,7 @@ public class SubwayPath {
                 .map(SectionEdge::getLine)
                 .distinct()
                 .mapToInt(Line::getExtraFare)
-                .max().orElseThrow(() -> new IllegalArgumentException("추가요금 없어요"));
-
+                .max()
+                .orElseThrow(InvalidPathException::new);
     }
 }

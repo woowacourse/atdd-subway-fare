@@ -11,6 +11,7 @@ import wooteco.subway.exception.auth.AuthorizationException;
 import wooteco.subway.exception.deletion.CannotDeleteException;
 import wooteco.subway.exception.duplication.DuplicatedException;
 import wooteco.subway.exception.notfound.NotFoundException;
+import wooteco.subway.exception.path.InvalidPathException;
 
 import java.sql.SQLException;
 import java.util.stream.Collectors;
@@ -28,7 +29,7 @@ public class ExceptionAdvice {
                 .body(message);
     }
 
-    @ExceptionHandler({CannotAddException.class, CannotDeleteException.class, DuplicatedException.class})
+    @ExceptionHandler({CannotAddException.class, CannotDeleteException.class, DuplicatedException.class, InvalidPathException.class})
     public ResponseEntity<String> handleBadRequest(RuntimeException runtimeException) {
         return ResponseEntity.badRequest()
                 .body(runtimeException.getMessage());
