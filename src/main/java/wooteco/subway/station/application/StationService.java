@@ -42,7 +42,7 @@ public class StationService {
     }
 
     public List<StationResponse> findAllStationResponses() {
-        List<Station> stations = stationDao.findAll();
+        List<Station> stations = stationDao.findAllDescById();
 
         return stations.stream()
             .map(StationResponse::of)

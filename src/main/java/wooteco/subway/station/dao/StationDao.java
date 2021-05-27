@@ -42,6 +42,11 @@ public class StationDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
+    public List<Station> findAllDescById() {
+        String sql = "select * from STATION order by id desc";
+        return jdbcTemplate.query(sql, rowMapper);
+    }
+
     public void deleteById(Long id) {
         String sql = "delete from STATION where id = ?";
         jdbcTemplate.update(sql, id);
