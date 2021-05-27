@@ -6,14 +6,9 @@ public class Fare {
     private final int totalDistance;
     private final int lineExtraFare;
 
-    public Fare(int totalDistance) {
-        this(totalDistance, 0);
-    }
-
     public Fare(int totalDistance, int lineExtraFare) {
         this.totalDistance = totalDistance;
         this.lineExtraFare = lineExtraFare;
-
     }
 
     public int calculateBasicFare() {
@@ -28,6 +23,10 @@ public class Fare {
                 + lineExtraFare;
     }
 
+    private int calculateExtraFare(int distance, int unitDistance) {
+        return (int) Math.ceil(((double) (distance)) / unitDistance) * 100;
+    }
+
     public int calculateDiscountFare(int age) {
         if (age < 6) {
             return 0;
@@ -39,9 +38,5 @@ public class Fare {
             return (calculateBasicFare() - 350) / 2;
         }
         return (int) ((calculateBasicFare() - 350) * 0.8);
-    }
-
-    private int calculateExtraFare(int distance, int unitDistance) {
-        return (int) Math.ceil(((double) (distance)) / unitDistance) * 100;
     }
 }

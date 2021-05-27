@@ -41,7 +41,7 @@ class SubwayPathTest {
                 Line 이호선 = new Line(1L, "2호선", "black", sections);
                 // PathFinder
                 SubwayPath subwayPath = pathFinder.findPath(Arrays.asList(이호선), 강남역, 잠실역);
-                Fare fare = new Fare(subwayPath.calculateDistance());
+                Fare fare = new Fare(subwayPath.calculateDistance(), 0);
                 int fareValue = fare.calculateBasicFare();
 
                 assertThat(fareValue).isEqualTo(1250);
@@ -80,7 +80,7 @@ class SubwayPathTest {
 
                 Line line = new Line(1L, "2호선", "black", sections);
                 SubwayPath path = pathFinder.findPath(Arrays.asList(line), 강남역, 송파역);
-                Fare fare = new Fare(path.calculateDistance());
+                Fare fare = new Fare(path.calculateDistance(), 0);
                 int fareValue = fare.calculateBasicFare();
 
                 assertThat(fareValue).isEqualTo(1450);
@@ -95,7 +95,7 @@ class SubwayPathTest {
 
                 Line line = new Line(1L, "2호선", "black", sections);
                 SubwayPath path = pathFinder.findPath(Arrays.asList(line), 강남역, 송파역);
-                Fare fare = new Fare(path.calculateDistance());
+                Fare fare = new Fare(path.calculateDistance(), 0);
                 int fareValue = fare.calculateBasicFare();
 
                 assertThat(fareValue).isEqualTo(1350);
@@ -118,7 +118,7 @@ class SubwayPathTest {
                 Line 이호선 = new Line(1L, "2호선", "black", sections);
                 // PathFinder
                 SubwayPath subwayPath = pathFinder.findPath(Arrays.asList(이호선), 강남역, 송파역);
-                Fare fare = new Fare(subwayPath.calculateDistance());
+                Fare fare = new Fare(subwayPath.calculateDistance(), 0);
                 int fareValue = fare.calculateBasicFare();
 
                 assertThat(fareValue).isEqualTo(2150);
