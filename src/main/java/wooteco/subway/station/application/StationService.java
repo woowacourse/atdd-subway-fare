@@ -43,7 +43,7 @@ public class StationService {
     public Station findStationById(Long id) {
         return stationDao
                 .findById(id)
-                .orElseThrow(StationDuplicatedException::new);
+                .orElseThrow(StationNotFoundException::new);
     }
 
     public List<StationResponse> findAllStationResponses() {

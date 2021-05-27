@@ -1,6 +1,7 @@
 package wooteco.subway.line.domain;
 
 import wooteco.subway.exception.create.SectionCreateException;
+import wooteco.subway.exception.delete.SectionDeleteException;
 import wooteco.subway.station.domain.Station;
 
 import java.util.ArrayList;
@@ -121,7 +122,7 @@ public class Sections {
 
     public void removeStation(Station station) {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new SectionDeleteException();
         }
 
         Optional<Section> upSection = sections.stream()
