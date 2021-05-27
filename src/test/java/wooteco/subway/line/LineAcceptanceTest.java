@@ -142,6 +142,43 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_삭제_실패(response);
     }
 
+    @DisplayName("노선이름은 2자 이상 10자 이하의 한글 (숫자 포함. 공백 허용 X)")
+    @Test
+    void createErrorNameLine() throws Exception {
+        //given
+        String errorName = "공백 선";
+        LineRequest errorLineRequest = new LineRequest(errorName, "bg-red-600", 강남역.getId(), downStation.getId(), 10);
+
+        //when
+        ExtractableResponse<Response> extractableResponse = 지하철_노선_생성_요청(errorLineRequest);
+
+        //then
+        지하철_노선_생성_실패됨(extractableResponse);
+
+        //given
+        errorName = "선";
+        errorLineRequest = new LineRequest(errorName, "bg-red-600", 강남역.getId(), downStation.getId(), 10);
+
+        //when
+        extractableResponse = 지하철_노선_생성_요청(errorLineRequest);
+
+        //then
+        지하철_노선_생성_실패됨(extractableResponse);
+
+        //then
+        지하철_노선_생성_실패됨(extractableResponse);
+
+        //given
+        errorName = "진짜진짜진짜기다란이상한노션아닌노선";
+        errorLineRequest = new LineRequest(errorName, "bg-red-600", 강남역.getId(), downStation.getId(), 10);
+
+        //when
+        extractableResponse = 지하철_노선_생성_요청(errorLineRequest);
+
+        //then
+        지하철_노선_생성_실패됨(extractableResponse);
+    }
+
     public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance, Long extraFare) {
         LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance, extraFare);
         return 지하철_노선_등록되어_있음(lineRequest);

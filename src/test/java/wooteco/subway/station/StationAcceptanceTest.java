@@ -32,6 +32,37 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_생성됨(response);
     }
 
+    @DisplayName("지하철 역은 2자 이상 20자 이하의 한글 (숫자 포함. 공백 허용 X)")
+    @Test
+    void createErrorNameStation() throws Exception {
+        //given
+        String numberName = "공백포함 역";
+
+        //when
+        ExtractableResponse<Response> response = 지하철역_생성_요청(numberName);
+
+        //then
+        지하철역_생성되지_않음(response);
+
+        //given
+        numberName = "역";
+
+        //when
+        response = 지하철역_생성_요청(numberName);
+
+        //then
+        지하철역_생성되지_않음(response);
+
+        //given
+        numberName = "스무자넘는매우매우매우매우매우매우진짜이상하고정말존재하지않을것같은역";
+
+        //when
+        response = 지하철역_생성_요청(numberName);
+
+        //then
+        지하철역_생성되지_않음(response);
+    }
+
     @DisplayName("기존에 존재하는 지하철역 이름으로 지하철역을 생성한다.")
     @Test
     void createStationWithDuplicateName() {
