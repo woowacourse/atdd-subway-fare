@@ -9,6 +9,7 @@ import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.LineUpdateRequest;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.line.exception.DuplicateLineNameException;
 import wooteco.subway.line.exception.InvalidLineIdException;
 import wooteco.subway.line.exception.SameEndStationsException;
 import wooteco.subway.station.application.StationService;
@@ -31,9 +32,17 @@ public class LineService {
 
     public LineResponse saveLine(LineRequest request) {
         validateLineRequest(request);
+        validateDuplicateLineName(request.getName());
+
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);
+    }
+
+    private void validateDuplicateLineName(String name) {
+        lineDao.findByName(name).ifPresent(station -> {
+            throw new DuplicateLineNameException();
+        });
     }
 
     private void validateLineRequest(LineRequest request) {

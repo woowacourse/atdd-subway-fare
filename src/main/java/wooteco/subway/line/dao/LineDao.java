@@ -10,10 +10,7 @@ import wooteco.subway.path.domain.Fare;
 import wooteco.subway.station.domain.Station;
 
 import javax.sql.DataSource;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
@@ -53,6 +50,25 @@ public class LineDao {
 
         List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, new Object[]{id});
         return mapLine(result);
+    }
+
+    public Optional<Line> findByName(String name) {
+        String sql = "select L.id as line_id, L.name as line_name, L.color as line_color, L.extra_fare as line_extra_fare, " +
+                "S.id as section_id, S.distance as section_distance, " +
+                "UST.id as up_station_id, UST.name as up_station_name, " +
+                "DST.id as down_station_id, DST.name as down_station_name " +
+                "from LINE L \n" +
+                "left outer join SECTION S on L.id = S.line_id " +
+                "left outer join STATION UST on S.up_station_id = UST.id " +
+                "left outer join STATION DST on S.down_station_id = DST.id " +
+                "WHERE L.name = ?";
+
+        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, new Object[]{name});
+        if (result.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(mapLine(result));
     }
 
     public void update(Line newLine) {
