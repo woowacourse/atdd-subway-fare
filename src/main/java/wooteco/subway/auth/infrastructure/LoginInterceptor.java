@@ -24,6 +24,10 @@ public class LoginInterceptor implements HandlerInterceptor {
             return true;
         }
 
+        if (request.getMethod().equals(HttpMethod.OPTIONS.name())) {
+            return true;
+        }
+
         String token = AuthorizationExtractor.extract(request);
         if (jwtTokenProvider.validateToken(token)) {
             return true;
