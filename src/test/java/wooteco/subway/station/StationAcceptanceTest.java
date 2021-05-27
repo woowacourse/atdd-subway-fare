@@ -56,16 +56,19 @@ public class StationAcceptanceTest extends AcceptanceTest {
         String invalidCase1 = "역";
         String invalidCase2 = "station";
         String invalidCase3 = "       ";
+        String invalidCase4 = "$#*^";
 
         // when
         ExtractableResponse<Response> response1 = 지하철역_생성_요청(invalidCase1);
         ExtractableResponse<Response> response2 = 지하철역_생성_요청(invalidCase2);
         ExtractableResponse<Response> response3 = 지하철역_생성_요청(invalidCase3);
+        ExtractableResponse<Response> response4 = 지하철역_생성_요청(invalidCase4);
 
         // then
         지하철역_생성_실패됨(response1);
         지하철역_생성_실패됨(response2);
         지하철역_생성_실패됨(response3);
+        지하철역_생성_실패됨(response4);
     }
 
     @DisplayName("지하철역을 조회한다.")
@@ -103,7 +106,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철역_아이디로_제거_요청("100000");
 
         // then
-        지하철역_삭제_실패됨(response);
+        지하철역_등록되어있지_않음(response);
     }
 
 
@@ -172,7 +175,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    public static void 지하철역_삭제_실패됨(ExtractableResponse<Response> response) {
+    public static void 지하철역_등록되어있지_않음(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
         ErrorResponse errorResponse = response.jsonPath().getObject(".", ErrorResponse.class);
         assertThat(errorResponse.getErrorMessage()).isEqualTo("역이 등록되어 있지 않습니다.");
