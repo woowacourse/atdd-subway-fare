@@ -1,9 +1,11 @@
 package wooteco.subway.path.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.member.domain.MemberType;
 import wooteco.subway.path.domain.FareType;
 
+@Transactional
 @Service
 public class FareService {
 
