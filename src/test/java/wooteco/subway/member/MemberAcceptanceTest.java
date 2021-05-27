@@ -34,7 +34,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .auth().oauth2(ExceptionCheck.getDefaultToken())
-            .when().get("/members/check-validation?email=" + email)
+            .when().get("/api/members/check-validation?email=" + email)
             .then().log().all()
             .extract();
     }
@@ -47,7 +47,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(memberRequest)
-            .when().post("/members")
+            .when().post("/api/members")
             .then().log().all()
             .extract();
     }
@@ -63,7 +63,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(invalidParam)
-            .when().post("/members")
+            .when().post("/api/members")
             .then().log().all()
             .extract();
     }
@@ -73,7 +73,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .given().log().all()
             .auth().oauth2(tokenResponse.getAccessToken())
             .accept(MediaType.APPLICATION_JSON_VALUE)
-            .when().get("/members/me")
+            .when().get("/api/members/me")
             .then().log().all()
             .statusCode(HttpStatus.OK.value())
             .extract();
@@ -88,7 +88,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .auth().oauth2(tokenResponse.getAccessToken())
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(memberRequest)
-            .when().put("/members/me")
+            .when().put("/api/members/me")
             .then().log().all()
             .extract();
     }
@@ -97,7 +97,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         return RestAssured
             .given().log().all()
             .auth().oauth2(tokenResponse.getAccessToken())
-            .when().delete("/members/me")
+            .when().delete("/api/members/me")
             .then().log().all()
             .extract();
     }

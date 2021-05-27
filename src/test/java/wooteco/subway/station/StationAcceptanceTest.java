@@ -37,7 +37,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
             .auth().oauth2(ExceptionCheck.getDefaultToken())
             .body(stationRequest)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().post("/stations")
+            .when().post("/api/stations")
             .then().log().all()
             .extract();
     }
@@ -46,7 +46,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         return RestAssured
             .given().log().all()
             .auth().oauth2(ExceptionCheck.getDefaultToken())
-            .when().get("/stations")
+            .when().get("/api/stations")
             .then().log().all()
             .extract();
     }
@@ -55,7 +55,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         return RestAssured
             .given().log().all()
             .auth().oauth2(ExceptionCheck.getDefaultToken())
-            .when().delete("/stations/" + stationResponse.getId())
+            .when().delete("/api/stations/" + stationResponse.getId())
             .then().log().all()
             .extract();
     }

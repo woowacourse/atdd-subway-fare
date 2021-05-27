@@ -19,7 +19,7 @@ public class MapController {
         this.lineService = lineService;
     }
 
-    @GetMapping("/map")
+    @GetMapping("/api/map")
     public ResponseEntity<List<MapDetailResponse>> showMap() {
         List<MapDetailResponse> mapDetailResponse = lineService.showMap();
         return ResponseEntity.ok().body(mapDetailResponse);

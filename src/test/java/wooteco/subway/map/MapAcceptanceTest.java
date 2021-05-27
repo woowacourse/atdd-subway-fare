@@ -19,7 +19,7 @@ public class MapAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 전체보기_조회_요청() {
         return RestAssured
             .given().log().all()
-            .when().get("/map")
+            .when().get("/api/map")
             .then().log().all()
             .extract();
     }

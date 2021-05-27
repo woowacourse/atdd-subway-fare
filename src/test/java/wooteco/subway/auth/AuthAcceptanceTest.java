@@ -44,7 +44,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
             .given().log().all()
             .auth().oauth2(tokenResponse.getAccessToken())
             .accept(MediaType.APPLICATION_JSON_VALUE)
-            .when().get("/members/me")
+            .when().get("/api/members/me")
             .then().log().all()
             .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -95,13 +95,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         params.put("password", password);
 
         return RestAssured.given().log().all().
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                body(params).
-                when().
-                post("/login/token").
-                then().
-                log().all().
-                statusCode(HttpStatus.OK.value()).
+            contentType(MediaType.APPLICATION_JSON_VALUE).
+            body(params).
+            when().post("/api/login/token").
+            then().log().all().
+            statusCode(HttpStatus.OK.value()).
                 extract();
     }
 
@@ -109,10 +107,8 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         return RestAssured.given().log().all().
             auth().oauth2(tokenResponse.getAccessToken()).
             accept(MediaType.APPLICATION_JSON_VALUE).
-            when().
-            get("/members/me").
-            then().
-            log().all().
+            when().get("/api/members/me").
+            then().log().all().
             statusCode(HttpStatus.OK.value()).
             extract();
     }
@@ -122,7 +118,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(params)
-            .when().post("/login/token")
+            .when().post("/api/login/token")
             .then().log().all()
             .extract();
 

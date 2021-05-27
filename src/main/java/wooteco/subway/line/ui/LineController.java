@@ -24,7 +24,7 @@ import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.ui.SubwayController;
 
 @RestController
-@RequestMapping("/lines")
+@RequestMapping("/api/lines")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class LineController extends SubwayController {
 
@@ -36,7 +36,7 @@ public class LineController extends SubwayController {
     @PostMapping
     public ResponseEntity createLine(@RequestBody LineRequest lineRequest) {
         LineResponse line = lineService.saveLine(lineRequest);
-        return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
+        return ResponseEntity.created(URI.create("/api/lines/" + line.getId())).body(line);
     }
 
     @GetMapping

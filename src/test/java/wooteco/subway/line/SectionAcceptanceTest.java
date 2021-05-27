@@ -130,7 +130,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .auth().oauth2(ExceptionCheck.getDefaultToken())
             .body(sectionRequest)
-            .when().post("/lines/{lineId}/sections", line.getId())
+            .when().post("/api/lines/{lineId}/sections", line.getId())
             .then().log().all()
             .extract();
     }
@@ -155,7 +155,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
             .given().log().all()
             .auth().oauth2(ExceptionCheck.getDefaultToken())
             .when()
-            .delete("/lines/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
+            .delete("/api/lines/{lineId}/sections?stationId={stationId}", line.getId(),
+                station.getId())
             .then().log().all()
             .extract();
     }

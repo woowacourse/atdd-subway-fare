@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.ExceptionResponse;
@@ -24,6 +25,7 @@ import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
 @RestController
+@RequestMapping("/api/members")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class MemberController {
     private MemberService memberService;
@@ -32,33 +34,33 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    @PostMapping("/members")
+    @PostMapping
     public ResponseEntity createMember(@RequestBody MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
-        return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
+        return ResponseEntity.created(URI.create("/api/members/" + member.getId())).build();
     }
 
-    @GetMapping("/members/me")
+    @GetMapping("/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         MemberResponse member = memberService.findMember(loginMember);
         return ResponseEntity.ok().body(member);
     }
 
-    @PutMapping("/members/me")
+    @PutMapping("/me")
     public ResponseEntity<MemberResponse> updateMemberOfMine(
         @AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest param) {
         memberService.updateMember(loginMember, param);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/members/me")
+    @DeleteMapping("/me")
     public ResponseEntity<MemberResponse> deleteMemberOfMine(
         @AuthenticationPrincipal LoginMember loginMember) {
         memberService.deleteMember(loginMember);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/members/check-validation")
+    @GetMapping("/check-validation")
     public ResponseEntity<Void> findExistMember(@RequestParam String email) {
         MemberResponse member = memberService.findMember(email);
         return ResponseEntity.ok().build();
