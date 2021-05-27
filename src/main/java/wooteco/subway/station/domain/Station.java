@@ -1,8 +1,11 @@
 package wooteco.subway.station.domain;
 
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 public class Station {
+    private static String NAME_PATTERN = "^[가-힣|0-9]*$";
+
     private Long id;
     private String name;
 
@@ -15,7 +18,32 @@ public class Station {
     }
 
     public Station(String name) {
+        validateName(name);
         this.name = name;
+    }
+
+    private void validateName(String name) {
+        validateNameLength(name);
+        validateNameContainsBlank(name);
+        validateNameMatchesPattern(name);
+    }
+
+    private void validateNameLength(String name) {
+        if (name.length() < 2) {
+            throw new InvalidStationNameException();
+        }
+    }
+
+    private void validateNameContainsBlank(String name) {
+        if (name.contains(" ")) {
+            throw new InvalidStationNameException();
+        }
+    }
+
+    private void validateNameMatchesPattern(String name) {
+        if (!Pattern.matches(NAME_PATTERN, name)) {
+            throw new InvalidStationNameException();
+        }
     }
 
     public Long getId() {
