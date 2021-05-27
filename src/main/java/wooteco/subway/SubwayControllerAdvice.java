@@ -2,6 +2,7 @@ package wooteco.subway;
 
 import java.util.Objects;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -13,6 +14,7 @@ import wooteco.subway.exception.InvalidEmailException;
 import wooteco.subway.exception.InvalidInputException;
 import wooteco.subway.exception.InvalidNameException;
 import wooteco.subway.exception.InvalidPasswordException;
+import wooteco.subway.exception.InvalidTokenException;
 import wooteco.subway.exception.SubwayException;
 
 @ControllerAdvice
@@ -22,6 +24,12 @@ public class SubwayControllerAdvice {
     public ResponseEntity<ExceptionResponse> exceptionHandle(SubwayException e) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(e);
         return ResponseEntity.badRequest().body(exceptionResponse);
+    }
+
+    @ExceptionHandler(InvalidTokenException.class)
+    public ResponseEntity<ExceptionResponse> invalidTokenExceptionHandle(InvalidTokenException e) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(e);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(exceptionResponse);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

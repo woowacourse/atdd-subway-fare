@@ -7,6 +7,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
+import wooteco.subway.exception.InvalidTokenException;
 
 public class LoginInterceptor implements HandlerInterceptor {
     private final JwtTokenProvider jwtTokenProvider;
@@ -18,7 +19,10 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String accessToken = AuthorizationExtractor.extract(request);
-        return jwtTokenProvider.validateToken(accessToken);
+        if(jwtTokenProvider.validateToken(accessToken)) {
+            return true;
+        }
+        throw new InvalidTokenException();
     }
 }
 
