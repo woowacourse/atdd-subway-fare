@@ -13,7 +13,7 @@ import wooteco.subway.auth.exception.InvalidTokenException;
 @Component
 public class JwtInterceptor extends HandlerInterceptorAdapter {
 
-    Logger logger = LoggerFactory.getLogger("io.ojw.mall.interceptor.JwtInterceptor");
+    Logger logger = LoggerFactory.getLogger("io.ojw.mall.interceptor.Jwtinterceptor");
 
     private static final String TOKEN = "jwt-token";
 
@@ -29,7 +29,7 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
         throws Exception {
         final String token = request.getHeader(TOKEN);
 
-        logger.debug("JwtInterceptor > preHandle > token: " + token);
+        logger.debug("Jwtinterceptor > preHandle > token: " + token);
 
         if (StringUtils.equals(request.getMethod(), "OPTIONS")) {
             logger.debug("if request options method is options, return true");
