@@ -1,6 +1,7 @@
 package wooteco.subway.line;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.auth.AuthAcceptanceTest.토큰_요청;
 import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_조회_요청;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
@@ -26,7 +27,6 @@ import wooteco.subway.station.dto.StationResponse;
 @DisplayName("지하철 구간 관련 기능")
 public class SectionAcceptanceTest extends AcceptanceTest {
 
-    private static final String TOKEN = 토큰_요청();
     private LineResponse 신분당선;
     private StationResponse 강남역;
     private StationResponse 양재역;
@@ -132,7 +132,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         return RestAssured
             .given().log().all()
-            .header("Authorization", "Bearer " + TOKEN)
+            .auth().oauth2(토큰_요청())
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(sectionRequest)
             .when().post("/api/lines/{lineId}/sections", line.getId())
@@ -158,8 +158,10 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         StationResponse station) {
         return RestAssured
             .given().log().all()
-            .header("Authorization", "Bearer " + TOKEN)
-            .when().delete("/api/lines/{lineId}/sections?stationId={stationId}", line.getId(),
+            .auth().oauth2(토큰_요청())
+            .when().delete(
+                "/api/lines/{lineId}/sections?stationId={stationId}",
+                line.getId(),
                 station.getId())
             .then().log().all()
             .extract();

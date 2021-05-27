@@ -1,6 +1,7 @@
 package wooteco.subway.line;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.auth.AuthAcceptanceTest.토큰_요청;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
 import io.restassured.RestAssured;
@@ -22,7 +23,6 @@ import wooteco.subway.station.dto.StationResponse;
 @DisplayName("지하철 노선 관련 기능")
 public class LineAcceptanceTest extends AcceptanceTest {
 
-    private static final String TOKEN = 토큰_요청();
     private StationResponse 강남역;
     private StationResponse downStation;
     private LineRequest lineRequest1;
@@ -31,7 +31,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-
         // given
         강남역 = 지하철역_등록되어_있음("강남역");
         downStation = 지하철역_등록되어_있음("광교역");
@@ -131,7 +130,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest params) {
         return RestAssured
             .given().log().all()
-            .header("Authorization", "Bearer " + TOKEN)
+            .auth().oauth2(토큰_요청())
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(params)
             .when().post("/api/lines")
@@ -162,7 +161,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         return RestAssured
             .given().log().all()
-            .header("Authorization", "Bearer " + TOKEN)
+            .auth().oauth2(토큰_요청())
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(params)
             .when().put("/api/lines/" + response.getId())
@@ -173,7 +172,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철_노선_제거_요청(LineResponse lineResponse) {
         return RestAssured
             .given().log().all()
-            .header("Authorization", "Bearer " + TOKEN)
+            .auth().oauth2(토큰_요청())
             .when().delete("/api/lines/" + lineResponse.getId())
             .then().log().all()
             .extract();

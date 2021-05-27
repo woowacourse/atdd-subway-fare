@@ -104,4 +104,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
             statusCode(HttpStatus.OK.value()).
             extract();
     }
+
+    public static String 토큰_요청() {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        TokenResponse tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
+        return tokenResponse.getAccessToken();
+    }
 }
