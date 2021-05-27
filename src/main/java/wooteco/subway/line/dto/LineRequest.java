@@ -11,8 +11,9 @@ import javax.validation.constraints.Positive;
 @NoArgsConstructor
 public class LineRequest {
     @NotBlank(message = "INVALID_NAME")
-    @Pattern(regexp = "^[가-힣0-9]$", message = "INVALID_NAME")
+    @Pattern(regexp = "^[가-힣0-9]*$", message = "INVALID_NAME")
     private String name;
+    @NotBlank(message = "INVALID_NAME")
     private String color;
     private Long upStationId;
     private Long downStationId;

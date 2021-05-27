@@ -1,28 +1,23 @@
 package wooteco.subway.line.dto;
 
-public class SectionRequest {
-    private Long upStationId;
-    private Long downStationId;
-    private int distance;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-    public SectionRequest() {
-    }
+import javax.validation.constraints.Positive;
+
+@Getter
+@NoArgsConstructor
+public class SectionRequest {
+    @Positive(message = "INVALID_INPUT")
+    private Long upStationId;
+    @Positive(message = "INVALID_INPUT")
+    private Long downStationId;
+    @Positive(message = "INVALID_DISTANCE")
+    private int distance;
 
     public SectionRequest(Long upStationId, Long downStationId, int distance) {
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
-    }
-
-    public Long getUpStationId() {
-        return upStationId;
-    }
-
-    public Long getDownStationId() {
-        return downStationId;
-    }
-
-    public int getDistance() {
-        return distance;
     }
 }

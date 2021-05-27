@@ -36,10 +36,11 @@ public class LineDao {
         params.put("id", line.getId());
         params.put("name", line.getName());
         params.put("color", line.getColor());
+        params.put("extraFare", line.getExtraFare());
 
         try {
             Long lineId = insertAction.executeAndReturnKey(params).longValue();
-            return new Line(lineId, line.getName(), line.getColor());
+            return new Line(lineId, line.getName(), line.getColor(), line.getExtraFare());
         } catch (DuplicateKeyException e) {
             throw new DuplicatedLineNameException();
         }
@@ -66,7 +67,13 @@ public class LineDao {
 
     public void update(Line newLine) {
         String sql = "update LINE set name = ?, color = ? where id = ?";
-        if (jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()}) == 0) {
+        int affectedQuery = 0;
+        try {
+            affectedQuery = jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
+        } catch (DuplicateKeyException e) {
+            throw new DuplicatedLineNameException();
+        }
+        if (affectedQuery == 0) {
             throw new NoSuchLineException();
         }
     }
@@ -90,7 +97,7 @@ public class LineDao {
 
     private Line mapLine(List<Map<String, Object>> result) {
         if (result.size() == 0) {
-            throw new RuntimeException();
+            throw new NoSuchLineException();
         }
 
         List<Section> sections = extractSections(result);
