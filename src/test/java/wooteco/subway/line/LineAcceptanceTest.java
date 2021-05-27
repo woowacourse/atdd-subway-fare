@@ -126,7 +126,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void getLineWithNotFoundException() {
         // given
-        LineResponse lineResponse = new LineResponse(20L, "없음", "black", Collections.emptyList());
+        LineResponse lineResponse = new LineResponse(20L, "없음", "black", Collections.emptyList(), Collections.emptyList());
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(lineResponse);
@@ -152,7 +152,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void updateLineWithNotFoundException() {
         // given
-        LineResponse lineResponse = new LineResponse(20L, "없음", "black", Collections.emptyList());
+        LineResponse lineResponse = new LineResponse(20L, "없음", "black", Collections.emptyList(), Collections.emptyList());
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(lineResponse);
@@ -178,7 +178,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteLineWithNotFoundException() {
         // given
-        LineResponse lineResponse = new LineResponse(20L, "없음", "black", Collections.emptyList());
+        LineResponse lineResponse = new LineResponse(20L, "없음", "black", Collections.emptyList(), Collections.emptyList());
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(lineResponse);
