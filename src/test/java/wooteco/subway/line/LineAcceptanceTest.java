@@ -205,7 +205,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
-        assertThat(exceptionResponse.getError()).isEqualTo("NO_SUCH_LINE");
+        assertThat(exceptionResponse.getError()).isEqualTo("NO_SUCH_SECTION");
     }
 
     public static LineResponse 지하철_노선_등록되어_있음(String accessToken, String name, String color, StationResponse upStation, StationResponse downStation, int distance, int extraFare) {
