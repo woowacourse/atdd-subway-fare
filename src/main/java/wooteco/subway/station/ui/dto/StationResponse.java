@@ -2,6 +2,7 @@ package wooteco.subway.station.ui.dto;
 
 import wooteco.subway.station.domain.Station;
 
+import java.beans.ConstructorProperties;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,6 +15,7 @@ public class StationResponse {
         return new StationResponse(station.getId(), station.getName());
     }
 
+    @ConstructorProperties({"id", "name"})
     public StationResponse(Long id, String name) {
         this.id = id;
         this.name = name;

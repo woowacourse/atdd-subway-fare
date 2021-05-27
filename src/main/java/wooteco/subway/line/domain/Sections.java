@@ -8,6 +8,8 @@ import wooteco.subway.station.domain.Station;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+
 public class Sections {
 
     private final List<Section> sections;
@@ -101,7 +103,7 @@ public class Sections {
     private Section findUpEndSection() {
         List<Station> downStations = this.sections.stream()
                 .map(Section::getDownStation)
-                .collect(Collectors.toList());
+                .collect(toList());
 
         return this.sections.stream()
                 .filter(it -> !downStations.contains(it.getUpStation()))
@@ -155,7 +157,7 @@ public class Sections {
     }
 
     private void validateDistance(Integer distance) {
-        if(distance <= 0) {
+        if (distance <= 0) {
             throw new SubwayException("구간 사이 거리는 0보다 작거나 같을 수 없습니다.");
         }
     }
@@ -169,7 +171,16 @@ public class Sections {
     }
 
     public List<Section> getSections() {
-        return sections;
+        return getStations().subList(0, sections.size()).stream()
+                .map(this::findSectionByUpStation)
+                .collect(toList());
+    }
+
+    private Section findSectionByUpStation(Station station) {
+        return sections.stream()
+                .filter(section -> section.getUpStation().equals(station))
+                .findAny()
+                .orElseThrow(() -> new NotFoundException("섹션 목록을 불러오는데 실패했습니다"));
     }
 
 }
