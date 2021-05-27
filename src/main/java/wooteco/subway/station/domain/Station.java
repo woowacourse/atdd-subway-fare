@@ -1,5 +1,7 @@
 package wooteco.subway.station.domain;
 
+import wooteco.subway.station.exception.InvalidStationNameException;
+
 import java.util.Objects;
 import java.util.regex.Pattern;
 

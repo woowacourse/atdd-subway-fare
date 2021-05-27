@@ -1,6 +1,6 @@
 package wooteco.subway.path.domain;
 
-import wooteco.subway.path.application.FareCalculationException;
+import wooteco.subway.path.exception.FareCalculationException;
 
 import java.util.Arrays;
 import java.util.function.Function;

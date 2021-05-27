@@ -5,6 +5,7 @@ import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.path.domain.FareByDistance;
 import wooteco.subway.path.domain.FareDiscountByAge;
 import wooteco.subway.path.domain.SubwayPath;
+import wooteco.subway.path.exception.FareCalculationException;
 
 import java.util.Optional;
 

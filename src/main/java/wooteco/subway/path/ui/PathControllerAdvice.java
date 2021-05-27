@@ -5,10 +5,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wooteco.subway.ErrorResponse;
-import wooteco.subway.path.application.FareCalculationException;
-import wooteco.subway.path.application.InvalidPathException;
-import wooteco.subway.path.application.PathNotConnectedException;
-import wooteco.subway.station.application.StationNotFoundException;
+import wooteco.subway.path.exception.FareCalculationException;
+import wooteco.subway.path.exception.InvalidPathException;
+import wooteco.subway.path.exception.PathNotConnectedException;
+import wooteco.subway.station.exception.StationNotFoundException;
 
 @RestControllerAdvice(basePackageClasses = PathController.class)
 public class PathControllerAdvice {
