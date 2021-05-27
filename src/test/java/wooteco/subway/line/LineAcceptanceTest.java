@@ -163,26 +163,27 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // given
         LineResponse lineResponse1 = 지하철_노선_등록되어_있음_withToken(사용자, lineRequest1);
         LineResponse lineResponse2 = 지하철_노선_등록되어_있음_withToken(사용자, lineRequest2);
+        StationResponse 교대역 = 지하철역_등록되어_있음_withToken(사용자, "교대역");
+        지하철_구간_생성_요청_withToken(사용자, lineResponse1, 광교역, 교대역, 5); // 강남 -> 광교 -> 교대
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청();
 
         // then
-        지하철_노선_목록_응답됨(response);
-        지하철_노선_목록_포함됨(response, Arrays.asList(lineResponse1, lineResponse2));
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     @DisplayName("조회 - 지하철 노선을 조회한다.")
     @Test
     void getLine() {
         // given
-        LineResponse lineResponse = 지하철_노선_등록되어_있음_withToken(사용자, lineRequest1);
+        LineResponse lineResponse1 = 지하철_노선_등록되어_있음_withToken(사용자, lineRequest1); // 강남 -> 광교
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_조회_요청(lineResponse);
+        ExtractableResponse<Response> response = 지하철_노선_조회_요청(lineResponse1);
 
         // then
-        지하철_노선_응답됨(response, lineResponse);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     @DisplayName("노선 수정 - 지하철 노선의 이름과 색을 모두 수정한다.")

@@ -21,6 +21,7 @@ public class LineResponse {
         this.color = color;
         this.stations = stations;
         this.sections = sections;
+
     }
 
     public static LineResponse of(Line line) {

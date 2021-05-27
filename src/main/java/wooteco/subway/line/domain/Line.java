@@ -78,4 +78,23 @@ public class Line {
             .stream()
             .anyMatch(it -> it.equals(station));
     }
+
+    public boolean contains(Station station) {
+        return getStations().contains(station);
+    }
+
+    public int getNextStationDistance(Station station) {
+        for (Section section : sections.getSections()) {
+            if (section.getUpStation().equals(station)) {
+                return section.getDistance();
+            }
+        }
+        return 0;
+//        Section section = sections.getSections()
+//            .stream()
+//            .filter(it -> it.getUpStation().equals(station))
+//            .findFirst()
+//            .orElseThrow(() -> new IllegalArgumentException("해당 노선에 존재하지 않는 지하철 역입니다."));
+//        return section.getDistance();
+    }
 }

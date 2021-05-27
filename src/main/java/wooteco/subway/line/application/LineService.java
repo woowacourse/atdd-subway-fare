@@ -1,5 +1,6 @@
 package wooteco.subway.line.application;
 
+import java.util.ArrayList;
 import org.springframework.stereotype.Service;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
@@ -8,6 +9,8 @@ import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.LineUpdateRequest;
+import wooteco.subway.line.dto.LineWithTransferAndDistanceResponse;
+import wooteco.subway.line.dto.LineWithoutSectionsResponse;
 import wooteco.subway.line.dto.SectionRequest;
 import wooteco.subway.line.exception.DuplicateLineColorException;
 import wooteco.subway.line.exception.DuplicateLineNameException;
@@ -16,6 +19,7 @@ import wooteco.subway.station.domain.Station;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import wooteco.subway.station.dto.StationWithTransferAndNextDistanceResponse;
 
 @Service
 public class LineService {
@@ -48,20 +52,53 @@ public class LineService {
         return null;
     }
 
-    public List<LineResponse> findLineResponses() {
+    public List<LineWithTransferAndDistanceResponse> findLineResponses() {
         List<Line> persistLines = findLines();
-        return persistLines.stream()
-                .map(line -> LineResponse.of(line))
-                .collect(Collectors.toList());
+
+        List<LineWithTransferAndDistanceResponse> response = new ArrayList<>();
+        for (Line line : persistLines) {
+            response.add(findLineResponseById(line.getId()));
+        }
+
+        return response;
     }
 
     public List<Line> findLines() {
         return lineDao.findAll();
     }
 
-    public LineResponse findLineResponseById(Long id) {
+    public LineWithTransferAndDistanceResponse findLineResponseById(Long id) {
+        List<Line> persistLines = findLines();
         Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
+        List<Station> persistStations = persistLine.getStations();
+
+        List<StationWithTransferAndNextDistanceResponse> stationsWithTransferAndNextDistance = new ArrayList<>();
+        for (Station station : persistStations) {
+            List<LineWithoutSectionsResponse> transferLines = new ArrayList<>();
+            for (Line line : persistLines) {
+                if (line.contains(station) && !line.getId().equals(persistLine.getId())) {
+                    transferLines.add(new LineWithoutSectionsResponse(
+                        line.getId(),
+                        line.getName(),
+                        line.getColor()
+                    ));
+                }
+            }
+
+            int nextStationDistance = persistLine.getNextStationDistance(station);
+            stationsWithTransferAndNextDistance.add(new StationWithTransferAndNextDistanceResponse(
+                station.getId(),
+                station.getName(),
+                nextStationDistance,
+                transferLines
+            ));
+        }
+        return new LineWithTransferAndDistanceResponse(
+            persistLine.getId(),
+            persistLine.getName(),
+            persistLine.getColor(),
+            stationsWithTransferAndNextDistance
+        );
     }
 
     public Line findLineById(Long id) {

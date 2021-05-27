@@ -46,6 +46,10 @@ public class StationService {
         return stationDao.findById(id);
     }
 
+    public List<Station> findAll() {
+        return stationDao.findAll();
+    }
+
     public List<StationResponse> findAllStationResponses() {
         List<Station> stations = stationDao.findAll();
 
