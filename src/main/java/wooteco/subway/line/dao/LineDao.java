@@ -92,19 +92,28 @@ public class LineDao {
             return Collections.EMPTY_LIST;
         }
         return result.stream()
-                .collect(Collectors.groupingBy(it -> it.get("SECTION_ID")))
-                .entrySet()
-                .stream()
-                .map(it ->
-                        new Section(
-                                (Long) it.getKey(),
-                                new Station((Long) it.getValue().get(0).get("UP_STATION_ID"), (String) it.getValue().get(0).get("UP_STATION_Name")),
-                                new Station((Long) it.getValue().get(0).get("DOWN_STATION_ID"), (String) it.getValue().get(0).get("DOWN_STATION_Name")),
-                                (int) it.getValue().get(0).get("SECTION_DISTANCE")))
-                .collect(Collectors.toList());
+            .collect(Collectors.groupingBy(it -> it.get("SECTION_ID")))
+            .entrySet()
+            .stream()
+            .map(it ->
+                new Section(
+                    (Long) it.getKey(),
+                    new Station((Long) it.getValue().get(0).get("UP_STATION_ID"),
+                        (String) it.getValue().get(0).get("UP_STATION_Name")),
+                    new Station((Long) it.getValue().get(0).get("DOWN_STATION_ID"),
+                        (String) it.getValue().get(0).get("DOWN_STATION_Name")),
+                    (int) it.getValue().get(0).get("SECTION_DISTANCE")))
+            .collect(Collectors.toList());
     }
 
     public void deleteById(Long id) {
         jdbcTemplate.update("delete from Line where id = ?", id);
+    }
+
+    public List<Long> findTransFerLineIdsBylineIdAndStation(Long lineId,
+        Station station) {
+        String sql = "select DISTINCT line_id from SECTION where (up_station_id = ? or down_station_id = ?) and line_id <> ?;";
+        return jdbcTemplate
+            .queryForList(sql, Long.class, station.getId(), station.getId(), lineId);
     }
 }

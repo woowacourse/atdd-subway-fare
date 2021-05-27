@@ -1,5 +1,6 @@
 package wooteco.subway.line.application;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,6 +13,9 @@ import wooteco.subway.line.dto.LineDetailResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.map.dto.MapDetailResponse;
+import wooteco.subway.map.dto.MapSectionDto;
+import wooteco.subway.map.dto.TransferLineDto;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.exception.StationAlreadyRegisteredInLineException;
@@ -108,4 +112,55 @@ public class LineService {
         });
         return false;
     }
+
+    public List<MapDetailResponse> showMap() {
+        List<Line> lines = findLines();
+        List<MapDetailResponse> mapDetailResponses = new ArrayList<>();
+
+        for (Line line : lines) {
+            mapDetailResponses.add(
+                new MapDetailResponse(line.getId(),
+                    line.getName(),
+                    line.getColor(),
+                    line.getSections().getTotalDistance(),
+                    createSectionsFromLine(line)));
+        }
+        return mapDetailResponses.stream().sorted(Comparator.comparing(MapDetailResponse::getName))
+            .collect(Collectors.toList());
+    }
+
+    private List<MapSectionDto> createSectionsFromLine(Line line) {
+        List<MapSectionDto> mapSectionDtos = new ArrayList<MapSectionDto>();
+
+        for (Section section : line.getSections().getSections()) {
+            mapSectionDtos.add(
+                new MapSectionDto(section.getId(), section.getUpStation().getName(),
+                    section.getDistance(),
+                    createTransferLines(line.getId(), section.getUpStation()))
+            );
+        }
+        Section lastSection = line.getSections().getSections()
+            .get(line.getSections().getSections().size() - 1);
+        mapSectionDtos.add(
+            new MapSectionDto(lastSection.getId(), lastSection.getDownStation().getName(), 0,
+                createTransferLines(line.getId(), lastSection.getDownStation())));
+
+        return mapSectionDtos;
+    }
+
+    private List<TransferLineDto> createTransferLines(Long lineId, Station upStation) {
+        List<Long> transferLineIdsBylineIdAndStation = lineDao
+            .findTransFerLineIdsBylineIdAndStation(lineId, upStation);
+
+        if (transferLineIdsBylineIdAndStation.isEmpty()) {
+            return new ArrayList<TransferLineDto>();
+        }
+
+        return transferLineIdsBylineIdAndStation.stream()
+            .map(relativeLineId -> lineDao.findById(relativeLineId))
+            .map(line -> new TransferLineDto(line.getId(), line.getName(), line.getColor()))
+            .collect(Collectors.toList());
+
+    }
+
 }
