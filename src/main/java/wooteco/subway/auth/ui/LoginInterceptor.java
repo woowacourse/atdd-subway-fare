@@ -1,4 +1,4 @@
-package wooteco.subway.auth;
+package wooteco.subway.auth.ui;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.HandlerInterceptor;

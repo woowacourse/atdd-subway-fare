@@ -47,4 +47,9 @@ public class MemberService {
                 .orElseThrow(WrongEmailException::new);
         memberDao.deleteById(member.getId());
     }
+
+    public Member findMemberByEmail(String email) {
+        return memberDao.findByEmail(email)
+                .orElseThrow(WrongEmailException::new);
+    }
 }
