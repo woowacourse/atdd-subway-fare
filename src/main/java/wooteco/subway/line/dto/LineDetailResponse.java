@@ -35,8 +35,6 @@ public class LineDetailResponse {
                 .map(SectionResponse::of)
                 .collect(Collectors.toList());
 
-        // TODO : 전체 거리를 구하는 메소드 호출
-        // DONE
         return new LineDetailResponse(line.getId(), line.getName(), line.getColor(), line.getDistance(), stations, sections);
     }
 

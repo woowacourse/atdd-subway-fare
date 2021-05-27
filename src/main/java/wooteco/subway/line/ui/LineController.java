@@ -45,13 +45,13 @@ public class LineController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/lines/detail")
+    @GetMapping("/detail")
     public ResponseEntity<List<LineDetailResponse>> findAllLineDetails() {
         List<LineDetailResponse> lineDetailResponses = lineService.findLineDetails();
         return ResponseEntity.ok(lineDetailResponses);
     }
 
-    @GetMapping("/lines/detail/{id}")
+    @GetMapping("/detail/{id}")
     public ResponseEntity<LineDetailResponse> findLineDetailById(@PathVariable Long id) {
         LineDetailResponse lineDetailResponses = lineService.findLineDetail(id);
         return ResponseEntity.ok(lineDetailResponses);
