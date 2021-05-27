@@ -61,4 +61,9 @@ public class StationDao {
         String sql = "select * from STATION where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
+
+    public boolean isExistStation(Long id) {
+        String sql = "select exists (select * from STATION where id = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, id);
+    }
 }

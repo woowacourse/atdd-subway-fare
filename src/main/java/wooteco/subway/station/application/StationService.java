@@ -55,6 +55,10 @@ public class StationService {
     }
 
     private void validate(Long id) {
+        if (!stationDao.isExistStation(id)) {
+            throw new StationException("존재하지 않는 역입니다.");
+        }
+
         boolean isPresent = lineDao.findAll()
                                    .stream()
                                    .anyMatch(it -> it.isIncludingStation(id));
