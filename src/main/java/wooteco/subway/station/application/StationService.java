@@ -26,6 +26,9 @@ public class StationService {
     }
 
     public Station findStationById(Long id) {
+        if (stationDao.notExistId(id)) {
+            throw new NotFoundStationException();
+        }
         return stationDao.findById(id);
     }
 
@@ -39,6 +42,9 @@ public class StationService {
 
     @Transactional
     public void deleteStationById(Long id) {
+        if (stationDao.notExistId(id)) {
+            throw new NotFoundStationException();
+        }
         stationDao.deleteById(id);
     }
 }
