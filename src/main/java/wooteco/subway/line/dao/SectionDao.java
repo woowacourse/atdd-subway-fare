@@ -52,4 +52,9 @@ public class SectionDao {
 
         simpleJdbcInsert.executeBatch(batchValues.toArray(new Map[sections.size()]));
     }
+
+    public boolean isExistByLineId(Long lineId) {
+        String sql = "select EXISTS (select * from SECTION where line_id = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, lineId);
+    }
 }

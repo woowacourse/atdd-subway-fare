@@ -12,6 +12,7 @@ import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
 import wooteco.subway.line.exception.InvalidSectionRequestException;
 import wooteco.subway.line.exception.LineNotFoundException;
+import wooteco.subway.line.exception.SectionNotFoundException;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
@@ -46,7 +47,7 @@ public class LineService {
 
     private Section addInitSection(Line line, LineRequest request) {
         if (request.getUpStationId() != null && request.getDownStationId() != null) {
-            checkSameEndStations(request);
+            checkSameEndStations(request.getUpStationId(), request.getDownStationId());
             Station upStation = stationService.findStationById(request.getUpStationId());
             Station downStation = stationService.findStationById(request.getDownStationId());
             Section section = new Section(upStation, downStation, request.getDistance());
@@ -55,8 +56,8 @@ public class LineService {
         return null;
     }
 
-    private void checkSameEndStations(LineRequest request) {
-        if (request.getUpStationId().equals(request.getDownStationId())) {
+    private void checkSameEndStations(Long upStationId, Long downStationId) {
+        if (upStationId.equals(downStationId)) {
             throw new InvalidSectionRequestException("상행역과 하행역은 같을 수 없습니다.");
         }
     }
@@ -100,6 +101,7 @@ public class LineService {
 
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
+        checkSameEndStations(request.getUpStationId(), request.getDownStationId());
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
         line.addSection(upStation, downStation, request.getDistance());
@@ -112,7 +114,6 @@ public class LineService {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
         line.removeSection(station);
-
         sectionDao.deleteByLineId(lineId);
         sectionDao.insertSections(line);
     }

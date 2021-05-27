@@ -6,36 +6,16 @@ spring:
 ---
 spring:
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:13306/subway?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8
-    username: anne
-    password: annepw
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
   h2:
     console:
       enabled: true
   config:
     activate:
       on-profile: local
-handlebars:
-  suffix: .html
-  enabled: true
-security:
-  jwt:
-    token:
-      secret-key: my_secret_is_secret
-      expire-length: 3600000
-
-# 배포 환경
----
-spring:
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/subway?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8
-    username: anne
-    password: anne
-  config:
-    activate:
-      on-profile: production
 handlebars:
   suffix: .html
   enabled: true
