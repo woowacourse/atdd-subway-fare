@@ -60,7 +60,7 @@ class AuthorizationMemberControllerTest {
     }
 
     @Test
-    @DisplayName("현재 유저 조 - 성공")
+    @DisplayName("현재 유저 조회 - 성공")
     public void findMember() throws Exception {
         //given
         String token = "토큰이얌";

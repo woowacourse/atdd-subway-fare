@@ -35,6 +35,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @AutoConfigureRestDocs
 class LineControllerTest {
+    private static final String ACCESS_TOKEN = "ThisIsAccessToken";
+
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -64,6 +66,7 @@ class LineControllerTest {
         mockMvc.perform(post("/lines")
             .content(objectMapper.writeValueAsString(lineRequest))
             .contentType(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer " + ACCESS_TOKEN)
         )
             .andExpect(status().isCreated())
             .andExpect(header().exists("Location"))
@@ -84,7 +87,9 @@ class LineControllerTest {
 
         given(lineService.findLineResponses()).willReturn(lineResponses);
 
-        mockMvc.perform(get("/lines"))
+        mockMvc.perform(get("/lines")
+            .header("Authorization", "Bearer " + ACCESS_TOKEN)
+        )
             .andExpect(status().isOk())
             .andExpect(jsonPath("$[*].name").value(containsInAnyOrder("신분당선", "2호선")))
             .andExpect(jsonPath("$[*].stations[*].name")
@@ -102,7 +107,9 @@ class LineControllerTest {
 
         given(lineService.findLineResponses()).willReturn(lineResponses);
 
-        mockMvc.perform(get("/lines/all"))
+        mockMvc.perform(get("/lines/all")
+            .header("Authorization", "Bearer " + ACCESS_TOKEN)
+        )
             .andExpect(status().isOk())
             .andExpect(jsonPath("$[*].name").value(containsInAnyOrder("신분당선", "2호선")))
             .andExpect(jsonPath("$[*].stations[*].name")
@@ -118,7 +125,9 @@ class LineControllerTest {
         final LineResponse lineResponse = LineResponse.of(testDataLoader.신분당선());
         Long id = testDataLoader.신분당선().getId();
         given(lineService.findLineResponseById(id)).willReturn(lineResponse);
-        mockMvc.perform(get("/lines/" + id))
+        mockMvc.perform(get("/lines/" + id)
+            .header("Authorization", "Bearer " + ACCESS_TOKEN)
+        )
             .andExpect(status().isOk())
             .andExpect(jsonPath("name").value("신분당선"))
             .andExpect(jsonPath("stations[*].name")
@@ -132,10 +141,10 @@ class LineControllerTest {
     public void updateLines() throws Exception {
         LineUpdateRequest lineUpdateRequest = new LineUpdateRequest("2호선", "bg-red-200", 0);
 
-        mockMvc.perform(
-            put("/lines/1")
+        mockMvc.perform(put("/lines/1")
                 .content(objectMapper.writeValueAsString(lineUpdateRequest))
                 .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + ACCESS_TOKEN)
         )
             .andExpect(status().isOk())
             .andDo(print())
@@ -145,8 +154,8 @@ class LineControllerTest {
     @Test
     @DisplayName("라인 삭제 - 성공")
     public void deleteLine() throws Exception {
-        mockMvc.perform(
-            delete("/lines/1")
+        mockMvc.perform(delete("/lines/1")
+            .header("Authorization", "Bearer " + ACCESS_TOKEN)
         )
             .andExpect(status().isNoContent())
             .andDo(print())
@@ -159,7 +168,9 @@ class LineControllerTest {
         SectionRequest sectionRequest = new SectionRequest(1L, 2L, 5);
         mockMvc.perform(post("/lines/1/sections")
             .content(objectMapper.writeValueAsBytes(sectionRequest))
-            .contentType(MediaType.APPLICATION_JSON))
+            .contentType(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer " + ACCESS_TOKEN)
+        )
             .andExpect(status().isOk())
             .andDo(print())
             .andDo(document("section-create"));
@@ -168,7 +179,9 @@ class LineControllerTest {
     @DisplayName("구간 삭제 - 성공")
     @Test
     public void removeLineStation() throws Exception {
-        mockMvc.perform(delete("/lines/1/sections?stationId=1"))
+        mockMvc.perform(delete("/lines/1/sections?stationId=1")
+            .header("Authorization", "Bearer " + ACCESS_TOKEN)
+        )
             .andExpect(status().isNoContent())
             .andDo(print())
             .andDo(document("section-delete"));

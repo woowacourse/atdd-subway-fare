@@ -32,6 +32,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @AutoConfigureRestDocs
 class StationControllerTest {
+    private static final String ACCESS_TOKEN = "ThisIsAccessToken";
+
     @Autowired
     private MockMvc mockMvc;
     @MockBean
@@ -52,6 +54,7 @@ class StationControllerTest {
         mockMvc.perform(post("/stations")
             .content(objectMapper.writeValueAsString(stationRequest))
             .contentType(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer " + ACCESS_TOKEN)
         )
             .andExpect(status().isCreated())
             .andExpect(header().exists("Location"))
@@ -76,6 +79,7 @@ class StationControllerTest {
             .willReturn(stationResponses);
 
         mockMvc.perform(get("/stations")
+            .header("Authorization", "Bearer " + ACCESS_TOKEN)
         )
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.*").isArray())
@@ -89,6 +93,7 @@ class StationControllerTest {
     @DisplayName("역 삭제 성공")
     public void deleteStation() throws Exception {
         mockMvc.perform(delete("/stations/1")
+            .header("Authorization", "Bearer " + ACCESS_TOKEN)
         )
             .andExpect(status().isNoContent())
             .andDo(print())
