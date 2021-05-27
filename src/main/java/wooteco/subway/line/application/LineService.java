@@ -45,7 +45,7 @@ public class LineService {
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
-                .map(line -> LineResponse.of(line))
+                .map(LineResponse::of)
                 .collect(Collectors.toList());
     }
 
@@ -59,11 +59,13 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        return lineDao.findById(id);
+        return lineDao.findById(id)
+                .orElseThrow(LineNotExistRuntimeException::new);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Line findLine = lineDao.findById(id);
+        Line findLine = lineDao.findById(id)
+                .orElseThrow(LineNotExistRuntimeException::new);
         if (lineUpdateRequest.getColor().equals(findLine.getColor())) {
             throw new NotDifferentLineColorRuntimeException();
         }
@@ -99,5 +101,4 @@ public class LineService {
         sectionDao.deleteByLineId(lineId);
         sectionDao.insertSections(line);
     }
-
 }
