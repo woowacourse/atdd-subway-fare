@@ -9,7 +9,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.auth.ui.dto.TokenRequest;
+import wooteco.subway.auth.ui.dto.TokenResponse;
 import wooteco.subway.line.ui.dto.LineResponse;
+import wooteco.subway.member.ui.dto.MemberRequest;
+import wooteco.subway.member.ui.dto.MemberResponse;
 import wooteco.subway.path.ui.dto.PathResponse;
 import wooteco.subway.station.ui.dto.StationResponse;
 
@@ -24,6 +28,11 @@ import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록�
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
+
+    private static final String PASSWORD = "abcd";
+    private MemberRequest 어린이;
+    private MemberRequest 청소년;
+    private MemberRequest 성인;
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
@@ -42,6 +51,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
+
+        어린이 = new MemberRequest("abc1@abc.abc", PASSWORD, 6);
+        청소년 = new MemberRequest("abc2@abc.abc", "abcd", 13);
+        성인 = new MemberRequest("abc3@abc.abc", "abcd", 19);
+
+        회원_가입되어_있음(어린이);
+        회원_가입되어_있음(청소년);
+        회원_가입되어_있음(성인);
 
         강남역 = 지하철역_등록되어_있음("강남역");
         양재역 = 지하철역_등록되어_있음("양재역");
@@ -86,6 +103,47 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     }
 
+    @DisplayName("로그인 되어 있는 경우 나이에 맞는 적절한 요금을 계산한다.")
+    @Test
+    void calculateFareWithAgePolicy() {
+        // given
+        TokenResponse 어린이_토큰 = 로그인_요청(new TokenRequest(어린이.getEmail(), PASSWORD));
+        TokenResponse 청소년_토큰 = 로그인_요청(new TokenRequest(청소년.getEmail(), PASSWORD));
+        TokenResponse 성인_토큰 = 로그인_요청(new TokenRequest(성인.getEmail(), PASSWORD));
+
+        // when
+        PathResponse 어린이_경로 = 로그인_된_상태로_거리_경로_조회_요청(4L, 1L, 어린이_토큰).as(PathResponse.class);
+        PathResponse 청소년_경로 = 로그인_된_상태로_거리_경로_조회_요청(4L, 1L, 청소년_토큰).as(PathResponse.class);
+        PathResponse 성인_경로 = 로그인_된_상태로_거리_경로_조회_요청(4L, 1L, 성인_토큰).as(PathResponse.class);
+
+        // then
+        assertThat(어린이_경로.getFare()).isEqualTo(1000);
+        assertThat(청소년_경로.getFare()).isEqualTo(1390);
+        assertThat(성인_경로.getFare()).isEqualTo(1650);
+    }
+
+    public static ExtractableResponse<Response> 로그인_된_상태로_거리_경로_조회_요청(long source, long target, TokenResponse tokenResponse) {
+        return RestAssured.given().log().all()
+            .auth().oauth2(tokenResponse.getAccessToken())
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/paths?source={sourceId}&target={targetId}", source, target)
+            .then().log().all()
+            .extract();
+    }
+
+    public static TokenResponse 로그인_요청(TokenRequest tokenRequest) {
+        return RestAssured
+            .given().log().all()
+            .body(tokenRequest)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().post("/login/token")
+            .then().log().all()
+            .extract()
+            .as(TokenResponse.class);
+    }
+
     public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
         return RestAssured
                 .given().log().all()
@@ -93,6 +151,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .when().get("/paths?source={sourceId}&target={targetId}", source, target)
                 .then().log().all()
                 .extract();
+    }
+
+    public void 회원_가입되어_있음(MemberRequest memberRequest) {
+        RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .body(memberRequest)
+            .when().post("/members");
     }
 
     public static void 적절한_경로_응답됨(ExtractableResponse<Response> response, ArrayList<StationResponse> expectedPath) {

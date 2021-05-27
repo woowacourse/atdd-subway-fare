@@ -12,11 +12,11 @@ import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.path.domain.ClassifyingMemberPrincipal;
 
-public class TempPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
+public class ClassifyingMemberPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final AuthService authService;
 
-    public TempPrincipalArgumentResolver(AuthService authService) {
+    public ClassifyingMemberPrincipalArgumentResolver(AuthService authService) {
         this.authService = authService;
     }
 
