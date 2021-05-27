@@ -80,6 +80,13 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
+        if (lineDao.isExistByName(lineUpdateRequest.getName())) {
+            throw new DuplicateNameException("이미 존재하는 노선입니다.");
+        }
+
+        if (lineDao.isExistByColor(lineUpdateRequest.getColor())) {
+            throw new DuplicateColorException("이미 존재하는 노선 색깔입니다.");
+        }
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor(), lineUpdateRequest.getExtraFare()));
     }
 

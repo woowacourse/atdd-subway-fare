@@ -46,6 +46,25 @@ public class LineDaoTest {
                 .isInstanceOf(DuplicateKeyException.class);
     }
 
+    @DisplayName("중복되는 이름을 가지는 노선으로 수정할 시 DuplicateKeyException이 발생한다.")
+    @Test
+    void throw_DuplicateKeyException_When_Modify_DuplicateName() {
+        Line line = lineDao.insert(new Line("신분당선", "bg-red-600", 1200));
+        lineDao.insert(new Line("2호선", "black", 1200));
+
+        assertThatThrownBy(() -> lineDao.update(new Line(line.getId(), "2호선", "red", 1200)))
+                .isInstanceOf(DuplicateKeyException.class);
+    }
+
+    @DisplayName("중복되는 색깔을 가지는 노선으로 수정할 시 DuplicateKeyException이 발생한다.")
+    @Test
+    void throw_DuplicateKeyException_When_Modify_DuplicateColor() {
+        Line 신분당선 = lineDao.insert(new Line("신분당선", "bg-red-600", 1200));
+        lineDao.insert(new Line("2호선", "black", 1200));
+        assertThatThrownBy(() -> lineDao.update(new Line(신분당선.getId(), "신분당선", "black", 1200)))
+                .isInstanceOf(DuplicateKeyException.class);
+    }
+
     @DisplayName("존재하지 않는 지하철 노선을 검색할 시 RuntimeException이 발생한다.")
     @Test
     void throw_NoSuchElementException_When_Find_NonExists() {
