@@ -16,13 +16,14 @@ CREATE TABLE IF NOT EXISTS line
 CREATE TABLE IF NOT EXISTS section
 (
     id BIGINT AUTO_INCREMENT NOT NULL,
-    line_id BIGINT NOT NULL REFERENCES line(id) ON DELETE CASCADE,
+    line_id BIGINT NOT NULL,
     up_station_id BIGINT NOT NULL,
     down_station_id BIGINT NOT NULL,
     distance INT NOT NULL,
     PRIMARY KEY(id),
     FOREIGN KEY (up_station_id) references station(id),
-    FOREIGN KEY (down_station_id) references station(id)
+    FOREIGN KEY (down_station_id) references station(id),
+    FOREIGN KEY (line_id) references line(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS member
