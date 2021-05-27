@@ -1,12 +1,12 @@
 package wooteco.subway.exception;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
 import wooteco.subway.exception.dto.ErrorResponse;
 import wooteco.subway.path.application.InvalidPathException;
 
@@ -39,12 +39,17 @@ public class SubwayControllerAdvice {
     }
 
     @ExceptionHandler(EmptyResultDataAccessException.class)
-    public ResponseEntity<ErrorResponse> handleEmptyResultDataException() {
+    public ResponseEntity<ErrorResponse> handleEmptyResultDataException(EmptyResultDataAccessException e) {
         return ResponseEntity.badRequest().body(new ErrorResponse("요청 필드에 해당하는 정보가 존재하지 않습니다."));
     }
 
     @ExceptionHandler(DuplicateKeyException.class)
     public ResponseEntity<ErrorResponse> handleDuplicateKeyException(DuplicateKeyException e) {
+        return ResponseEntity.badRequest().body(new ErrorResponse(e.getCause().getMessage()));
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateKeyException(DataIntegrityViolationException e) {
         return ResponseEntity.badRequest().body(new ErrorResponse(e.getCause().getMessage()));
     }
 
