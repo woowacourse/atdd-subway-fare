@@ -19,6 +19,7 @@ public class MemberService {
     }
 
     public MemberResponse createMember(MemberRequest request) {
+        findMember(request.getEmail());
         Member member = memberDao.insert(request.toMember());
         return MemberResponse.of(member);
     }

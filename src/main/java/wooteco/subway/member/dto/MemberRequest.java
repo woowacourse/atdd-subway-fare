@@ -18,7 +18,7 @@ public class MemberRequest {
     private String password;
 
     @Min(value = 0, message = "나이는 0세 이상부터 입력할 수 있습니다.")
-    @NotNull
+    @NotNull(message = "나이는 공백이 아닙니다.")
     private Integer age;
 
     public MemberRequest() {
