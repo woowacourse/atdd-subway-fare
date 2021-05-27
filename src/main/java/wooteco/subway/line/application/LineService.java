@@ -29,7 +29,6 @@ public class LineService {
             throw new DuplicateLineException();
         }
 
-
         Line persistLine = lineDao.insert(request.toEntity());
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);
