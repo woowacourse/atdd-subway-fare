@@ -7,8 +7,10 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.ErrorResponse;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.path.dto.PathResponse;
@@ -61,9 +63,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         역삼역 = 지하철역_등록되어_있음("역삼역");
         잠실역 = 지하철역_등록되어_있음("잠실역");
 
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10, 1200);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5);
+        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-pink-600", 강남역, 양재역, 10);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-green-600", 교대역, 강남역, 10, 1200);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-orange-600", 교대역, 양재역, 5);
 
         지하철_구간_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
         지하철_구간_등록되어_있음(신분당선, 판교역, 강남역, 18);
@@ -72,13 +74,41 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_구간_등록되어_있음(이호선, 역삼역, 잠실역, 14);
     }
 
-    @DisplayName("어린이, 청소년이 아닌 사용자의 경우, 두 역의 최단 거리 경로를 조회한다.")
+    @DisplayName("로그인이 안 된 상태에서 두 역의 최단 거리 경로를 조회한다.")
     @Test
     void findPathByDistance() {
         //when
         ExtractableResponse<Response> response = 거리_경로_조회_요청(3L, 2L);
         ExtractableResponse<Response> response2 = 거리_경로_조회_요청(4L, 6L);
         ExtractableResponse<Response> response3 = 거리_경로_조회_요청(3L, 8L);
+
+        //then
+        적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
+        총_거리가_응답됨(response, 5);
+        총_요금이_응답됨(response, 1250);
+
+        적절한_경로_응답됨(response2, Lists.newArrayList(남부터미널역, 양재역, 강남역, 판교역, 정자역));
+        총_거리가_응답됨(response2, 77);
+        총_요금이_응답됨(response2, 2450);
+
+        적절한_경로_응답됨(response3, Lists.newArrayList(교대역, 강남역, 역삼역, 잠실역));
+        총_거리가_응답됨(response3, 46);
+        총_요금이_응답됨(response3, 2050 + 1200);
+    }
+
+
+    @DisplayName("어린이, 청소년이 아닌 사용자의 신분으로, 두 역의 최단 거리 경로를 조회한다.")
+    @Test
+    void findPathByDistanceWhenAdult() {
+        //when
+        String adultEmail = "adult@adult.com";
+        String adultPassword = "adult";
+        int adultAge = 30;
+        회원_등록되어_있음(adultEmail, adultPassword, adultAge);
+        final TokenResponse tokenResponse = 로그인되어_있음(adultEmail, adultPassword);
+        ExtractableResponse<Response> response = 토큰을_포함한_거리_경로_조회_요청(3L, 2L, tokenResponse);
+        ExtractableResponse<Response> response2 = 토큰을_포함한_거리_경로_조회_요청(4L, 6L, tokenResponse);
+        ExtractableResponse<Response> response3 = 토큰을_포함한_거리_경로_조회_요청(3L, 8L, tokenResponse);
 
         //then
         적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
@@ -149,6 +179,52 @@ public class PathAcceptanceTest extends AcceptanceTest {
         총_요금이_응답됨(response3, 1800);
     }
 
+    @DisplayName("출발역과 도착역이 같다면, 예외가 발생한다.")
+    @Test
+    void findPathWhenSourceTargetSame() {
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(2L, 2L);
+
+        //then
+        상행_하행역이_같아_경로_조회에_실패함(response);
+    }
+
+    @DisplayName("출발역과 도착역이 경로로 연결될 수 없다면, 예외가 발생한다")
+    @Test
+    void findPathWhenPathIsNotConnected() {
+        //when
+        StationResponse 서빙고역 = 지하철역_등록되어_있음("서빙고역");;
+        StationResponse 한남역 = 지하철역_등록되어_있음("한남역");;
+        LineResponse 사호선 = 지하철_노선_등록되어_있음("사호선", "bg-blue-600", 서빙고역, 한남역, 10);
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(강남역.getId(), 서빙고역.getId());
+
+        //then
+        경로가_이어지지않아_조회에_실패함(response);
+    }
+
+    @DisplayName("동록되지 않은 역에 대해서는 경로 조회가 불가능하다")
+    @Test
+    void findPathWhenStationIsNotRegistered() {
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(10000L, 10001L);
+
+        //then
+        역을_조회할_수_없어_경로_조회에_실패함(response);
+    }
+
+    @DisplayName("출발역과 도착역의 경로가 10000km가 넘으면, 예외가 발생한다")
+    @Test
+    void findPathOver10000Kilometers() {
+        //when
+        StationResponse 서빙고역 = 지하철역_등록되어_있음("서빙고역");;
+        StationResponse 한남역 = 지하철역_등록되어_있음("한남역");;
+        LineResponse 사호선 = 지하철_노선_등록되어_있음("사호선", "bg-blue-600", 서빙고역, 한남역, 1000000000);
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(서빙고역.getId(), 한남역.getId());
+
+        //then
+        경로가_10000KM_이상이라_조회에_실패함(response);
+    }
+
     public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
         return RestAssured
                 .given().log().all()
@@ -190,5 +266,29 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public static void 총_요금이_응답됨(ExtractableResponse<Response> response, int totalFare) {
         PathResponse pathResponse = response.as(PathResponse.class);
         assertThat(pathResponse.getFare()).isEqualTo(totalFare);
+    }
+
+    public static void 상행_하행역이_같아_경로_조회에_실패함(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        ErrorResponse errorResponse = response.jsonPath().getObject(".", ErrorResponse.class);
+        assertThat(errorResponse.getErrorMessage()).isEqualTo("경로 조회에서 출발역과 도착역은 같을 수 없습니다.");
+    }
+
+    public static void 경로가_이어지지않아_조회에_실패함(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+        ErrorResponse errorResponse = response.jsonPath().getObject(".", ErrorResponse.class);
+        assertThat(errorResponse.getErrorMessage()).isEqualTo("두 역 사이의 경로를 구할 수 없습니다.");
+    }
+
+    public static void 역을_조회할_수_없어_경로_조회에_실패함(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+        ErrorResponse errorResponse = response.jsonPath().getObject(".", ErrorResponse.class);
+        assertThat(errorResponse.getErrorMessage()).isEqualTo("역이 등록되어 있지 않습니다.");
+    }
+    
+    public static void 경로가_10000KM_이상이라_조회에_실패함(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        ErrorResponse errorResponse = response.jsonPath().getObject(".", ErrorResponse.class);
+        assertThat(errorResponse.getErrorMessage()).isEqualTo("요금 계산에 실패했습니다.");
     }
 }
