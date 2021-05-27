@@ -1,0 +1,36 @@
+= Subway Application API Document
+Version 0.0.1-SNAPSHOT
+
+== 회원
+
+=== 가입
+
+==== Request
+
+include::{snippets}/members-post/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/members-post/http-response.adoc[]
+
+==== Request Fields
+
+include::{snippets}/members-post/request-fields.adoc[]
+
+=== 로그인
+
+==== Request
+
+include::{snippets}/login/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/login/http-response.adoc[]
+
+==== Request Fields
+
+include::{snippets}/login/request-fields.adoc[]
+
+==== Response Fields
+
+include::{snippets}/login/response-fields.adoc[]
