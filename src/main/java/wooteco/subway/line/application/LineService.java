@@ -85,21 +85,11 @@ public class LineService {
                 .filter(line -> line.contain(station))
                 .collect(Collectors.toList());
         transferLine.remove(persistLine);
+
         return transferLine.stream()
                 .map(TransferLinesResponse::of)
                 .collect(Collectors.toList());
     }
-
-//    private List<LineWithTransferLineResponse> createTransferLineResponse(Line persistLine, List<Station> stationInLine, List<Line> lines) {
-//        List<Line> transferLine = stationInLine.stream()
-//                .flatMap(station -> lines.stream()
-//                        .filter(line -> line.contain(station)))
-//                .collect(Collectors.toList());
-//        transferLine.remove(persistLine);
-//        return transferLine.stream()
-//                .map(LineWithTransferLineResponse::of)
-//                .collect(Collectors.toList());
-//    }
 
     public Line findLineById(Long id) {
         return lineDao.findById(id);
@@ -128,6 +118,7 @@ public class LineService {
 
     public void deleteLineById(Long id) {
         lineDao.deleteById(id);
+        sectionDao.deleteByLineId(id);
     }
 
     public SectionResponse addLineStation(Long lineId, SectionRequest request) {
