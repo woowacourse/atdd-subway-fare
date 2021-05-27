@@ -195,5 +195,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
         적절한_경로_응답됨(response, Lists.newArrayList(강남역, 양재역, 잠실역, 석촌역));
         총_요금이_응답됨(response,  3450 - ((3450 - 350) * 0.5));
     }
+
+    @Test
+    @DisplayName("로그인이 되어 있는 경우 경로 조회 - 유아")
+    public void calculateFareByAgeToddler() {
+        //given
+        회원_등록되어_있음("toddler@toddler", "toddler", 5);
+        TokenResponse tokenResponse = 로그인되어_있음("toddler@toddler", "toddler");
+
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(강남역.getId(), 석촌역.getId(), tokenResponse);
+
+        //then
+        적절한_경로_응답됨(response, Lists.newArrayList(강남역, 양재역, 잠실역, 석촌역));
+        총_요금이_응답됨(response,  0);
+    }
 }
 
