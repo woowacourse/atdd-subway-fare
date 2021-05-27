@@ -14,20 +14,12 @@ public class Line {
     public Line() {
     }
 
-    public Line(String name, String color) {
-        this(null, name, color, 0, new Sections());
-    }
-
     public Line(String name, String color, int extraFare) {
         this(null, name, color, extraFare, new Sections());
     }
 
     public Line(Long id, String name, String color) {
         this(id, name, color, 0, new Sections());
-    }
-
-    public Line(Long id, String name, String color, Sections sections) {
-        this(id, name, color, 0, sections);
     }
 
     public Line(Long id, String name, String color, int extraFare) {
