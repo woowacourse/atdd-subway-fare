@@ -3,6 +3,7 @@ package wooteco.subway.member.dto;
 import wooteco.subway.member.domain.Member;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 public class MemberRequest {
@@ -13,6 +14,7 @@ public class MemberRequest {
     @NotBlank(message = "비밀번호는 빈칸일 수 없습니다.")
     private String password;
 
+    @NotNull(message = "나이는 공백일 수 없습니다.")
     @Positive(message = "나이는 음수일 수 없습니다.")
     private Integer age;
 
@@ -39,5 +41,14 @@ public class MemberRequest {
 
     public Member toMember() {
         return new Member(email, password, age);
+    }
+
+    @Override
+    public String toString() {
+        return "MemberRequest{" +
+                "email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", age=" + age +
+                '}';
     }
 }
