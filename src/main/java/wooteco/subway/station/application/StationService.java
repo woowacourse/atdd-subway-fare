@@ -1,6 +1,7 @@
 package wooteco.subway.station.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.deletion.StationCannotDeleteException;
 import wooteco.subway.exception.duplication.StationNameDuplicatedException;
 import wooteco.subway.exception.notfound.StationNotFoundException;
@@ -12,6 +13,7 @@ import wooteco.subway.station.dto.StationResponse;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class StationService {
 
     private final StationDao stationDao;
@@ -20,13 +22,14 @@ public class StationService {
         this.stationDao = stationDao;
     }
 
+    @Transactional
     public StationResponse saveStation(StationRequest stationRequest) {
-        validateDuplicatedName(stationRequest.getName());
+        validateNameDuplication(stationRequest.getName());
         Station station = stationDao.insert(stationRequest.toStation());
         return StationResponse.of(station);
     }
 
-    private void validateDuplicatedName(String name) {
+    private void validateNameDuplication(String name) {
         stationDao.findByName(name)
                 .ifPresent(station -> { throw new StationNameDuplicatedException(); });
     }
@@ -41,6 +44,7 @@ public class StationService {
         return StationResponse.listOf(stations);
     }
 
+    @Transactional
     public void deleteStationById(Long id) {
         findStationById(id);
         validateDeletableStatus(id);
@@ -48,14 +52,15 @@ public class StationService {
     }
 
     private void validateDeletableStatus(Long id) {
-        if (stationDao.countRegisteredStations(id) > 0) {
+        if (stationDao.calculateRegisteredCountsById(id) != 0) {
             throw new StationCannotDeleteException();
         }
     }
 
+    @Transactional
     public void updateStationById(Long id, StationRequest stationRequest) {
         findStationById(id);
-        validateDuplicatedName(stationRequest.getName());
+        validateNameDuplication(stationRequest.getName());
         stationDao.update(stationRequest.getName(), id);
     }
 }
