@@ -12,6 +12,7 @@ import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.exception.ExceptionResponse;
 import wooteco.subway.line.dto.LineResponse;
+import wooteco.subway.line.dto.LineWithTransferLinesAndStationsResponse;
 import wooteco.subway.line.dto.SectionRequest;
 import wooteco.subway.line.dto.SectionResponse;
 import wooteco.subway.station.dto.StationResponse;
@@ -198,16 +199,16 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 지하철_노선에_지하철역_순서_정렬됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
-    LineResponse line = response.as(LineResponse.class);
-    List<Long> stationIds = line.getStations().stream()
+        LineWithTransferLinesAndStationsResponse line = response.as(LineWithTransferLinesAndStationsResponse.class);
+        List<Long> stationIds = line.getStations().stream()
                 .map(it -> it.getId())
                 .collect(Collectors.toList());
 
-    List<Long> expectedStationIds = expectedStations.stream()
+        List<Long> expectedStationIds = expectedStations.stream()
                 .map(it -> it.getId())
                 .collect(Collectors.toList());
 
-    assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
+        assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
 }
 
     public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(TokenResponse token, LineResponse line, StationResponse station) {

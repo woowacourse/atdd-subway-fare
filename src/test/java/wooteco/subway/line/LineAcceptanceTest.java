@@ -341,9 +341,17 @@ public class LineAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 지하철_노선_목록_포함됨(ExtractableResponse<Response> response, List<LineResponse> createdResponses) {
-        List<LineResponse> resultLineIds = response.jsonPath().getList(".", LineResponse.class);
+        List<LineWithTransferLinesAndStationsResponse> resultLines = response.jsonPath().getList(".", LineWithTransferLinesAndStationsResponse.class);
 
-        assertThat(resultLineIds).usingRecursiveComparison().isEqualTo(createdResponses);
+        List<Long> resultLineIds = resultLines.stream()
+                .map(LineWithTransferLinesAndStationsResponse::getId)
+                .collect(Collectors.toList());
+
+        List<Long> createdIds = createdResponses.stream().map(LineResponse::getId).collect(Collectors.toList());
+
+        assertThat(resultLineIds)
+                .usingRecursiveComparison()
+                .isEqualTo(createdIds);
     }
 
     public static void 지하철_노선_수정됨(ExtractableResponse<Response> response) {
