@@ -1,8 +1,21 @@
 package wooteco.subway.line;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
+import static wooteco.subway.auth.AuthAcceptanceTest.회원_등록되어_있음;
+import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
+import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_조회_요청;
+import static wooteco.subway.member.MemberAcceptanceTest.AGE;
+import static wooteco.subway.member.MemberAcceptanceTest.EMAIL;
+import static wooteco.subway.member.MemberAcceptanceTest.PASSWORD;
+import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,22 +29,9 @@ import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
 import wooteco.subway.station.dto.StationResponse;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
-import static wooteco.subway.auth.AuthAcceptanceTest.회원_등록되어_있음;
-import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
-import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_조회_요청;
-import static wooteco.subway.member.MemberAcceptanceTest.AGE;
-import static wooteco.subway.member.MemberAcceptanceTest.EMAIL;
-import static wooteco.subway.member.MemberAcceptanceTest.PASSWORD;
-import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
-
 @DisplayName("지하철 구간 관련 기능")
 public class SectionAcceptanceTest extends AcceptanceTest {
+
     private LineResponse 신분당선;
     private StationResponse 강남역;
     private StationResponse 양재역;
@@ -71,6 +71,13 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_구간_생성_요청(신분당선, 강남역, 양재역, 11, tokenResponse);
 
         // then
+        지하철_구간_등록_실패됨(response);
+    }
+
+    @DisplayName("구간은 서로 이어져야 한다.")
+    @Test
+    void addLineSectionWithDisconnectException() {
+        ExtractableResponse<Response> response = 지하철_구간_생성_요청(신분당선, 양재역, 정자역, 11, tokenResponse);
         지하철_구간_등록_실패됨(response);
     }
 
@@ -151,24 +158,27 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_제외_실패됨(removeResponse);
     }
 
-    public static void 지하철_구간_등록되어_있음(LineResponse lineResponse, StationResponse upStation, StationResponse downStation, int distance, TokenResponse tokenResponse) {
+    public static void 지하철_구간_등록되어_있음(LineResponse lineResponse, StationResponse upStation, StationResponse downStation,
+        int distance, TokenResponse tokenResponse) {
         지하철_구간_생성_요청(lineResponse, upStation, downStation, distance, tokenResponse);
     }
 
-    public static ExtractableResponse<Response> 지하철_구간_생성_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance, TokenResponse tokenResponse) {
+    public static ExtractableResponse<Response> 지하철_구간_생성_요청(LineResponse line, StationResponse upStation,
+        StationResponse downStation, int distance, TokenResponse tokenResponse) {
         SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
 
         return RestAssured
-                .given().log().all()
-                .auth().oauth2(tokenResponse.getAccessToken())
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(sectionRequest)
-                .when().post("/lines/{lineId}/sections", line.getId())
-                .then().log().all()
-                .extract();
+            .given().log().all()
+            .auth().oauth2(tokenResponse.getAccessToken())
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(sectionRequest)
+            .when().post("/lines/{lineId}/sections", line.getId())
+            .then().log().all()
+            .extract();
     }
 
-    public static ExtractableResponse<Response> 지하철_구간_생성_요청(LineResponse line, SectionRequest sectionRequest, TokenResponse tokenResponse) {
+    public static ExtractableResponse<Response> 지하철_구간_생성_요청(LineResponse line, SectionRequest sectionRequest,
+        TokenResponse tokenResponse) {
 
         return RestAssured
             .given().log().all()
@@ -183,36 +193,39 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     public static void 지하철_노선에_지하철역_순서_정렬됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
         LineResponse line = response.as(LineResponse.class);
         List<Long> stationIds = line.getStations().stream()
-                .map(it -> it.getId())
-                .collect(Collectors.toList());
+            .map(it -> it.getId())
+            .collect(Collectors.toList());
 
         List<Long> expectedStationIds = expectedStations.stream()
-                .map(it -> it.getId())
-                .collect(Collectors.toList());
+            .map(it -> it.getId())
+            .collect(Collectors.toList());
 
         assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
     }
 
-    public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(LineResponse line, StationResponse station, TokenResponse tokenResponse) {
+    public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(LineResponse line, StationResponse station,
+        TokenResponse tokenResponse) {
         return RestAssured
-                .given().log().all()
-                .auth().oauth2(tokenResponse.getAccessToken())
-                .when().delete("/lines/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
-                .then().log().all()
-                .extract();
+            .given().log().all()
+            .auth().oauth2(tokenResponse.getAccessToken())
+            .when().delete("/lines/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
+            .then().log().all()
+            .extract();
     }
 
     public static void 지하철_구간_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private void 지하철_구간_생성됨(ExtractableResponse<Response> result, LineResponse lineResponse, List<StationResponse> stationResponses) {
+    private void 지하철_구간_생성됨(ExtractableResponse<Response> result, LineResponse lineResponse,
+        List<StationResponse> stationResponses) {
         assertThat(result.statusCode()).isEqualTo(HttpStatus.OK.value());
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(lineResponse);
         지하철_노선에_지하철역_순서_정렬됨(response, stationResponses);
     }
 
-    public static void 지하철_노선에_지하철역_제외됨(ExtractableResponse<Response> result, LineResponse lineResponse, List<StationResponse> stationResponses) {
+    public static void 지하철_노선에_지하철역_제외됨(ExtractableResponse<Response> result, LineResponse lineResponse,
+        List<StationResponse> stationResponses) {
         assertThat(result.statusCode()).isEqualTo(HttpStatus.OK.value());
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(lineResponse);
         지하철_노선에_지하철역_순서_정렬됨(response, stationResponses);

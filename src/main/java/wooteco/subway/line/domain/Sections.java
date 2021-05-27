@@ -51,7 +51,7 @@ public class Sections {
     private void checkExistedAny(Section section) {
         List<Station> stations = getStations();
         if (!stations.contains(section.getUpStation()) && !stations.contains(section.getDownStation())) {
-            throw new InvalidInputException("노선에 등록하려는 구간의 역들이 포함되어있지 않습니다.");
+            throw new InvalidInputException("구간은 서로 연결되어야 합니다. (ex. 강남역-역삼역, 역삼역-잠실새내역)");
         }
     }
 
