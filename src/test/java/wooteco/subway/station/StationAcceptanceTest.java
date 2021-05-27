@@ -59,7 +59,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void createStationWithSingleCharacterName() {
         // when
-        ExtractableResponse<Response> response = 지하철역_생성_요청("ㅠ");
+        ExtractableResponse<Response> response = 지하철역_생성_요청("1");
 
         // then
         유효하지_않은_이름의_지하철역_생성_실패됨(response);
