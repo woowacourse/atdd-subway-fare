@@ -30,7 +30,7 @@ CURRENT_PID=$(pgrep -f ${PROJECT_NAME}[-A-z0-9.]*.jar$) # 실행시켜져있는 
 if [ -z "$CURRENT_PID" ]; then # -z 플래그는 null인것을 체크함, PID가 null인 경우 if절 안으로 들어감
     echo "> 현재 구동 중인 애플리케이션이 없으므로 종료하지 않습니다."
 else
-    echo "> 현재 구ㅈ동중인 애플리케이션 종료(pid : $CURRENT_PID)"
+    echo "> 현재 구동중인 애플리케이션 종료(pid : $CURRENT_PID)"
     echo "> kill -15 $CURRENT_PID"
     kill -15 $CURRENT_PID
     sleep 5
