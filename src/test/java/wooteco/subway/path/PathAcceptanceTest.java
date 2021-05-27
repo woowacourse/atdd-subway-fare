@@ -78,7 +78,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findPathByDistance() {
         //when
-        ExtractableResponse<Response> response = 거리_경로_조회_요청(교대역.getId(), 양재역.getId());
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(교대역.getId(), 양재역.getId(), tokenResponse);
 
         //then
         적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
@@ -104,7 +104,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_구간_등록되어_있음(우아한테크코스선, 에어포츈바다우기검프사랑해역, 우린모두취업할거야역, distance, tokenResponse);
 
         //when
-        ExtractableResponse<Response> response = 거리_경로_조회_요청(에어포츈바다우기검프사랑해역.getId(), 우린모두취업할거야역.getId());
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(에어포츈바다우기검프사랑해역.getId(), 우린모두취업할거야역.getId(), tokenResponse);
 
         //then
         적절한_경로_응답됨(response, Lists.newArrayList(에어포츈바다우기검프사랑해역, 우린모두취업할거야역));
@@ -120,12 +120,50 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_구간_등록되어_있음(우아한테크코스선, 에어포츈바다우기검프사랑해역, 우린모두취업할거야역, 13, tokenResponse);
 
         //when
-        ExtractableResponse<Response> response = 거리_경로_조회_요청(강남역.getId(), 리뷰잘부탁해요역.getId());
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(강남역.getId(), 리뷰잘부탁해요역.getId(), tokenResponse);
 
         //then
         적절한_경로_응답됨(response, Lists.newArrayList(강남역, 양재역, 리뷰잘부탁해요역));
         총_거리가_응답됨(response, 13);
         총_요금이_응답됨(response, 3350);
+    }
+
+    @DisplayName("청소년 (13세 이상 ~ 19세 미만)인 경우 20% 할인된 금액이 적용된다. ")
+    @Test
+    void findFareByDistanceWithLogin1() {
+        // given
+        double discountRate = 0.8;
+        회원_등록되어_있음("청소년포츈@naver.com","오랑해요포츈", 13);
+        TokenResponse tokenResponse = 로그인되어_있음("청소년포츈@naver.com", "오랑해요포츈");
+        LineResponse 배달의민족선 = 지하철_노선_등록되어_있음("배달의민족선", "bg-red-800", 양재역, 리뷰잘부탁해요역, 3, 2000, tokenResponse);
+        지하철_구간_등록되어_있음(우아한테크코스선, 에어포츈바다우기검프사랑해역, 우린모두취업할거야역, 13, tokenResponse);
+
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(강남역.getId(), 리뷰잘부탁해요역.getId(), tokenResponse);
+
+        //then
+        적절한_경로_응답됨(response, Lists.newArrayList(강남역, 양재역, 리뷰잘부탁해요역));
+        총_거리가_응답됨(response, 13);
+        총_요금이_응답됨(response, (int) ((3350 - 350) * discountRate));
+    }
+
+    @DisplayName("청소년 (6세 이상 ~ 13세 미만)인 경우 50% 할인된 금액이 적용된다. ")
+    @Test
+    void findFareByDistanceWithLogin2() {
+        // given
+        double discountRate = 0.5;
+        회원_등록되어_있음("아가검프@naver.com","오랑해요포츈", 6);
+        TokenResponse tokenResponse = 로그인되어_있음("아가검프@naver.com", "오랑해요포츈");
+        LineResponse 배달의민족선 = 지하철_노선_등록되어_있음("배달의민족선", "bg-red-800", 양재역, 리뷰잘부탁해요역, 3, 2000, tokenResponse);
+        지하철_구간_등록되어_있음(우아한테크코스선, 에어포츈바다우기검프사랑해역, 우린모두취업할거야역, 13, tokenResponse);
+
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(강남역.getId(), 리뷰잘부탁해요역.getId(), tokenResponse);
+
+        //then
+        적절한_경로_응답됨(response, Lists.newArrayList(강남역, 양재역, 리뷰잘부탁해요역));
+        총_거리가_응답됨(response, 13);
+        총_요금이_응답됨(response, (int) ((3350 - 350) * discountRate));
     }
 
     @Test
@@ -134,7 +172,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         int expectedTotalFare = 21_350;
 
         //when
-        ExtractableResponse<Response> response = 거리_경로_조회_요청(우린모두취업할거야역.getId(), 리뷰잘부탁해요역.getId());
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(우린모두취업할거야역.getId(), 리뷰잘부탁해요역.getId(), tokenResponse);
 
         //then
         적절한_경로_응답됨(response, Lists.newArrayList(우린모두취업할거야역, 리뷰잘부탁해요역));
@@ -146,7 +184,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void samePositionException() {
         //when
-        ExtractableResponse<Response> response = 거리_경로_조회_요청(교대역.getId(), 교대역.getId());
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(교대역.getId(), 교대역.getId(), tokenResponse);
 
         //then
         거리_경로_조회_요청_실패(response);
@@ -156,7 +194,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void noPathException() {
         //when
-        ExtractableResponse<Response> response = 거리_경로_조회_요청(강남역.getId(), 우린모두취업할거야역.getId());
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(강남역.getId(), 우린모두취업할거야역.getId(), tokenResponse);
 
         //then
         거리_경로_조회_요청_실패(response);
@@ -166,15 +204,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void noInLineStationException() {
         //when
-        ExtractableResponse<Response> response = 거리_경로_조회_요청(강남역.getId(), 에어포츈바다우기검프사랑해역.getId());
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(강남역.getId(), 에어포츈바다우기검프사랑해역.getId(), tokenResponse);
 
         //then
         거리_경로_조회_요청_실패(response);
     }
 
-    public static ExtractableResponse<Response> 거리_경로_조회_요청(long departure, long arrival) {
+    public static ExtractableResponse<Response> 거리_경로_조회_요청(long departure, long arrival, TokenResponse tokenResponse) {
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/paths?departure={departureId}&arrival={arrivalId}", departure, arrival)
                 .then().log().all()
