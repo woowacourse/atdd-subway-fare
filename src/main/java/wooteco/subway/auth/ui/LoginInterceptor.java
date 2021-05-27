@@ -4,6 +4,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
+import wooteco.subway.exception.auth.LoginRequiredException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -35,6 +36,9 @@ public class LoginInterceptor implements HandlerInterceptor {
     }
 
     private boolean checkIfAnonymousPermissible(HttpServletRequest request) {
-        return "/paths".equals(request.getRequestURI());
+        if ("/paths".equals(request.getRequestURI())) {
+            return true;
+        }
+        throw new LoginRequiredException();
     }
 }
