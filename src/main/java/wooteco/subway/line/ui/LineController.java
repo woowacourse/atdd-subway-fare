@@ -3,6 +3,7 @@ package wooteco.subway.line.ui;
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
+import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,7 +34,7 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity createLine(@RequestBody LineRequest lineRequest) {
+    public ResponseEntity createLine(@RequestBody @Valid LineRequest lineRequest) {
         LineResponse line = lineService.saveLine(lineRequest);
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
@@ -51,38 +52,33 @@ public class LineController {
     @PutMapping("/{id}")
     public ResponseEntity<LineResponse> updateLine(
         @PathVariable Long id,
-        @RequestBody LineUpdateRequest lineUpdateRequest
+        @RequestBody @Valid LineUpdateRequest lineUpdateRequest
     ) {
         LineResponse lineResponse = lineService.updateLine(id, lineUpdateRequest);
         return ResponseEntity.ok(lineResponse);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteLine(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
         lineService.deleteLineById(id);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{lineId}/sections")
-    public ResponseEntity addSection(
+    public ResponseEntity<Void> addSection(
         @PathVariable Long lineId,
-        @RequestBody SectionRequest sectionRequest
+        @RequestBody @Valid SectionRequest sectionRequest
     ) {
         lineService.addSection(lineId, sectionRequest);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{lineId}/sections")
-    public ResponseEntity removeSection(
+    public ResponseEntity<Void> removeSection(
         @PathVariable Long lineId,
         @RequestParam Long stationId
     ) {
         lineService.deleteSection(lineId, stationId);
         return ResponseEntity.noContent().build();
-    }
-
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity handleSQLException() {
-        return ResponseEntity.badRequest().build();
     }
 }

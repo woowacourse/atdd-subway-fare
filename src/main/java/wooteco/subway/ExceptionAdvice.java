@@ -2,6 +2,8 @@ package wooteco.subway;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import wooteco.subway.exception.AuthorizationException;
@@ -45,5 +47,10 @@ public class ExceptionAdvice {
         CannotRemoveStationException e
     ) {
         return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<BindingResult> handleValid(MethodArgumentNotValidException e) {
+        return ResponseEntity.badRequest().body(e.getBindingResult());
     }
 }

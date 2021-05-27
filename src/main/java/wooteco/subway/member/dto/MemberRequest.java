@@ -1,10 +1,19 @@
 package wooteco.subway.member.dto;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import wooteco.subway.member.domain.Member;
+import wooteco.subway.validator.SubwayPassword;
 
 public class MemberRequest {
+
+    @Email
     private String email;
+    @SubwayPassword
     private String password;
+    @Positive
+    @NotNull
     private Integer age;
 
     public MemberRequest() {

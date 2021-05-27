@@ -3,6 +3,7 @@ package wooteco.subway.station.ui;
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
+import javax.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -32,7 +33,7 @@ public class StationController {
 
     @PostMapping("")
     public ResponseEntity<StationResponse> createStation(
-        @RequestBody StationRequest stationRequest) {
+        @RequestBody @Valid StationRequest stationRequest) {
         StationResponse station = stationService.saveStation(stationRequest);
         return ResponseEntity.created(URI.create("/stations/" + station.getId())).body(station);
     }
@@ -44,7 +45,7 @@ public class StationController {
 
     @PutMapping("/{id}")
     public ResponseEntity<StationResponse> updateStation(@PathVariable Long id,
-        @RequestBody StationRequest stationRequest) {
+        @RequestBody @Valid StationRequest stationRequest) {
         StationResponse station = stationService.updateStation(id, stationRequest);
         return ResponseEntity.ok(station);
     }
