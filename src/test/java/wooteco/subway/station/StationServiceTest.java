@@ -14,7 +14,6 @@ import java.util.NoSuchElementException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
-@DirtiesContext
 public class StationServiceTest {
     @Autowired
     private StationService stationService;
@@ -31,7 +30,7 @@ public class StationServiceTest {
     @DisplayName("존재하지 않는 지하철 역을 검색할 시 NoSuchElementException이 발생한다.")
     @Test
     void throw_NoSuchElementException_When_Find_NonExists() {
-        assertThatThrownBy(() -> stationService.findStationById(2L))
+        assertThatThrownBy(() -> stationService.findStationById(3L))
                 .isInstanceOf(NoSuchElementException.class)
                 .hasMessage("존재하지 않는 역입니다.");
     }
@@ -39,7 +38,7 @@ public class StationServiceTest {
     @DisplayName("존재하지 않는 지하철 역을 삭제할 시 NoSuchElementException이 발생한다.")
     @Test
     void throw_NoSuchElementException_When_Delete_NonExists() {
-        assertThatThrownBy(() -> stationService.deleteStationById(2L))
+        assertThatThrownBy(() -> stationService.deleteStationById(3L))
                 .isInstanceOf(NoSuchElementException.class)
                 .hasMessage("존재하지 않는 역입니다.");
     }
