@@ -5,8 +5,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import wooteco.subway.auth.domain.AuthenticationPrincipal;
-import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.auth.domain.AgeAuthenticationPrincipal;
 import wooteco.subway.path.application.PathService;
 import wooteco.subway.path.dto.PathResponse;
 
@@ -20,17 +19,9 @@ public class PathController {
     }
 
     @GetMapping("/paths")
-    public ResponseEntity<PathResponse> findPath(@AuthenticationPrincipal LoginMember loginMember,
+    public ResponseEntity<PathResponse> findPath(@AgeAuthenticationPrincipal Integer age,
                                                  @RequestParam Long source, @RequestParam Long target) {
-        LoginMember convertedLoginMember = unLoginMemberWrapper(loginMember);
-        PathResponse pathResponse = pathService.findPath(convertedLoginMember, source, target);
+        PathResponse pathResponse = pathService.findPath(age, source, target);
         return ResponseEntity.ok(pathResponse);
-    }
-
-    private LoginMember unLoginMemberWrapper(@AuthenticationPrincipal LoginMember loginMember) {
-        if (loginMember.getId() == null) {
-            return new LoginMember(null, null, -1);
-        }
-        return loginMember;
     }
 }

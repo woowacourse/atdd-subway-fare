@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
-import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.path.domain.SubwayPathFare;
 import wooteco.subway.path.dto.PathResponse;
@@ -27,7 +26,7 @@ public class PathService {
         this.pathFinder = pathFinder;
     }
 
-    public PathResponse findPath(LoginMember loginMember, Long source, Long target) {
+    public PathResponse findPath(Integer age, Long source, Long target) {
         try {
             List<Line> lines = lineService.findLines();
             Station sourceStation = stationService.findStationById(source);
@@ -35,7 +34,7 @@ public class PathService {
             SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
             int distance = subwayPath.calculateDistance();
             int lineFare = subwayPath.getMaxLineFare();
-            SubwayPathFare subwayPathFare = new SubwayPathFare(loginMember.getAge(), distance, lineFare);
+            SubwayPathFare subwayPathFare = new SubwayPathFare(age, distance, lineFare);
             return PathResponseAssembler.assemble(subwayPath, subwayPathFare);
         } catch (Exception e) {
             throw new InvalidPathException();

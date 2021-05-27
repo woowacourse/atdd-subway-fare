@@ -20,7 +20,7 @@ public class SectionResponse {
         this.distance = distance;
     }
 
-    public static SectionResponse from(Section section){
+    public static SectionResponse from(Section section) {
         return new SectionResponse(StationResponse.from(section.getUpStation()),
                 StationResponse.from(section.getDownStation()),
                 section.getDistance());

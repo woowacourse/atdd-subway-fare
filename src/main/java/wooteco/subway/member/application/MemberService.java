@@ -16,8 +16,8 @@ public class MemberService {
     }
 
     public MemberResponse createMember(MemberRequest request) {
-        if(memberDao.findByEmail(request.getEmail()).isPresent()){
-            throw new DuplicateEmailException("이미 가입된 이메일 입니다.");
+        if (memberDao.findByEmail(request.getEmail()).isPresent()) {
+            throw new DuplicateEmailException();
         }
         Member member = memberDao.insert(request.toMember());
         return MemberResponse.of(member);
@@ -40,6 +40,6 @@ public class MemberService {
 
     private Member findMemberByEmail(LoginMember loginMember) {
         return memberDao.findByEmail(loginMember.getEmail())
-                .orElseThrow(() -> new EmailNotFoundException("존재하지 않는 이메일 입니다."));
+                .orElseThrow(EmailNotFoundException::new);
     }
 }

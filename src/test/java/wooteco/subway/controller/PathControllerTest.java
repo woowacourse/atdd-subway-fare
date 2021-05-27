@@ -45,7 +45,7 @@ public class PathControllerTest extends ControllerTest {
                 30, 2800);
         LoginMember loginMember = new LoginMember(1L, "email@eamil.com", 12);
         given(authService.findMemberByToken("secrettokentoken")).willReturn(loginMember);
-        given(pathService.findPath(eq(loginMember), eq(1L), eq(2L))).willReturn(pathResponse);
+        given(pathService.findPath(eq(loginMember.getAge()), eq(1L), eq(2L))).willReturn(pathResponse);
 
         mockMvc.perform(get("/paths?source=" + source + "&target=" + target)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer secrettokentoken"))
