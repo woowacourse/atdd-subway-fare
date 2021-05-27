@@ -35,7 +35,7 @@ class SubwayPathTest {
         SubwayPath subwayPath = new SubwayPath(sectionEdges, Collections.emptyList());
 
         // when
-        int fare = subwayPath.calculateFare();
+        int fare = subwayPath.calculateFare(19);
 
         // then
         assertThat(fare).isEqualTo(2150 + 1500);
@@ -59,7 +59,7 @@ class SubwayPathTest {
         SubwayPath subwayPath = new SubwayPath(sectionEdges, Collections.emptyList());
 
         // when
-        int fare = subwayPath.calculateFare();
+        int fare = subwayPath.calculateFare(19);
 
         // then
         assertThat(fare).isEqualTo(2050 + 1500);
@@ -79,7 +79,7 @@ class SubwayPathTest {
         SubwayPath subwayPath = new SubwayPath(sectionEdges, Collections.emptyList());
 
         // when
-        int fare = subwayPath.calculateFare();
+        int fare = subwayPath.calculateFare(19);
 
         // then
         assertThat(fare).isEqualTo(1250 + 1500);
@@ -107,7 +107,7 @@ class SubwayPathTest {
         SubwayPath subwayPath = new SubwayPath(sectionEdges, Collections.emptyList());
 
         // when
-        int fare = subwayPath.calculateFare();
+        int fare = subwayPath.calculateFare(19);
 
         // then
         assertThat(fare).isEqualTo(4150);

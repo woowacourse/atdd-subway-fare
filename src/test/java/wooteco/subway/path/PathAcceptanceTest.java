@@ -7,6 +7,8 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
@@ -61,32 +63,47 @@ public class PathAcceptanceTest extends AcceptanceTest {
         우린모두취업할거야역 = 지하철역_등록되어_있음("우린모두취업할거야역", tokenResponse);
         리뷰잘부탁해요역 = 지하철역_등록되어_있음("리뷰잘부탁해요역", tokenResponse);
 
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-400", 강남역, 양재역, 10, tokenResponse);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-500", 교대역, 강남역, 10, tokenResponse);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5, tokenResponse);
-        우아한테크코스선 = 지하철_노선_등록되어_있음("우아한테크코스선", "bg-red-700", 우린모두취업할거야역, 리뷰잘부탁해요역, 5, tokenResponse);
+        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-400", 강남역, 양재역, 10, 100, tokenResponse);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-500", 교대역, 강남역, 10, 200, tokenResponse);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5, 300, tokenResponse);
+        우아한테크코스선 = 지하철_노선_등록되어_있음("우아한테크코스선", "bg-red-700", 우린모두취업할거야역, 리뷰잘부탁해요역, 5, 400, tokenResponse);
 
 
         지하철_구간_등록되어_있음(삼호선, 교대역, 남부터미널역, 3, tokenResponse);
     }
 
-    @DisplayName("두 역의 최단 거리 경로를 조회한다.")
+    @DisplayName("두 역의 최단 거리 경로를 조회한다. - 비로그인")
     @Test
     void findPathByDistance() {
         //when
-        ExtractableResponse<Response> response = 거리_경로_조회_요청(3L, 2L);
+        ExtractableResponse<Response> response = 거리_경로_조회_요청_비로그인(교대역.getId(), 양재역.getId());
 
         //then
         적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
         총_거리가_응답됨(response, 5);
-        총_요금이_응답됨(response, 1250);
+        총_요금이_응답됨(response, 1550);
+    }
+
+    @DisplayName("두 역의 최단 거리 경로를 조회한다. - 로그인")
+    @ParameterizedTest
+    @CsvSource(value = {"'1@email.com', '1234', 13, 960", "'2@email.com', '1234', 12, 600", "'3@email.com', '1234', 19, 1550"})
+    void findPathByDistanceLogin(String email, String password, int age, int fare) {
+        //when
+        회원_등록되어_있음(email, password, age);
+        TokenResponse tokenResponse = 로그인되어_있음(email, password);
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(3L, 2L, tokenResponse);
+
+        //then
+        적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
+        총_거리가_응답됨(response, 5);
+        총_요금이_응답됨(response, fare);
     }
 
     @DisplayName("departure와 arrival가 같은경우 예외가 발생한다.")
     @Test
     void samePositionException() {
         //when
-        ExtractableResponse<Response> response = 거리_경로_조회_요청(교대역.getId(), 교대역.getId());
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(교대역.getId(), 교대역.getId(), tokenResponse);
 
         //then
         거리_경로_조회_요청_실패(response);
@@ -96,7 +113,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void noPathException() {
         //when
-        ExtractableResponse<Response> response = 거리_경로_조회_요청(강남역.getId(), 우린모두취업할거야역.getId());
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(강남역.getId(), 우린모두취업할거야역.getId(), tokenResponse);
 
         //then
         거리_경로_조회_요청_실패(response);
@@ -106,15 +123,25 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void noInLineStationException() {
         //when
-        ExtractableResponse<Response> response = 거리_경로_조회_요청(강남역.getId(), 에어포츈바다우기검프사랑해역.getId());
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(강남역.getId(), 에어포츈바다우기검프사랑해역.getId(), tokenResponse);
 
         //then
         거리_경로_조회_요청_실패(response);
     }
 
-    public static ExtractableResponse<Response> 거리_경로_조회_요청(long departure, long arrival) {
+    public static ExtractableResponse<Response> 거리_경로_조회_요청_비로그인(long departure, long arrival) {
         return RestAssured
                 .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/paths?departure={departureId}&arrival={arrivalId}", departure, arrival)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 거리_경로_조회_요청(long departure, long arrival, TokenResponse tokenResponse) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/paths?departure={departureId}&arrival={arrivalId}", departure, arrival)
                 .then().log().all()

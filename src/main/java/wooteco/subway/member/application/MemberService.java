@@ -1,6 +1,7 @@
 package wooteco.subway.member.application;
 
 import org.springframework.stereotype.Service;
+import wooteco.subway.auth.application.AuthorizationException;
 import wooteco.subway.exception.DuplicateException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
@@ -25,16 +26,25 @@ public class MemberService {
     }
 
     public MemberResponse findMember(LoginMember loginMember) {
+        validatesMember(loginMember);
         Member member = memberDao.findByEmail(loginMember.getEmail());
         return MemberResponse.of(member);
     }
 
+    private void validatesMember(LoginMember loginMember) {
+        if (!loginMember.isPresent()) {
+            throw new AuthorizationException("유효하지 않은 토큰입니다.");
+        }
+    }
+
     public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
+        validatesMember(loginMember);
         Member member = memberDao.findByEmail(loginMember.getEmail());
         memberDao.update(new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
     }
 
     public void deleteMember(LoginMember loginMember) {
+        validatesMember(loginMember);
         Member member = memberDao.findByEmail(loginMember.getEmail());
         memberDao.deleteById(member.getId());
     }

@@ -3,7 +3,7 @@ package wooteco.subway.member.domain;
 public class LoginMember {
     private Long id;
     private String email;
-    private Integer age;
+    private int age;
 
     public LoginMember() {
     }
@@ -12,6 +12,10 @@ public class LoginMember {
         this.id = id;
         this.email = email;
         this.age = age;
+    }
+
+    public boolean isPresent() {
+        return id != null;
     }
 
     public Long getId() {
