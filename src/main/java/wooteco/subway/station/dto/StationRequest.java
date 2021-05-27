@@ -11,7 +11,7 @@ import javax.validation.constraints.Pattern;
 @NoArgsConstructor
 public class StationRequest {
     @NotBlank(message = "INVALID_NAME")
-    @Pattern(regexp = "^[가-힣0-9]$", message = "INVALID_NAME")
+    @Pattern(regexp = "^[가-힣0-9]*$", message = "INVALID_NAME")
     private String name;
 
     public StationRequest(String name) {
