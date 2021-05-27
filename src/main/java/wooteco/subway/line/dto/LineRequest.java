@@ -8,7 +8,7 @@ import org.hibernate.validator.constraints.Length;
 
 public class LineRequest {
 
-    @NotBlank(message = "이름에 공백이 있을 수 없습니다.")
+    @NotBlank(message = "이름에 공백만 있을 수 없습니다.")
     @Length(min = 2, max = 10, message = "노선 이름은 2글자 이상 10글자 이하여야합니다.")
     @Pattern(regexp = "^[가-힣|0-9]*$", message = "노선 이름은 한글 또는 숫자여야 합니다.")
     private String name;

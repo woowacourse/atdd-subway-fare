@@ -23,7 +23,6 @@ public class MemberDao {
             rs.getInt("age")
         );
 
-
     public MemberDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
@@ -55,5 +54,10 @@ public class MemberDao {
     public Member findByEmail(String email) {
         String sql = "select * from MEMBER where email = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, email);
+    }
+
+    public boolean existsByEmail(String email) {
+        String sql = "select exists(select * from MEMBER where email = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, email);
     }
 }

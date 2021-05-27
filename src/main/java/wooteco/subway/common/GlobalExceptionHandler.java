@@ -8,7 +8,7 @@ import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import wooteco.subway.auth.application.AuthorizationException;
+import wooteco.subway.exception.AuthorizationException;
 import wooteco.subway.exception.DuplicatedException;
 import wooteco.subway.exception.InvalidInputException;
 import wooteco.subway.exception.NotFoundException;
