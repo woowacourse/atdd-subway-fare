@@ -489,7 +489,6 @@
             <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /members HTTP/1.1
 Content-Type: application/json; charset=UTF-8
-Host: localhost:58561
 Content-Length: 96
 
 {
@@ -524,7 +523,6 @@ Connection: keep-alive</code></pre>
             <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /login/token HTTP/1.1
 Content-Type: application/json; charset=UTF-8
-Host: localhost:58561
 Content-Length: 72
 
 {
@@ -565,7 +563,7 @@ Content-Length: 383
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /members/me HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOjEsXCJlbWFpbFwiOlwiZW1haWxAZW1haWwuY29tXCIsXCJwYXNzd29yZFwiOlwicGFzc3dvcmRcIixcIm5hbWVcIjpcIuyCrOyaqeyekFwiLFwicHJpbmNpcGFsXCI6XCJlbWFpbEBlbWFpbC5jb21cIixcImNyZWRlbnRpYWxzXCI6XCJwYXNzd29yZFwifSIsImlhdCI6MTYyMTM4NDI3NywiZXhwIjoxNjIxMzg3ODc3fQ.x8eWRLUIxCbqwrnokvYMB1VTbFkG3tDSMbkiul4ryMg
 Accept: application/json
-Host: localhost:58561</code></pre>
+</code></pre>
             </div>
           </div>
         </div>
@@ -606,7 +604,6 @@ Content-Length: 69
             <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /stations HTTP/1.1
 Content-Type: application/json; charset=UTF-8
-Host: localhost:58561
 Content-Length: 29
 
 {
@@ -633,7 +630,8 @@ Content-Length: 138
 
 {
   "id" : 1,
-  "name" : "지하철역"
+  "name" : "지하철역",
+  "includedLines": []
 }</code></pre>
             </div>
           </div>
@@ -646,7 +644,7 @@ Content-Length: 138
           <div class="listingblock">
             <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /stations HTTP/1.1
-Host: localhost:58561</code></pre>
+</code></pre>
             </div>
           </div>
         </div>
@@ -665,10 +663,24 @@ Keep-Alive: timeout=60
 Connection: keep-alive
 Content-Length: 142
 
-[ {
-  "id" : 1,
-  "name" : "지하철역"
-} ]</code></pre>
+[
+    {
+        "id": 1,
+        "name": "강남역",
+        "includedLines": [
+            {
+                "id": 2,
+                "name": "2호선",
+                "color": "green lighten-1"
+            },
+            {
+                "id": 1,
+                "name": "신분당선",
+                "color": "red lighten-1"
+            }
+        ]
+    }
+]</code></pre>
             </div>
           </div>
         </div>
@@ -680,7 +692,7 @@ Content-Length: 142
           <div class="listingblock">
             <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /stations/1 HTTP/1.1
-Host: localhost:58561</code></pre>
+</code></pre>
             </div>
           </div>
         </div>
@@ -708,11 +720,12 @@ Connection: keep-alive</code></pre>
         <h3 id="_생성_2"><a class="link" href="#_생성_2">생성</a></h3>
         <div class="sect3">
           <h4 id="_request_7"><a class="link" href="#_request_7">Request</a></h4>
+            <label>- 리퀘스트 내 `extraFare` 필드 포함 여부는 옵션입니다.</label>
+            <br/>
           <div class="listingblock">
             <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /lines HTTP/1.1
 Content-Type: application/json; charset=UTF-8
-Host: localhost:58561
 Content-Length: 137
 
 {
@@ -747,24 +760,35 @@ Content-Length: 896
   "name" : "신분당선",
   "color" : "bg-red-600",
   "extraFare" : 1000,
-  "stations" : [ {
-    "id" : 1,
-    "name" : "강남역"
-  }, {
-    "id" : 2,
-    "name" : "광교역"
-  } ],
-  "sections" : [ {
-    "upStation" : {
-      "id" : 1,
-      "name" : "강남역"
-    },
-    "downStation" : {
-      "id" : 2,
-      "name" : "광교역"
-    },
-    "distance" : 10
-  } ]
+  "stations": [
+        {
+            "id": 1,
+            "name": "강남역",
+            "includedLines": [
+                {
+                    "id": 2,
+                    "name": "2호선",
+                    "color": "green lighten-1"
+                },
+                {
+                    "id": 1,
+                    "name": "신분당선",
+                    "color": "red lighten-1"
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "name": "판교역",
+            "includedLines": [
+                {
+                    "id": 1,
+                    "name": "신분당선",
+                    "color": "red lighten-1"
+                }
+            ]
+        }
+    ]
 }</code></pre>
             </div>
           </div>
@@ -778,7 +802,7 @@ Content-Length: 896
             <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /lines HTTP/1.1
 Accept: application/json
-Host: localhost:58561</code></pre>
+</code></pre>
             </div>
           </div>
         </div>
@@ -797,30 +821,54 @@ Keep-Alive: timeout=60
 Connection: keep-alive
 Content-Length: 900
 
-[ {
-  "id" : 1,
-  "name" : "신분당선",
-  "color" : "bg-red-600",
-  "extraFare" : 1000,
-  "stations" : [ {
-    "id" : 1,
-    "name" : "강남역"
-  }, {
-    "id" : 2,
-    "name" : "광교역"
-  } ],
-  "sections" : [ {
-    "upStation" : {
-      "id" : 1,
-      "name" : "강남역"
-    },
-    "downStation" : {
-      "id" : 2,
-      "name" : "광교역"
-    },
-    "distance" : 10
-  } ]
-} ]</code></pre>
+[
+    {
+        "id": 1,
+        "name": "신분당선",
+        "color": "red lighten-1",
+        "extraFare": 0,
+        "stations": [
+            {
+                "id": 1,
+                "name": "강남역",
+                "includedLines": [
+                    {
+                        "id": 2,
+                        "name": "2호선",
+                        "color": "green lighten-1"
+                    },
+                    {
+                        "id": 1,
+                        "name": "신분당선",
+                        "color": "red lighten-1"
+                    }
+                ]
+            },
+            {
+                "id": 2,
+                "name": "판교역",
+                "includedLines": [
+                    {
+                        "id": 1,
+                        "name": "신분당선",
+                        "color": "red lighten-1"
+                    }
+                ]
+            },
+            {
+                "id": 3,
+                "name": "정자역",
+                "includedLines": [
+                    {
+                        "id": 1,
+                        "name": "신분당선",
+                        "color": "red lighten-1"
+                    }
+                ]
+            }
+        ]
+    }
+]</code></pre>
             </div>
           </div>
         </div>
@@ -833,7 +881,7 @@ Content-Length: 900
             <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /lines/1 HTTP/1.1
 Accept: application/json
-Host: localhost:58561</code></pre>
+</code></pre>
             </div>
           </div>
         </div>
@@ -853,28 +901,50 @@ Connection: keep-alive
 Content-Length: 896
 
 {
-  "id" : 1,
-  "name" : "신분당선",
-  "color" : "bg-red-600",
-  "extraFare" : 1000,
-  "stations" : [ {
-    "id" : 1,
-    "name" : "강남역"
-  }, {
-    "id" : 2,
-    "name" : "광교역"
-  } ],
-  "sections" : [ {
-    "upStation" : {
-      "id" : 1,
-      "name" : "강남역"
-    },
-    "downStation" : {
-      "id" : 2,
-      "name" : "광교역"
-    },
-    "distance" : 10
-  } ]
+    "id": 1,
+    "name": "신분당선",
+    "color": "red lighten-1",
+    "extraFare": 0,
+    "stations": [
+        {
+            "id": 1,
+            "name": "강남역",
+            "includedLines": [
+                {
+                    "id": 2,
+                    "name": "2호선",
+                    "color": "green lighten-1"
+                },
+                {
+                    "id": 1,
+                    "name": "신분당선",
+                    "color": "red lighten-1"
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "name": "판교역",
+            "includedLines": [
+                {
+                    "id": 1,
+                    "name": "신분당선",
+                    "color": "red lighten-1"
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "name": "정자역",
+            "includedLines": [
+                {
+                    "id": 1,
+                    "name": "신분당선",
+                    "color": "red lighten-1"
+                }
+            ]
+        }
+    ]
 }</code></pre>
             </div>
           </div>
@@ -884,17 +954,17 @@ Content-Length: 896
         <h3 id="_수정"><a class="link" href="#_수정">수정</a></h3>
         <div class="sect3">
           <h4 id="_request_10"><a class="link" href="#_request_10">Request</a></h4>
+            <label>- 리퀘스트 내 `extraFare` 필드 포함 여부는 옵션입니다.</label>
           <div class="listingblock">
             <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /lines/1 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOjEsXCJlbWFpbFwiOlwiZW1haWxAZW1haWwuY29tXCIsXCJwYXNzd29yZFwiOlwicGFzc3dvcmRcIixcIm5hbWVcIjpcIuyCrOyaqeyekFwiLFwicHJpbmNpcGFsXCI6XCJlbWFpbEBlbWFpbC5jb21cIixcImNyZWRlbnRpYWxzXCI6XCJwYXNzd29yZFwifSIsImlhdCI6MTYyMTM4NDI3OCwiZXhwIjoxNjIxMzg3ODc4fQ.rQnqxpQaniiL7wtfc2R5GKYTW3QHyfWVqxqdmhzMsVQ
 Content-Type: application/json; charset=UTF-8
-Host: localhost:58561
 Content-Length: 55
 
 {
   "name" : "구분당선",
-  "color" : "bg-old-600"
+  "color" : "bg-old-600",
+  "extraFare" : 100
 }</code></pre>
             </div>
           </div>
@@ -921,7 +991,7 @@ Connection: keep-alive</code></pre>
           <div class="listingblock">
             <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /lines/1 HTTP/1.1
-Host: localhost:58561</code></pre>
+</code></pre>
             </div>
           </div>
         </div>
@@ -953,7 +1023,6 @@ Connection: keep-alive</code></pre>
             <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /lines/1/sections HTTP/1.1
 Content-Type: application/json; charset=UTF-8
-Host: localhost:58561
 Content-Length: 83
 
 {
@@ -986,7 +1055,7 @@ Connection: keep-alive</code></pre>
           <div class="listingblock">
             <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /lines/1/sections?stationId=2 HTTP/1.1
-Host: localhost:58561</code></pre>
+</code></pre>
             </div>
           </div>
         </div>
@@ -1016,9 +1085,9 @@ Connection: keep-alive</code></pre>
           <h4 id="_request_14"><a class="link" href="#_request_14">Request</a></h4>
           <div class="listingblock">
             <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /paths?source=1&amp;target=3&amp;type=DISTANCE HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /paths?source=1&amp;target=3 HTTP/1.1
 Accept: application/json
-Host: localhost:58561</code></pre>
+</code></pre>
             </div>
           </div>
         </div>
@@ -1038,18 +1107,48 @@ Connection: keep-alive
 Content-Length: 508
 
 {
-  "stations" : [ {
-    "id" : 1,
-    "name" : "교대역"
-  }, {
-    "id" : 4,
-    "name" : "남부터미널역"
-  }, {
-    "id" : 3,
-    "name" : "양재역"
-  } ],
-  "distance" : 5,
-  "fare" : 3000
+    "stations": [
+        {
+            "id": 1,
+            "name": "강남역",
+            "includedLines": [
+                {
+                    "id": 2,
+                    "name": "2호선",
+                    "color": "green lighten-1"
+                },
+                {
+                    "id": 1,
+                    "name": "신분당선",
+                    "color": "red lighten-1"
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "name": "판교역",
+            "includedLines": [
+                {
+                    "id": 1,
+                    "name": "신분당선",
+                    "color": "red lighten-1"
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "name": "정자역",
+            "includedLines": [
+                {
+                    "id": 1,
+                    "name": "신분당선",
+                    "color": "red lighten-1"
+                }
+            ]
+        }
+    ],
+    "distance": 20,
+    "fare": 1450
 }</code></pre>
             </div>
           </div>
