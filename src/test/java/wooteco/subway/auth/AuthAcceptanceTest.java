@@ -13,6 +13,7 @@ import wooteco.subway.auth.dto.TokenResponse;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static wooteco.subway.member.MemberAcceptanceTest.회원_정보_조회됨;
 
@@ -110,4 +111,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 statusCode(HttpStatus.OK.value()).
                 extract();
     }
+
+    public static void 인증_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
 }

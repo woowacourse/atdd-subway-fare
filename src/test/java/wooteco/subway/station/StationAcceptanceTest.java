@@ -1,6 +1,7 @@
 package wooteco.subway.station;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.auth.AuthAcceptanceTest.인증_실패됨;
 import static wooteco.subway.auth.AuthAcceptanceTest.회원가입_후_로그인;
 import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
 
@@ -36,9 +37,9 @@ public class StationAcceptanceTest extends AcceptanceTest {
         tokenResponse = 회원가입_후_로그인();
     }
 
-    @DisplayName("지하철역을 생성한다.")
+    @DisplayName("유효한 토큰으로 지하철역을 생성한다.")
     @Test
-    void createStation() {
+    void createStationWithValidToken() {
         // given
 
         // when
@@ -46,6 +47,32 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철역_생성됨(response);
+    }
+
+    @DisplayName("유효하지 않은 토큰으로 지하철역을 생성한다.")
+    @Test
+    void createStationWithInvalidToken() {
+        // given
+        TokenResponse invalidTokenResponse = new TokenResponse("invalid token");
+
+        // when
+        ExtractableResponse<Response> response = 지하철역_생성_요청(강남역 , invalidTokenResponse);
+
+        // then
+        인증_실패됨(response);
+    }
+
+
+    @DisplayName("토큰 없이 지하철역을 생성한다.")
+    @Test
+    void createStationWithoutToken() {
+        // given
+
+        // when
+        ExtractableResponse<Response> response = 토큰없이_지하철역_생성_요청(강남역);
+
+        // then
+        인증_실패됨(response);
     }
 
     @DisplayName("기존에 존재하는 지하철역 이름으로 지하철역을 생성한다.")
@@ -76,9 +103,9 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_목록_포함됨(response, Arrays.asList(stationResponse1, stationResponse2));
     }
 
-    @DisplayName("지하철역을 제거한다.")
+    @DisplayName("유효한 토큰으로 지하철역을 제거한다.")
     @Test
-    void deleteStation() {
+    void deleteStationWithValidToken() {
         // given
         StationResponse stationResponse = 지하철역_등록되어_있음(강남역, tokenResponse);
 
@@ -87,6 +114,35 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철역_삭제됨(response);
+    }
+
+    @DisplayName("유효하지 않은 토큰으로 지하철역을 제거한다.")
+    @Test
+    void deleteStationWithInvalidToken() {
+        // given
+        StationResponse stationResponse = 지하철역_등록되어_있음(강남역, tokenResponse);
+        TokenResponse invalidTokenResponse = new TokenResponse("invalid token");
+
+        // when
+        ExtractableResponse<Response> response = 지하철역_제거_요청(stationResponse, invalidTokenResponse);
+
+        // then
+        인증_실패됨(response);
+    }
+
+
+
+    @DisplayName("토큰 없이 지하철역을 제거한다.")
+    @Test
+    void deleteStationWithoutToken() {
+        // given
+        StationResponse stationResponse = 지하철역_등록되어_있음(강남역, tokenResponse);
+
+        // when
+        ExtractableResponse<Response> response = 토큰없이_지하철역_제거_요청(stationResponse);
+
+        // then
+        인증_실패됨(response);
     }
 
     @DisplayName("노선에 등록된 지하철역을 제거한다.")
@@ -111,6 +167,18 @@ public class StationAcceptanceTest extends AcceptanceTest {
         return 지하철역_생성_요청(name, tokenResponse).as(StationResponse.class);
     }
 
+    private ExtractableResponse<Response> 토큰없이_지하철역_생성_요청(String name) {
+        StationRequest stationRequest = new StationRequest(name);
+
+        return RestAssured
+                .given().log().all()
+                .body(stationRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/stations")
+                .then().log().all()
+                .extract();
+    }
+
     public static ExtractableResponse<Response> 지하철역_생성_요청(String name, TokenResponse tokenResponse) {
         StationRequest stationRequest = new StationRequest(name);
 
@@ -128,6 +196,14 @@ public class StationAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .when().get("/stations")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 토큰없이_지하철역_제거_요청(StationResponse stationResponse) {
+        return RestAssured
+                .given().log().all()
+                .when().delete("/stations/" + stationResponse.getId())
                 .then().log().all()
                 .extract();
     }

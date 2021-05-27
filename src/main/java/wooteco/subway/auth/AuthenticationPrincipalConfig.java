@@ -25,8 +25,8 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
         registry.addInterceptor(createLoginInterceptor())
                 .addPathPatterns(Arrays.asList(
                         "/members/me/**",
-                        "/stations",
-                        "/lines"
+                        "/stations/**",
+                        "/lines/**"
                 ));
     }
 
