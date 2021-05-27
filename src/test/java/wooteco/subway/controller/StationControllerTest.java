@@ -13,8 +13,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import wooteco.auth.infrastructure.JwtTokenProvider;
 import wooteco.common.ExceptionAdviceController;
-import wooteco.auth.service.AuthService;
-import wooteco.common.exception.badrequest.DuplicateNameException;
+import wooteco.common.exception.badrequest.DuplicateStationNameException;
 import wooteco.subway.service.StationService;
 import wooteco.subway.web.StationController;
 import wooteco.subway.web.dto.request.StationRequest;
@@ -140,7 +139,7 @@ class StationControllerTest {
         given(jwtTokenProvider.validateToken(token))
                 .willReturn(true);
         given(stationService.updateStation(any(), any()))
-                .willThrow(new DuplicateNameException());
+                .willThrow(new DuplicateStationNameException());
 
         final StationRequest stationRequest = new StationRequest("newName");
         mockMvc.perform(put("/api/stations/1")
