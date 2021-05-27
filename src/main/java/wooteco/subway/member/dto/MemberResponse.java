@@ -6,7 +6,6 @@ import javax.validation.constraints.Email;
 
 public class MemberResponse {
     private Long id;
-    @Email(message = "email 형식이 아닙니다.")
     private String email;
     private Integer age;
 
