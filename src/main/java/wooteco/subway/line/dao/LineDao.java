@@ -1,6 +1,7 @@
 package wooteco.subway.line.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.line.domain.Line;
@@ -17,6 +18,15 @@ import java.util.stream.Collectors;
 
 @Repository
 public class LineDao {
+
+    private static RowMapper<Line> ROW_MAPPER() {
+        return (rs, rowNum) -> {
+            Long foundId = rs.getLong("id");
+            final String color = rs.getString("color");
+            final String name = rs.getString("name");
+            return new Line(foundId, name, color);
+        };
+    }
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert insertAction;
 
@@ -107,5 +117,10 @@ public class LineDao {
 
     public void deleteById(Long id) {
         jdbcTemplate.update("delete from LINE where id = ?", id);
+    }
+
+    public List<Line> findByName(String name) {
+        String query = "SELECT id, name, color FROM LINE WHERE name = ?";
+        return jdbcTemplate.query(query, ROW_MAPPER(), name);
     }
 }

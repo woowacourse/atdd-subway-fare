@@ -48,5 +48,4 @@ public class MemberController {
     public ResponseEntity<Boolean> isDuplicatedEmail(@RequestParam String email) {
         return ResponseEntity.ok(memberService.isExistMember(email));
     }
-
 }

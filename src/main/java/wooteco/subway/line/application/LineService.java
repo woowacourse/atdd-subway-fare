@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.exception.DuplicatedLineNameException;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
@@ -19,6 +20,7 @@ import wooteco.subway.station.domain.Station;
 @Transactional(readOnly = true)
 public class LineService {
 
+    private static final int ZERO_COUNT = 0;
     private LineDao lineDao;
     private SectionDao sectionDao;
     private StationService stationService;
@@ -30,9 +32,18 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
+        validateNameDuplicate(request.getName());
+
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);
+    }
+
+    private void validateNameDuplicate(String name) {
+        List<Line> lines = lineDao.findByName(name);
+        if (lines.size() > ZERO_COUNT) {
+            throw new DuplicatedLineNameException();
+        }
     }
 
     private Section addInitSection(Line line, LineRequest request) {
@@ -66,6 +77,8 @@ public class LineService {
     }
 
     public LineResponse updateLine(Long id, LineUpdateRequest lineUpdateRequest) {
+        validateNameDuplicate(lineUpdateRequest.getName());
+
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
         return findLineResponseById(id);
     }
@@ -85,7 +98,7 @@ public class LineService {
         sectionDao.insertSections(line);
     }
 
-    public void deleteSeciton(Long lineId, Long stationId) {
+    public void deleteSection(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
         line.removeSection(station);
