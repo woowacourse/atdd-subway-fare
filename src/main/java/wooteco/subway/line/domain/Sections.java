@@ -2,6 +2,7 @@ package wooteco.subway.line.domain;
 
 import wooteco.subway.line.exception.BothOfStationExistInTheLineException;
 import wooteco.subway.line.exception.ExcessiveDistanceArgumentException;
+import wooteco.subway.line.exception.InvalidRemovalException;
 import wooteco.subway.line.exception.NoneOfStationExistException;
 import wooteco.subway.station.domain.Station;
 
@@ -123,7 +124,7 @@ public class Sections {
 
     public void removeStation(Station station) {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new InvalidRemovalException("노선에 등록된 역이 2개 이하일 때는 역을 삭제할 수 없습니다.");
         }
 
         Optional<Section> upSection = sections.stream()
