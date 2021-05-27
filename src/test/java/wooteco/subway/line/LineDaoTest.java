@@ -6,13 +6,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.domain.Line;
 
 import javax.sql.DataSource;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @JdbcTest
@@ -43,5 +43,11 @@ public class LineDaoTest {
     void throw_NoSuchElementException_When_Find_NonExists() {
         assertThatThrownBy(() -> lineDao.findById(1L))
                 .isInstanceOf(RuntimeException.class);
+    }
+
+    @DisplayName("존재하지 않는 지하철 노선을 삭제할 시 affectedRow가 0이다.")
+    @Test
+    void throw_NoSuchElementException_When_Delete_NonExists() {
+        assertThat(lineDao.deleteById(1L)).isEqualTo(0);
     }
 }

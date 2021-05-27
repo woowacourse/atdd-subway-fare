@@ -1,8 +1,9 @@
 package wooteco.subway.line;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class LineServiceTest {
     @Autowired
     private LineService lineService;
@@ -25,7 +27,7 @@ public class LineServiceTest {
     @Autowired
     private StationService stationService;
 
-    @BeforeEach
+    @BeforeAll
     void setUp() {
         stationService.saveStation(new StationRequest("잠실역"));
         stationService.saveStation(new StationRequest("잠실새내역"));
@@ -42,11 +44,18 @@ public class LineServiceTest {
                 .hasMessage("이미 존재하는 노선입니다.");
     }
 
-
     @DisplayName("존재하지 않는 지하철 노선을 검색할 시 NoSuchElementException이 발생한다.")
     @Test
     void throw_NoSuchElementException_When_Find_NonExists() {
-        assertThatThrownBy(() -> lineService.findLineById(1L))
+        assertThatThrownBy(() -> lineService.findLineById(2L))
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessage("존재하지 않는 노선입니다.");
+    }
+
+    @DisplayName("존재하지 않는 지하철 노선을 삭제할 시 NoSuchElementException이 발생한다.")
+    @Test
+    void throw_NoSuchElementException_When_Delete_NonExists() {
+        assertThatThrownBy(() -> lineService.deleteLineById(3L))
                 .isInstanceOf(NoSuchElementException.class)
                 .hasMessage("존재하지 않는 노선입니다.");
     }

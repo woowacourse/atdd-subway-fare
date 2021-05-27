@@ -79,7 +79,10 @@ public class LineService {
     }
 
     public void deleteLineById(Long id) {
-        lineDao.deleteById(id);
+        int affectedRow = lineDao.deleteById(id);
+        if (affectedRow == 0) {
+            throw new NoSuchElementException("존재하지 않는 노선입니다.");
+        }
     }
 
     public void addLineStation(Long lineId, SectionRequest request) {
