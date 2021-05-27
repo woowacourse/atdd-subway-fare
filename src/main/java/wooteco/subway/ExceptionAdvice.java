@@ -14,12 +14,12 @@ import wooteco.subway.exception.NotFoundException;
 public class ExceptionAdvice {
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Void> handleException() {
+    public ResponseEntity<Void> handleException(Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<Void> handleNotFoundException() {
+    public ResponseEntity<Void> handleNotFoundException(NotFoundException e) {
         return ResponseEntity.badRequest().build();
     }
 

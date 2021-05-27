@@ -12,7 +12,7 @@ import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 public class MemberService {
 
     private MemberDao memberDao;

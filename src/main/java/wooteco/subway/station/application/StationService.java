@@ -26,6 +26,9 @@ public class StationService {
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
+        String name = stationRequest.getName();
+        validateDuplicate(name);
+
         Station station = stationDao.insert(stationRequest.toStation());
         return StationResponse.of(station);
     }
@@ -51,12 +54,16 @@ public class StationService {
 
     public StationResponse updateStation(Long id, StationRequest stationRequest) {
         String name = stationRequest.getName();
-        if (stationDao.findByName(name).isPresent()) {
-            throw new DuplicatedStationNameException();
-        }
+        validateDuplicate(name);
 
         Station station = new Station(id, name);
         stationDao.update(station);
         return StationResponse.of(station);
+    }
+
+    private void validateDuplicate(String name) {
+        if (stationDao.findByName(name).isPresent()) {
+            throw new DuplicatedStationNameException();
+        }
     }
 }
