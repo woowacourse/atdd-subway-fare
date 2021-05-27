@@ -6,6 +6,7 @@ import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
+import wooteco.subway.member.dto.EmailRequest;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
@@ -29,7 +30,14 @@ public class MemberService {
 
     private void validateDuplicatedMemberEmail(final String email) {
         if (!memberDao.existsByEmail(email)) {
-            throw new NotFoundException(String.format("해당하는 유저를 찾을 수 없습니다. (입력한 값: %s", email));
+            throw new NotFoundException(String.format("해당하는 유저를 찾을 수 없습니다. (입력한 값: %s)", email));
+        }
+    }
+
+    public void checkDuplicatedMemberEmail(final EmailRequest emailRequest) {
+        final String email = emailRequest.getEmail();
+        if (memberDao.existsByEmail(email)) {
+            throw new DuplicatedException(String.format("이미 존재하는 이메일입니다. (입력한 값: %s)", email));
         }
     }
 

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.dto.EmailRequest;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
@@ -30,6 +31,12 @@ public class MemberController {
     public ResponseEntity<Void> createMember(@Valid @RequestBody MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
         return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
+    }
+
+    @PostMapping("/members/email-check")
+    public ResponseEntity<Void> checkDuplicatedEmail(@Valid @RequestBody EmailRequest emailRequest) {
+        memberService.checkDuplicatedMemberEmail(emailRequest);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/members/me")
@@ -50,4 +57,5 @@ public class MemberController {
         memberService.deleteMember(loginMember);
         return ResponseEntity.noContent().build();
     }
+
 }

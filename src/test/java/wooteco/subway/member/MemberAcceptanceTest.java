@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
+import wooteco.subway.member.dto.EmailRequest;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
@@ -44,6 +45,16 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> deleteResponse = 내_회원_삭제_요청(사용자);
         회원_삭제됨(deleteResponse);
+    }
+
+    @DisplayName("동일한 이메일이 있는지 확인한다.")
+    @Test
+    void checkDuplicatedEmail() {
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성됨(createResponse);
+
+        ExtractableResponse<Response> checkResponse = 중복된_이메일_확인(new EmailRequest(EMAIL));
+        중복된_이메일임(checkResponse);
     }
 
     @DisplayName("동일한 이메일로 회원을 생성할 수 없다.")
@@ -107,6 +118,16 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
+    public static ExtractableResponse<Response> 중복된_이메일_확인(EmailRequest emailRequest) {
+        return RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(emailRequest)
+            .when().post("/members/email-check")
+            .then().log().all()
+            .extract();
+    }
+
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {
         return RestAssured
                 .given().log().all()
@@ -149,6 +170,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 회원_생성_실패됨_BAD_REQUEST(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    public static void 중복된_이메일임(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CONFLICT.value());
     }
 
     public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
