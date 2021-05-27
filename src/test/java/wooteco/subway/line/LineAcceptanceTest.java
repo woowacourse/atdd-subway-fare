@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
@@ -87,7 +88,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("옳지 않은 이름으로 지하철 노선을 생성한다.")
     @ParameterizedTest
-    @CsvSource(value = {"!!:color:1:2:10", "name: :1:2:10", "name:color:1:2:-1"}, delimiter = ':')
+    @CsvSource(value = {"!!:color:1:2:10", "name: :1:2:10", ":color:1:2:1"}, delimiter = ':')
     void createInvalidStation(String name, String color, Long upStationId, Long downStationId, int distance) {
         // given
         LineRequest lineRequest = new LineRequest(name, color, upStationId, downStationId, distance);
@@ -101,6 +102,21 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(exceptionResponse.getError()).isEqualTo("INVALID_NAME");
     }
 
+    @DisplayName("옳지 않은 거리로 지하철 노선을 생성한다.")
+    @ParameterizedTest
+    @ValueSource(ints = {0, -1})
+    void createInvalidDistance(int distance) {
+        // given
+        LineRequest lineRequest = new LineRequest("name", "color", 1L, 3L, distance);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(accessToken, lineRequest);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
+        assertThat(exceptionResponse.getError()).isEqualTo("INVALID_DISTANCE");
+    }
 
     @DisplayName("지하철 노선 목록을 조회한다.")
     @Test

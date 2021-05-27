@@ -60,6 +60,17 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         지하철_구간_생성됨(response, 신분당선, Arrays.asList(강남역, 양재역, 광교역));
     }
 
+    @DisplayName("같은 역을 하나의 지하철 구간으로 등록한다.")
+    @Test
+    void addSameStationsInSection() {
+        // when
+        ExtractableResponse<Response> response = 지하철_구간_생성_요청(accessToken, 신분당선, 강남역, 강남역, 3);
+
+        // then
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
+        assertThat(exceptionResponse.getError()).isEqualTo("SAME_STATIONS_IN_SAME_SECTION");
+    }
+
     @DisplayName("지하철 노선에 여러개의 역을 순서 상관 없이 등록한다.")
     @Test
     void addLineSection2() {
@@ -78,7 +89,10 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_구간_생성_요청(accessToken, 신분당선, 강남역, 광교역, 3);
 
         // then
-        지하철_구간_등록_실패됨(response);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
+        assertThat(exceptionResponse.getError()).isEqualTo("BOTH_STATION_ALREADY_REGISTERED_IN_LINE");
     }
 
     @DisplayName("유효하지 않은 토큰으로 지하철 구간을 생성한다.")
@@ -100,7 +114,10 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_구간_생성_요청(accessToken, 신분당선, 정자역, 양재역, 3);
 
         // then
-        지하철_구간_등록_실패됨(response);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
+        assertThat(exceptionResponse.getError()).isEqualTo("BOTH_STATION_NOT_REGISTERED_IN_LINE");
     }
 
     @DisplayName("지하철 노선에 등록된 지하철역을 제외한다.")
@@ -124,7 +141,36 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 강남역);
 
         // then
-        지하철_노선에_지하철역_제외_실패됨(removeResponse);
+        assertThat(removeResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+
+        ExceptionResponse exceptionResponse = removeResponse.as(ExceptionResponse.class);
+        assertThat(exceptionResponse.getError()).isEqualTo("ONLY_ONE_SECTION_EXIST");
+    }
+
+    @DisplayName("옳지 않은 거리의 입력으로 구간을 생성한다.")
+    @Test
+    void createSectionWithInvalidDistance() {
+        // when
+        ExtractableResponse<Response> response = 지하철_구간_생성_요청(accessToken, 신분당선, 강남역, 양재역, 0);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
+        assertThat(exceptionResponse.getError()).isEqualTo("INVALID_DISTANCE");
+    }
+
+    @DisplayName("이미 존재하는 구간보다 긴 구간 거리로 구간을 생성한다.")
+    @Test
+    void createSectionWithImpossibleDistance() {
+        // when
+        ExtractableResponse<Response> response = 지하철_구간_생성_요청(accessToken, 신분당선, 강남역, 양재역, 10);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
+        assertThat(exceptionResponse.getError()).isEqualTo("IMPOSSIBLE_DISTANCE");
     }
 
     public static void 지하철_구간_등록되어_있음(String accessToken, LineResponse lineResponse, StationResponse upStation, StationResponse downStation, int distance) {
@@ -166,10 +212,6 @@ public class SectionAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static void 지하철_구간_생성됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
     private void 지하철_구간_생성됨(ExtractableResponse<Response> result, LineResponse lineResponse, List<StationResponse> stationResponses) {
         assertThat(result.statusCode()).isEqualTo(HttpStatus.OK.value());
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(accessToken, lineResponse.getId());
@@ -180,13 +222,5 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         assertThat(result.statusCode()).isEqualTo(HttpStatus.OK.value());
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(accessToken, lineResponse.getId());
         지하철_노선에_지하철역_순서_정렬됨(response, stationResponses);
-    }
-
-    public static void 지하철_구간_등록_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
-    }
-
-    public static void 지하철_노선에_지하철역_제외_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }

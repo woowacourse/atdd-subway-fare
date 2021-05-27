@@ -5,6 +5,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Positive;
 
 public class LineRequest {
     @NotEmpty(message = "노선 이름은 공백이 아닙니다.")
@@ -22,7 +23,7 @@ public class LineRequest {
     private Long downStationId;
 
     @NotNull(message = "구간 거리는 공백이 아닙니다.")
-    @Min(value = 0, message = "구간 거리는 0보다 커야 합니다.")
+    @Positive(message = "구간 거리는 0보다 커야 합니다.")
     private int distance;
 
     private int extraFare;

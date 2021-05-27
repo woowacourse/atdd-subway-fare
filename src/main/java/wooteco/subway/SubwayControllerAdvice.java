@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import wooteco.subway.exception.ExceptionResponse;
 import wooteco.subway.exception.InvalidAgeException;
+import wooteco.subway.exception.InvalidDistanceException;
 import wooteco.subway.exception.InvalidEmailException;
 import wooteco.subway.exception.InvalidInputException;
 import wooteco.subway.exception.InvalidNameException;
@@ -46,6 +47,10 @@ public class SubwayControllerAdvice {
 
         if(message.contains("나이")){
             ExceptionResponse exceptionResponse = new ExceptionResponse(new InvalidAgeException(message));
+            return ResponseEntity.badRequest().body(exceptionResponse);
+        }
+        if(message.contains("구간 거리는 0")){
+            ExceptionResponse exceptionResponse = new ExceptionResponse(new InvalidDistanceException(message));
             return ResponseEntity.badRequest().body(exceptionResponse);
         }
         ExceptionResponse exceptionResponse = new ExceptionResponse(new InvalidNameException(message));
