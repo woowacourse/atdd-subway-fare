@@ -63,6 +63,13 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
+        Line findLine = lineDao.findById(id);
+        if (lineUpdateRequest.getColor().equals(findLine.getColor())) {
+            throw new NotDifferentLineColorException();
+        }
+        if (lineUpdateRequest.getName().equals(findLine.getName())) {
+            throw new NotDifferentLineNameException();
+        }
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
@@ -74,6 +81,7 @@ public class LineService {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
+
         line.addSection(upStation, downStation, request.getDistance());
 
         sectionDao.deleteByLineId(lineId);
@@ -83,6 +91,9 @@ public class LineService {
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
+        if (line.getStations().contains(station)) {
+            throw new NotAbleToDeleteStationInLineException();
+        }
         line.removeSection(station);
 
         sectionDao.deleteByLineId(lineId);

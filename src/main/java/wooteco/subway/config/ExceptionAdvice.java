@@ -9,10 +9,13 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wooteco.subway.auth.application.InvalidTokenException;
+import wooteco.subway.line.application.*;
 import wooteco.subway.member.application.DuplicateEmailException;
 import wooteco.subway.member.application.EmailNotFoundException;
 import wooteco.subway.member.application.InvalidPasswordException;
 import wooteco.subway.path.application.InvalidPathException;
+import wooteco.subway.station.application.StationNameDuplicationException;
+import wooteco.subway.station.application.StationNotExistException;
 
 import java.util.stream.Collectors;
 
@@ -38,7 +41,9 @@ public class ExceptionAdvice {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessage(message));
     }
 
-    @ExceptionHandler({InvalidPathException.class, DuplicateEmailException.class})
+    @ExceptionHandler({InvalidPathException.class, DuplicateEmailException.class, StationNotExistException.class,
+            StationNameDuplicationException.class, NotAbleToDeleteStationInLineException.class, NotAbleToAddStationInLineException.class,
+            SectionDistanceInvalidException.class, LineNotExistException.class, NotAbleToDeleteInSectionException.class})
     public ResponseEntity<ErrorMessage> handleInvalidPathException(Exception e) {
         logger.error("method argument not valid exception occurred. message=[{}]", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessage(e.getMessage()));
