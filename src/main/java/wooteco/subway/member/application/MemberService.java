@@ -26,21 +26,24 @@ public class MemberService {
     }
 
     public MemberResponse findMember(LoginMember loginMember) {
-        if (!memberDao.existsEmail(loginMember.getEmail())) {
-            throw new AuthorizationException("존재하지 않는 이메일입니다.");
-        }
-
-        Member member = memberDao.findByEmail(loginMember.getEmail());
+        Member member = findByEmail(loginMember);
         return MemberResponse.of(member);
     }
 
     public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
+        Member member = findByEmail(loginMember);
         memberDao.update(new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
     }
 
     public void deleteMember(LoginMember loginMember) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
+        Member member = findByEmail(loginMember);
         memberDao.deleteById(member.getId());
+    }
+
+    private Member findByEmail(LoginMember loginMember) {
+        if (!memberDao.existsEmail(loginMember.getEmail())) {
+            throw new AuthorizationException("존재하지 않는 이메일입니다.");
+        }
+        return memberDao.findByEmail(loginMember.getEmail());
     }
 }
