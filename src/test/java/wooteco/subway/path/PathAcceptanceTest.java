@@ -183,10 +183,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @Test
     @DisplayName("로그인이 되어 있는 경우 경로 조회 - 어린이")
-    public void calculateFareByAgeKids() {
+    public void calculateFareByAgeKid() {
         //given
-        회원_등록되어_있음("kids@kids", "kids", 12);
-        TokenResponse tokenResponse = 로그인되어_있음("kids@kids", "kids");
+        회원_등록되어_있음("kid@kid", "kid", 12);
+        TokenResponse tokenResponse = 로그인되어_있음("kid@kid", "kid");
 
         //when
         ExtractableResponse<Response> response = 거리_경로_조회_요청(강남역.getId(), 석촌역.getId(), tokenResponse);

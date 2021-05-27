@@ -2,7 +2,7 @@ package wooteco.subway.path.domain.fare;
 
 import static wooteco.subway.path.application.FarePrincipalFinder.*;
 
-public class KidsFarePrincipal implements FarePrincipal {
+public class KidFarePrincipal implements FarePrincipal {
     private double discountRate = 0.5;
 
     @Override

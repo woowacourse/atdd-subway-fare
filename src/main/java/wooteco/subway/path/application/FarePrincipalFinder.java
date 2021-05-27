@@ -21,7 +21,7 @@ public class FarePrincipalFinder {
         }
 
         if (age < 13) {
-            return new KidsFarePrincipal();
+            return new KidFarePrincipal();
         }
 
         if (age < 19) {
