@@ -14,7 +14,7 @@ echo "> git pull origin step1"
 
 git pull origin step1 # pull 땡겨오기
 
-echo "> 프로젝트 Buile 시작"
+echo "> 프로젝트 Build 시작"
 
 ./gradlew clean build # 빌드
 
