@@ -13,7 +13,9 @@ public class SectionEdges {
     }
 
     public int calculateDistance() {
-        return sectionEdgeGroup.stream().mapToInt(it -> it.getSection().getDistance()).sum();
+        return sectionEdgeGroup.stream()
+            .mapToInt(SectionEdge::getSectionDistance)
+            .sum();
     }
 
     public List<Line> getLines() {

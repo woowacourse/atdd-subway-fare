@@ -1,8 +1,8 @@
 package wooteco.subway.path.domain;
 
 import java.util.Arrays;
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
-import wooteco.subway.exception.NotFoundException;
 
 public enum ExtraFare {
     BASIC_FARE(0, 10, 0, 0, distance -> 0),
@@ -26,11 +26,15 @@ public enum ExtraFare {
 
     public static int calculateFare(int distance) {
         final ExtraFare extraFare = Arrays.stream(values())
-            .filter(element -> element.minRange < distance && element.maxRange >= distance)
+            .filter(decideExtraFarePredicate(distance))
             .findAny()
-            .orElseThrow(() -> new NotFoundException("해당하는 ExtraFare 객체가 없습니다."));
+            .orElseThrow(() -> new RuntimeException("해당하는 ExtraFare 객체가 없습니다."));
 
         return extraFare.calculator.apply(distance);
+    }
+
+    private static Predicate<ExtraFare> decideExtraFarePredicate(int distance) {
+        return element -> element.minRange < distance && element.maxRange >= distance;
     }
 
     private static int getExtraFareOfFirstRange(int distance) {
