@@ -73,7 +73,7 @@ public class StationDao {
     }
 
     public List<String> findTransfer(Long id) {
-        String sql = "select LINE.name from SECTION inner join LINE on LINE.id = SECTION.line_id where SECTION.up_station_id = ? OR SECTION.down_station_id = ?;";
+        String sql = "select distinct(LINE.name) from SECTION inner join LINE on LINE.id = SECTION.line_id where SECTION.up_station_id = ? OR SECTION.down_station_id = ?;";
         return jdbcTemplate.query(sql, (rs, rowNum) -> rs.getString("name"), id, id);
     }
 }
