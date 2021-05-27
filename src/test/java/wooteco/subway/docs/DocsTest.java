@@ -32,6 +32,10 @@ public class DocsTest {
         return new ObjectMapper().writeValueAsString(obj);
     }
 
+    protected <T> T asObject(String json, Class<T> objectClass) throws JsonProcessingException {
+        return new ObjectMapper().readValue(json, objectClass);
+    }
+
     @BeforeEach
     public void setUp(WebApplicationContext webApplicationContext,
         RestDocumentationContextProvider restDocumentation) {

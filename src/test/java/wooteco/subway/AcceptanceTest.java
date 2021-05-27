@@ -26,7 +26,6 @@ public class AcceptanceTest {
 
     @AfterEach
     public void tearDown() {
-        // 외래키 때문에 TRUNCATE 되지 않는 것을, 잠깐동안 가능하도록 설정
         jdbcTemplate.execute("ALTER TABLE STATION SET REFERENTIAL_INTEGRITY FALSE;");
         jdbcTemplate.execute("TRUNCATE TABLE STATION");
         jdbcTemplate.execute("ALTER TABLE STATION SET REFERENTIAL_INTEGRITY FALSE;");
