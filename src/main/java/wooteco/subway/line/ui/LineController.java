@@ -40,7 +40,10 @@ public class LineController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<LineResponse> updateLine(@PathVariable Long id, @RequestBody LineUpdateRequest lineUpdateRequest) {
+    public ResponseEntity<LineResponse> updateLine(
+        @PathVariable Long id,
+        @RequestBody LineUpdateRequest lineUpdateRequest
+    ) {
         LineResponse lineResponse = lineService.updateLine(id, lineUpdateRequest);
         return ResponseEntity.ok(lineResponse);
     }
@@ -52,14 +55,20 @@ public class LineController {
     }
 
     @PostMapping("/{lineId}/sections")
-    public ResponseEntity addLineStation(@PathVariable Long lineId, @RequestBody SectionRequest sectionRequest) {
-        lineService.addLineStation(lineId, sectionRequest);
+    public ResponseEntity addSection(
+        @PathVariable Long lineId,
+        @RequestBody SectionRequest sectionRequest
+    ) {
+        lineService.addSection(lineId, sectionRequest);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{lineId}/sections")
-    public ResponseEntity removeLineStation(@PathVariable Long lineId, @RequestParam Long stationId) {
-        lineService.removeLineStation(lineId, stationId);
+    public ResponseEntity removeSection(
+        @PathVariable Long lineId,
+        @RequestParam Long stationId
+    ) {
+        lineService.deleteSeciton(lineId, stationId);
         return ResponseEntity.noContent().build();
     }
 
