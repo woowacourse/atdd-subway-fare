@@ -42,13 +42,13 @@ public class LineService {
     }
 
     private void validateNameDuplication(String name) {
-        if (lineDao.countLineByName(name) > 0) {
+        if (lineDao.countLineByName(name) != 0) {
             throw new LineNameDuplicatedException();
         }
     }
 
     private void validateColorDuplication(String color) {
-        if (lineDao.countLineByColor(color) > 0) {
+        if (lineDao.countLineByColor(color) != 0) {
             throw new LineColorDuplicatedException();
         }
     }
@@ -103,6 +103,7 @@ public class LineService {
     public void deleteLineById(Long id) {
         checkIfLineExists(id);
         lineDao.deleteById(id);
+        sectionDao.deleteByLineId(id);
     }
 
     @Transactional

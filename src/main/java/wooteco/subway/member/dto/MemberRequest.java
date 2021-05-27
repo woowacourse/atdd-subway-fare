@@ -8,6 +8,7 @@ import javax.validation.constraints.NotBlank;
 
 public class MemberRequest {
 
+    @NotBlank
     @Email
     private String email;
     @NotBlank

@@ -1,6 +1,5 @@
 package wooteco.subway.line.dto;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
@@ -13,7 +12,6 @@ public class LineRequest {
     private Long upStationId;
     private Long downStationId;
     private int extraFare;
-    @Min(value = 1, message = "잘못된 노선 구간 거리입니다.")
     private int distance;
 
     public LineRequest() {
