@@ -7,6 +7,7 @@ import wooteco.subway.service.StationService;
 import wooteco.subway.web.dto.request.StationRequest;
 import wooteco.subway.web.dto.response.StationResponse;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class StationController {
     }
 
     @PostMapping
-    public ResponseEntity<StationResponse> createStation(@RequestBody StationRequest stationRequest) {
+    public ResponseEntity<StationResponse> createStation(@RequestBody @Valid StationRequest stationRequest) {
         StationResponse station = stationService.saveStation(stationRequest);
         return ResponseEntity.created(URI.create("/api/stations/" + station.getId())).body(station);
     }
@@ -32,7 +33,7 @@ public class StationController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<StationResponse> updateStation(@PathVariable Long id, @RequestBody StationRequest updateStationRequest) {
+    public ResponseEntity<StationResponse> updateStation(@PathVariable Long id, @RequestBody @Valid StationRequest updateStationRequest) {
         return ResponseEntity.ok(stationService.updateStation(id, updateStationRequest));
     }
 

@@ -14,8 +14,8 @@ import wooteco.auth.domain.LoginMember;
 import wooteco.auth.infrastructure.JwtTokenProvider;
 import wooteco.auth.service.MemberService;
 import wooteco.auth.web.MemberController;
-import wooteco.auth.web.dto.MemberRequest;
-import wooteco.auth.web.dto.MemberResponse;
+import wooteco.auth.web.dto.request.MemberRequest;
+import wooteco.auth.web.dto.response.MemberResponse;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -47,7 +47,7 @@ class MemberControllerTest {
         //given
         final String email = "test@email.com";
         final int age = 20;
-        final MemberRequest memberRequest = new MemberRequest(email, "1234", age);
+        final MemberRequest memberRequest = new MemberRequest(email, "12341234", age);
         final MemberResponse memberResponse = new MemberResponse(1L, "test@email.com", age);
 
         given(memberService.createMember(any(MemberRequest.class)))
@@ -111,7 +111,7 @@ class MemberControllerTest {
 
         mockMvc.perform(put("/api/members/me")
                 .header("Authorization", "Bearer " + token)
-                .content(objectMapper.writeValueAsString(new MemberRequest(email, "1234", newAge)))
+                .content(objectMapper.writeValueAsString(new MemberRequest(email, "12341234", newAge)))
                 .contentType(MediaType.APPLICATION_JSON)
         )
                 .andExpect(status().isOk())

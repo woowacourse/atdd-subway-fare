@@ -1,4 +1,4 @@
-package wooteco.auth.web.dto;
+package wooteco.auth.web.dto.response;
 
 import wooteco.auth.domain.Member;
 

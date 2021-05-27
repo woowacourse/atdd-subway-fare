@@ -7,9 +7,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import wooteco.auth.web.dto.TokenResponse;
-import wooteco.auth.web.dto.MemberRequest;
-import wooteco.auth.web.dto.MemberResponse;
+import wooteco.auth.web.dto.response.TokenResponse;
+import wooteco.auth.web.dto.request.MemberRequest;
+import wooteco.auth.web.dto.response.MemberResponse;
 import wooteco.AcceptanceTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -20,7 +20,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String PASSWORD = "password";
     public static final int AGE = 20;
     public static final String NEW_EMAIL = "new_email@email.com";
-    public static final String NEW_PASSWORD = "new_password";
+    public static final String NEW_PASSWORD = "new!password";
     public static final int NEW_AGE = 30;
 
     @DisplayName("회원 정보를 관리한다.")

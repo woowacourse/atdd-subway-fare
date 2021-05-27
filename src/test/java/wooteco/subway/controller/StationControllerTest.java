@@ -141,7 +141,7 @@ class StationControllerTest {
         given(stationService.updateStation(any(), any()))
                 .willThrow(new DuplicateStationNameException());
 
-        final StationRequest stationRequest = new StationRequest("newName");
+        final StationRequest stationRequest = new StationRequest("새로운역");
         mockMvc.perform(put("/api/stations/1")
                 .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)

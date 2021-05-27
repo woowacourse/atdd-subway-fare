@@ -1,4 +1,4 @@
-package wooteco.auth.web.dto;
+package wooteco.auth.web.dto.response;
 
 public class TokenResponse {
     private String accessToken;

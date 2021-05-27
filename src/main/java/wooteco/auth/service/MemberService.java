@@ -6,8 +6,8 @@ import wooteco.common.exception.notfound.MemberNotFoundException;
 import wooteco.auth.dao.MemberDao;
 import wooteco.auth.domain.LoginMember;
 import wooteco.auth.domain.Member;
-import wooteco.auth.web.dto.MemberRequest;
-import wooteco.auth.web.dto.MemberResponse;
+import wooteco.auth.web.dto.request.MemberRequest;
+import wooteco.auth.web.dto.response.MemberResponse;
 
 @Service
 @Transactional(readOnly = true)

@@ -4,9 +4,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.auth.service.MemberService;
 import wooteco.auth.domain.LoginMember;
-import wooteco.auth.web.dto.MemberRequest;
-import wooteco.auth.web.dto.MemberResponse;
+import wooteco.auth.web.dto.request.MemberRequest;
+import wooteco.auth.web.dto.response.MemberResponse;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
@@ -20,7 +21,7 @@ public class MemberController {
     }
 
     @PostMapping
-    public ResponseEntity createMember(@RequestBody MemberRequest request) {
+    public ResponseEntity createMember(@RequestBody @Valid MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
         return ResponseEntity.created(URI.create("/api/members/" + member.getId())).build();
     }
@@ -32,7 +33,7 @@ public class MemberController {
     }
 
     @PutMapping("/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest param) {
+    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody @Valid MemberRequest param) {
         final MemberResponse updatedMember = memberService.updateMember(loginMember, param);
         return ResponseEntity.ok(updatedMember);
     }

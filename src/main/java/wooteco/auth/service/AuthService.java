@@ -5,8 +5,8 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.auth.dao.MemberDao;
 import wooteco.auth.domain.Member;
 import wooteco.auth.infrastructure.JwtTokenProvider;
-import wooteco.auth.web.dto.TokenRequest;
-import wooteco.auth.web.dto.TokenResponse;
+import wooteco.auth.web.dto.request.TokenRequest;
+import wooteco.auth.web.dto.response.TokenResponse;
 import wooteco.common.exception.forbidden.AuthorizationException;
 
 @Service

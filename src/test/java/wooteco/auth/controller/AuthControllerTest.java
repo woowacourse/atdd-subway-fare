@@ -12,8 +12,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import wooteco.auth.infrastructure.JwtTokenProvider;
 import wooteco.auth.service.AuthService;
-import wooteco.auth.web.dto.TokenRequest;
-import wooteco.auth.web.dto.TokenResponse;
+import wooteco.auth.web.dto.request.TokenRequest;
+import wooteco.auth.web.dto.response.TokenResponse;
 import wooteco.auth.web.AuthController;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -50,7 +50,7 @@ class AuthControllerTest {
         final TokenResponse tokenResponse = new TokenResponse("이것은토큰비밀번호");
 
         given(authService.login(any())).willReturn(tokenResponse);
-        final TokenRequest tokenRequest = new TokenRequest("test@test.com", "1234");
+        final TokenRequest tokenRequest = new TokenRequest("test@test.com", "12341234");
 
         mockMvc.perform(post("/api/login/token")
                 .content(objectMapper.writeValueAsString(tokenRequest))
