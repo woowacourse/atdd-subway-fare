@@ -116,6 +116,39 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_삭제됨(response);
     }
 
+    @DisplayName("유효하지 않은 이름의 역을 생성한다. - 비어있는 문자열")
+    @Test
+    void createLineWithBlankName() {
+        // when
+        LineRequest lineWithBlankName = new LineRequest("", "black", 1L, 2L, 10);
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineWithBlankName);
+
+        // then
+        유효하지_않은_이름의_지하철_노선_생성_실패됨(response);
+    }
+
+    @DisplayName("유효하지 않은 이름의 역을 생성한다. - 1글자")
+    @Test
+    void createLineWithSingleCharacterName() {
+        // when
+        LineRequest lineWithSingleCharacter = new LineRequest("1", "black", 1L, 2L, 10);
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineWithSingleCharacter);
+
+        // then
+        유효하지_않은_이름의_지하철_노선_생성_실패됨(response);
+    }
+
+    @DisplayName("유효하지 않은 이름의 역을 생성한다. - 공백 문자 포함")
+    @Test
+    void createLineWithIncludingSpaceName() {
+        // when
+        LineRequest lineWithSpaceName = new LineRequest("강 남", "black", 1L, 2L, 10);
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineWithSpaceName);
+
+        // then
+        유효하지_않은_이름의_지하철_노선_생성_실패됨(response);
+    }
+
     public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
         LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance);
         return 지하철_노선_등록되어_있음(lineRequest);
@@ -184,6 +217,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철_노선_생성_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CONFLICT.value());
+    }
+
+    private void 유효하지_않은_이름의_지하철_노선_생성_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static void 지하철_노선_목록_응답됨(ExtractableResponse<Response> response) {

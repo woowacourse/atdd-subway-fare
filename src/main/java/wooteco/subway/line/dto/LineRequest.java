@@ -1,6 +1,15 @@
 package wooteco.subway.line.dto;
 
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
 public class LineRequest {
+    @NotBlank(message = "노선 이름이 공백입니다.")
+    @Pattern(regexp = "^[가-힣|0-9]*$", message = "유효하지 않은 노선 이름입니다.")
+    @Size(min = 2, message = "두 글자 이상이어야 합니다.")
     private String name;
     private String color;
     private Long upStationId;
