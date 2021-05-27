@@ -27,6 +27,12 @@ public class StationController {
                 .body(station);
     }
 
+    @PutMapping("/stations/{id}")
+    public ResponseEntity<Void> updateStation(@PathVariable Long id, @Valid @RequestBody StationRequest stationRequest) {
+        stationService.updateStationById(id, stationRequest);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping(value = "/stations", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<StationResponse>> showStations() {
         return ResponseEntity.ok()

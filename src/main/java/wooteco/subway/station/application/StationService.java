@@ -58,4 +58,8 @@ public class StationService {
     public StationResponse toStationResponse(Station station) {
         return StationResponse.of(station, SimpleLineResponse.listOf(stationDao.findLinesPassing(station)));
     }
+
+    public void updateStationById(Long id, StationRequest stationRequest) {
+        stationDao.updateById(id, stationRequest.getName());
+    }
 }
