@@ -1,6 +1,6 @@
 package wooteco.subway.line.domain;
 
-import wooteco.subway.exception.SectionCreateException;
+import wooteco.subway.exception.create.SectionCreateException;
 import wooteco.subway.station.domain.Station;
 
 import java.util.ArrayList;
