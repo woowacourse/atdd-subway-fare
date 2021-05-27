@@ -1,6 +1,7 @@
 package wooteco.subway.line.dto;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 public class LineRequest {
@@ -11,13 +12,13 @@ public class LineRequest {
     @NotBlank(message = "노선 색깔은 빈칸일 수 없습니다.")
     private String color;
 
-    @Positive(message = "잘못된 역 아이디입니다.", groups = RequestType.ON_CREATE.class)
+    @NotNull(message = "역 아이디를 입력해야합니다.", groups = RequestType.ON_CREATE.class)
     private Long upStationId;
 
-    @Positive(message = "잘못된 역 아이디입니다.", groups = RequestType.ON_CREATE.class)
+    @NotNull(message = "역 아이디를 입력해야합니다.", groups = RequestType.ON_CREATE.class)
     private Long downStationId;
 
-    @Positive(message = "잘못된 거리 요청입니다.", groups = RequestType.ON_CREATE.class)
+    @NotNull(message = "거리를 입력해야합니다.", groups = RequestType.ON_CREATE.class)
     private int distance;
 
     private Integer extraFare;
@@ -60,5 +61,17 @@ public class LineRequest {
 
     public int getExtraFare() {
         return extraFare;
+    }
+
+    @Override
+    public String toString() {
+        return "LineRequest{" +
+                "name='" + name + '\'' +
+                ", color='" + color + '\'' +
+                ", upStationId=" + upStationId +
+                ", downStationId=" + downStationId +
+                ", distance=" + distance +
+                ", extraFare=" + extraFare +
+                '}';
     }
 }

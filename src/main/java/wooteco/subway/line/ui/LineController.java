@@ -11,6 +11,7 @@ import wooteco.subway.line.dto.RequestType;
 import wooteco.subway.line.dto.SectionRequest;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.net.URI;
 import java.util.List;
@@ -28,8 +29,8 @@ public class LineController {
     }
 
     @PostMapping
-    @Validated(RequestType.ON_CREATE.class)
-    public ResponseEntity createLine(@Valid @RequestBody LineRequest lineRequest) {
+    public ResponseEntity createLine(@Validated(RequestType.ON_CREATE.class) @RequestBody LineRequest lineRequest) {
+        System.out.println(lineRequest);
         LineResponse line = lineService.saveLine(lineRequest);
         return ResponseEntity.created(URI.create("/lines/" + line.getId()))
                 .body(line);
@@ -46,7 +47,7 @@ public class LineController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity updateLine(@PathVariable @DateTimeFormat Long id, @Valid @RequestBody LineRequest lineUpdateRequest) {
+    public ResponseEntity updateLine(@PathVariable Long id, @Valid @RequestBody LineRequest lineUpdateRequest) {
         lineService.updateLine(id, lineUpdateRequest);
         return ResponseEntity.ok()
                 .build();
@@ -67,7 +68,7 @@ public class LineController {
     }
 
     @DeleteMapping("/{lineId}/sections")
-    public ResponseEntity removeLineStation(@PathVariable Long lineId, @Positive @RequestParam Long stationId) {
+    public ResponseEntity removeLineStation(@PathVariable Long lineId, @NotNull @RequestParam Long stationId) {
         lineService.removeLineStation(lineId, stationId);
         return ResponseEntity.ok()
                 .build();
