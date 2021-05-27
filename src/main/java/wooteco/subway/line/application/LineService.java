@@ -113,20 +113,42 @@ public class LineService {
     }
 
     public LineSectionResponse findSectionsById(final long lineId) {
-        validateLineExistence(lineId);
-        Line line = lineDao.findById(lineId);
+        List<Line> lines = lineDao.findAll();
 
-        List<StationTransferResponse> stations = stationService.getStationsWithTransferLines(lineId);
-
-        List<SectionResponse> sections = SectionResponse.listOf(line.getSections());
+        Line line = getLine(lines, lineId);
+        List<StationTransferResponse> stationsWithTransferLines = getStationsWithTransferLines(line, lines);
+        List<SectionResponse> sectionResponses = SectionResponse.listOf(line.getSections());
 
         return LineSectionResponse.of(
                 line.getId(),
                 line.getName(),
                 line.getColor(),
-                stations,
-                sections
+                stationsWithTransferLines,
+                sectionResponses
         );
+    }
+
+    private Line getLine(final List<Line> lines, final long lineId) {
+        return lines.stream()
+                .filter(line -> line.hasId(lineId))
+                .findFirst()
+                .orElseThrow(NoSuchLineException::new);
+    }
+
+    private List<StationTransferResponse> getStationsWithTransferLines(final Line line, final List<Line> lines) {
+        return line.getStations().stream()
+                .map(station -> {
+                    List<TransferLineResponse> transferLineResponses = getTransferLineResponses(station, line.getId(), lines);
+                    return new StationTransferResponse(station.getId(), station.getName(), transferLineResponses);
+                })
+                .collect(Collectors.toList());
+    }
+
+    private List<TransferLineResponse> getTransferLineResponses(final Station station, final long lineId, final List<Line> lines) {
+        return lines.stream()
+                .filter(line -> line.contains(station) && !line.hasId(lineId))
+                .map(line -> new TransferLineResponse(line.getId(), line.getName(), line.getColor()))
+                .collect(Collectors.toList());
     }
 
     public void validateLineExistence(final Long id) {

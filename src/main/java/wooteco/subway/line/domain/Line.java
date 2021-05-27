@@ -56,25 +56,13 @@ public class Line {
         this.sections = sections;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public Sections getSections() {
-        return sections;
-    }
-
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
+    }
+
+    public boolean hasId(final long lineId) {
+        return this.id == lineId;
     }
 
     public void addSection(Station upStation, Station downStation, Distance distance) {
@@ -107,6 +95,22 @@ public class Line {
 
     public boolean contains(final Station station) {
         return this.sections.contains(station);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public Sections getSections() {
+        return sections;
     }
 
     @Override

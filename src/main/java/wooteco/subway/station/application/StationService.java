@@ -49,11 +49,4 @@ public class StationService {
         }
         stationDao.updateById(id, name);
     }
-
-    public List<StationTransferResponse> getStationsWithTransferLines(final long lineId) {
-        if (lineDao.doesIdNotExist(lineId)) {
-            throw new NoSuchLineException();
-        }
-        return stationDao.getStationsWithTransferLines(lineId);
-    }
 }
