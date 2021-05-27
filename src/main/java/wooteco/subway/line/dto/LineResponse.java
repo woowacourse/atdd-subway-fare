@@ -13,6 +13,11 @@ public class LineResponse {
     private final int extraFare;
     private final List<StationResponse> stations;
 
+    public LineResponse(Long id, String name, String color,
+        List<StationResponse> stations) {
+        this(id, name, color, 0, stations);
+    }
+
     public LineResponse(Long id, String name, String color, int extraFare,
         List<StationResponse> stations) {
         this.id = id;

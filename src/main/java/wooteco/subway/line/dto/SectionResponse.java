@@ -5,17 +5,17 @@ import wooteco.subway.station.dto.StationResponse;
 
 public class SectionResponse {
 
-    private StationResponse upStationResponse;
-    private StationResponse downStationResponse;
+    private StationResponse upStation;
+    private StationResponse downStation;
     private int distance;
 
     public SectionResponse() {
     }
 
-    public SectionResponse(StationResponse upStationResponse,
-        StationResponse downStationResponse, int distance) {
-        this.upStationResponse = upStationResponse;
-        this.downStationResponse = downStationResponse;
+    public SectionResponse(StationResponse upStation,
+        StationResponse downStation, int distance) {
+        this.upStation = upStation;
+        this.downStation = downStation;
         this.distance = distance;
     }
 
@@ -24,12 +24,12 @@ public class SectionResponse {
             StationResponse.of(section.getDownStation()), section.getDistance());
     }
 
-    public StationResponse getUpStationResponse() {
-        return upStationResponse;
+    public StationResponse getUpStation() {
+        return upStation;
     }
 
-    public StationResponse getDownStationResponse() {
-        return downStationResponse;
+    public StationResponse getDownStation() {
+        return downStation;
     }
 
     public int getDistance() {
