@@ -5,7 +5,6 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
-import static wooteco.subway.auth.AuthAcceptanceTest.내_회원_정보_조회_요청;
 import static wooteco.subway.auth.AuthAcceptanceTest.로그인_성공_후_토큰추출;
 import static wooteco.subway.auth.AuthAcceptanceTest.로그인_요청;
 
@@ -33,7 +32,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void manageMember() {
         ExtractableResponse<Response> createResponse = 회원_가입_요청(EMAIL, PASSWORD, AGE, "sign-up");
-        응답코드_확인(createResponse, HttpStatus.CREATED);
+        응답코드_CREATED_확인(createResponse);
 
         ExtractableResponse<Response> loginResponse = 로그인_요청(EMAIL, PASSWORD, "login");
         응답코드_확인(loginResponse, HttpStatus.OK);
@@ -54,8 +53,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void signUpEmailDuplicateException() {
         // given
-        ExtractableResponse<Response> createOkResponse = 회원_가입_요청(EMAIL, PASSWORD, AGE, "sign-up");
-        응답코드_확인(createOkResponse, HttpStatus.CREATED);
+        ExtractableResponse<Response> createdResponse = 회원_가입_요청(EMAIL, PASSWORD, AGE, "sign-up");
+        응답코드_CREATED_확인(createdResponse);
 
         // when
         ExtractableResponse<Response> createBadRequestResponse = 회원_가입_요청(EMAIL, PASSWORD, AGE, "sign-up-email-duplicate-fail");
@@ -74,6 +73,18 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .when().post("/members")
             .then().log().all()
             .extract();
+    }
+
+    public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse, String docsIdentifier) {
+        return RestAssured.given(spec).log().all().
+            auth().oauth2(tokenResponse.getAccessToken()).
+            accept(MediaType.APPLICATION_JSON_VALUE).
+            filter(document(docsIdentifier, preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()))).
+            when().
+            get("/members/me").
+            then().
+            log().all().
+            extract();
     }
 
     public static void 조회된_회원_정보_일치_확인(ExtractableResponse<Response> response, String email, int age) {
@@ -108,5 +119,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 응답코드_확인(ExtractableResponse<Response> response, HttpStatus status) {
         assertThat(response.statusCode()).isEqualTo(status.value());
+    }
+
+    public static void 응답코드_CREATED_확인(ExtractableResponse<Response> signUpResponse) {
+        응답코드_확인(signUpResponse, HttpStatus.CREATED);
+        assertThat(signUpResponse.header("Location")).isNotBlank();
     }
 }
