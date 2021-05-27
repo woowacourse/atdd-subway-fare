@@ -11,6 +11,10 @@ public class SectionResponse {
     StationResponse downStation;
     int distance;
 
+    public SectionResponse() {
+
+    }
+
     private SectionResponse(StationResponse upStation, StationResponse downStation, int distance) {
         this.upStation = upStation;
         this.downStation = downStation;
@@ -26,5 +30,17 @@ public class SectionResponse {
         return sections.stream()
                 .map(SectionResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    public StationResponse getUpStation() {
+        return upStation;
+    }
+
+    public StationResponse getDownStation() {
+        return downStation;
+    }
+
+    public int getDistance() {
+        return distance;
     }
 }
