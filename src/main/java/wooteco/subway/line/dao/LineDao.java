@@ -109,7 +109,11 @@ public class LineDao {
                 .collect(Collectors.toList());
     }
 
-    public void deleteById(Long id) {
+    public void deleteLineById(Long id) {
         jdbcTemplate.update("delete from Line where id = ?", id);
+    }
+
+    public void deleteSectionsByLineId(Long id) {
+        jdbcTemplate.update("delete from Section where line_id = ?", id);
     }
 }

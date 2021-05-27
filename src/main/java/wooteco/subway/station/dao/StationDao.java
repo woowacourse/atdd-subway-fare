@@ -42,7 +42,7 @@ public class StationDao {
     }
 
     public List<Station> findAll() {
-        String sql = "select * from STATION";
+        String sql = "select * from STATION order by id";
         return jdbcTemplate.query(sql, rowMapper);
     }
 

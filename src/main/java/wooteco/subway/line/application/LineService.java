@@ -80,7 +80,8 @@ public class LineService {
     }
 
     public void deleteLineById(Long id) {
-        lineDao.deleteById(id);
+        lineDao.deleteLineById(id);
+        lineDao.deleteSectionsByLineId(id);
     }
 
     public void addLineStation(Long lineId, SectionRequest request) {

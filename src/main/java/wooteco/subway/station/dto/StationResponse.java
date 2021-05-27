@@ -1,12 +1,12 @@
 package wooteco.subway.station.dto;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.dto.SimpleLineResponse;
 import wooteco.subway.station.domain.Station;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class StationResponse {
     private Long id;
@@ -27,19 +27,19 @@ public class StationResponse {
 
     public static List<StationResponse> listOf(List<Station> stations) {
         return stations.stream()
-                       .map(StationResponse::of)
-                       .collect(Collectors.toList());
+                .map(StationResponse::of)
+                .collect(Collectors.toList());
     }
 
     public static StationResponse of(Station station, List<Line> persistLines) {
         final List<SimpleLineResponse> simpleLineResponses = persistLines.stream()
-                                                                         .map(line ->
-                                                                                 new SimpleLineResponse(
-                                                                                         line.getId(),
-                                                                                         line.getName(),
-                                                                                         line.getColor()))
-                                                                         .sorted(Comparator.comparing(SimpleLineResponse::getName))
-                                                                         .collect(Collectors.toList());
+                .map(line ->
+                        new SimpleLineResponse(
+                                line.getId(),
+                                line.getName(),
+                                line.getColor()))
+                .sorted(Comparator.comparing(SimpleLineResponse::getName))
+                .collect(Collectors.toList());
 
         return new StationResponse(station.getId(), station.getName(), simpleLineResponses);
     }
