@@ -22,7 +22,19 @@ public class Sections {
     }
 
     public List<Section> getSections() {
-        return sections;
+        List<Section> sortedSections = new ArrayList<>();
+
+        if (sections.isEmpty()) {
+            return sortedSections;
+        }
+
+        Section currentSection = findUpEndSection();
+        while (currentSection != null) {
+            sortedSections.add(currentSection);
+            currentSection = findSectionByNextUpStation(currentSection.getDownStation());
+        }
+
+        return sortedSections;
     }
 
     public void addSection(Section section) {
