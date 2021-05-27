@@ -117,7 +117,7 @@ public class LineDao {
     }
 
     public void deleteById(Long id) {
-        jdbcTemplate.update("delete from Line where id = ?", id);
+        jdbcTemplate.update("delete from LINE where id = ?", id);
     }
 
     public int countByName(String name) {
