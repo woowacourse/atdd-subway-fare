@@ -19,9 +19,10 @@ import java.util.List;
 
 @Service
 public class LineService {
-    private LineDao lineDao;
-    private SectionDao sectionDao;
-    private StationService stationService;
+
+    private final LineDao lineDao;
+    private final SectionDao sectionDao;
+    private final StationService stationService;
 
     public LineService(LineDao lineDao, SectionDao sectionDao, StationService stationService) {
         this.lineDao = lineDao;
@@ -49,12 +50,6 @@ public class LineService {
         }
     }
 
-    private void validateId(Long id) {
-        if (lineDao.countById(id) == 0) {
-            throw new LineNotFoundException();
-        }
-    }
-
     private Section addInitSection(Line line, LineRequest request) {
         if (request.getUpStationId() != null && request.getDownStationId() != null) {
             Station upStation = stationService.findStationById(request.getUpStationId());
@@ -66,11 +61,11 @@ public class LineService {
     }
 
     public List<SimpleLineResponse> findSimpleLineResponses() {
-        return SimpleLineResponse.from(findLines());
+        return SimpleLineResponse.listOf(findLines());
     }
 
     public List<LineResponse> findLineResponses() {
-        return LineResponse.fromList(findLines());
+        return LineResponse.listOf(findLines());
     }
 
     public List<Line> findLines() {
@@ -83,19 +78,25 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        validateId(id);
+        checkIfLineExists(id);
         return lineDao.findById(id);
     }
 
+    private void checkIfLineExists(Long id) {
+        if (lineDao.countById(id) == 0) {
+            throw new LineNotFoundException();
+        }
+    }
+
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
+        checkIfLineExists(id);
         validateDuplicatedName(lineUpdateRequest.getName());
         validateDuplicatedColor(lineUpdateRequest.getColor());
-        validateId(id);
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
     public void deleteLineById(Long id) {
-        validateId(id);
+        checkIfLineExists(id);
         lineDao.deleteById(id);
     }
 
