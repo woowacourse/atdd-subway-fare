@@ -22,9 +22,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
+import static wooteco.subway.auth.AuthAcceptanceTest.회원_등록되어_있음;
 import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static wooteco.subway.line.LineAcceptanceTest.지하철_추가요금_노선_등록되어_있음;
 import static wooteco.subway.line.SectionAcceptanceTest.지하철_구간_등록되어_있음;
+import static wooteco.subway.member.MemberAcceptanceTest.AGE;
+import static wooteco.subway.member.MemberAcceptanceTest.EMAIL;
+import static wooteco.subway.member.MemberAcceptanceTest.PASSWORD;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
 @DisplayName("지하철 경로 조회")
@@ -38,7 +43,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
     private StationResponse 제이온역;
-
+    private TokenResponse tokenResponse;
     /**
      * 교대역    --- *2호선* ---   강남역
      * |                        |
@@ -50,17 +55,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        강남역 = 지하철역_등록되어_있음("강남역");
-        양재역 = 지하철역_등록되어_있음("양재역");
-        교대역 = 지하철역_등록되어_있음("교대역");
-        남부터미널역 = 지하철역_등록되어_있음("남부터미널역");
-        제이온역 = 지하철역_등록되어_있음("제이온역");
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
 
-        신분당선 = 지하철_추가요금_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 11, 900);
-        이호선 = 지하철_추가요금_노선_등록되어_있음("이호선", "bg-red-601", 교대역, 강남역, 10, 1100);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-602", 교대역, 양재역, 5);
+        강남역 = 지하철역_등록되어_있음("강남역", tokenResponse);
+        양재역 = 지하철역_등록되어_있음("양재역", tokenResponse);
+        교대역 = 지하철역_등록되어_있음("교대역", tokenResponse);
+        남부터미널역 = 지하철역_등록되어_있음("남부터미널역", tokenResponse);
+        제이온역 = 지하철역_등록되어_있음("제이온역", tokenResponse);
 
-        지하철_구간_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
+        신분당선 = 지하철_추가요금_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 11, 900, tokenResponse);
+        이호선 = 지하철_추가요금_노선_등록되어_있음("이호선", "bg-red-601", 교대역, 강남역, 10, 1100, tokenResponse);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-602", 교대역, 양재역, 5, tokenResponse);
+
+        지하철_구간_등록되어_있음(삼호선, 교대역, 남부터미널역, 3, tokenResponse);
     }
 
     @DisplayName("두 역의 최단 거리 경로를 조회한다.")
@@ -151,9 +159,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 거리_경로_조회_요청_인증_헤더(long source, long target) {
-        AuthAcceptanceTest.회원_등록되어_있음("email@email.com","1234",15);
+        AuthAcceptanceTest.회원_등록되어_있음("email2@email.com","1234",15);
         final TokenResponse tokenResponse
-                = AuthAcceptanceTest.로그인되어_있음("email@email.com", "1234");
+            = AuthAcceptanceTest.로그인되어_있음("email2@email.com", "1234");
 
         return RestAssured
                 .given().log().all()

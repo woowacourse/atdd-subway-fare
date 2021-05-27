@@ -29,14 +29,14 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest,
         WebDataBinderFactory binderFactory) {
-        String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
+        final String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
         if (Objects.isNull(credentials)) {
             return new LoginMember(false);
         }
 
-        LoginMember member = authService.findMemberByToken(credentials);
+        final LoginMember member = authService.findMemberByToken(credentials);
         if (member.getId() == null) {
-            throw new AuthorizationException();
+            throw new AuthorizationException("유효하지 않은 토큰입니다.");
         }
         return member;
     }

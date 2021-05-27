@@ -27,7 +27,7 @@ public class AuthService {
             Member member = memberDao.findByEmail(request.getEmail());
             member.checkPassword(request.getPassword());
         } catch (Exception e) {
-            throw new AuthorizationException();
+            throw new AuthorizationException("이메일 또는 비밀번호를 잘못 입력하셨습니다.");
         }
         String token = jwtTokenProvider.createToken(request.getEmail());
         return new TokenResponse(token);
@@ -44,6 +44,12 @@ public class AuthService {
             return new LoginMember(member.getId(), member.getEmail(), member.getAge(), true);
         } catch (Exception e) {
             return new LoginMember();
+        }
+    }
+
+    public void validateToken(String credentials) {
+        if (!jwtTokenProvider.validateToken(credentials)) {
+            throw new AuthorizationException("토큰이 유효하지 않습니다.");
         }
     }
 }
