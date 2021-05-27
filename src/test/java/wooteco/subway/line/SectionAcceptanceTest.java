@@ -44,12 +44,12 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         AuthAcceptanceTest.회원_등록되어_있음("email@email.com","1234",15);
         tokenResponse = AuthAcceptanceTest.로그인되어_있음("email@email.com", "1234");
 
-        강남역 = 로그인_사용자_지하철역_등록되어_있음("강남역");
-        양재역 = 로그인_사용자_지하철역_등록되어_있음("양재역");
-        정자역 = 로그인_사용자_지하철역_등록되어_있음("정자역");
-        광교역 = 로그인_사용자_지하철역_등록되어_있음("광교역");
+        강남역 = 로그인_사용자_지하철역_등록되어_있음(tokenResponse, "강남역");
+        양재역 = 로그인_사용자_지하철역_등록되어_있음(tokenResponse, "양재역");
+        정자역 = 로그인_사용자_지하철역_등록되어_있음(tokenResponse, "정자역");
+        광교역 = 로그인_사용자_지하철역_등록되어_있음(tokenResponse, "광교역");
 
-        신분당선 = 로그인_사용자_지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 광교역, 10);
+        신분당선 = 로그인_사용자_지하철_노선_등록되어_있음(tokenResponse, "신분당선", "bg-red-600", 강남역, 광교역, 10);
     }
 
     @DisplayName("로그인 사용자가 지하철 구간을 등록한다.")

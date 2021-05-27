@@ -2,6 +2,8 @@ package wooteco.subway.station.application;
 
 import org.springframework.stereotype.Service;
 import wooteco.subway.exception.DuplicatedException;
+import wooteco.subway.exception.NotPermittedException;
+import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;
@@ -15,9 +17,11 @@ import java.util.stream.Collectors;
 public class StationService {
 
     private final StationDao stationDao;
+    private final SectionDao sectionDao;
 
-    public StationService(StationDao stationDao) {
+    public StationService(StationDao stationDao, SectionDao sectionDao) {
         this.stationDao = stationDao;
+        this.sectionDao = sectionDao;
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
@@ -43,6 +47,9 @@ public class StationService {
     public void deleteStationById(Long id) {
         if (!stationDao.isExistById(id)) {
             throw new StationNotFoundException(String.valueOf(id));
+        }
+        if (sectionDao.isIncludedInLine(id)) {
+            throw new NotPermittedException("노선에 포함된 역이므로 삭제할 수 없습니다.");
         }
         stationDao.deleteById(id);
     }

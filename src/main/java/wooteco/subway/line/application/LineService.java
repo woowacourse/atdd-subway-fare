@@ -100,11 +100,15 @@ public class LineService {
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
+    @Transactional
     public void deleteLineById(Long id) {
         if (!lineDao.isExistById(id)) {
             throw new LineNotFoundException(String.valueOf(id));
         }
         lineDao.deleteById(id);
+        if (sectionDao.isExistByLineId(id)) {
+            sectionDao.deleteByLineId(id);
+        }
     }
 
     public void addLineStation(Long lineId, SectionRequest request) {

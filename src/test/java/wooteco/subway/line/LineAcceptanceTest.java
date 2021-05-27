@@ -39,13 +39,18 @@ public class LineAcceptanceTest extends AcceptanceTest {
     private LineRequest lineRequest6;
     private LineResponse lineResponse;
 
+    private TokenResponse tokenResponse;
+
     @BeforeEach
     public void setUp() {
         super.setUp();
 
+        AuthAcceptanceTest.회원_등록되어_있음("email@email.com","1234",15);
+        tokenResponse = AuthAcceptanceTest.로그인되어_있음("email@email.com", "1234");
+
         // given
-        강남역 = 로그인_사용자_지하철역_등록되어_있음("강남역");
-        downStation = 로그인_사용자_지하철역_등록되어_있음("광교역");
+        강남역 = 로그인_사용자_지하철역_등록되어_있음(tokenResponse, "강남역");
+        downStation = 로그인_사용자_지하철역_등록되어_있음(tokenResponse, "광교역");
 
         lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 10);
         lineRequest2 = new LineRequest("구신분당선", "bg-green-600", 강남역.getId(), downStation.getId(), 15);
@@ -71,7 +76,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void createLineWithLoginMember() {
         // when
-        ExtractableResponse<Response> response = 로그인_사용자_지하철_노선_생성_요청(lineRequest1);
+        ExtractableResponse<Response> response = 로그인_사용자_지하철_노선_생성_요청(tokenResponse, lineRequest1);
 
         // then
         지하철_노선_생성됨(response);
@@ -81,7 +86,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void createLine2() {
         // when
-        ExtractableResponse<Response> response = 로그인_사용자_지하철_노선_생성_요청(lineRequest3);
+        ExtractableResponse<Response> response = 로그인_사용자_지하철_노선_생성_요청(tokenResponse, lineRequest3);
 
         // then
         지하철_노선_생성_실패됨(response);
@@ -91,7 +96,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void createLine3() {
         // when
-        ExtractableResponse<Response> response = 로그인_사용자_지하철_노선_생성_요청(lineRequest4);
+        ExtractableResponse<Response> response = 로그인_사용자_지하철_노선_생성_요청(tokenResponse, lineRequest4);
 
         // then
         지하철_노선_생성_실패됨(response);
@@ -101,7 +106,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void createLine4() {
         // when
-        ExtractableResponse<Response> response = 로그인_사용자_지하철_노선_생성_요청(lineRequest6);
+        ExtractableResponse<Response> response = 로그인_사용자_지하철_노선_생성_요청(tokenResponse, lineRequest6);
 
         // then
         지하철_노선_생성_실패됨(response);
@@ -111,10 +116,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void createLineWithDuplicateName() {
         // given
-        로그인_사용자_지하철_노선_등록되어_있음(lineRequest1);
+        로그인_사용자_지하철_노선_등록되어_있음(tokenResponse, lineRequest1);
 
         // when
-        ExtractableResponse<Response> response = 로그인_사용자_지하철_노선_생성_요청(lineRequest1);
+        ExtractableResponse<Response> response = 로그인_사용자_지하철_노선_생성_요청(tokenResponse, lineRequest1);
 
         // then
         지하철_노선_생성_실패됨_중복(response);
@@ -124,10 +129,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void createLineWithDuplicateColor() {
         // given
-        로그인_사용자_지하철_노선_등록되어_있음(lineRequest1);
+        로그인_사용자_지하철_노선_등록되어_있음(tokenResponse, lineRequest1);
 
         // when
-        ExtractableResponse<Response> response = 로그인_사용자_지하철_노선_생성_요청(lineRequest5);
+        ExtractableResponse<Response> response = 로그인_사용자_지하철_노선_생성_요청(tokenResponse, lineRequest5);
 
         // then
         지하철_노선_생성_실패됨_중복(response);
@@ -137,8 +142,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void getLines() {
         // given
-        LineResponse lineResponse1 = 로그인_사용자_지하철_노선_등록되어_있음(lineRequest1);
-        LineResponse lineResponse2 = 로그인_사용자_지하철_노선_등록되어_있음(lineRequest2);
+        LineResponse lineResponse1 = 로그인_사용자_지하철_노선_등록되어_있음(tokenResponse, lineRequest1);
+        LineResponse lineResponse2 = 로그인_사용자_지하철_노선_등록되어_있음(tokenResponse, lineRequest2);
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청();
@@ -152,7 +157,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void getLine() {
         // given
-        LineResponse lineResponse = 로그인_사용자_지하철_노선_등록되어_있음(lineRequest1);
+        LineResponse lineResponse = 로그인_사용자_지하철_노선_등록되어_있음(tokenResponse, lineRequest1);
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(lineResponse);
@@ -185,7 +190,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void updateLine() {
         // given
-        LineResponse lineResponse = 로그인_사용자_지하철_노선_등록되어_있음(lineRequest1);
+        LineResponse lineResponse = 로그인_사용자_지하철_노선_등록되어_있음(tokenResponse, lineRequest1);
 
         // when
         ExtractableResponse<Response> response = 로그인_사용자_지하철_노선_수정_요청(lineResponse, lineRequest2);
@@ -198,7 +203,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void updateLineWithNotLogin() {
         // given
-        LineResponse lineResponse = 로그인_사용자_지하철_노선_등록되어_있음(lineRequest1);
+        LineResponse lineResponse = 로그인_사용자_지하철_노선_등록되어_있음(tokenResponse, lineRequest1);
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse, lineRequest2);
@@ -211,7 +216,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteNonExistenceLine() {
         // given - when
-        ExtractableResponse<Response> response = 로그인_사용자_지하철_노선_삭제_요청(lineResponse);
+        ExtractableResponse<Response> response = 로그인_사용자_지하철_노선_삭제_요청(tokenResponse, lineResponse);
 
         // then
         지하철_노선_404_응답됨(response);
@@ -221,7 +226,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteLineWithNotLogin() {
         // given
-        LineResponse lineResponse = 로그인_사용자_지하철_노선_등록되어_있음(lineRequest1);
+        LineResponse lineResponse = 로그인_사용자_지하철_노선_등록되어_있음(tokenResponse, lineRequest1);
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_삭제_요청(lineResponse);
@@ -234,10 +239,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteLine() {
         // given
-        LineResponse lineResponse = 로그인_사용자_지하철_노선_등록되어_있음(lineRequest1);
+        LineResponse lineResponse = 로그인_사용자_지하철_노선_등록되어_있음(tokenResponse, lineRequest1);
 
         // when
-        ExtractableResponse<Response> response = 로그인_사용자_지하철_노선_삭제_요청(lineResponse);
+        ExtractableResponse<Response> response = 로그인_사용자_지하철_노선_삭제_요청(tokenResponse, lineResponse);
 
         // then
         지하철_노선_삭제됨(response);
@@ -248,9 +253,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
         return 지하철_노선_등록되어_있음(lineRequest);
     }
 
-    public static LineResponse 로그인_사용자_지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
+    public static LineResponse 로그인_사용자_지하철_노선_등록되어_있음(TokenResponse tokenResponse, String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
         LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance);
-        return 로그인_사용자_지하철_노선_등록되어_있음(lineRequest);
+        return 로그인_사용자_지하철_노선_등록되어_있음(tokenResponse, lineRequest);
     }
 
     public static LineWithSectionsResponse 지하철_추가요금_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance, int fare) {
@@ -258,17 +263,17 @@ public class LineAcceptanceTest extends AcceptanceTest {
         return 지하철_노선_등록되어_있음(lineRequest);
     }
 
-    public static LineResponse 로그인_사용자_지하철_추가요금_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance, int fare) {
+    public static LineResponse 로그인_사용자_지하철_추가요금_노선_등록되어_있음(TokenResponse tokenResponse, String name, String color, StationResponse upStation, StationResponse downStation, int distance, int fare) {
         LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance, fare);
-        return 로그인_사용자_지하철_노선_등록되어_있음(lineRequest);
+        return 로그인_사용자_지하철_노선_등록되어_있음(tokenResponse, lineRequest);
     }
 
     public static LineWithSectionsResponse 지하철_노선_등록되어_있음(LineRequest lineRequest) {
         return 지하철_노선_생성_요청(lineRequest).as(LineWithSectionsResponse.class);
     }
 
-    public static LineResponse 로그인_사용자_지하철_노선_등록되어_있음(LineRequest lineRequest) {
-        return 로그인_사용자_지하철_노선_생성_요청(lineRequest).as(LineResponse.class);
+    public static LineResponse 로그인_사용자_지하철_노선_등록되어_있음(TokenResponse tokenResponse, LineRequest lineRequest) {
+        return 로그인_사용자_지하철_노선_생성_요청(tokenResponse, lineRequest).as(LineResponse.class);
     }
 
     public static ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest params) {
@@ -281,10 +286,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                         extract();
     }
 
-    public static ExtractableResponse<Response> 로그인_사용자_지하철_노선_생성_요청(LineRequest params) {
-        AuthAcceptanceTest.회원_등록되어_있음("email@email.com","1234",15);
-        final TokenResponse tokenResponse
-                = AuthAcceptanceTest.로그인되어_있음("email@email.com", "1234");
+    public static ExtractableResponse<Response> 로그인_사용자_지하철_노선_생성_요청(TokenResponse tokenResponse, LineRequest params) {
 
         return RestAssured
                 .given().log().all()
@@ -348,10 +350,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 로그인_사용자_지하철_노선_삭제_요청(LineResponse response) {
-        AuthAcceptanceTest.회원_등록되어_있음("email@email.com","1234",15);
-        final TokenResponse tokenResponse
-                = AuthAcceptanceTest.로그인되어_있음("email@email.com", "1234");
+    public static ExtractableResponse<Response> 로그인_사용자_지하철_노선_삭제_요청(TokenResponse tokenResponse, LineResponse response) {
 
         return RestAssured
                 .given().log().all()

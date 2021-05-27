@@ -34,7 +34,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
-
+    private TokenResponse tokenResponse;
     /**               10
      * 교대역    --- *2호선* ---   강남역
      * |                        |
@@ -46,13 +46,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        강남역 = 로그인_사용자_지하철역_등록되어_있음("강남역");
-        양재역 = 로그인_사용자_지하철역_등록되어_있음("양재역");
-        교대역 = 로그인_사용자_지하철역_등록되어_있음("교대역");
-        남부터미널역 = 로그인_사용자_지하철역_등록되어_있음("남부터미널역");
+        AuthAcceptanceTest.회원_등록되어_있음("email@email.com","1234",15);
+        tokenResponse = AuthAcceptanceTest.로그인되어_있음("email@email.com", "1234");
 
-        신분당선 = 로그인_사용자_지하철_추가요금_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 11, 900);
-        이호선 = 로그인_사용자_지하철_추가요금_노선_등록되어_있음("이호선", "bg-black-600", 교대역, 강남역, 10, 1100);
+        강남역 = 로그인_사용자_지하철역_등록되어_있음(tokenResponse, "강남역");
+        양재역 = 로그인_사용자_지하철역_등록되어_있음(tokenResponse, "양재역");
+        교대역 = 로그인_사용자_지하철역_등록되어_있음(tokenResponse, "교대역");
+        남부터미널역 = 로그인_사용자_지하철역_등록되어_있음(tokenResponse, "남부터미널역");
+
+        신분당선 = 로그인_사용자_지하철_추가요금_노선_등록되어_있음(tokenResponse, "신분당선", "bg-red-600", 강남역, 양재역, 11, 900);
+        이호선 = 로그인_사용자_지하철_추가요금_노선_등록되어_있음(tokenResponse, "이호선", "bg-black-600", 교대역, 강남역, 10, 1100);
     }
 
     @DisplayName("두 역의 최단 거리 경로를 조회한다.")

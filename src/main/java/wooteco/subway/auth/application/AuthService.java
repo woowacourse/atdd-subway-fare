@@ -35,10 +35,6 @@ public class AuthService {
     }
 
     public LoginMember findMemberByToken(String credentials) {
-//        if (!jwtTokenProvider.validateToken(credentials)) {
-//            return new LoginMember();
-//        }
-
         String email = jwtTokenProvider.getPayload(credentials);
         try {
             Member member = memberDao.findByEmail(email);

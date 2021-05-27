@@ -57,4 +57,9 @@ public class SectionDao {
         String sql = "select EXISTS (select * from SECTION where line_id = ?)";
         return jdbcTemplate.queryForObject(sql, Boolean.class, lineId);
     }
+
+    public boolean isIncludedInLine(Long id) {
+        String sql = "select EXISTS (select * from SECTION where up_station_id = ? or down_station_id = ?";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, id, id);
+    }
 }
