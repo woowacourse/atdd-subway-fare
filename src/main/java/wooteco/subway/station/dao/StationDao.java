@@ -68,8 +68,8 @@ public class StationDao {
     public List<StationTransferLinesDto> findAllWithTransferLines() {
         String sql = "SELECT DISTINCT st.id, st.name, l.id AS line_id, l.name AS line_name, l.color AS line_color " +
                 "FROM station AS st " +
-                "JOIN line AS l ON sec.line_id = l.id " +
-                "JOIN section AS sec ON st.id = sec.up_station_id OR st.id = sec.down_station_id";
+                "JOIN section AS sec ON st.id = sec.up_station_id OR st.id = sec.down_station_id " +
+                "JOIN line AS l ON sec.line_id = l.id";
         return jdbcTemplate.queryForObject(sql, stationRowMapperWithTransferLines);
     }
 
