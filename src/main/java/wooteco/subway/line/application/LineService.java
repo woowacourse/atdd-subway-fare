@@ -123,7 +123,7 @@ public class LineService {
         Line line = lineDao.findById(lineId);
         List<StationTransferResponse> stationResponses = stationService
             .findStationsWithTransferLine(lineId);
-        List<SectionResponse> sectionResponses = convertToSectionResponse(line.getSections());
+        List<SectionResponse> sectionResponses = convertToSectionResponse(line.getSections().sort());
         LineSectionResponse response = new LineSectionResponse(lineId, line.getName(),
             line.getColor(), stationResponses, sectionResponses);
         return response;
