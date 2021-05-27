@@ -1,12 +1,15 @@
 package wooteco.subway;
 
+import javax.naming.InvalidNameException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import wooteco.subway.auth.exception.InvalidEmailException;
 import wooteco.subway.auth.exception.InvalidPasswordException;
 import wooteco.subway.auth.exception.InvalidTokenException;
+import wooteco.subway.line.exception.DuplicatedLineNameException;
 import wooteco.subway.member.exception.DuplicatedIdException;
 import wooteco.subway.station.exception.DuplicatedStationNameException;
 import wooteco.subway.station.exception.NoSuchStationException;
@@ -56,5 +59,18 @@ public class controllerAdvice {
     public ResponseEntity<ExceptionResponse> invalidPasswordExceptionHandle(
         InvalidTokenException e) {
         return ResponseEntity.badRequest().body(new ExceptionResponse(e));
+    }
+
+    @ExceptionHandler(DuplicatedLineNameException.class)
+    public ResponseEntity<ExceptionResponse> invalidPasswordExceptionHandle(
+        DuplicatedLineNameException e) {
+        return ResponseEntity.badRequest().body(new ExceptionResponse(e));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ExceptionResponse> validStationNameHandle() {
+        return ResponseEntity.badRequest().body(
+            new ExceptionResponse(new InvalidNameException("이름에 특수문자는 허용되지 않습니다."))
+        );
     }
 }

@@ -1,6 +1,10 @@
 package wooteco.subway.line.dto;
 
+import javax.validation.constraints.Pattern;
+
 public class LineRequest {
+
+    @Pattern(regexp = "[0-9a-zA-Z가-힣ㄱ-ㅎㅏ-ㅣ]*")
     private String name;
     private String color;
     private Long upStationId;

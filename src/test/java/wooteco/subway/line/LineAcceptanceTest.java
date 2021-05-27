@@ -223,4 +223,35 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // then
         지하철_노선_삭제됨(response);
     }
+
+    @DisplayName("중복된 노선 이름이 존재한다.")
+    @Test
+    void duplicatedLineName() {
+        // given
+        지하철_노선_등록되어_있음(lineRequest1);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1);
+        ;
+        // then
+        ExceptionCheck.코드_400_응답됨(response);
+        ExceptionCheck.에러_문구_확인(response, "DUPLICATED_LINE_NAME");
+    }
+
+    @DisplayName("노선 이름이 특수문자가 들어간 경우")
+    @Test
+    void lineNameIsSpacialString() {
+        // given
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(new LineRequest(
+            "!3654선^",
+            "bg-red-600",
+            강남역.getId(),
+            광교역.getId(),
+            10)
+        );
+        // then
+        ExceptionCheck.코드_400_응답됨(response);
+        ExceptionCheck.에러_문구_확인(response, "INVALID_NAME");
+    }
 }

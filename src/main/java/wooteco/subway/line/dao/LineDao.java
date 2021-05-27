@@ -6,12 +6,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javax.sql.DataSource;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.domain.Sections;
+import wooteco.subway.line.exception.DuplicatedLineNameException;
 import wooteco.subway.station.domain.Station;
 
 @Repository
@@ -31,9 +33,12 @@ public class LineDao {
         params.put("id", line.getId());
         params.put("name", line.getName());
         params.put("color", line.getColor());
-
-        Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new Line(lineId, line.getName(), line.getColor());
+        try {
+            Long lineId = insertAction.executeAndReturnKey(params).longValue();
+            return new Line(lineId, line.getName(), line.getColor());
+        } catch (DuplicateKeyException exception) {
+            throw new DuplicatedLineNameException("중복된 라인 이름입니다.");
+        }
     }
 
     public Line findById(Long id) {

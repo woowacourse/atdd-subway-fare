@@ -6,7 +6,6 @@ import java.util.List;
 import javax.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import wooteco.subway.ExceptionResponse;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.dto.StationRequest;
@@ -55,10 +53,4 @@ public class StationController extends SubwayController {
         return ResponseEntity.badRequest().build();
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ExceptionResponse> validStationNameHandle() {
-        return ResponseEntity.badRequest().body(
-            new ExceptionResponse("INVALID_NAME", "역 이름에 특수문자는 허용되지 않습니다.")
-        );
-    }
 }
