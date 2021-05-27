@@ -1,6 +1,7 @@
 package wooteco.subway.station.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.deletion.StationCannotDeleteException;
 import wooteco.subway.exception.duplication.StationNameDuplicatedException;
 import wooteco.subway.exception.notfound.StationNotFoundException;
@@ -20,6 +21,7 @@ public class StationService {
         this.stationDao = stationDao;
     }
 
+    @Transactional
     public StationResponse saveStation(StationRequest stationRequest) {
         validateDuplicatedName(stationRequest.getName());
         Station station = stationDao.insert(stationRequest.toStation());
@@ -41,6 +43,7 @@ public class StationService {
         return StationResponse.listOf(stations);
     }
 
+    @Transactional
     public void deleteStationById(Long id) {
         findStationById(id);
         validateDeletableStatus(id);
@@ -53,6 +56,7 @@ public class StationService {
         }
     }
 
+    @Transactional
     public void updateStationById(Long id, StationRequest stationRequest) {
         findStationById(id);
         validateDuplicatedName(stationRequest.getName());

@@ -1,6 +1,7 @@
 package wooteco.subway.line.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.duplication.LineColorDuplicatedException;
 import wooteco.subway.exception.duplication.LineNameDuplicatedException;
 import wooteco.subway.exception.notfound.LineNotFoundException;
@@ -30,6 +31,7 @@ public class LineService {
         this.stationService = stationService;
     }
 
+    @Transactional
     public LineResponse saveLine(LineRequest request) {
         validateDuplicatedName(request.getName());
         validateDuplicatedColor(request.getColor());
@@ -88,6 +90,7 @@ public class LineService {
         }
     }
 
+    @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         checkIfLineExists(id);
         validateDuplicatedName(lineUpdateRequest.getName());
@@ -95,11 +98,13 @@ public class LineService {
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
+    @Transactional
     public void deleteLineById(Long id) {
         checkIfLineExists(id);
         lineDao.deleteById(id);
     }
 
+    @Transactional
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
@@ -110,6 +115,7 @@ public class LineService {
         sectionDao.insertSections(line);
     }
 
+    @Transactional
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
