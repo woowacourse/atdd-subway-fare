@@ -14,6 +14,7 @@ import wooteco.subway.path.application.PathService;
 import wooteco.subway.path.dto.PathResponse;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.util.Optional;
 
@@ -31,8 +32,8 @@ public class PathController {
 
     @GetMapping("/paths")
     public ResponseEntity<PathResponse> findPath(HttpServletRequest httpServletRequest,
-                                                 @Positive(message = "올바르지 않는 역 아이디입니다.") @RequestParam Long source,
-                                                 @Positive(message = "올바르지 않는 역 아이디입니다.") @RequestParam Long target) {
+                                                 @NotNull(message = "올바르지 않는 역 아이디입니다.") @RequestParam Long source,
+                                                 @NotNull(message = "올바르지 않는 역 아이디입니다.") @RequestParam Long target) {
         String token = AuthorizationExtractor.extract(httpServletRequest);
         Optional<LoginMember> optionalMember = authService.findMemberByToken(token);
 
