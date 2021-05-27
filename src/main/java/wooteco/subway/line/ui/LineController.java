@@ -67,9 +67,4 @@ public class LineController {
     public ResponseEntity<List<LineResponse>> findAllLines() {
         return ResponseEntity.ok(lineService.findLineResponses());
     }
-
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity handleSQLException() {
-        return ResponseEntity.badRequest().build();
-    }
 }

@@ -15,7 +15,7 @@ import java.util.List;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/stations")
 public class StationController {
-    private StationService stationService;
+    private final StationService stationService;
 
     public StationController(StationService stationService) {
         this.stationService = stationService;
@@ -39,13 +39,8 @@ public class StationController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteStation(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
         stationService.deleteStationById(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity handleSQLException() {
-        return ResponseEntity.badRequest().build();
     }
 }
