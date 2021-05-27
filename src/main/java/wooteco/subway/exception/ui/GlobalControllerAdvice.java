@@ -25,6 +25,8 @@ public class GlobalControllerAdvice {
 
     @ExceptionHandler({RuntimeException.class})
     public ResponseEntity<ErrorDto> handleRuntimeException(final Exception e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        e.printStackTrace();
+        ErrorDto errorDto = new ErrorDto(e.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorDto);
     }
 }

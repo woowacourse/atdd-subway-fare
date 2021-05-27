@@ -93,7 +93,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void getLine() {
         // given
-        LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1);
+        LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest2);
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(lineResponse);
@@ -365,6 +365,15 @@ public class LineAcceptanceTest extends AcceptanceTest {
     public static void 지하철_노선_응답됨(ExtractableResponse<Response> response, LineResponse lineResponse) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         LineResponse resultResponse = response.as(LineResponse.class);
+        System.out.println(resultResponse.getId());
+        System.out.println(resultResponse.getName());
+        System.out.println(resultResponse.getColor());
+        System.out.println(resultResponse.getExtraFare());
+        for (StationResponse stationResponse : resultResponse.getStations()) {
+            System.out.println(stationResponse.getId());
+            System.out.println(stationResponse.getName());
+        }
+
         assertThat(resultResponse.getId()).isEqualTo(lineResponse.getId());
     }
 
