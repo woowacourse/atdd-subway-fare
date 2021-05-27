@@ -35,6 +35,6 @@ public class ExceptionAdviceController {
 
 //    @ExceptionHandler(Exception.class)
 //    public ResponseEntity serverError(Exception e) {
-//        return ResponseEntity.status(500).body(e.getMessage());
+//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
 //    }
 }
