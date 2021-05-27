@@ -76,7 +76,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .map(StationResponse::getId)
                 .collect(Collectors.toList());
 
-        assertThat(pathResponse.getFare()).isEqualTo(0);
+        assertThat(pathResponse.getFare()).isEqualTo(1250);
         assertThat(stationIds).containsExactlyElementsOf(expectedPathIds);
     }
     public static void 총_거리가_응답됨(ExtractableResponse<Response> response, int totalDistance) {
