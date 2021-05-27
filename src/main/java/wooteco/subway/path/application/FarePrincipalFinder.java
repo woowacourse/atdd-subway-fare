@@ -16,11 +16,15 @@ public class FarePrincipalFinder {
             return new NoneLoginFarePrincipal();
         }
 
-        if (age >= 6 && age < 13) {
+        if (age < 6) {
+            return new ToddlerFarePrincipal();
+        }
+
+        if (age < 13) {
             return new KidsFarePrincipal();
         }
 
-        if (age >= 13 && age < 19) {
+        if (age < 19) {
             return new TeenagerFarePrincipal();
         }
         return new AdultFarePrincipal();

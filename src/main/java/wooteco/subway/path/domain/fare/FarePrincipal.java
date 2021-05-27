@@ -7,6 +7,8 @@ import java.util.List;
 import static wooteco.subway.path.application.FarePrincipalFinder.FARE_PER_KM;
 
 public interface FarePrincipal {
+    int DEDUCTED_AMOUNT = 350;
+
     double calculateFare(int distance, long extraFare);
 
     default double calculateOverFare (double baseFare, int distance, int perDistance){
