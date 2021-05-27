@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import wooteco.subway.exception.DuplicatedLineException;
+import wooteco.subway.exception.NoAnyLineException;
 import wooteco.subway.exception.NoSuchLineException;
 import wooteco.subway.exception.NoSuchStationException;
 import wooteco.subway.exception.SameStationsInSectionException;
@@ -55,6 +56,10 @@ public class LineService {
 
     public List<LineInfoResponse> findLineResponses() {
         List<Line> persistLines = findLines();
+
+        if(persistLines.isEmpty()){
+            throw new NoAnyLineException();
+        }
 
         return persistLines.stream()
                 .map(line -> new LineInfoResponse(line.getId(), line.getName(), line.getColor(), line.getStartStation(), line.getEndStation(), line.getTotalDistance()))
