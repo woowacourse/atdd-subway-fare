@@ -3,6 +3,7 @@ package wooteco.subway.station.application;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.InvalidStationException;
 import wooteco.subway.line.dto.StationTransferResponse;
 import wooteco.subway.station.dao.StationDao;
@@ -20,6 +21,7 @@ public class StationService {
         this.stationDao = stationDao;
     }
 
+    @Transactional
     public StationResponse saveStation(StationRequest stationRequest) {
         Station station = stationDao.insert(stationRequest.toStation());
         return StationResponse.of(station);
@@ -38,11 +40,13 @@ public class StationService {
             .collect(Collectors.toList());
     }
 
+    @Transactional
     public void deleteStationById(Long id) {
         checkStationExist(id);
         stationDao.deleteById(id);
     }
 
+    @Transactional
     public void updateStationById(Long id, String name) {
         checkStationExist(id);
         if (isExistingName(name)) {

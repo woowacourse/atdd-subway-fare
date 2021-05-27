@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.InvalidLineException;
 import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.line.dao.LineDao;
@@ -37,6 +38,7 @@ public class LineService {
         this.stationService = stationService;
     }
 
+    @Transactional
     public LineResponse saveLine(LineRequest request) {
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(),
             request.getFare()));
@@ -75,16 +77,19 @@ public class LineService {
         return lineDao.findById(id);
     }
 
+    @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         checkLineExist(id);
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
+    @Transactional
     public void deleteLineById(Long id) {
         checkLineExist(id);
         lineDao.deleteById(id);
     }
 
+    @Transactional
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
@@ -95,6 +100,7 @@ public class LineService {
         sectionDao.insertSections(line);
     }
 
+    @Transactional
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
@@ -104,6 +110,7 @@ public class LineService {
         sectionDao.insertSections(line);
     }
 
+    @Transactional
     public void updateLineStation(Long lineId, Long stationId, Long downStationId,
         SectionDistanceRequest request) {
         checkLineExist(lineId);
