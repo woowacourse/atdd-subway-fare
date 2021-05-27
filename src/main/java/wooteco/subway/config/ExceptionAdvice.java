@@ -8,12 +8,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import wooteco.subway.member.application.DuplicateEmailException;
+import wooteco.subway.path.application.InvalidPathException;
 
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class ExceptionAdvice {
-    private static final int FILED_NAME_INDEX = 1;
     private final Logger logger = LoggerFactory.getLogger(ExceptionAdvice.class);
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -26,5 +27,17 @@ public class ExceptionAdvice {
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.joining(", "));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessage(message));
+    }
+
+    @ExceptionHandler(InvalidPathException.class)
+    public ResponseEntity<ErrorMessage> handleInvalidPathException(InvalidPathException e) {
+        logger.error("method argument not valid exception occurred. message=[{}]", e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessage(e.getMessage()));
+    }
+
+    @ExceptionHandler(DuplicateEmailException.class)
+    public ResponseEntity<ErrorMessage> handleDuplicateEmailException(DuplicateEmailException e) {
+        logger.error("method argument not valid exception occurred. message=[{}]", e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessage(e.getMessage()));
     }
 }

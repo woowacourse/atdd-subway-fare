@@ -16,22 +16,30 @@ public class MemberService {
     }
 
     public MemberResponse createMember(MemberRequest request) {
+        if(memberDao.findByEmail(request.getEmail()).isPresent()){
+            throw new DuplicateEmailException("이미 가입된 이메일 입니다.");
+        }
         Member member = memberDao.insert(request.toMember());
         return MemberResponse.of(member);
     }
 
     public MemberResponse findMember(LoginMember loginMember) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
+        Member member = findMemberByEmail(loginMember);
         return MemberResponse.of(member);
     }
 
     public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
+        Member member = findMemberByEmail(loginMember);
         memberDao.update(new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
     }
 
     public void deleteMember(LoginMember loginMember) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
+        Member member = findMemberByEmail(loginMember);
         memberDao.deleteById(member.getId());
+    }
+
+    private Member findMemberByEmail(LoginMember loginMember) {
+        return memberDao.findByEmail(loginMember.getEmail())
+                .orElseThrow(() -> new EmailNotFoundException("존재하지 않는 이메일 입니다."));
     }
 }
