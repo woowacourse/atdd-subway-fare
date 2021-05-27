@@ -9,13 +9,13 @@ import wooteco.subway.station.dto.StationResponse;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.sql.SQLException;
 import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class StationController {
-    private StationService stationService;
+
+    private final StationService stationService;
 
     public StationController(StationService stationService) {
         this.stationService = stationService;
@@ -24,28 +24,29 @@ public class StationController {
     @PostMapping("/stations")
     public ResponseEntity<StationResponse> createStation(@RequestBody @Valid StationRequest stationRequest) {
         StationResponse station = stationService.saveStation(stationRequest);
-        return ResponseEntity.created(URI.create("/stations/" + station.getId())).body(station);
+        URI location = URI.create("/stations/" + station.getId());
+        return ResponseEntity.created(location)
+                .body(station);
     }
 
     @GetMapping(value = "/stations", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<StationResponse>> showStations() {
-        return ResponseEntity.ok().body(stationService.findAllStationResponses());
+        List<StationResponse> stationResponses = stationService.findAllStationResponses();
+        return ResponseEntity.ok()
+                .body(stationResponses);
     }
 
     @PutMapping("/stations/{id}")
-    public ResponseEntity updateStation(@PathVariable Long id, @RequestBody @Valid StationRequest stationRequest) {
+    public ResponseEntity<Void> updateStation(@PathVariable Long id, @RequestBody @Valid StationRequest stationRequest) {
         stationService.updateStationById(id, stationRequest);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok()
+                .build();
     }
 
     @DeleteMapping("/stations/{id}")
-    public ResponseEntity deleteStation(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
         stationService.deleteStationById(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity handleSQLException() {
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.noContent()
+                .build();
     }
 }

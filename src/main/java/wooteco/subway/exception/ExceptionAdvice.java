@@ -12,6 +12,7 @@ import wooteco.subway.exception.deletion.CannotDeleteException;
 import wooteco.subway.exception.duplication.DuplicatedException;
 import wooteco.subway.exception.notfound.NotFoundException;
 
+import java.sql.SQLException;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
@@ -42,5 +43,11 @@ public class ExceptionAdvice {
     public ResponseEntity<String> handleUnauthorized(RuntimeException runtimeException) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(runtimeException.getMessage());
+    }
+
+    @ExceptionHandler(SQLException.class)
+    public ResponseEntity<Void> handleSqlException(SQLException sqlException) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .build();
     }
 }
