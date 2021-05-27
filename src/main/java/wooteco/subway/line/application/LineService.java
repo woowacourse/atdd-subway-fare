@@ -76,6 +76,7 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
+        validateInsert(lineUpdateRequest);
         Line savedLine = findLineById(id);
         lineDao.update(new Line(savedLine.getId(), lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
