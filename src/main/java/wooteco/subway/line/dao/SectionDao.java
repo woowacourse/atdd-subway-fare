@@ -53,4 +53,9 @@ public class SectionDao {
 
         simpleJdbcInsert.executeBatch(batchValues.toArray(new Map[sections.size()]));
     }
+
+    public Integer findSectionByStationId(Long id) {
+        String sql = "select count(*) from SECTION where up_station_id = ? or down_station_id = ?";
+        return jdbcTemplate.queryForObject(sql, Integer.class, id, id);
+    }
 }

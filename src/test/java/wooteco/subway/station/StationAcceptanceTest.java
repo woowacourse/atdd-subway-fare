@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.exception.ExceptionResponse;
+import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.auth.AuthAcceptanceTest.*;
+import static wooteco.subway.line.LineAcceptanceTest.*;
 
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {
@@ -137,6 +139,23 @@ public class StationAcceptanceTest extends AcceptanceTest {
         // then
         ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
         assertThat(exceptionResponse.getError()).isEqualTo("NO_SUCH_STATION");
+    }
+
+    @DisplayName("노선에 등록된 지하철역을 제거한다.")
+    @Test
+    void deleteAlreadyInLineStation() {
+        // given
+        StationResponse stationResponse = 지하철역_등록되어_있음(강남역, accessToken);
+        StationResponse stationResponse1 = 지하철역_등록되어_있음(역삼역, accessToken);
+        LineRequest lineRequest = new LineRequest("name", "color", stationResponse.getId(), stationResponse1.getId(), 100);
+        지하철_노선_생성_요청(accessToken, lineRequest);
+
+        // when
+        ExtractableResponse<Response> response = 지하철역_제거_요청(stationResponse);
+
+        // then
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
+        assertThat(exceptionResponse.getError()).isEqualTo("STATION_ALREADY_REGISTERED_IN_LINE");
     }
 
     public static StationResponse 지하철역_등록되어_있음(String name, String accessToken) {
