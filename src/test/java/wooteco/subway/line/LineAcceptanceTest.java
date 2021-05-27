@@ -138,7 +138,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 구간_정보_조회(1L);
 
         LineSectionResponse lineSectionResponse = response.as(LineSectionResponse.class);
-
         List<StationTransferResponse> stationTransferResponses = Arrays.asList(
                 new StationTransferResponse(
                         강남역.getId(),

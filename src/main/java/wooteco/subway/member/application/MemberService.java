@@ -19,6 +19,9 @@ public class MemberService {
 
     @Transactional
     public MemberResponse createMember(MemberRequest request) {
+        if (memberDao.doesEmailExist(request.getEmail())) {
+            throw new DuplicateEmailException();
+        }
         Member member = memberDao.insert(request.toMember());
         return MemberResponse.of(member);
     }

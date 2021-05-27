@@ -7,11 +7,12 @@ public class Age {
     public static final int MINIMUM_TEENAGER_AGE = 13;
     public static final int NON_INCLUSIVE_MAXIMUM_TEENAGER_AGE = 19;
     public static final int MINIMUM_POSSIBLE_AGE = 0;
+    public static final int MAXIMUM_POSSIBLE_AGE = 200;
     private final int age;
 
     public Age(final int age) {
-        if (age < MINIMUM_POSSIBLE_AGE) {
-            throw new IllegalArgumentException();
+        if (age < MINIMUM_POSSIBLE_AGE || MAXIMUM_POSSIBLE_AGE < age) {
+            throw new IllegalAgeException();
         }
         this.age = age;
     }
