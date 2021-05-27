@@ -45,4 +45,4 @@ private int calculateOverFare(int distance) {
 <br>
 
 - [x] 노선이 최소 요금을 찾는다.
-- [ ] 구간 예외 처리 세분화
+- [x] 구간 예외 처리 세분화
