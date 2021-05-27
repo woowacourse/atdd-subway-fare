@@ -10,20 +10,25 @@ import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class StationService {
-    private StationDao stationDao;
+
+    private final StationDao stationDao;
 
     public StationService(StationDao stationDao) {
         this.stationDao = stationDao;
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
-        validateDuplicatedName(stationRequest);
+        validateDuplicatedName(stationRequest.getName());
         Station station = stationDao.insert(stationRequest.toStation());
         return StationResponse.of(station);
+    }
+
+    private void validateDuplicatedName(String name) {
+        stationDao.findByName(name)
+                .ifPresent(station -> { throw new StationNameDuplicatedException(); });
     }
 
     public Station findStationById(Long id) {
@@ -33,30 +38,24 @@ public class StationService {
 
     public List<StationResponse> findAllStationResponses() {
         List<Station> stations = stationDao.findAll();
-
-        return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+        return StationResponse.listOf(stations);
     }
 
     public void deleteStationById(Long id) {
         findStationById(id);
-        if (stationDao.countsStationById(id) > 0) {
+        validateDeletableStatus(id);
+        stationDao.deleteById(id);
+    }
+
+    private void validateDeletableStatus(Long id) {
+        if (stationDao.countRegisteredStations(id) > 0) {
             throw new StationCannotDeleteException();
         }
-        stationDao.deleteById(id);
     }
 
     public void updateStationById(Long id, StationRequest stationRequest) {
         findStationById(id);
-        validateDuplicatedName(stationRequest);
-        stationDao.updateById(stationRequest.getName(), id);
-    }
-
-    private void validateDuplicatedName(StationRequest stationRequest) {
-        stationDao.findByName(stationRequest.getName())
-                .ifPresent(station -> {
-                    throw new StationNameDuplicatedException();
-                });
+        validateDuplicatedName(stationRequest.getName());
+        stationDao.update(stationRequest.getName(), id);
     }
 }
