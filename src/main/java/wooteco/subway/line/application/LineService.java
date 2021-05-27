@@ -112,7 +112,7 @@ public class LineService {
         sectionDao.updateDistance(lineId, upStationId, downStationId, distance);
     }
 
-    public LineSectionResponse findSectionsById(final long lineId) {
+    public LineSectionResponse findSectionsByLineId(final long lineId) {
         List<Line> lines = lineDao.findAll();
 
         Line line = getLine(lines, lineId);

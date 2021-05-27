@@ -6,7 +6,6 @@ import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.dto.*;
 
 import java.net.URI;
-import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -50,7 +49,7 @@ public class LineController {
 
     @GetMapping("/{lineId}/sections")
     public ResponseEntity<LineSectionResponse> findSections(@PathVariable Long lineId) {
-        LineSectionResponse response = lineService.findSectionsById(lineId);
+        LineSectionResponse response = lineService.findSectionsByLineId(lineId);
         return ResponseEntity.ok(response);
     }
 

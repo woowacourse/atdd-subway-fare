@@ -2,25 +2,22 @@ package wooteco.subway.station.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.line.application.NoSuchLineException;
 import wooteco.subway.line.dao.LineDao;
+import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationLineResponse;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
-import wooteco.subway.station.dto.StationTransferResponse;
 
 import java.util.List;
 
 @Service
 public class StationService {
     private final StationDao stationDao;
-    private final LineDao lineDao;
 
-    public StationService(final StationDao stationDao, final LineDao lineDao) {
+    public StationService(final StationDao stationDao) {
         this.stationDao = stationDao;
-        this.lineDao = lineDao;
     }
 
     @Transactional
