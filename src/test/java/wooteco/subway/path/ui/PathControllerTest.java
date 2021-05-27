@@ -26,6 +26,7 @@ import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.auth.infrastructure.LoginInterceptor;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
+import wooteco.subway.path.application.FareCalculator;
 import wooteco.subway.path.application.PathService;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.domain.Station;
@@ -52,6 +53,7 @@ class PathControllerTest {
     public void findPath() throws Exception {
         //given
         TestDataLoader testDataLoader = new TestDataLoader();
+        FareCalculator fareCalculator = new FareCalculator();
         Line 신분당선 = testDataLoader.신분당선();
         int totalDistance =
             신분당선.getSections()
@@ -62,7 +64,11 @@ class PathControllerTest {
         List<Station> stations = Arrays
             .asList(testDataLoader.강남역(), testDataLoader.판교역(), testDataLoader.정자역());
         PathResponse pathResponse =
-            new PathResponse(StationResponse.listOf(stations), totalDistance);
+            new PathResponse(
+                StationResponse.listOf(stations),
+                totalDistance,
+                fareCalculator.calculateFare(totalDistance)
+            );
 
         Long source = testDataLoader.강남역().getId();
         Long target = testDataLoader.정자역().getId();
@@ -76,6 +82,8 @@ class PathControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("stations[*].name").value(
                 Matchers.containsInRelativeOrder("강남역", "판교역", "정자역")))
+            .andExpect(jsonPath("distance").value(20))
+            .andExpect(jsonPath("fare").value(1450))
             .andDo(document("path-find",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint())

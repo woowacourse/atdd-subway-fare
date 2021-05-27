@@ -13,6 +13,7 @@ import wooteco.subway.path.dto.PathResponse;
 @RequestMapping("/api")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class PathController {
+
     private PathService pathService;
 
     public PathController(PathService pathService) {
@@ -20,7 +21,10 @@ public class PathController {
     }
 
     @GetMapping("/paths")
-    public ResponseEntity<PathResponse> findPath(@RequestParam Long source, @RequestParam Long target) {
+    public ResponseEntity<PathResponse> findPath(
+        @RequestParam Long source,
+        @RequestParam Long target
+    ) {
         return ResponseEntity.ok(pathService.findPath(source, target));
     }
 }
