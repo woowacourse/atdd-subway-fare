@@ -1,4 +1,4 @@
-package wooteco.subway.exception.duplication;
+package wooteco.subway.exception.badrequest.duplication;
 
 public class StationNameDuplicatedException extends DuplicatedException {
     private static final String MESSAGE = "존재하는 역 이름입니다.";

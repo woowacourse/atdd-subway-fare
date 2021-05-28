@@ -1,5 +1,7 @@
 package wooteco.subway.fare.domain;
 
+import wooteco.subway.exception.badrequest.fare.InvalidFareArgumentException;
+
 import java.util.Arrays;
 import java.util.function.Predicate;
 
@@ -37,6 +39,6 @@ public enum DistanceFareStrategy implements FareStrategy {
         return Arrays.stream(DistanceFareStrategy.values())
                 .filter(distanceFareStrategy -> distanceFareStrategy.policy.test(distance))
                 .findFirst()
-                .orElseThrow(IllegalAccessError::new);
+                .orElseThrow(InvalidFareArgumentException::new);
     }
 }

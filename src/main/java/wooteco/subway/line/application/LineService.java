@@ -2,8 +2,8 @@ package wooteco.subway.line.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.exception.duplication.LineColorDuplicatedException;
-import wooteco.subway.exception.duplication.LineNameDuplicatedException;
+import wooteco.subway.exception.badrequest.duplication.LineColorDuplicatedException;
+import wooteco.subway.exception.badrequest.duplication.LineNameDuplicatedException;
 import wooteco.subway.exception.notfound.LineNotFoundException;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;

@@ -1,4 +1,4 @@
-package wooteco.subway.exception.addition;
+package wooteco.subway.exception.badrequest.addition;
 
 public class SectionCannotAddException extends CannotAddException {
     private static final String MESSAGE = "구간 추가에 필요한 정보가 잘못되었습니다.";

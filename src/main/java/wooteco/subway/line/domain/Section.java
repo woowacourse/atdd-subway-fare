@@ -1,6 +1,6 @@
 package wooteco.subway.line.domain;
 
-import wooteco.subway.exception.line.InvalidDistanceException;
+import wooteco.subway.exception.badrequest.line.InvalidDistanceException;
 import wooteco.subway.station.domain.Station;
 
 public class Section {

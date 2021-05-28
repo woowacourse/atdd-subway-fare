@@ -2,8 +2,8 @@ package wooteco.subway.station.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.exception.deletion.StationCannotDeleteException;
-import wooteco.subway.exception.duplication.StationNameDuplicatedException;
+import wooteco.subway.exception.badrequest.deletion.StationCannotDeleteException;
+import wooteco.subway.exception.badrequest.duplication.StationNameDuplicatedException;
 import wooteco.subway.exception.notfound.StationNotFoundException;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
@@ -31,7 +31,9 @@ public class StationService {
 
     private void validateNameDuplication(String name) {
         stationDao.findByName(name)
-                .ifPresent(station -> { throw new StationNameDuplicatedException(); });
+                .ifPresent(station -> {
+                    throw new StationNameDuplicatedException();
+                });
     }
 
     public Station findStationById(Long id) {

@@ -1,7 +1,7 @@
 package wooteco.subway.line.domain;
 
-import wooteco.subway.exception.addition.SectionCannotAddException;
-import wooteco.subway.exception.deletion.SectionCannotDeleteException;
+import wooteco.subway.exception.badrequest.addition.SectionCannotAddException;
+import wooteco.subway.exception.badrequest.deletion.SectionCannotDeleteException;
 import wooteco.subway.station.domain.Station;
 
 import java.util.ArrayList;
@@ -13,15 +13,15 @@ import java.util.stream.Collectors;
 public class Sections {
     private List<Section> sections = new ArrayList<>();
 
-    public List<Section> getSections() {
-        return sections;
-    }
-
     public Sections() {
     }
 
     public Sections(List<Section> sections) {
         this.sections = sections;
+    }
+
+    public List<Section> getSections() {
+        return sections;
     }
 
     public void addSection(Section section) {

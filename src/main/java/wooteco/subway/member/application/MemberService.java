@@ -3,7 +3,7 @@ package wooteco.subway.member.application;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.auth.WrongEmailException;
-import wooteco.subway.exception.duplication.EmailDuplicatedException;
+import wooteco.subway.exception.badrequest.duplication.EmailDuplicatedException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
