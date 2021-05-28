@@ -39,6 +39,12 @@ public class LineWithSectionsResponse {
                 .collect(Collectors.toList());
     }
 
+    private static List<SectionDto> toSectionDtos(Sections sections) {
+        return sections.getSections().stream()
+                .map((section) -> new SectionDto(section.getUpStation(), section.getDownStation(), section.getDistance()))
+                .collect(Collectors.toList());
+    }
+
     public Long getId() {
         return id;
     }
@@ -61,11 +67,5 @@ public class LineWithSectionsResponse {
 
     public LineResponse toLineResponse() {
         return new LineResponse(id, name, color, stations);
-    }
-
-    private static List<SectionDto> toSectionDtos(Sections sections) {
-        return sections.getSections().stream()
-                .map((section) -> new SectionDto(section.getUpStation(), section.getDownStation(), section.getDistance()))
-                .collect(Collectors.toList());
     }
 }
