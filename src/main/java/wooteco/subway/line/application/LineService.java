@@ -3,6 +3,7 @@ package wooteco.subway.line.application;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
@@ -27,6 +28,7 @@ public class LineService {
         this.stationService = stationService;
     }
 
+    @Transactional
     public LineResponse saveLine(LineRequest request) {
         Line persistLine = lineDao
             .insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
@@ -34,6 +36,7 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
+    @Transactional
     private Section addInitSection(Line line, LineRequest request) {
         if (request.getUpStationId() != null && request.getDownStationId() != null) {
             Station upStation = stationService.findStationById(request.getUpStationId());
@@ -64,16 +67,19 @@ public class LineService {
         return lineDao.findById(id);
     }
 
+    @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor(),
             lineUpdateRequest.getExtraFare()));
     }
 
+    @Transactional
     public void deleteLineById(Long id) {
         sectionDao.deleteByLineId(id);
         lineDao.deleteById(id);
     }
 
+    @Transactional
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
@@ -84,6 +90,7 @@ public class LineService {
         sectionDao.insertSections(line);
     }
 
+    @Transactional
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
