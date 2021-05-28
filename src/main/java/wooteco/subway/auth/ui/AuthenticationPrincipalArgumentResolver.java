@@ -11,7 +11,9 @@ import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.exception.AuthorizationException;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
-import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.domain.GuestUser;
+import wooteco.subway.member.domain.LoginUser;
+import wooteco.subway.member.domain.User;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
 
@@ -31,13 +33,8 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         WebDataBinderFactory binderFactory) {
         final String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
         if (Objects.isNull(credentials)) {
-            return new LoginMember(false);
+            return new GuestUser();
         }
-
-        final LoginMember member = authService.findMemberByToken(credentials);
-        if (member.getId() == null) {
-            throw new AuthorizationException("유효하지 않은 토큰입니다.");
-        }
-        return member;
+        return authService.findMemberByToken(credentials);
     }
 }

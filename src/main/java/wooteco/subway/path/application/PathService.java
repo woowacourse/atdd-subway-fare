@@ -6,7 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.InvalidInputException;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
-import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.domain.LoginUser;
+import wooteco.subway.member.domain.User;
 import wooteco.subway.path.domain.FareCalculator;
 import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.path.dto.PathResponse;
@@ -28,25 +29,25 @@ public class PathService {
         this.pathFinder = pathFinder;
     }
 
-    public PathResponse findPath(LoginMember loginMember, Long source, Long target) {
+    public PathResponse findPath(User user, Long source, Long target) {
         try {
             List<Line> lines = lineService.findLines();
             Station sourceStation = stationService.findStationById(source);
             Station targetStation = stationService.findStationById(target);
             SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
 
-            int totalFare = calculateTotalFare(loginMember, subwayPath);
+            int totalFare = calculateTotalFare(user, subwayPath);
             return PathResponseAssembler.assemble(subwayPath, totalFare);
         } catch (Exception e) {
             throw new InvalidInputException("경로를 찾을 수 없습니다.");
         }
     }
 
-    private int calculateTotalFare(LoginMember loginMember, SubwayPath subwayPath) {
+    private int calculateTotalFare(User user, SubwayPath subwayPath) {
         final int basicFare = FareCalculator.calculateFare(subwayPath.calculateDistance());
         final int extraFareWithLine = FareCalculator.calculateFareWithLine(basicFare, subwayPath.getLines());
-        if (loginMember.isLogin()) {
-            return FareCalculator.discountFareByAge(extraFareWithLine, loginMember.getAge());
+        if (user.isLogin()) {
+            return FareCalculator.discountFareByAge(extraFareWithLine, user.getAge());
         }
         return extraFareWithLine;
     }

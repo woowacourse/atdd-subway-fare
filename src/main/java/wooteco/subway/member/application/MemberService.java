@@ -4,8 +4,9 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.exception.DuplicatedException;
 import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.member.dao.MemberDao;
-import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.domain.LoginUser;
 import wooteco.subway.member.domain.Member;
+import wooteco.subway.member.domain.User;
 import wooteco.subway.member.dto.EmailRequest;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
@@ -41,22 +42,22 @@ public class MemberService {
         }
     }
 
-    public MemberResponse findMember(LoginMember loginMember) {
-        validateDuplicatedMemberEmail(loginMember.getEmail());
-        final Member member = memberDao.findByEmail(loginMember.getEmail());
+    public MemberResponse findMember(User user) {
+        validateDuplicatedMemberEmail(user.getEmail());
+        final Member member = memberDao.findByEmail(user.getEmail());
         return MemberResponse.of(member);
     }
 
-    public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
-        validateDuplicatedMemberEmail(loginMember.getEmail());
-        final Member member = memberDao.findByEmail(loginMember.getEmail());
+    public void updateMember(User user, MemberRequest memberRequest) {
+        validateDuplicatedMemberEmail(user.getEmail());
+        final Member member = memberDao.findByEmail(user.getEmail());
         memberDao.update(
             new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
     }
 
-    public void deleteMember(LoginMember loginMember) {
-        validateDuplicatedMemberEmail(loginMember.getEmail());
-        final Member member = memberDao.findByEmail(loginMember.getEmail());
+    public void deleteMember(User user) {
+        validateDuplicatedMemberEmail(user.getEmail());
+        final Member member = memberDao.findByEmail(user.getEmail());
         memberDao.deleteById(member.getId());
     }
 }

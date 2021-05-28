@@ -7,8 +7,9 @@ import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.exception.AuthorizationException;
 import wooteco.subway.member.dao.MemberDao;
-import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.domain.LoginUser;
 import wooteco.subway.member.domain.Member;
+import wooteco.subway.member.domain.User;
 
 @Service
 @Transactional
@@ -33,17 +34,14 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
-    public LoginMember findMemberByToken(String credentials) {
-        if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
-        }
-
+    public User findMemberByToken(String credentials) {
+        validateToken(credentials);
         String email = jwtTokenProvider.getPayload(credentials);
         try {
             Member member = memberDao.findByEmail(email);
-            return new LoginMember(member.getId(), member.getEmail(), member.getAge(), true);
+            return new LoginUser(member.getId(), member.getEmail(), member.getAge());
         } catch (Exception e) {
-            return new LoginMember();
+            throw new AuthorizationException("잘못된 토큰입니다.");
         }
     }
 
