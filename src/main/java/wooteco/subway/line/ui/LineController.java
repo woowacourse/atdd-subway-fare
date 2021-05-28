@@ -28,8 +28,6 @@ import wooteco.subway.line.dto.SectionRequest;
 @RequestMapping("/lines")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class LineController {
-    private static final String LINE_UPDATE_ERROR_MESSAGE = "노선 업데이트에 실패하였습니다. 잠시 후 다시 시도해주세요.";
-
     private final LineService lineService;
 
     public LineController(LineService lineService) {
@@ -60,38 +58,20 @@ public class LineController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity deleteLine(@PathVariable Long id) {
-        try {
-            lineService.deleteLineById(id);
-            return ResponseEntity.noContent().build();
-        } catch (HttpException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, LINE_UPDATE_ERROR_MESSAGE);
-        }
+        lineService.deleteLineById(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{lineId}/sections")
     public ResponseEntity addLineStation(@PathVariable Long lineId, @Valid @RequestBody SectionRequest sectionRequest) {
-        try {
-            lineService.addLineStation(lineId, sectionRequest);
-            return ResponseEntity.ok().build();
-        } catch (HttpException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, LINE_UPDATE_ERROR_MESSAGE);
-        }
+        lineService.addLineStation(lineId, sectionRequest);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{lineId}/sections")
     public ResponseEntity removeLineStation(@PathVariable Long lineId, @RequestParam Long stationId) {
-        try {
-            lineService.removeLineStation(lineId, stationId);
-            return ResponseEntity.ok().build();
-        } catch (HttpException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, LINE_UPDATE_ERROR_MESSAGE);
-        }
+        lineService.removeLineStation(lineId, stationId);
+        return ResponseEntity.ok().build();
     }
 
     @ExceptionHandler(SQLException.class)

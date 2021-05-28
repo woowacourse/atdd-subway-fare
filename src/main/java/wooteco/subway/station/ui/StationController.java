@@ -42,14 +42,8 @@ public class StationController {
 
     @DeleteMapping("/stations/{id}")
     public ResponseEntity deleteStation(@PathVariable Long id) {
-        try {
-            stationService.deleteStationById(id);
-            return ResponseEntity.noContent().build();
-        } catch (HttpException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, "역 업데이트에 실패하였습니다. 잠시 후 다시 시도해주세요.");
-        }
+        stationService.deleteStationById(id);
+        return ResponseEntity.noContent().build();
     }
 
     @ExceptionHandler(SQLException.class)

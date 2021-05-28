@@ -15,7 +15,7 @@ import wooteco.subway.exception.HttpException;
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class AuthController {
-    private AuthService authService;
+    private final AuthService authService;
 
     public AuthController(AuthService authService) {
         this.authService = authService;
@@ -23,13 +23,7 @@ public class AuthController {
 
     @PostMapping("/login/token")
     public ResponseEntity<TokenResponse> login(@Valid @RequestBody TokenRequest request) {
-        try {
-            TokenResponse token = authService.login(request);
-            return ResponseEntity.ok().body(token);
-        } catch (HttpException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, "로그인에 실패하였습니다. 잠시 후 다시 시도해주세요.");
-        }
+        TokenResponse token = authService.login(request);
+        return ResponseEntity.ok().body(token);
     }
 }
