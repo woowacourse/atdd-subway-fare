@@ -33,7 +33,7 @@ public class MemberService {
 
     @Transactional
     public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
-        validateToAlreadyExistEmail(memberRequest);
+        validateToAlreadyExistEmailExceptMe(memberRequest, loginMember);
         Member member = memberDao.findByEmail(loginMember.getEmail());
         memberDao.update(
             new Member(
@@ -47,6 +47,12 @@ public class MemberService {
 
     private void validateToAlreadyExistEmail(MemberRequest request) {
         if (memberDao.existsByEmail(request.getEmail())) {
+            throw new DuplicateException("이미 존재하는 email 입니다.");
+        }
+    }
+
+    private void validateToAlreadyExistEmailExceptMe(MemberRequest request, LoginMember loginMember) {
+        if (memberDao.existsByEmailWithoutId(request.getEmail(), loginMember.getId())) {
             throw new DuplicateException("이미 존재하는 email 입니다.");
         }
     }

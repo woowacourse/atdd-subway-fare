@@ -6,6 +6,7 @@ import wooteco.subway.exception.DuplicateException;
 import wooteco.subway.exception.SubwayException;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.infrastructure.dao.LineDao;
+import wooteco.subway.line.infrastructure.dao.SectionDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.infrastructure.dao.StationDao;
 import wooteco.subway.station.ui.dto.LineResponse;
@@ -25,10 +26,12 @@ import static java.util.stream.Collectors.toMap;
 public class StationService {
 
     private final StationDao stationDao;
+    private final SectionDao sectionDao;
     private final LineDao lineDao;
 
-    public StationService(StationDao stationDao, LineDao lineDao) {
+    public StationService(StationDao stationDao, SectionDao sectionDao, LineDao lineDao) {
         this.stationDao = stationDao;
+        this.sectionDao = sectionDao;
         this.lineDao = lineDao;
     }
 
@@ -72,7 +75,7 @@ public class StationService {
     }
 
     private void validateDeletableStation(Long id) {
-        if(stationDao.existsById(id)) {
+        if(sectionDao.existsByStationId(id)) {
             throw new SubwayException("노선에 등록된 역은 삭제할 수 없습니다.");
         }
     }

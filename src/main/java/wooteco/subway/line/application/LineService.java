@@ -2,6 +2,7 @@ package wooteco.subway.line.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.exception.DuplicateException;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.infrastructure.dao.LineDao;
@@ -37,10 +38,23 @@ public class LineService {
 
     @Transactional
     public LineResponse saveLine(LineRequest request) {
+        validateSavableLine(request);
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
         persistLine.addSection(addInitSection(persistLine, request));
 
         return LineResponse.of(persistLine);
+    }
+
+    private void validateSavableLine(LineRequest request) {
+        if (lineDao.existsByColor(request.getColor())) {
+            throw new DuplicateException("이미 존재하는 노선의 색깔입니다.");
+        }
+    }
+
+    private void validateUpdatableLine(Long id, LineRequest lineUpdateRequest) {
+        if (lineDao.existsByColorWithoutId(lineUpdateRequest.getColor(), id)) {
+            throw new DuplicateException("이미 존재하는 노선의 색깔입니다.");
+        }
     }
 
     private Section addInitSection(Line line, LineRequest request) {
@@ -76,6 +90,7 @@ public class LineService {
 
     @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
+        validateUpdatableLine(id, lineUpdateRequest);
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 

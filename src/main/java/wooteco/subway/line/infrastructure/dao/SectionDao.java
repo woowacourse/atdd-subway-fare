@@ -74,4 +74,9 @@ public class SectionDao {
         jdbcTemplate.batchUpdate(sql, params);
     }
 
+    public boolean existsByStationId(Long id) {
+        String sql = "select exists (select * from section where up_station_id = ? or down_station_id = ?)";
+
+        return jdbcTemplate.queryForObject(sql, boolean.class, id, id);
+    }
 }

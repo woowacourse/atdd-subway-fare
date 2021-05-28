@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.line.ui.dto.LineRequest;
 import wooteco.subway.station.ui.dto.LineResponse;
@@ -75,7 +76,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철역_제거_요청(stationResponse);
 
         // then
-        지하철역_삭제됨(response);
+         지하철역_삭제됨(response);
     }
 
     @DisplayName("지항철 역 목록 조회")

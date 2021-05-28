@@ -1,5 +1,6 @@
 package wooteco.subway.line.domain;
 
+import wooteco.subway.exception.SubwayException;
 import wooteco.subway.station.domain.Station;
 
 import java.util.Objects;
@@ -12,6 +13,7 @@ public class Section {
     private final int distance;
 
     public Section(Long id, Station upStation, Station downStation, int distance) {
+        validateThatHasNotSameStations(upStation, downStation);
         this.id = id;
         this.upStation = upStation;
         this.downStation = downStation;
@@ -20,6 +22,12 @@ public class Section {
 
     public Section(Station upStation, Station downStation, int distance) {
         this(null, upStation, downStation, distance);
+    }
+
+    private void validateThatHasNotSameStations(Station upStation, Station downStation) {
+        if (upStation.equals(downStation)) {
+            throw new SubwayException("구간은 같은 역을 상행역과 하행역으로 가질 수 없습니다.");
+        }
     }
 
     public boolean hasSameUpStationId(Long id) {

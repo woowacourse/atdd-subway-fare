@@ -32,6 +32,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     private StationResponse downStation;
     private LineRequest lineRequest1;
     private LineRequest lineRequest2;
+    private LineRequest lineRequest3;
 
     @BeforeEach
     public void setUp() {
@@ -43,6 +44,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 10);
         lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 15);
+        lineRequest3 = new LineRequest("신신분당선", "bg-blue-600", 강남역.getId(), downStation.getId(), 15);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -55,7 +57,29 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_생성됨(response);
     }
 
-    @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
+    @DisplayName("한 글자의 지하철 노선 이름으로 노선을 생성한다.")
+    @Test
+    void createLineWithOneCharacterName() {
+        // when
+        LineRequest 한_글자_노선 = new LineRequest("선", "bg-red-600", 강남역.getId(), downStation.getId(), 10);
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(한_글자_노선);
+
+        // then
+        지하철_노선_생성_실패됨(response);
+    }
+
+    @DisplayName("상행역과 하행역을 같은 역으로 노선을 생성한다.")
+    @Test
+    void createLineWithSameStations() {
+        // when
+        LineRequest invalidLine = new LineRequest("백기선", "bg-red-600", 강남역.getId(), 강남역.getId(), 10);
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(invalidLine);
+
+        // then
+        지하철_노선_생성_실패됨(response);
+    }
+
+    @DisplayName("기존에 존재하는 지하철 노선 이름으로 노선을 생성한다.")
     @Test
     void createLineWithDuplicateName() {
         // given
@@ -68,12 +92,25 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_생성_실패됨(response);
     }
 
+    @DisplayName("기존에 존재하는 지하철 색깔로 노선을 생성한다.")
+    @Test
+    void createLineWithDuplicateColor() {
+        // given
+        지하철_노선_등록되어_있음(lineRequest1);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest2);
+
+        // then
+        지하철_노선_생성_실패됨(response);
+    }
+
     @DisplayName("지하철 노선 목록을 조회한다.")
     @Test
     void getLines() {
         // given
         LineResponse lineResponse1 = 지하철_노선_등록되어_있음(lineRequest1);
-        LineResponse lineResponse2 = 지하철_노선_등록되어_있음(lineRequest2);
+        LineResponse lineResponse2 = 지하철_노선_등록되어_있음(lineRequest3);
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청();

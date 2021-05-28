@@ -49,6 +49,11 @@ public class MemberDao {
         return jdbcTemplate.queryForObject(sql, boolean.class, email);
     }
 
+    public boolean existsByEmailWithoutId(String email, Long id) {
+        String sql = "select exists (select * from member where email = ? and id <> ?)";
+        return jdbcTemplate.queryForObject(sql, boolean.class, email, id);
+    }
+
     public void deleteById(Long id) {
         String sql = "delete from member where id = ?";
         jdbcTemplate.update(sql, id);
@@ -63,5 +68,4 @@ public class MemberDao {
         String sql = "select * from member where email = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, email);
     }
-    
 }
