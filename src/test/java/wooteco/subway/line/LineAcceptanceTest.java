@@ -17,6 +17,7 @@ import wooteco.subway.exception.ExceptionResponse;
 import wooteco.subway.line.dto.LineInfoResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
+import wooteco.subway.line.dto.LineResponseWithSection;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.Arrays;
@@ -208,6 +209,21 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(exceptionResponse.getError()).isEqualTo("NO_SUCH_SECTION");
     }
 
+    @DisplayName("지하철 전체 노선과 구간을 조회한다.")
+    @Test
+    void getMap() {
+        // given
+        LineResponse lineResponse1 = 지하철_노선_등록되어_있음(accessToken, lineRequest1);
+        LineResponse lineResponse2 = 지하철_노선_등록되어_있음(accessToken, lineRequest2);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선도_조회_요청();
+
+        // then
+        지하철_노선_목록_응답됨(response);
+        지하철_노선도_포함됨(response, Arrays.asList(lineResponse1, lineResponse2));
+    }
+
     public static LineResponse 지하철_노선_등록되어_있음(String accessToken, String name, String color, StationResponse upStation, StationResponse downStation, int distance, int extraFare) {
         LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance, extraFare);
         return 지하철_노선_등록되어_있음(accessToken, lineRequest);
@@ -236,6 +252,15 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .when().get("/api/lines")
                 .then().log().all()
                 .extract();
+    }
+
+    private ExtractableResponse<Response> 지하철_노선도_조회_요청() {
+        return RestAssured
+            .given().log().all()
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/api/lines/map")
+            .then().log().all()
+            .extract();
     }
 
     public static ExtractableResponse<Response> 지하철_노선_조회_요청(String accessToken, Long lineId) {
@@ -291,12 +316,24 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철_노선_목록_포함됨(ExtractableResponse<Response> response, List<LineResponse> createdResponses) {
         List<Long> expectedLineIds = createdResponses.stream()
-                .map(it -> it.getId())
+                .map(LineResponse::getId)
                 .collect(Collectors.toList());
 
         List<Long> resultLineIds = response.jsonPath().getList(".", LineInfoResponse.class).stream()
                 .map(LineInfoResponse::getId)
                 .collect(Collectors.toList());
+
+        assertThat(resultLineIds).containsAll(expectedLineIds);
+    }
+
+    private void 지하철_노선도_포함됨(ExtractableResponse<Response> response, List<LineResponse> lineResponses) {
+        List<Long> expectedLineIds = lineResponses.stream()
+            .map(LineResponse::getId)
+            .collect(Collectors.toList());
+
+        List<Long> resultLineIds = response.jsonPath().getList(".", LineResponseWithSection.class).stream()
+            .map(LineResponseWithSection::getId)
+            .collect(Collectors.toList());
 
         assertThat(resultLineIds).containsAll(expectedLineIds);
     }

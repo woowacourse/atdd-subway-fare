@@ -6,6 +6,7 @@ import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.dto.LineInfoResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
+import wooteco.subway.line.dto.LineResponseWithSection;
 import wooteco.subway.line.dto.SectionRequest;
 
 import java.net.URI;
@@ -63,6 +64,11 @@ public class LineController {
     public ResponseEntity removeLineStation(@PathVariable Long lineId, @RequestParam Long stationId) {
         lineService.removeLineStation(lineId, stationId);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/map")
+    public ResponseEntity<List<LineResponseWithSection>> getMap() {
+        return ResponseEntity.ok(lineService.findMap());
     }
 
     @ExceptionHandler(SQLException.class)

@@ -3,13 +3,12 @@ package wooteco.subway.line.application;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import wooteco.subway.exception.DuplicatedLineException;
 import wooteco.subway.exception.NoAnyLineException;
 import wooteco.subway.exception.NoSuchLineException;
 import wooteco.subway.exception.NoSuchSectionException;
-import wooteco.subway.exception.NoSuchStationException;
-import wooteco.subway.exception.SameStationsInSectionException;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
@@ -17,10 +16,16 @@ import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.dto.LineInfoResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
+import wooteco.subway.line.dto.LineResponseWithSection;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.line.dto.SectionResponse;
+import wooteco.subway.line.dto.TransferLineResponse;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -125,5 +130,33 @@ public class LineService {
         if(sectionDao.deleteByLineId(id) == 0) {
             throw new NoSuchSectionException();
         }
+    }
+
+    public List<LineResponseWithSection> findMap() {
+        List<Line> lines = lineDao.findAll();
+        List<LineResponseWithSection> lineResponsesWithSections = new ArrayList<>();
+        for (Line line : lines) {
+            List<SectionResponse> sectionResponses = line.getSections().getSections().stream()
+                .map(section -> matchSectionsByLine(line, section))
+                .collect(Collectors.toList());
+            lineResponsesWithSections.add(new LineResponseWithSection(line.getId(), line.getName(), line.getColor(), line.getTotalDistance(), sectionResponses));
+        }
+        lineResponsesWithSections.sort(Comparator.comparing(LineResponseWithSection::getName));
+        return lineResponsesWithSections;
+    }
+
+    private SectionResponse matchSectionsByLine(Line line, Section section) {
+        Station upStation = section.getUpStation();
+        List<Long> lineIdsByStationId = sectionDao.findLineIdsByStationId(upStation.getId());
+        List<Line> linesByStationId = lineIdsByStationId.stream()
+            .distinct()
+            .filter(id -> !line.getId().equals(id))
+            .map(id -> lineDao.findById(id))
+            .collect(Collectors.toList());
+        List<TransferLineResponse> lineResponses = linesByStationId.stream()
+                .filter(line1 -> !line1.equals(line))
+                .map(line1 -> new TransferLineResponse(line1.getId(), line1.getName(), line1.getColor()))
+                .collect(Collectors.toList());
+        return new SectionResponse(upStation.getId(), upStation.getName(), section.getDistance(), lineResponses);
     }
 }
