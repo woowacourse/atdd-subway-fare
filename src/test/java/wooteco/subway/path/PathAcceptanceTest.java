@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
+import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.dto.StationResponse;
@@ -58,6 +59,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * |                        |
      * 남부터미널역  --- *3호선* ---   양재
      */
+
+    /**
+     * <구호선>
+     * 가양역 -9- 등촌역 -40- 염창역 -1- 당산역 -1- 여의도역
+     */
     @BeforeEach
     public void setUp() {
         super.setUp();
@@ -78,6 +84,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-800", 교대역, 양재역, 10);
 
         구호선 = 지하철_노선_등록되어_있음("구호선", "황금색", 가양역, 등촌역, 9);
+
         지하철_구간_등록되어_있음(구호선, 등촌역, 염창역, 40);
         지하철_구간_등록되어_있음(구호선, 염창역, 당산역, 1);
         지하철_구간_등록되어_있음(구호선, 당산역, 여의도역, 1);
@@ -296,6 +303,50 @@ public class PathAcceptanceTest extends AcceptanceTest {
         적절한_경로_응답됨(response, Lists.newArrayList(가양역, 등촌역, 염창역, 당산역, 여의도역));
         총_거리가_응답됨(response, 51);
         총_요금이_응답됨(response, 0);
+    }
+
+    @DisplayName("구간 추가 요금이 존재하는 경우 요금에 더해진다.")
+    @Test
+    void testFindPathAndFareWhenExistsExtraFare() {
+        // when
+        LineRequest lineRequest = new LineRequest("추가선", "흰색", 9L, 1L, 49, 900);
+        지하철_노선_등록되어_있음(lineRequest);
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(성인_사용자, 9L, 1L);
+
+        //then
+        적절한_경로_응답됨(response, Lists.newArrayList(여의도역, 강남역));
+        총_거리가_응답됨(response, 49);
+        총_요금이_응답됨(response, 2950);
+    }
+
+    @DisplayName("구간 추가 요금이 존재하는 경우 요금에 더해진다. - 청소년")
+    @Test
+    void testFindPathAndFareWhenExistsExtraFareAndTeenager() {
+        // when
+        LineRequest lineRequest = new LineRequest("추가선", "흰색", 9L, 1L, 49, 900);
+        지하철_노선_등록되어_있음(lineRequest);
+        TokenResponse 청소년 = 로그인(EMAIL_OF_TEENAGER, PASSWORD, TEENAGER);
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(청소년, 9L, 1L);
+
+        //then
+        적절한_경로_응답됨(response, Lists.newArrayList(여의도역, 강남역));
+        총_거리가_응답됨(response, 49);
+        총_요금이_응답됨(response, 2080);
+    }
+
+    @DisplayName("구간 추가 요금이 존재하는 경우 요금에 더해진다. - 청소년")
+    @Test
+    void testFindPathAndFareWhenExistsExtraFareAndChild() {
+        // when
+        LineRequest lineRequest = new LineRequest("추가선", "흰색", 9L, 1L, 49, 900);
+        지하철_노선_등록되어_있음(lineRequest);
+        TokenResponse 어린이 = 로그인(EMAIL_OF_CHILD, PASSWORD, CHILD);
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(어린이, 9L, 1L);
+
+        //then
+        적절한_경로_응답됨(response, Lists.newArrayList(여의도역, 강남역));
+        총_거리가_응답됨(response, 49);
+        총_요금이_응답됨(response, 1300);
     }
 
     private void 총_요금이_응답됨(ExtractableResponse<Response> response, int fare) {

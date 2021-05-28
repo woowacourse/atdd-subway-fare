@@ -33,12 +33,6 @@ public class LineResponse {
         return new LineResponse(line.getId(), line.getName(), line.getColor(), stations, sections);
     }
 
-    public static List<LineResponse> listOf(List<Line> lines) {
-        return lines.stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList());
-    }
-
     public Long getId() {
         return id;
     }

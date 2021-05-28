@@ -15,8 +15,8 @@ public class FarePolicy {
         this.fare = fare;
     }
 
-    public static FarePolicy of(int distance) {
-        return new FarePolicy(calculateBy(distance));
+    public static FarePolicy of(int distance, int extraFare) {
+        return new FarePolicy(calculateBy(distance) + extraFare);
     }
 
     private static int calculateBy(int distance) {

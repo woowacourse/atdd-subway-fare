@@ -36,6 +36,6 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         if (member.getId() == null) {
             throw new AuthorizationException("이메일 혹은 비밀번호를 다시 확인해주세요");
         }
-        return member;
+        return Member.loginMember(member.getId(), member.getEmail(), member.getAge());
     }
 }

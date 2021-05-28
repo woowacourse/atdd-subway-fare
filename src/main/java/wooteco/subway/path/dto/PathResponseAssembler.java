@@ -16,7 +16,8 @@ public class PathResponseAssembler {
                 .collect(Collectors.toList());
 
         int distance = subwayPath.calculateDistance();
-        FarePolicy fare = FarePolicy.of(distance);
+        int extraFare = subwayPath.calculateExtraFare();
+        FarePolicy fare = FarePolicy.of(distance, extraFare);
         FareTable fareTable = FareTable.of(fare);
         int defaultFare = fareTable.findByAge(fare, member.getAge());
 

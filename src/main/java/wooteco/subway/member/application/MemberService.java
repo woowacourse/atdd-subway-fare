@@ -26,28 +26,24 @@ public class MemberService {
     }
 
     public MemberResponse findMember(Member loginMember) {
-        try {
-            Member member = memberDao.findByEmail(loginMember.getEmail());
-            return MemberResponse.of(member);
-        } catch(NotFoundException e) {
-            throw new NotFoundException("존재하지 않는 회원입니다");
-        }
+        Member member = findMemberByEmail(loginMember);
+        return MemberResponse.of(member);
     }
 
     public void updatePassword(Member loginMember, PasswordRequest req) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
+        Member member = findMemberByEmail(loginMember);
         member.validatePassword(req.getCurrentPassword(), req.getNewPassword());
         memberDao.update(new Member(member.getId(), member.getEmail(), req.getNewPassword(), member.getAge()));
     }
 
-    public AgeResponse updateAge(Member loginMember, AgeRequest age) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
-        memberDao.update(new Member(member.getId(), member.getEmail(), member.getPassword(), age.getAge()));
-        return new AgeResponse(member.getId(), age.getAge());
+    public AgeResponse updateAge(Member loginMember, AgeRequest req) {
+        Member member = findMemberByEmail(loginMember);
+        memberDao.update(new Member(member.getId(), member.getEmail(), member.getPassword(), req.getAge()));
+        return new AgeResponse(member.getId(), req.getAge());
     }
 
     public void deleteMember(Member loginMember) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
+        Member member = findMemberByEmail(loginMember);
         memberDao.deleteById(member.getId());
     }
 
@@ -55,5 +51,17 @@ public class MemberService {
         if (memberDao.checkExistsMemberBy(email)) {
             throw new DuplicatedException("중복된 이메일이 존재합니다");
         }
+    }
+
+    private void checkExistsMember(Member member) {
+        if (member == null) {
+            throw new NotFoundException("존재하지 않는 회원입니다");
+        }
+    }
+
+    private Member findMemberByEmail(Member loginMember) {
+        Member member = memberDao.findByEmail(loginMember.getEmail());
+        checkExistsMember(member);
+        return member;
     }
 }
