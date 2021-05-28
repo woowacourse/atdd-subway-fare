@@ -6,16 +6,29 @@ import wooteco.subway.station.dto.StationWithTransferLinesAndNextDistanceRespons
 import java.util.List;
 
 public class LineWithTransferLinesAndNextDistanceResponse {
-    private final Long id;
-    private final String name;
-    private final String color;
-    private final List<StationWithTransferLinesAndNextDistanceResponse> stations;
+    private Long id;
+    private String name;
+    private String color;
+    private int extraFare;
+    private List<StationWithTransferLinesAndNextDistanceResponse> stations;
+
+    public LineWithTransferLinesAndNextDistanceResponse() {
+    }
 
     public LineWithTransferLinesAndNextDistanceResponse(Long id, String name, String color,
                                                         List<StationWithTransferLinesAndNextDistanceResponse> stations) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.stations = stations;
+    }
+
+    public LineWithTransferLinesAndNextDistanceResponse(Long id, String name, String color, int extraFare,
+                                                        List<StationWithTransferLinesAndNextDistanceResponse> stations) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
+        this.extraFare = extraFare;
         this.stations = stations;
     }
 
@@ -34,6 +47,10 @@ public class LineWithTransferLinesAndNextDistanceResponse {
 
     public String getColor() {
         return color;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 
     public List<StationWithTransferLinesAndNextDistanceResponse> getStations() {

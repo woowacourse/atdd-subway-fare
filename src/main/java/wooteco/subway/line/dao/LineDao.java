@@ -27,7 +27,8 @@ public class LineDao {
             new Line(
                     rs.getLong("id"),
                     rs.getString("name"),
-                    rs.getString("color")
+                    rs.getString("color"),
+                    rs.getInt("extra_fare")
             );
 
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
@@ -52,13 +53,14 @@ public class LineDao {
         params.put("id", line.getId());
         params.put("name", line.getName());
         params.put("color", line.getColor());
+        params.put("extra_fare", line.getExtraFare());
 
         Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new Line(lineId, line.getName(), line.getColor());
+        return new Line(lineId, line.getName(), line.getColor(), line.getExtraFare());
     }
 
     public Line findById(Long id) {
-        String sql = "select L.id as line_id, L.name as line_name, L.color as line_color, " +
+        String sql = "select L.id as line_id, L.name as line_name, L.color as line_color, L.extra_fare as line_extra_fare, " +
                 "S.id as section_id, S.distance as section_distance, " +
                 "UST.id as up_station_id, UST.name as up_station_name, " +
                 "DST.id as down_station_id, DST.name as down_station_name " +
@@ -78,7 +80,7 @@ public class LineDao {
     }
 
     public List<Line> findAll() {
-        String sql = "select L.id as line_id, L.name as line_name, L.color as line_color, " +
+        String sql = "select L.id as line_id, L.name as line_name, L.color as line_color, L.extra_fare as line_extra_fare, " +
                 "S.id as section_id, S.distance as section_distance, " +
                 "UST.id as up_station_id, UST.name as up_station_name, " +
                 "DST.id as down_station_id, DST.name as down_station_name " +
@@ -88,7 +90,9 @@ public class LineDao {
                 "left outer join STATION DST on S.down_station_id = DST.id ";
 
         List<Map<String, Object>> result = jdbcTemplate.queryForList(sql);
-        Map<Long, List<Map<String, Object>>> resultByLine = result.stream().collect(groupingBy(it -> (Long) it.get("line_id")));
+        Map<Long, List<Map<String, Object>>> resultByLine = result.stream()
+                .collect(groupingBy(it -> (Long) it.get("line_id")));
+
         return resultByLine.values().stream()
                 .map(this::mapLine)
                 .collect(toList());
@@ -105,6 +109,7 @@ public class LineDao {
                 (Long) result.get(0).get("LINE_ID"),
                 (String) result.get(0).get("LINE_NAME"),
                 (String) result.get(0).get("LINE_COLOR"),
+                (Integer) result.get(0).get("LINE_EXTRA_FARE"),
                 new Sections(sections));
     }
 

@@ -31,8 +31,15 @@ public class LineAcceptanceTest extends AcceptanceTest {
     private LineRequest lineRequest1;
     private LineRequest lineRequest2;
 
-    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
+    public static LineResponse 지하철_노선_등록되어_있음(String name, String color,
+                                              StationResponse upStation, StationResponse downStation, int distance) {
         LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance);
+        return 지하철_노선_등록되어_있음(lineRequest);
+    }
+
+    public static LineResponse 지하철_노선_등록되어_있음_추가요금(String name, String color, int extraFare,
+                                                   StationResponse upStation, StationResponse downStation, int distance) {
+        LineRequest lineRequest = new LineRequest(name, color, extraFare, upStation.getId(), downStation.getId(), distance);
         return 지하철_노선_등록되어_있음(lineRequest);
     }
 

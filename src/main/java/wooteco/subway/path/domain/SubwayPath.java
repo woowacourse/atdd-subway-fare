@@ -30,6 +30,7 @@ public class SubwayPath {
         int fare = 1_250;
 
         fare += calculateAdditionalFareByDistance(distance);
+        fare += calculateAdditionalFareByLine();
 
         return fare;
     }
@@ -54,5 +55,12 @@ public class SubwayPath {
 
     private int calculateOverFare(int distance, int overDistance) {
         return (int) ((Math.ceil((distance - 1) / overDistance) + 1) * 100);
+    }
+
+    private int calculateAdditionalFareByLine() {
+        return sectionEdges.stream()
+                .mapToInt(sectionEdge -> sectionEdge.getLine().getExtraFare())
+                .max()
+                .orElse(0);
     }
 }
