@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.exception.DuplicatedException;
 import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.member.dao.MemberDao;
-import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.*;
 
@@ -26,7 +25,7 @@ public class MemberService {
         }
     }
 
-    public MemberResponse findMember(LoginMember loginMember) {
+    public MemberResponse findMember(Member loginMember) {
         try {
             Member member = memberDao.findByEmail(loginMember.getEmail());
             return MemberResponse.of(member);
@@ -35,19 +34,19 @@ public class MemberService {
         }
     }
 
-    public void updatePassword(LoginMember loginMember, PasswordRequest req) {
+    public void updatePassword(Member loginMember, PasswordRequest req) {
         Member member = memberDao.findByEmail(loginMember.getEmail());
         member.validatePassword(req.getCurrentPassword(), req.getNewPassword());
         memberDao.update(new Member(member.getId(), member.getEmail(), req.getNewPassword(), member.getAge()));
     }
 
-    public AgeResponse updateAge(LoginMember loginMember, AgeRequest age) {
+    public AgeResponse updateAge(Member loginMember, AgeRequest age) {
         Member member = memberDao.findByEmail(loginMember.getEmail());
         memberDao.update(new Member(member.getId(), member.getEmail(), member.getPassword(), age.getAge()));
         return new AgeResponse(member.getId(), age.getAge());
     }
 
-    public void deleteMember(LoginMember loginMember) {
+    public void deleteMember(Member loginMember) {
         Member member = memberDao.findByEmail(loginMember.getEmail());
         memberDao.deleteById(member.getId());
     }

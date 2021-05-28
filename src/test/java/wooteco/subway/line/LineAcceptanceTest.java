@@ -46,7 +46,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void createLine() {
         // when
-        ExtractableResponse<Response> response = 지하철_노선_생성_요청(사용자, 신분당선);
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(성인_사용자, 신분당선);
 
         // then
         지하철_노선_생성됨(response);
@@ -58,7 +58,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // when
         LineRequest 구호선 = new LineRequest("구호선", "황금색", 광교역.getId(), 3L, 4);
 
-        ExtractableResponse<Response> response = 지하철_노선_생성_요청(사용자, 구호선);
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(성인_사용자, 구호선);
 
         // then
         assertThat(response.as(ExceptionResponse.class).getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
@@ -70,7 +70,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // when
         LineRequest 구호선 = new LineRequest("구호선", "황금색", 광교역.getId(), 광교역.getId(), 4);
 
-        ExtractableResponse<Response> response = 지하철_노선_생성_요청(사용자, 구호선);
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(성인_사용자, 구호선);
 
         // then
         assertThat(response.as(ExceptionResponse.class).getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -93,7 +93,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_등록되어_있음(신분당선);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_생성_요청(사용자, 신분당선);
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(성인_사용자, 신분당선);
 
         // then
         지하철_노선_생성_실패됨(response);
@@ -135,7 +135,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         LineRequest 구호선 = new LineRequest("구호선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_수정_요청(사용자, lineResponse, 구호선);
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(성인_사용자, lineResponse, 구호선);
 
         // then
         지하철_노선_수정됨(response);
@@ -149,7 +149,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         LineRequest 구호선 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_수정_요청(사용자, lineResponse, 구호선);
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(성인_사용자, lineResponse, 구호선);
 
         // then
         지하철_노선_수정됨(response);
@@ -163,7 +163,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         LineRequest 새로운노선 = new LineRequest("새로운노선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_수정_요청(사용자, lineResponse, 새로운노선);
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(성인_사용자, lineResponse, 새로운노선);
 
         // then
         지하철_노선_수정됨(response);
@@ -177,7 +177,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         LineRequest 새로운노선 = new LineRequest("신분당선", "bg-red-700", 강남역.getId(), 광교역.getId(), 10);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_수정_요청(사용자, lineResponse, 새로운노선);
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(성인_사용자, lineResponse, 새로운노선);
 
         // then
         지하철_노선_수정됨(response);
@@ -192,7 +192,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         LineRequest 새로운노선 = new LineRequest("신분당선", "bg-red-700", 강남역.getId(), 광교역.getId(), 15);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_수정_요청(사용자, lineResponse, 새로운노선);
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(성인_사용자, lineResponse, 새로운노선);
 
         // then
         assertThat(response.as(ExceptionResponse.class).getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -221,7 +221,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         LineRequest 중복노선 = new LineRequest("구신분당선", "빨간색", 2L, 1L, 2);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_수정_요청(사용자, lineResponse, 중복노선);
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(성인_사용자, lineResponse, 중복노선);
 
         // then
         지하철_노선_생성_실패됨(response);
@@ -234,7 +234,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         LineResponse lineResponse = 지하철_노선_등록되어_있음(신분당선);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_제거_요청(사용자, lineResponse);
+        ExtractableResponse<Response> response = 지하철_노선_제거_요청(성인_사용자, lineResponse);
 
         // then
         지하철_노선_삭제됨(response);
@@ -259,7 +259,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     }
 
     public static LineResponse 지하철_노선_등록되어_있음(LineRequest lineRequest) {
-        return 지하철_노선_생성_요청(사용자, lineRequest).as(LineResponse.class);
+        return 지하철_노선_생성_요청(성인_사용자, lineRequest).as(LineResponse.class);
     }
 
     public static ExtractableResponse<Response> 지하철_노선_생성_요청(TokenResponse token, LineRequest params) {

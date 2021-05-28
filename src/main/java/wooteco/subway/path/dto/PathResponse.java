@@ -14,10 +14,10 @@ public class PathResponse {
     public PathResponse() {
     }
 
-    public PathResponse(List<StationResponse> stations, int distance, FareTable fareTable) {
+    public PathResponse(List<StationResponse> stations, int distance, int defaultFare, FareTable fareTable) {
         this.stations = stations;
         this.distance = distance;
-        this.defaultFare = fareTable.getAdultFare();
+        this.defaultFare = defaultFare;
         this.fareResponse = FareResponse.of(fareTable);
     }
 

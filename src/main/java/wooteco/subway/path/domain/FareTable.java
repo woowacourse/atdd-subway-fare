@@ -8,7 +8,7 @@ public class FareTable {
     private final int childFare;
     private final int babyFare;
 
-    private FareTable(int adultFare, int teenagerFare, int childFare, int babyFare, FarePolicy fare) {
+    private FareTable(int adultFare, int teenagerFare, int childFare, int babyFare) {
         this.adultFare = adultFare;
         this.teenagerFare = teenagerFare;
         this.childFare = childFare;
@@ -16,7 +16,7 @@ public class FareTable {
     }
 
     public static FareTable of(FarePolicy fare) {
-        return new FareTable(fare.apply(ADULT), fare.apply(TEENAGER), fare.apply(CHILD), fare.apply(CHILD), fare);
+        return new FareTable(fare.apply(ADULT), fare.apply(TEENAGER), fare.apply(CHILD), fare.apply(CHILD));
     }
 
     public int findByAge(FarePolicy fare, int age) {

@@ -1,6 +1,5 @@
 package wooteco.subway.line.application;
 
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import wooteco.subway.exception.InvalidInsertException;
 import wooteco.subway.line.dao.LineDao;
@@ -27,12 +26,18 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        try{
-            Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
-            persistLine.addSection(addInitSection(persistLine, request));
-            return LineResponse.of(persistLine);
-        } catch (DuplicateKeyException e) {
-            throw new InvalidInsertException("지하철 노선 이름이나 색깔이 이미 존재합니다");
+        validatesNameAndColor(request.getName(), request.getColor());
+        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
+        persistLine.addSection(addInitSection(persistLine, request));
+        return LineResponse.of(persistLine);
+    }
+
+    private void validatesNameAndColor(String name, String color) {
+        if (lineDao.isExistsName(name)) {
+            throw new InvalidInsertException("지하철 노선 이름이 이미 존재합니다.");
+        }
+        if (lineDao.isExistsColor(color)) {
+            throw new InvalidInsertException("지하철 노선 색깔이 이미 존재합니다.");
         }
     }
 
@@ -105,7 +110,7 @@ public class LineService {
     }
 
     private void validatesChangeColor(String newColor, String currentColor) {
-        if (lineDao.isExistsColor(newColor, currentColor)) {
+        if (lineDao.existNewColorExceptCurrentColor(newColor, currentColor)) {
             throw new InvalidInsertException("지하철 노선 색깔이 이미 존재합니다");
         }
     }

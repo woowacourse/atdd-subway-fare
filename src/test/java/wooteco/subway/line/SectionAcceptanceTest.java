@@ -50,7 +50,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void addLineSection() {
         // when
-        ExtractableResponse<Response> response = 지하철_구간_생성_요청(사용자, 신분당선, 강남역, 양재역, 3);
+        ExtractableResponse<Response> response = 지하철_구간_생성_요청(성인_사용자, 신분당선, 강남역, 양재역, 3);
 
         // then
         지하철_구간_생성됨(response, 신분당선, Arrays.asList(강남역, 양재역, 광교역));
@@ -72,7 +72,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         // when
         StationResponse 없는역 = new StationResponse(11L, "없는역");
         StationResponse 없는역2 = new StationResponse(12L, "없는역2");
-        ExtractableResponse<Response> response = 지하철_구간_생성_요청(사용자, 신분당선, 없는역, 없는역2, 3);
+        ExtractableResponse<Response> response = 지하철_구간_생성_요청(성인_사용자, 신분당선, 없는역, 없는역2, 3);
 
         // then
         assertThat(response.as(ExceptionResponse.class).getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
@@ -82,7 +82,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void addLineSectionWhenNotValidDistance() {
         // when
-        ExtractableResponse<Response> response = 지하철_구간_생성_요청(사용자, 신분당선, 강남역, 양재역, 0);
+        ExtractableResponse<Response> response = 지하철_구간_생성_요청(성인_사용자, 신분당선, 강남역, 양재역, 0);
 
         // then
         assertThat(response.as(ExceptionResponse.class).getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -92,7 +92,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void addLineSectionWhenLongerDistance() {
         // when
-        ExtractableResponse<Response> response = 지하철_구간_생성_요청(사용자, 신분당선, 강남역, 양재역, 11);
+        ExtractableResponse<Response> response = 지하철_구간_생성_요청(성인_사용자, 신분당선, 강남역, 양재역, 11);
 
         // then
         assertThat(response.as(ExceptionResponse.class).getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -102,8 +102,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void addLineSection2() {
         // when
-        지하철_구간_생성_요청(사용자, 신분당선, 강남역, 양재역, 2);
-        ExtractableResponse<Response> response = 지하철_구간_생성_요청(사용자, 신분당선, 정자역, 강남역, 3);
+        지하철_구간_생성_요청(성인_사용자, 신분당선, 강남역, 양재역, 2);
+        ExtractableResponse<Response> response = 지하철_구간_생성_요청(성인_사용자, 신분당선, 정자역, 강남역, 3);
 
         // then
         지하철_구간_생성됨(response, 신분당선, Arrays.asList(정자역, 강남역, 양재역, 광교역));
@@ -113,7 +113,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void addLineSectionWithSameStation() {
         // when
-        ExtractableResponse<Response> response = 지하철_구간_생성_요청(사용자, 신분당선, 강남역, 광교역, 3);
+        ExtractableResponse<Response> response = 지하철_구간_생성_요청(성인_사용자, 신분당선, 강남역, 광교역, 3);
 
         // then
         지하철_구간_등록_실패됨(response);
@@ -123,7 +123,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void addLineSectionWithNoStation() {
         // when
-        ExtractableResponse<Response> response = 지하철_구간_생성_요청(사용자, 신분당선, 정자역, 양재역, 3);
+        ExtractableResponse<Response> response = 지하철_구간_생성_요청(성인_사용자, 신분당선, 정자역, 양재역, 3);
 
         // then
         지하철_구간_등록_실패됨(response);
@@ -133,11 +133,11 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void removeLineSection1() {
         // given
-        지하철_구간_생성_요청(사용자, 신분당선, 강남역, 양재역, 2);
-        지하철_구간_생성_요청(사용자, 신분당선, 양재역, 정자역, 2);
+        지하철_구간_생성_요청(성인_사용자, 신분당선, 강남역, 양재역, 2);
+        지하철_구간_생성_요청(성인_사용자, 신분당선, 양재역, 정자역, 2);
 
         // when
-        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(사용자, 신분당선, 양재역);
+        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(성인_사용자, 신분당선, 양재역);
 
         // then
         지하철_노선에_지하철역_제외됨(removeResponse, 신분당선, Arrays.asList(강남역, 정자역, 광교역));
@@ -147,8 +147,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void removeLineSectionWhenNotValidMember() {
         // given
-        지하철_구간_생성_요청(사용자, 신분당선, 강남역, 양재역, 2);
-        지하철_구간_생성_요청(사용자, 신분당선, 양재역, 정자역, 2);
+        지하철_구간_생성_요청(성인_사용자, 신분당선, 강남역, 양재역, 2);
+        지하철_구간_생성_요청(성인_사용자, 신분당선, 양재역, 정자역, 2);
 
         // when
         ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(비회원, 신분당선, 양재역);
@@ -161,14 +161,14 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void removeLineSection2() {
         // when
-        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(사용자, 신분당선, 강남역);
+        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(성인_사용자, 신분당선, 강남역);
 
         // then
         지하철_노선에_지하철역_제외_실패됨(removeResponse);
     }
 
     public static void 지하철_구간_등록되어_있음(LineResponse lineResponse, StationResponse upStation, StationResponse downStation, int distance) {
-        지하철_구간_생성_요청(사용자, lineResponse, upStation, downStation, distance);
+        지하철_구간_생성_요청(성인_사용자, lineResponse, upStation, downStation, distance);
     }
 
     public static ExtractableResponse<Response> 지하철_구간_생성_요청(TokenResponse token, LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {

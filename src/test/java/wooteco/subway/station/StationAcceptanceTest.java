@@ -33,7 +33,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void createStation() {
         // when
-        ExtractableResponse<Response> response = 지하철역_생성_요청(사용자, 강남역);
+        ExtractableResponse<Response> response = 지하철역_생성_요청(성인_사용자, 강남역);
 
         // then
         지하철역_생성됨(response);
@@ -56,7 +56,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_등록되어_있음(강남역);
 
         // when
-        ExtractableResponse<Response> response = 지하철역_생성_요청(사용자, 강남역);
+        ExtractableResponse<Response> response = 지하철역_생성_요청(성인_사용자, 강남역);
 
         // then
         지하철역_생성_실패됨(response);
@@ -83,7 +83,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_등록되어_있음(강남역);
 
         // when
-        ExtractableResponse<Response> response = 지하철역_수정_요청(사용자, 역삼역);
+        ExtractableResponse<Response> response = 지하철역_수정_요청(성인_사용자, 역삼역);
         ExtractableResponse<Response> 역삼응답 = 지하철역_목록_조회_요청();
 
         // then
@@ -113,7 +113,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_등록되어_있음(역삼역);
 
         // when
-        ExtractableResponse<Response> response = 지하철역_수정_요청(사용자, 역삼역);
+        ExtractableResponse<Response> response = 지하철역_수정_요청(성인_사용자, 역삼역);
 
         // then
         지하철역_생성_실패됨(response);
@@ -126,7 +126,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         StationResponse stationResponse = 지하철역_등록되어_있음(강남역);
 
         // when
-        ExtractableResponse<Response> response = 지하철역_제거_요청(사용자, stationResponse);
+        ExtractableResponse<Response> response = 지하철역_제거_요청(성인_사용자, stationResponse);
 
         // then
         지하철역_삭제됨(response);
@@ -157,7 +157,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         LineResponse 신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 광교역, 10);
 
         // when
-        ExtractableResponse<Response> response = 지하철역_제거_요청(사용자, 광교역);
+        ExtractableResponse<Response> response = 지하철역_제거_요청(성인_사용자, 광교역);
 
         // then
         assertThat(response.as(ExceptionResponse.class).getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -177,7 +177,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     }
 
     public static StationResponse 지하철역_등록되어_있음(String name) {
-        return 지하철역_생성_요청(사용자, name).as(StationResponse.class);
+        return 지하철역_생성_요청(성인_사용자, name).as(StationResponse.class);
     }
 
     public static ExtractableResponse<Response> 지하철역_생성_요청(TokenResponse token, String name) {

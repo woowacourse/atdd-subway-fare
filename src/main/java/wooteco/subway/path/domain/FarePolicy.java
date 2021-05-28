@@ -5,6 +5,9 @@ public class FarePolicy {
     private static final int FIRST_BOUND = 10;
     private static final int SECOND_BOUND = 50;
     private static final int ZERO = 0;
+    private static final int EXTRA_FARE = 100;
+    private static final double FIRST_DISTANCE_STANDARD = 5.0;
+    private static final double SECOND_DISTANCE_STANDARD = 8.0;
 
     private final int fare;
 
@@ -27,11 +30,11 @@ public class FarePolicy {
         if (distance < FIRST_BOUND) {
             return ZERO;
         }
-        return (int) (Math.ceil((distance - FIRST_BOUND) / 5.0) * 100);
+        return (int) (Math.ceil((distance - FIRST_BOUND) / FIRST_DISTANCE_STANDARD) * EXTRA_FARE);
     }
 
     private static int plusSecondBound(int distance) {
-        return (int) (Math.ceil((distance - SECOND_BOUND) / 8.0) * 100);
+        return (int) (Math.ceil((distance - SECOND_BOUND) / SECOND_DISTANCE_STANDARD) * EXTRA_FARE);
     }
 
     public int apply(DiscountPolicy discountPolicy) {
