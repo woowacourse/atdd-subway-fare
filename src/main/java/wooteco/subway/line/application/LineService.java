@@ -25,6 +25,7 @@ public class LineService {
     private final SectionDao sectionDao;
     private final StationService stationService;
 
+
     public LineService(LineDao lineDao, SectionDao sectionDao, StationService stationService) {
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
@@ -117,24 +118,4 @@ public class LineService {
             throw new HttpException(HttpStatus.BAD_REQUEST, "존재하지 않은 노선입니다.");
         }
     }
-
-    public void addLineStation(Long lineId, SectionRequest request) {
-        Line line = findLineById(lineId);
-        Station upStation = stationService.findStationById(request.getUpStationId());
-        Station downStation = stationService.findStationById(request.getDownStationId());
-        line.addSection(upStation, downStation, request.getDistance());
-
-        sectionDao.deleteByLineId(lineId);
-        sectionDao.insertSections(line);
-    }
-
-    public void removeLineStation(Long lineId, Long stationId) {
-        Line line = findLineById(lineId);
-        Station station = stationService.findStationById(stationId);
-        line.removeSection(station);
-
-        sectionDao.deleteByLineId(lineId);
-        sectionDao.insertSections(line);
-    }
-
 }

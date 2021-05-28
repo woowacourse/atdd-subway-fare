@@ -60,16 +60,4 @@ public class LineController {
         lineService.deleteLineById(id);
         return ResponseEntity.noContent().build();
     }
-
-    @PostMapping("/{lineId}/sections")
-    public ResponseEntity<Void> addLineStation(@PathVariable Long lineId, @Valid @RequestBody SectionRequest sectionRequest) {
-        lineService.addLineStation(lineId, sectionRequest);
-        return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/{lineId}/sections")
-    public ResponseEntity<Void> removeLineStation(@PathVariable Long lineId, @RequestParam Long stationId) {
-        lineService.removeLineStation(lineId, stationId);
-        return ResponseEntity.ok().build();
-    }
 }
