@@ -135,7 +135,7 @@ public class Sections {
 
     public void removeStation(Station station) {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new UnableToRemoveSectionException();
         }
 
         Optional<Section> upSection = sections.stream()
