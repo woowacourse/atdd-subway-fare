@@ -20,7 +20,7 @@ class AgeFareTest {
         Fare currentFare = new Fare(1_250);
 
         // when
-        AgeFare ageFare = AgeFare.of(age);
+        AgeFare ageFare = AgeFarePolicy.getAgeFareByAge(age);
         Fare fareDiscountedByAge = ageFare.getFare(currentFare);
 
         // then

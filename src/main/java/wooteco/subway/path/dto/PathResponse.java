@@ -1,6 +1,7 @@
 package wooteco.subway.path.dto;
 
 import java.util.List;
+import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.station.dto.StationResponse;
 
 public class PathResponse {
@@ -15,6 +16,12 @@ public class PathResponse {
         this.stations = stations;
         this.distance = distance;
         this.totalFare = totalFare;
+    }
+
+    public PathResponse(List<StationResponse> stationResponses, SubwayPath subwayPath) {
+        stations = stationResponses;
+        distance = subwayPath.getTotalDistance();
+        totalFare = subwayPath.getTotalFare();
     }
 
     public List<StationResponse> getStations() {

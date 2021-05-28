@@ -301,7 +301,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         return 지하철_노선_등록되어_있음(lineRequest);
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_생성_요청(String name, String color, StationResponse upStationResponse, StationResponse downStationResponse, int distance, int extraFare, String docsIdentifier) {
+    public static ExtractableResponse<Response> 지하철_노선_생성_요청(String name, String color, StationResponse upStationResponse, StationResponse downStationResponse, int distance, int extraFare,
+        String docsIdentifier) {
         LineRequest lineCreateRequest = new LineRequest(name, color, upStationResponse.getId(), downStationResponse.getId(), distance, extraFare);
         return RestAssured
             .given(spec).log().all()

@@ -22,7 +22,7 @@ class DistanceFareTest {
         Fare currentFare = new Fare(1_250);
 
         // when
-        DistanceFare distanceFare = DistanceFare.of(distance);
+        DistanceFare distanceFare = DistanceFarePolicy.getDistanceFareByDistance(distance);
         Fare fareWithDistanceExtraFare = distanceFare.getFare(currentFare);
 
         // then
