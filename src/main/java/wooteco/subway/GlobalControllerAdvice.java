@@ -17,6 +17,7 @@ public class GlobalControllerAdvice {
 
     @ExceptionHandler(AuthorizationException.class)
     public ResponseEntity<ErrorResponse> handleAuthorizationException(AuthorizationException e) {
+        e.printStackTrace();
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
                 .body(new ErrorResponse(e.getMessage()));
@@ -24,6 +25,7 @@ public class GlobalControllerAdvice {
 
     @ExceptionHandler(BindException.class)
     public ResponseEntity<ErrorResponse> resolveRequest(BindException e) {
+        e.printStackTrace();
         return ResponseEntity
                 .badRequest()
                 .body(new ErrorResponse(e.getMessage()));
@@ -39,6 +41,7 @@ public class GlobalControllerAdvice {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleUnexpectedException(Exception e) {
+        e.printStackTrace();
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ErrorResponse("예상치 못한 예외가 발생했습니다." + System.getProperty("line.separator") + "에러 메세지: " + e.getMessage()));

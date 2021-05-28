@@ -16,6 +16,7 @@ import java.sql.SQLIntegrityConstraintViolationException;
 public class StationControllerAdvice {
     @ExceptionHandler(DuplicateKeyException.class)
     public ResponseEntity<ErrorResponse> handleDuplicateKeyException(DuplicateKeyException e) {
+        e.printStackTrace();
         return ResponseEntity.badRequest()
                 .body(new ErrorResponse("이미 존재하는 역 이름입니다."));
     }

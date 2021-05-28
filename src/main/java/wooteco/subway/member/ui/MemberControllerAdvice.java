@@ -13,6 +13,7 @@ import wooteco.subway.exception.ErrorResponse;
 public class MemberControllerAdvice {
     @ExceptionHandler(DuplicateKeyException.class)
     public ResponseEntity<ErrorResponse> handleDuplicateKeyException(DuplicateKeyException e) {
+        e.printStackTrace();
         return ResponseEntity.badRequest()
                 .body(new ErrorResponse("이미 가입된 이메일입니다."));
     }

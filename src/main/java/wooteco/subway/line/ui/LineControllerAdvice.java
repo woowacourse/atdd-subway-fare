@@ -15,6 +15,7 @@ import wooteco.subway.line.exception.LineDomainException;
 public class LineControllerAdvice {
     @ExceptionHandler(DuplicateKeyException.class)
     public ResponseEntity<ErrorResponse> handleDuplicateKeyException(DuplicateKeyException e) {
+        e.printStackTrace();
         return ResponseEntity.badRequest()
                 .body(new ErrorResponse("이미 존재하는 노선 이름 혹은 색상입니다."));
     }
