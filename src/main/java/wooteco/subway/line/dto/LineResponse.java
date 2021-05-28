@@ -10,7 +10,7 @@ public class LineResponse {
     private Long id;
     private String name;
     private String color;
-    private Integer extraFare;
+    private int extraFare;
     private List<StationResponse> stations;
     private List<SectionResponse> sections;
 
@@ -18,11 +18,7 @@ public class LineResponse {
     }
 
     public LineResponse(Long id, String name, String color, List<StationResponse> stations, List<SectionResponse> sections) {
-        this.id = id;
-        this.name = name;
-        this.color = color;
-        this.stations = stations;
-        this.sections = sections;
+        this(id, name, color, 0, stations, sections);
     }
 
     public LineResponse(Long id, String name, String color, Integer extraFare, List<StationResponse> stations, List<SectionResponse> sections) {

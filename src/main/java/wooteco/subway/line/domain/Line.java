@@ -9,25 +9,22 @@ public class Line {
     private String name;
     private String color;
     private Integer extraFare;
-    private Sections sections = new Sections();
-
-    public Line() {
-    }
+    private Sections sections;
 
     public Line(String name, String color) {
-        this(null, name, color, 0, null);
+        this(null, name, color, 0, new Sections());
     }
 
     public Line(String name, String color, Integer extraFare) {
-        this(null, name, color, extraFare, null);
+        this(null, name, color, extraFare, new Sections());
     }
 
     public Line(Long id, String name, String color) {
-        this(id, name, color, 0, null);
+        this(id, name, color, 0, new Sections());
     }
 
     public Line(Long id, String name, String color, Integer extraFare) {
-        this(id, name, color, extraFare, null);
+        this(id, name, color, extraFare, new Sections());
     }
 
     public Line(Long id, String name, String color, Sections sections) {
