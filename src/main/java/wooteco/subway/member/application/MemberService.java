@@ -11,6 +11,7 @@ import wooteco.subway.member.exception.DuplicatedEmailAddressException;
 
 @Service
 public class MemberService {
+
     private MemberDao memberDao;
 
     public MemberService(MemberDao memberDao) {
@@ -30,7 +31,9 @@ public class MemberService {
 
     public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
         Member member = memberDao.findByEmail(loginMember.getEmail());
-        memberDao.update(new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
+        memberDao.update(
+            new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(),
+                memberRequest.getAge()));
     }
 
     public void deleteMember(LoginMember loginMember) {

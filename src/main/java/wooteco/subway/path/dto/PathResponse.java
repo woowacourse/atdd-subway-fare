@@ -1,8 +1,7 @@
 package wooteco.subway.path.dto;
 
-import wooteco.subway.station.dto.StationResponse;
-
 import java.util.List;
+import wooteco.subway.station.dto.StationResponse;
 
 public class PathResponse {
     private List<StationResponse> stations;

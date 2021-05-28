@@ -12,6 +12,7 @@ import wooteco.subway.member.domain.Member;
 @Service
 @Transactional
 public class AuthService {
+
     private MemberDao memberDao;
     private JwtTokenProvider jwtTokenProvider;
 

@@ -1,5 +1,7 @@
 package wooteco.subway.line.application;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
@@ -9,15 +11,12 @@ import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.MapResponse;
 import wooteco.subway.line.dto.SectionRequest;
-import wooteco.subway.line.dto.SectionResponse;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
 public class LineService {
+
     private LineDao lineDao;
     private SectionDao sectionDao;
     private StationService stationService;
@@ -29,7 +28,8 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
+        Line persistLine = lineDao
+            .insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);
     }
@@ -47,8 +47,8 @@ public class LineService {
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList());
+            .map(LineResponse::of)
+            .collect(Collectors.toList());
     }
 
     public List<Line> findLines() {
@@ -65,7 +65,8 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor(), lineUpdateRequest.getExtraFare()));
+        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor(),
+            lineUpdateRequest.getExtraFare()));
     }
 
     public void deleteLineById(Long id) {

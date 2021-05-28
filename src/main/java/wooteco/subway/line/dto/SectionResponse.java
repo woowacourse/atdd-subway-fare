@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.domain.Sections;
-import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationResponse;
 
 public class SectionResponse {

@@ -21,7 +21,8 @@ public class Fare {
     private int calculateFare(int distance, LoginMember member, int extraFare) {
         int basicFare = calculateFareByDistance(distance) + extraFare;
         AgeAppliedRule ageAppliedRule = AgeAppliedRule.matchRule(member.getAge());
-        return (int) ((basicFare - ageAppliedRule.getDeductedFare()) * ageAppliedRule.getAppliedRate());
+        return (int) ((basicFare - ageAppliedRule.getDeductedFare()) * ageAppliedRule
+            .getAppliedRate());
     }
 
     private int calculateFareByDistance(int distance) {
@@ -37,7 +38,10 @@ public class Fare {
                 (Math.ceil((distance - BASIC_DISTANCE - 1) / EXTRA_FIRST_DISTANCE_UNIT) + 1)
                     * EXTRA_FARE_UNIT);
         }
-        return (int) ((Math.ceil((distance - BASIC_DISTANCE - EXCEED_INSTANCE - 1) / EXTRA_SECOND_DISTANCE_UNIT) + 1) * EXTRA_FARE_UNIT) + EXTRA_FIRST_FULL_FARE;
+
+        return (int) ((Math
+            .ceil((distance - BASIC_DISTANCE - EXCEED_INSTANCE - 1) / EXTRA_SECOND_DISTANCE_UNIT)
+            + 1) * EXTRA_FARE_UNIT) + EXTRA_FIRST_FULL_FARE;
     }
 
     public int value() {
