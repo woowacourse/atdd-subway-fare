@@ -90,7 +90,7 @@ public class LineService {
         lineDao.deleteById(id);
     }
 
-    public void addLineStation(Long lineId, SectionRequest request) {
+    public LineResponse addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
@@ -98,6 +98,7 @@ public class LineService {
 
         sectionDao.deleteByLineId(lineId);
         sectionDao.insertSections(line);
+        return LineResponse.of(line);
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
