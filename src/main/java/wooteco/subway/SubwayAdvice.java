@@ -3,6 +3,9 @@ package wooteco.subway;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -31,6 +34,18 @@ public class SubwayAdvice {
     @ExceptionHandler(SubwayException.class)
     public ResponseEntity<MessageDto> handleSubwayException(SubwayException e) {
         return ResponseEntity.badRequest().body(new MessageDto(e.getMessage()));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<MessageDto> handleMethodArgumentNotValidException(
+        MethodArgumentNotValidException e) {
+        return ResponseEntity.badRequest().body(new MessageDto(
+            e.getBindingResult()
+                .getAllErrors()
+                .get(0)
+                .getDefaultMessage()
+            )
+        );
     }
 
     @ExceptionHandler(RuntimeException.class)

@@ -10,16 +10,16 @@ import wooteco.subway.member.domain.Member;
 
 public class MemberRequest {
 
-    @Email
-    @NotBlank
+    @Email(message = "이메일 형식이 잘못되었습니다.")
+    @NotBlank(message = "이메일은 공백이 올 수 없습니다.")
     private final String email;
 
-    @NotBlank
-    @Length(min = 4, max = 20)
+    @NotBlank(message = "패스워드는 공백이 올 수 없습니다.")
+    @Length(min = 4, max = 20, message = "패스워트듣 4 이상 20 이하의 길이로 작성해야 합니다.")
     private final String password;
 
-    @Min(1)
-    @Max(200)
+    @Min(value = 1, message = "나이는 1보다 작을 수 없습니다.")
+    @Max(value = 200, message = "나이는 200보다 클 수 없습니다.")
     private final Integer age;
 
     @ConstructorProperties({"email", "password", "age"})

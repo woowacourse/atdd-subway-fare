@@ -41,6 +41,14 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_삭제됨(deleteResponse);
     }
 
+    @DisplayName("200보다 큰 나이의 회원을 가입한다.")
+    @Test
+    void insertMemberWithAgeOver200() {
+        ExtractableResponse<Response> response = 회원_생성을_요청("abc@abc.abc", "password", 201);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
