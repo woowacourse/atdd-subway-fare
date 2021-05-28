@@ -8,16 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import wooteco.subway.auth.application.InvalidTokenRuntimeException;
 import wooteco.subway.exception.SubwayAuthorizationException;
 import wooteco.subway.exception.SubwayRuntimeException;
-import wooteco.subway.line.application.*;
-import wooteco.subway.member.application.DuplicateEmailRuntimeException;
-import wooteco.subway.member.application.EmailNotFoundRuntimeException;
-import wooteco.subway.member.application.InvalidPasswordRuntimeException;
-import wooteco.subway.path.application.InvalidPathRuntimeException;
-import wooteco.subway.station.application.StationNameDuplicationRuntimeException;
-import wooteco.subway.station.application.StationNotExistRuntimeException;
 
 import java.util.stream.Collectors;
 

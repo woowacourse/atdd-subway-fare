@@ -1,7 +1,6 @@
 package wooteco.subway.auth.application;
 
 import wooteco.subway.exception.SubwayAuthorizationException;
-import wooteco.subway.exception.SubwayRuntimeException;
 
 public class InvalidTokenRuntimeException extends SubwayAuthorizationException {
     private static final String ERROR_MESSAGE = "유효하지 않은 토큰입니다.";
