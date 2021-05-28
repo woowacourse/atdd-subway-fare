@@ -9,6 +9,7 @@ import wooteco.subway.auth.application.AuthorizationException;
 import wooteco.subway.dto.ErrorResponse;
 import wooteco.subway.exception.DataNotFoundException;
 import wooteco.subway.exception.ValidationFailureException;
+import wooteco.subway.exception.WrongNameConventionException;
 import wooteco.subway.line.exception.LineCompositionException;
 import wooteco.subway.line.exception.LineRemovalException;
 import wooteco.subway.member.exception.DuplicatedEmailAddressException;
@@ -58,6 +59,13 @@ public class SubwayControllerAdvice {
     @ExceptionHandler(ExistedStationOnPathException.class)
     public ResponseEntity<ErrorResponse> handleExistedStationOnPathException(
         ExistedStationOnPathException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(new ErrorResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(WrongNameConventionException.class)
+    public ResponseEntity<ErrorResponse> handleWrongNameConventionException(
+        WrongNameConventionException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(new ErrorResponse(e.getMessage()));
     }

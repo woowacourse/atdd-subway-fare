@@ -1,6 +1,7 @@
 package wooteco.subway.station.domain;
 
 import java.util.Objects;
+import wooteco.subway.station.exception.WrongStationNameException;
 
 public class Station {
 
@@ -10,13 +11,21 @@ public class Station {
     public Station() {
     }
 
+    public Station(String name) {
+        this(null, name);
+    }
+
     public Station(Long id, String name) {
+        checkNameConvention(name);
         this.id = id;
         this.name = name;
     }
 
-    public Station(String name) {
-        this.name = name;
+    private void checkNameConvention(String name) {
+        String lastLetter = name.substring(name.length() - 1);
+        if (!lastLetter.equals("역")) {
+            throw new WrongStationNameException(name);
+        }
     }
 
     @Override
