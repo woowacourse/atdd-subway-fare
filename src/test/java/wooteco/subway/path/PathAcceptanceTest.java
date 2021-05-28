@@ -1,19 +1,9 @@
 package wooteco.subway.path;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
-import static wooteco.subway.auth.AuthAcceptanceTest.회원_등록되어_있음;
-import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
-import static wooteco.subway.line.SectionAcceptanceTest.지하철_구간_등록되어_있음;
-import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
-
 import com.google.common.collect.Lists;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,6 +15,17 @@ import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.dto.StationResponse;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
+import static wooteco.subway.auth.AuthAcceptanceTest.회원_등록되어_있음;
+import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
+import static wooteco.subway.line.SectionAcceptanceTest.지하철_구간_등록되어_있음;
+import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
@@ -82,9 +83,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("두 역의 최단 거리 경로와 노선 거리 추가요금에 따른 총 요금을 조회한다.")
     @ParameterizedTest(name = "{3}")
     @CsvSource({
-        "adult@email.com, 20, 1650, 성인 요금",
-        "teenager@email.com, 15, 1040, 청소년 요금",
-        "child@email.com, 12, 650, 아동 요금"
+            "adult@email.com, 20, 1650, 성인 요금",
+            "teenager@email.com, 15, 1040, 청소년 요금",
+            "child@email.com, 12, 650, 아동 요금"
     })
     void findPathByDistanceWithLineExtraFareByDistanceAsLoginMember(String email, int age, int expectedFare, String testCaseName) {
         //when
@@ -100,33 +101,33 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
         return RestAssured
-            .given().log().all()
-            .accept(MediaType.APPLICATION_JSON_VALUE)
-            .when().get("/paths?source={sourceId}&target={targetId}", source, target)
-            .then().log().all()
-            .extract();
+                .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/paths?source={sourceId}&target={targetId}", source, target)
+                .then().log().all()
+                .extract();
     }
 
     public static ExtractableResponse<Response> 거리_경로_조회_요청_로그인(long source, long target, String accessToken) {
         return RestAssured
-            .given().log().all()
-            .accept(MediaType.APPLICATION_JSON_VALUE)
-            .auth().oauth2(accessToken)
-            .when().get("/paths?source={sourceId}&target={targetId}", source, target)
-            .then().log().all()
-            .extract();
+                .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(accessToken)
+                .when().get("/paths?source={sourceId}&target={targetId}", source, target)
+                .then().log().all()
+                .extract();
     }
 
     public static void 적절한_경로_응답됨(ExtractableResponse<Response> response, ArrayList<StationResponse> expectedPath) {
         PathResponse pathResponse = response.as(PathResponse.class);
 
         List<Long> stationIds = pathResponse.getStations().stream()
-            .map(StationResponse::getId)
-            .collect(Collectors.toList());
+                .map(StationResponse::getId)
+                .collect(Collectors.toList());
 
         List<Long> expectedPathIds = expectedPath.stream()
-            .map(StationResponse::getId)
-            .collect(Collectors.toList());
+                .map(StationResponse::getId)
+                .collect(Collectors.toList());
 
         assertThat(stationIds).containsExactlyElementsOf(expectedPathIds);
     }
