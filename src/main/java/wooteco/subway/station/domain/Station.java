@@ -10,13 +10,17 @@ public class Station {
     public Station() {
     }
 
+    public Station(String name) {
+        this(null, name);
+    }
+
     public Station(Long id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public Station(String name) {
-        this.name = name;
+    public boolean isSameName(Station station) {
+        return name.equals(station.name);
     }
 
     public Long getId() {
@@ -42,9 +46,5 @@ public class Station {
     @Override
     public int hashCode() {
         return Objects.hash(id, name);
-    }
-
-    public boolean isSameName(Station station) {
-        return name.equals(station.name);
     }
 }
