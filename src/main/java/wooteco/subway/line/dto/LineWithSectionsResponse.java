@@ -1,7 +1,7 @@
 package wooteco.subway.line.dto;
 
 import wooteco.subway.line.domain.Line;
-import wooteco.subway.line.domain.Section;
+import wooteco.subway.line.domain.Sections;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.List;
@@ -12,13 +12,13 @@ public class LineWithSectionsResponse {
     private String name;
     private String color;
     private List<StationResponse> stations;
-    private List<Section> sections;
+    private List<SectionDto> sections;
 
     public LineWithSectionsResponse() {
 
     }
 
-    public LineWithSectionsResponse(Long id, String name, String color, List<StationResponse> stations, List<Section> sections) {
+    public LineWithSectionsResponse(Long id, String name, String color, List<StationResponse> stations, List<SectionDto> sections) {
         this.id = id;
         this.name = name;
         this.color = color;
@@ -30,7 +30,7 @@ public class LineWithSectionsResponse {
         List<StationResponse> stations = line.getStations().stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
-        return new LineWithSectionsResponse(line.getId(), line.getName(), line.getColor(), stations, line.getSections().getSections());
+        return new LineWithSectionsResponse(line.getId(), line.getName(), line.getColor(), stations, toSectionDtos(line.getSections()));
     }
 
     public static List<LineWithSectionsResponse> listOf(List<Line> lines) {
@@ -55,11 +55,17 @@ public class LineWithSectionsResponse {
         return stations;
     }
 
-    public List<Section> getSections() {
+    public List<SectionDto> getSections() {
         return sections;
     }
 
     public LineResponse toLineResponse() {
         return new LineResponse(id, name, color, stations);
+    }
+
+    private static List<SectionDto> toSectionDtos(Sections sections) {
+        return sections.getSections().stream()
+                .map((section) -> new SectionDto(section.getUpStation(), section.getDownStation(), section.getDistance()))
+                .collect(Collectors.toList());
     }
 }

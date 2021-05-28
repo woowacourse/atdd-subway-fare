@@ -1,4 +1,4 @@
-package wooteco.subway.auth.infrastructure;
+package wooteco.subway.infrastructure;
 
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;

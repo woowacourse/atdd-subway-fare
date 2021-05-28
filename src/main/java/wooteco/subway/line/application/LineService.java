@@ -62,17 +62,10 @@ public class LineService {
         }
     }
 
-    public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
-        return persistLines.stream()
-                .map(line -> LineResponse.of(line))
-                .collect(Collectors.toList());
-    }
-
     public List<LineWithSectionsResponse> findLineWithSectionsResponses() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
-                .map(line -> LineWithSectionsResponse.of(line))
+                .map(LineWithSectionsResponse::of)
                 .collect(Collectors.toList());
     }
 

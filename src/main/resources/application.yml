@@ -54,7 +54,7 @@ security:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://192.168.0.239:8080/subway?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8
+    url: jdbc:mysql://192.168.0.239:3306/subway?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8
     username: anne
     password: annepw
   h2:
