@@ -20,6 +20,7 @@ import wooteco.subway.line.dto.LineDetailResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.map.dto.MapDetailResponse;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.ui.SubwayController;
 
@@ -49,8 +50,15 @@ public class LineController extends SubwayController {
         return ResponseEntity.ok(lineService.findLineResponseById(id));
     }
 
+    @GetMapping("/map")
+    public ResponseEntity<List<MapDetailResponse>> showMap() {
+        List<MapDetailResponse> mapDetailResponse = lineService.showMap();
+        return ResponseEntity.ok().body(mapDetailResponse);
+    }
+
     @PutMapping("/{id}")
-    public ResponseEntity updateLine(@PathVariable Long id, @RequestBody LineRequest lineUpdateRequest) {
+    public ResponseEntity updateLine(@PathVariable Long id,
+        @RequestBody LineRequest lineUpdateRequest) {
         lineService.checkRegisteredLine(id);
         lineService.updateLine(id, lineUpdateRequest);
         return ResponseEntity.ok().build();
