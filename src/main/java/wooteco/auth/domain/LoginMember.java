@@ -27,4 +27,12 @@ public class LoginMember {
     public Authority getAuthority() {
         return authority;
     }
+
+    public boolean isMember() {
+        return authority.isMember();
+    }
+
+    public boolean isAnonymous() {
+        return authority.isAnonymous();
+    }
 }

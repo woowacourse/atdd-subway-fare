@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import wooteco.auth.web.dto.response.TokenResponse;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.web.dto.response.LineResponse;
 import wooteco.subway.web.dto.response.PathResponse;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.auth.acceptance.AuthAcceptanceTest.토큰;
 import static wooteco.subway.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static wooteco.subway.acceptance.SectionAcceptanceTest.지하철_구간_등록되어_있음;
 import static wooteco.subway.acceptance.StationAcceptanceTest.지하철역_등록되어_있음;
@@ -66,9 +68,43 @@ public class PathAcceptanceTest extends AcceptanceTest {
         총_거리가_응답됨(response, 5);
     }
 
+    @DisplayName("두 역의 경로의 요금을 확인한다.")
+    @Test
+    void findPathWithFare() {
+        // 비회원 시
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(3L, 2L);
+        요금_비교(response, 1250);
+        // 2살 때
+        final TokenResponse token1 = 토큰("test2@test.com", "password", 2);
+        final ExtractableResponse<Response> response2 = 거리_경로_조회_요청(3L, 2L, token1);
+        요금_비교(response2, 0);
+        // 8살 때
+        final TokenResponse token2 = 토큰("test8@test.com", "password", 8);
+        final ExtractableResponse<Response> response3 = 거리_경로_조회_요청(3L, 2L, token2);
+        요금_비교(response3, 450);
+        // 16살 때
+        final TokenResponse token3 = 토큰("test16@test.com", "password", 16);
+        final ExtractableResponse<Response> response4 = 거리_경로_조회_요청(3L, 2L, token3);
+        요금_비교(response4, 720);
+        // 성인 요금
+        final TokenResponse token4 = 토큰("test29@test.com", "password", 29);
+        final ExtractableResponse<Response> response5 = 거리_경로_조회_요청(3L, 2L, token4);
+        요금_비교(response5, 1250);
+    }
+
     public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
         return RestAssured
                 .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/api/paths?source={sourceId}&target={targetId}", source, target)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target, TokenResponse tokenResponse) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/api/paths?source={sourceId}&target={targetId}", source, target)
                 .then().log().all()
@@ -86,14 +122,17 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .map(StationResponse::getId)
                 .collect(Collectors.toList());
 
-        int fare = pathResponse.getFare();
-        assertThat(fare).isEqualTo(1250);
-
         assertThat(stationIds).containsExactlyElementsOf(expectedPathIds);
     }
 
     public static void 총_거리가_응답됨(ExtractableResponse<Response> response, int totalDistance) {
         PathResponse pathResponse = response.as(PathResponse.class);
         assertThat(pathResponse.getDistance()).isEqualTo(totalDistance);
+    }
+
+    public static void 요금_비교(ExtractableResponse<Response> response, int fare) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getFare()).isEqualTo(fare);
+
     }
 }

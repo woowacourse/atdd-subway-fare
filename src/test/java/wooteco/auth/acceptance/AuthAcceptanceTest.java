@@ -7,8 +7,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import wooteco.subway.AcceptanceTest;
 import wooteco.auth.web.dto.response.TokenResponse;
+import wooteco.subway.AcceptanceTest;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -107,5 +107,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     public static TokenResponse 토큰() {
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
         return 로그인되어_있음(EMAIL, PASSWORD);
+    }
+
+    public static TokenResponse 토큰(String email, String password, int age) {
+        회원_등록되어_있음(email, password, age);
+        return 로그인되어_있음(email, password);
     }
 }
