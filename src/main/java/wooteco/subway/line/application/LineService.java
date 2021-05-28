@@ -95,8 +95,8 @@ public class LineService {
         for (Line line : lineDao.findAll()) {
             Sections sections = line.getSections();
             List<SectionResponse> sectionResponses = getSectionResponses(sections, line.getId());
-            LineMapResponse lineMapReponse = new LineMapResponse(line, sectionResponses);
-            lineMapResponses.add(lineMapReponse);
+            LineMapResponse lineMapResponse = new LineMapResponse(line, sectionResponses);
+            lineMapResponses.add(lineMapResponse);
         }
         return lineMapResponses;
     }
@@ -123,7 +123,7 @@ public class LineService {
         List<TransferLineResponse> transferLineResponses = transferLines.stream()
                 .map(TransferLineResponse::new)
                 .collect(toList());
-        return new SectionResponse(section.getId(), section.getDownStation().getName(),
+        return new SectionResponse(section.getDownStation().getId(), section.getDownStation().getName(),
                 0, transferLineResponses);
     }
 }

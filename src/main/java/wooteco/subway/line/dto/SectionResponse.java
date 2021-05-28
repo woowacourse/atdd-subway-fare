@@ -21,7 +21,7 @@ public class SectionResponse {
     }
 
     public SectionResponse(Section section, List<TransferLineResponse> transferLines) {
-        this(section.getId(), section.getUpStation().getName(), section.getDistance(), transferLines);
+        this(section.getUpStation().getId(), section.getUpStation().getName(), section.getDistance(), transferLines);
     }
 
     public Long getId() {
