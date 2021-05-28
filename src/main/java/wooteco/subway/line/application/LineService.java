@@ -12,6 +12,7 @@ import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,6 +28,12 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
+        if (lineDao.findByName(request.getName()).isPresent()) {
+            throw new ExistLineNameException();
+        }
+        if (lineDao.findByColor(request.getColor()).isPresent()) {
+            throw new ExistLineColorException();
+        }
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);
@@ -64,13 +71,13 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Line findLine = lineDao.findById(id)
-                .orElseThrow(LineNotExistRuntimeException::new);
-        if (lineUpdateRequest.getColor().equals(findLine.getColor())) {
-            throw new NotDifferentLineColorRuntimeException();
+        Optional<Line> findWithNameLine = lineDao.findByName(lineUpdateRequest.getName());
+        if (findWithNameLine.isPresent() && !id.equals(findWithNameLine.get().getId())) {
+            throw new ExistLineNameException();
         }
-        if (lineUpdateRequest.getName().equals(findLine.getName())) {
-            throw new NotDifferentLineNameRuntimeException();
+        Optional<Line> findWithColorLine = lineDao.findByColor(lineUpdateRequest.getColor());
+        if (findWithColorLine.isPresent() && !id.equals(findWithColorLine.get().getId())) {
+            throw new ExistLineColorException();
         }
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
