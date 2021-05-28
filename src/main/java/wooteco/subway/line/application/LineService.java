@@ -7,11 +7,13 @@ import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
+import wooteco.subway.line.dto.MapResponse;
 import wooteco.subway.line.dto.SectionRequest;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
 import java.sql.SQLOutput;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -91,4 +93,12 @@ public class LineService {
         sectionDao.insertSections(line);
     }
 
+    public List<MapResponse> findMapResponse() {
+        List<MapResponse> mapResponses = new ArrayList<>();
+        List<Line> lines = findLines();
+        for (Line line : lines) {
+            mapResponses.add(MapResponse.of(line));
+        }
+        return mapResponses;
+    }
 }
