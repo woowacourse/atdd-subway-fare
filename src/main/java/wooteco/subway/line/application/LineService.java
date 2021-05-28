@@ -37,7 +37,7 @@ public class LineService {
         checkAlreadyExistsName(request.getName());
         checkAlreadyExistsColor(request.getColor());
 
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
+        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);
     }

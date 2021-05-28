@@ -30,8 +30,18 @@ public class SubwayPath {
         int fare = 1_250;
 
         fare += calculateAdditionalFareByDistance(distance);
+        fare += calculateAdditionalLineFare();
 
         return fare;
+    }
+
+    private int calculateAdditionalLineFare() {
+        return sectionEdges
+            .stream()
+            .peek(sectionEdge -> System.out.println("@@@@" + sectionEdge.getLine().getExtraFare()))
+            .mapToInt(sectionEdge -> sectionEdge.getLine().getExtraFare())
+            .max()
+            .orElse(0);
     }
 
     private int calculateAdditionalFareByDistance(int distance) {

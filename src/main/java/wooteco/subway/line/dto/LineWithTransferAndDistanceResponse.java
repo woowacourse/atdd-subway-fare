@@ -8,6 +8,7 @@ public class LineWithTransferAndDistanceResponse {
     private Long id;
     private String name;
     private String color;
+    private int extraFare;
     private List<StationWithTransferAndNextDistanceResponse> stations;
 
     public LineWithTransferAndDistanceResponse() {
@@ -21,6 +22,15 @@ public class LineWithTransferAndDistanceResponse {
         this.stations = stations;
     }
 
+    public LineWithTransferAndDistanceResponse(Long id, String name, String color, int extraFare,
+        List<StationWithTransferAndNextDistanceResponse> stations) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
+        this.extraFare = extraFare;
+        this.stations = stations;
+    }
+
     public Long getId() {
         return id;
     }
@@ -31,6 +41,10 @@ public class LineWithTransferAndDistanceResponse {
 
     public String getColor() {
         return color;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 
     public List<StationWithTransferAndNextDistanceResponse> getStations() {

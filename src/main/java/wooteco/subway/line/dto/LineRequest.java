@@ -9,6 +9,7 @@ public class LineRequest {
     private String name;
     @NotBlank(message = "입력되지 않은 항목을 확인해주세요")
     private String color;
+    private int extraFare;
     @NotNull(message = "입력되지 않은 항목을 확인해주세요")
     private Long upStationId;
     @NotNull(message = "입력되지 않은 항목을 확인해주세요")
@@ -32,12 +33,25 @@ public class LineRequest {
         this.distance = distance;
     }
 
+    public LineRequest(String name, String color, int extraFare, Long upStationId, Long downStationId, int distance) {
+        this.name = name;
+        this.color = color;
+        this.extraFare = extraFare;
+        this.upStationId = upStationId;
+        this.downStationId = downStationId;
+        this.distance = distance;
+    }
+
     public String getName() {
         return name;
     }
 
     public String getColor() {
         return color;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 
     public Long getUpStationId() {

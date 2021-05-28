@@ -4,6 +4,7 @@ public class LineWithoutSectionsResponse {
     private Long id;
     private String name;
     private String color;
+    private int extraFare;
 
     public LineWithoutSectionsResponse() {
     }
@@ -12,6 +13,13 @@ public class LineWithoutSectionsResponse {
         this.id = id;
         this.name = name;
         this.color = color;
+    }
+
+    public LineWithoutSectionsResponse(Long id, String name, String color, int extraFare) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
+        this.extraFare = extraFare;
     }
 
     public Long getId() {
@@ -24,5 +32,9 @@ public class LineWithoutSectionsResponse {
 
     public String getColor() {
         return color;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 }
