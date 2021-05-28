@@ -100,9 +100,6 @@ public class LineService {
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
-        if (line.getStations().contains(station)) {
-            throw new NotAbleToDeleteStationInLineRuntimeException();
-        }
         line.removeSection(station);
 
         sectionDao.deleteByLineId(lineId);
