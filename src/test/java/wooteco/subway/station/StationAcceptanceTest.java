@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
 
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {
@@ -122,6 +123,26 @@ public class StationAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철역_수정_요청("남강역");
 
         지하철역_수정됨(response, "남강역");
+    }
+
+    @Test
+    void stationNameRegExpTest() {
+        ExtractableResponse<Response> hello = 지하철역_생성_요청("hello");
+        assertThat(hello.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    void stationDeleteWhenIsRegisteredOnLine() {
+        StationResponse 강남역_응답 = 지하철역_등록되어_있음(강남역);
+        StationResponse 역삼역_응답 = 지하철역_등록되어_있음(역삼역);
+
+        지하철_노선_등록되어_있음(new LineRequest(
+            "백기선", "red", 강남역_응답.getId(), 역삼역_응답.getId(), 50
+        ));
+
+        ExtractableResponse<Response> 지하철역_제거_요청 = 지하철역_제거_요청(강남역_응답);
+
+        assertThat(지하철역_제거_요청.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static StationResponse 지하철역_등록되어_있음(String name) {

@@ -3,6 +3,7 @@ package wooteco.subway.station.application;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.DuplicateException;
+import wooteco.subway.exception.SubwayException;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.infrastructure.dao.LineDao;
 import wooteco.subway.station.domain.Station;
@@ -66,7 +67,14 @@ public class StationService {
 
     @Transactional
     public void deleteStationById(Long id) {
+        validateDeletableStation(id);
         stationDao.deleteById(id);
+    }
+
+    private void validateDeletableStation(Long id) {
+        if(stationDao.existsById(id)) {
+            throw new SubwayException("노선에 등록된 역은 삭제할 수 없습니다.");
+        }
     }
 
     @Transactional
