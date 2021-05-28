@@ -44,6 +44,11 @@ public class MemberDao {
         jdbcTemplate.update(sql, new Object[]{member.getEmail(), member.getPassword(), member.getAge(), member.getId()});
     }
 
+    public boolean existsByEmail(String email) {
+        String sql = "select exists (select * from member where email = ?)";
+        return jdbcTemplate.queryForObject(sql, boolean.class, email);
+    }
+
     public void deleteById(Long id) {
         String sql = "delete from member where id = ?";
         jdbcTemplate.update(sql, id);
