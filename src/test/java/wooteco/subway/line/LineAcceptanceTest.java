@@ -222,7 +222,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_이름_중복됨(response);
     }
 
-    @DisplayName("지하철 노선 이름을 이미 존재하는 색깔로 수정한다.")
+    @DisplayName("지하철 노선 색을 이미 존재하는 색깔로 수정한다.")
     @Test
     void updateLineByDuplicateColor() {
         // given

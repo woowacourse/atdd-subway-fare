@@ -110,4 +110,16 @@ public class LineDao {
     public void deleteById(Long id) {
         jdbcTemplate.update("delete from Line where id = ?", id);
     }
+
+    public boolean existLineName(String name) {
+        String sql = "select count(*) from line where name = ? limit 1";
+        Long count = jdbcTemplate.queryForObject(sql, Long.class, name);
+        return count > 0;
+    }
+
+    public boolean existLineColor(String color) {
+        String sql = "select count(*) from line where color = ? limit 1";
+        Long count = jdbcTemplate.queryForObject(sql, Long.class, color);
+        return count > 0;
+    }
 }

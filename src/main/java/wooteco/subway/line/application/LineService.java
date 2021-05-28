@@ -29,19 +29,27 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        try {
-            Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
-            persistLine.addSection(addInitSection(persistLine, request));
-            return LineResponse.of(persistLine);
-        } catch (DuplicateKeyException e) {
-            String message = "";
-            if(e.getMessage().contains("LINE(NAME)")) {
-                message = "지하철 노선 이름이 이미 존재합니다";
-            }
-            if(e.getMessage().contains("LINE(COLOR)")) {
-                message = "지하철 노선 색깔이 이미 존재합니다";
-            }
-            throw new DuplicateUniqueKeyException(message);
+        validateUniqueKey(request.getName(), request.getColor());
+        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
+        persistLine.addSection(addInitSection(persistLine, request));
+        return LineResponse.of(persistLine);
+    }
+
+    private void validateUniqueKey(String name, String color) {
+        validateDuplicateName(name);
+        validateDuplicateColor(color);
+    }
+
+
+    private void validateDuplicateName(String name) {
+        if (lineDao.existLineName(name)) {
+            throw new DuplicateUniqueKeyException("지하철 노선 이름이 이미 존재합니다");
+        }
+    }
+
+    private void validateDuplicateColor(String color) {
+        if (lineDao.existLineColor(color)) {
+            throw new DuplicateUniqueKeyException("지하철 노선 색깔이 이미 존재합니다");
         }
     }
 
@@ -53,13 +61,6 @@ public class LineService {
             return sectionDao.insert(line, section);
         }
         return null;
-    }
-
-    public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
-        return persistLines.stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList());
     }
 
     public List<Line> findLines() {
@@ -84,19 +85,24 @@ public class LineService {
         return lineDao.findById(id).orElseThrow(LineNotFoundException::new);
     }
 
-    public LineNameColorResponse updateLine(Long id, LineUpdateRequest lineUpdateRequest) {
+    public LineNameColorResponse updateLine(Long id, LineUpdateRequest request) {
+        Line line = lineDao.findById(id).orElseThrow(LineNotFoundException::new);
         try {
-            lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
-            return new LineNameColorResponse(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor());
+            Line updatedLine = line.update(request.getName(), request.getColor());
+            lineDao.update(updatedLine);
+            return new LineNameColorResponse(id, request.getName(), request.getColor());
         } catch (DuplicateKeyException e) {
-            String message = "";
-            if(e.getMessage().contains("LINE(NAME)")) {
-                message = "지하철 노선 이름이 이미 존재합니다";
-            }
-            if(e.getMessage().contains("LINE(COLOR)")) {
-                message = "지하철 노선 색깔이 이미 존재합니다";
-            }
-            throw new DuplicateUniqueKeyException(message);
+            validateUpdateUniqueKey(line, request);
+        }
+        return null;
+    }
+
+    private void validateUpdateUniqueKey(Line line, LineUpdateRequest request) {
+        if (!line.getName().equals(request.getName())) {
+            validateDuplicateName(request.getName());
+        }
+        if (!line.getColor().equals(request.getColor())) {
+            validateDuplicateColor(request.getColor());
         }
     }
 

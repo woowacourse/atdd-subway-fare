@@ -47,9 +47,8 @@ public class Line {
         return sections;
     }
 
-    public void update(Line line) {
-        this.name = line.getName();
-        this.color = line.getColor();
+    public Line update(String name, String color) {
+        return new Line(this.id, name, color, this.sections);
     }
 
     public void addSection(Station upStation, Station downStation, int distance) {
