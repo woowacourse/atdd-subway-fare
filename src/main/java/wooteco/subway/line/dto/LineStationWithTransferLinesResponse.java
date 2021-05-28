@@ -40,7 +40,7 @@ public class LineStationWithTransferLinesResponse {
                 .collect(Collectors.toList());
         Section lastSection = sections.get(sections.size() - 1);
         stationTransferLinesResponses.add(StationTransferLinesResponse.of(line.getId(), lastSection.getDownStation(), allStationWithTransferLines));
-        return new LineStationWithTransferLinesResponse(line.getId(), line.getName(), line.getColor(), line.getExtraFare(), stationTransferLinesResponses);
+        return new LineStationWithTransferLinesResponse(line.getId(), line.getName(), line.getColor(), line.getExtraFare().money(), stationTransferLinesResponses);
     }
 
     public Long getId() {

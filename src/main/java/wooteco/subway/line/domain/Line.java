@@ -1,5 +1,7 @@
 package wooteco.subway.line.domain;
 
+import wooteco.subway.path.domain.Fare;
+import wooteco.subway.path.domain.Money;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
@@ -8,30 +10,30 @@ public class Line {
     private Long id;
     private String name;
     private String color;
-    private Integer extraFare;
+    private Fare extraFare;
     private Sections sections;
 
     public Line(String name, String color) {
-        this(null, name, color, 0, new Sections());
+        this(null, name, color, Fare.of(Money.zero()), new Sections());
     }
 
-    public Line(String name, String color, Integer extraFare) {
+    public Line(String name, String color, Fare extraFare) {
         this(null, name, color, extraFare, new Sections());
     }
 
     public Line(Long id, String name, String color) {
-        this(id, name, color, 0, new Sections());
+        this(id, name, color, Fare.of(Money.zero()), new Sections());
     }
 
-    public Line(Long id, String name, String color, Integer extraFare) {
+    public Line(Long id, String name, String color, Fare extraFare) {
         this(id, name, color, extraFare, new Sections());
     }
 
     public Line(Long id, String name, String color, Sections sections) {
-        this(id, name, color, 0, sections);
+        this(id, name, color, Fare.of(Money.zero()), sections);
     }
 
-    public Line(Long id, String name, String color, Integer extraFare, Sections sections) {
+    public Line(Long id, String name, String color, Fare extraFare, Sections sections) {
         this.id = id;
         this.name = name;
         this.color = color;
@@ -39,7 +41,7 @@ public class Line {
         this.sections = sections;
     }
 
-    public Line update(String name, String color, int extraFare) {
+    public Line update(String name, String color, Fare extraFare) {
         return new Line(this.id, name, color, extraFare, this.sections);
     }
 
@@ -58,6 +60,10 @@ public class Line {
     public void removeSection(Station station) {
         sections.removeStation(station);
     }
+
+    public int moneyValue() {
+        return extraFare.money();
+    };
 
     public List<Station> getStations() {
         return sections.getStations();
@@ -79,7 +85,7 @@ public class Line {
         return color;
     }
 
-    public Integer getExtraFare() {
+    public Fare getExtraFare() {
         return extraFare;
     }
 

@@ -37,7 +37,7 @@ public class LineResponse {
         List<SectionResponse> sections = line.getSortSections().stream()
                 .map(SectionResponse::of)
                 .collect(Collectors.toList());
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), line.getExtraFare(), stations, sections);
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), line.getExtraFare().money(), stations, sections);
     }
 
     public static List<LineResponse> listOf(List<Line> lines) {

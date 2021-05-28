@@ -9,6 +9,8 @@ import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.dto.*;
+import wooteco.subway.path.domain.Fare;
+import wooteco.subway.path.domain.Money;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationTransferLinesDto;
@@ -30,7 +32,7 @@ public class LineService {
 
     public LineResponse saveLine(LineRequest request) {
         validateUniqueKey(request.getName(), request.getColor());
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
+        Line persistLine = lineDao.insert(request.toLine());
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);
     }
@@ -88,7 +90,7 @@ public class LineService {
     public LineNameColorResponse updateLine(Long id, LineUpdateRequest request) {
         Line line = lineDao.findById(id).orElseThrow(LineNotFoundException::new);
         try {
-            Line updatedLine = line.update(request.getName(), request.getColor(), request.getExtraFare());
+            Line updatedLine = line.update(request.getName(), request.getColor(), Fare.of(new Money(request.getExtraFare())));
             lineDao.update(updatedLine);
             return new LineNameColorResponse(id, request.getName(), request.getColor());
         } catch (DuplicateKeyException e) {

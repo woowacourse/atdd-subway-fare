@@ -1,8 +1,10 @@
 package wooteco.subway.path.domain;
 
+import wooteco.subway.line.domain.Line;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
+import java.util.function.BinaryOperator;
 
 public class SubwayPath {
 
@@ -28,9 +30,10 @@ public class SubwayPath {
                 .sum();
     }
 
-    public int calculateExtraFare() {
-        return sectionEdges.stream()
-                .mapToInt(it -> it.getLine().getExtraFare())
-                .max().orElse(0);
+    public Fare mostExpensiveAdditionalFare() {
+        return Fare.of(new Money(sectionEdges.stream()
+                .map(SectionEdge::getLine)
+                .mapToInt(Line::moneyValue)
+                .max().orElse(0)));
     }
 }

@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.domain.Sections;
+import wooteco.subway.path.domain.Fare;
+import wooteco.subway.path.domain.Money;
 import wooteco.subway.station.domain.Station;
 
 import javax.sql.DataSource;
@@ -30,7 +32,7 @@ public class LineDao {
         params.put("id", line.getId());
         params.put("name", line.getName());
         params.put("color", line.getColor());
-        params.put("extra_fare", line.getExtraFare());
+        params.put("extra_fare", line.getExtraFare().money());
 
         Long lineId = insertAction.executeAndReturnKey(params).longValue();
         return new Line(lineId, line.getName(), line.getColor(), line.getExtraFare());
@@ -57,7 +59,7 @@ public class LineDao {
 
     public void update(Line newLine) {
         String sql = "update LINE set name = ?, color = ?, extra_fare = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getExtraFare(), newLine.getId()});
+        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getExtraFare().money(), newLine.getId()});
     }
 
     public List<Line> findAll() {
@@ -79,7 +81,7 @@ public class LineDao {
 
     private Line mapLine(List<Map<String, Object>> result) {
         if (result.size() == 0) {
-            throw new EmptyResultDataAccessException(result.size());
+            throw new EmptyResultDataAccessException(1);
         }
 
         List<Section> sections = extractSections(result);
@@ -88,7 +90,7 @@ public class LineDao {
                 (Long) result.get(0).get("LINE_ID"),
                 (String) result.get(0).get("LINE_NAME"),
                 (String) result.get(0).get("LINE_COLOR"),
-                (Integer) result.get(0).get("LINE_EXTRA_FARE"),
+                Fare.of(new Money((Integer) result.get(0).get("LINE_EXTRA_FARE"))),
                 new Sections(sections));
     }
 

@@ -1,5 +1,9 @@
 package wooteco.subway.line.dto;
 
+import wooteco.subway.line.domain.Line;
+import wooteco.subway.path.domain.Fare;
+import wooteco.subway.path.domain.Money;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -65,5 +69,9 @@ public class LineRequest {
 
     public int getDistance() {
         return distance;
+    }
+
+    public Line toLine() {
+        return new Line(this.name, this.color, Fare.of(new Money(this.extraFare)));
     }
 }

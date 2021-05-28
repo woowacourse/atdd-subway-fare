@@ -34,7 +34,7 @@ public class PathService {
             Station sourceStation = stationService.findStationById(source);
             Station targetStation = stationService.findStationById(target);
             SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
-            Fare fare = Fare.calculateFare(subwayPath.calculateDistance(), subwayPath.calculateExtraFare());
+            Fare fare = Fare.calculateFare(subwayPath.calculateDistance(), subwayPath.mostExpensiveAdditionalFare());
             FareTable fareTable = FareTable.of(fare);
             return PathResponseAssembler.assemble(subwayPath, fare.discountByAge(loginMember.getAge()), fareTable);
         } catch (Exception e) {
