@@ -133,7 +133,22 @@ include::{snippets}/delete-station-fail-in-line/http-response.adoc[]
 include::{snippets}/create-section/http-request.adoc[]
 ===== Response
 include::{snippets}/create-section/http-response.adoc[]
+==== 구간 생성 실패 - 노선에 모두 존재하지 않는 역들로 구성된 구간을 등록할 때
+===== Request
+include::{snippets}/create-section-fail-all-no-section/http-request.adoc[]
+===== Response
+include::{snippets}/create-section-fail-all-no-section/http-response.adoc[]
+==== 구간 생성 실패 - 노선에 이미 모두 존재하는 역들로 구성된 구간을 등록할 때
+===== Request
+include::{snippets}/create-section-fail-same-section/http-request.adoc[]
+===== Response
+include::{snippets}/create-section-fail-same-section/http-response.adoc[]
 === 구간 삭제
+==== 구간 삭제 실패 - 노선에 한 개의 구간만 존재할 때
+===== Request
+include::{snippets}/delete-section-fail-line-has-only-one-section/http-request.adoc[]
+===== Response
+include::{snippets}/delete-section-fail-line-has-only-one-section/http-response.adoc[]
 ==== 구간 삭제 성공
 ===== Request
 include::{snippets}/delete-section/http-request.adoc[]
