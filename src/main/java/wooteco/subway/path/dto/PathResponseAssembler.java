@@ -1,6 +1,7 @@
 package wooteco.subway.path.dto;
 
 import wooteco.subway.member.domain.Member;
+import wooteco.subway.path.domain.Fare;
 import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.station.dto.StationResponse;
 
@@ -14,8 +15,10 @@ public class PathResponseAssembler {
             .collect(Collectors.toList());
 
         int distance = subwayPath.calculateDistance();
-        int fare = member.calculateFare(subwayPath.calculateFare());
 
-        return new PathResponse(stationResponses, distance, fare);
+        Fare fare = subwayPath.calculateFare();
+        Fare discountedFare = fare.applyMemberDiscount(member);
+
+        return new PathResponse(stationResponses, distance, discountedFare.getFare());
     }
 }

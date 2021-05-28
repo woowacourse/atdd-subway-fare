@@ -27,21 +27,17 @@ public class SubwayPath {
         return sectionEdges.stream().mapToInt(it -> it.getSection().getDistance()).sum();
     }
 
-    public int calculateFare() {
+    public Fare calculateFare() {
         int totalDistance = calculateDistance();
-        FarePolicy farePolicy = FarePolicy.of(totalDistance);
-
-        int fare = farePolicy.calculateFare(totalDistance);
-        fare += calculateExtraFare();
-
-        return fare;
+        final Fare fare = Fare.createDefaultFare(totalDistance);
+        return fare.add(calculateExtraFare());
     }
 
-    private int calculateExtraFare() {
-        return sectionEdges.stream()
+    private Fare calculateExtraFare() {
+        return new Fare(sectionEdges.stream()
             .map(SectionEdge::getLine)
             .mapToInt(Line::getExtraFare)
             .max()
-            .orElseThrow(InvalidPathException::new);
+            .orElseThrow(InvalidPathException::new));
     }
 }
