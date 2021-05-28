@@ -1,6 +1,8 @@
 package wooteco.subway.domain;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import wooteco.subway.web.dto.response.StationWithDistanceResponse;
 
 public class Line {
     private Long id;
@@ -88,5 +90,9 @@ public class Line {
 
     public List<Station> getStations() {
         return sections.getStations();
+    }
+
+    public List<Section> sortedSections() {
+        return sections.sortedSections();
     }
 }

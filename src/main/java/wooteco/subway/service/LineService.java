@@ -8,6 +8,7 @@ import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
+import wooteco.subway.web.dto.LineResponseAssembler;
 import wooteco.subway.web.dto.request.LineRequest;
 import wooteco.subway.web.dto.response.LineResponse;
 import wooteco.subway.web.dto.request.LineUpdateRequest;
@@ -35,7 +36,7 @@ public class LineService {
         validateLineRequest(request);
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
         persistLine.addSection(addInitSection(persistLine, request));
-        return LineResponse.of(persistLine);
+        return LineResponseAssembler.assemble(persistLine);
     }
 
     private void validateLineRequest(LineRequest request) {
@@ -60,7 +61,7 @@ public class LineService {
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
-                .map(LineResponse::of)
+                .map(LineResponseAssembler::assemble)
                 .collect(Collectors.toList());
     }
 
@@ -70,7 +71,7 @@ public class LineService {
 
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
+        return LineResponseAssembler.assemble(persistLine);
     }
 
     public Line findLineById(Long id) {

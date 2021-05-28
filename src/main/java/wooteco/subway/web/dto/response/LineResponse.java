@@ -9,30 +9,17 @@ public class LineResponse {
     private Long id;
     private String name;
     private String color;
-    private List<SectionResponse> sections;
+    private List<StationWithDistanceResponse> stations;
 
     public LineResponse() {
     }
 
     public LineResponse(Long id, String name, String color,
-        List<SectionResponse> sections) {
+        List<StationWithDistanceResponse> stations) {
         this.id = id;
         this.name = name;
         this.color = color;
-        this.sections = sections;
-    }
-
-    public static LineResponse of(Line line) {
-        List<SectionResponse> sections = line.getSections().sortedSections().stream()
-                .map(SectionResponse::of)
-                .collect(Collectors.toList());
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), sections);
-    }
-
-    public static List<LineResponse> listOf(List<Line> lines) {
-        return lines.stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList());
+        this.stations = stations;
     }
 
     public Long getId() {
@@ -47,7 +34,7 @@ public class LineResponse {
         return color;
     }
 
-    public List<SectionResponse> getSections() {
-        return sections;
+    public List<StationWithDistanceResponse> getStations() {
+        return stations;
     }
 }

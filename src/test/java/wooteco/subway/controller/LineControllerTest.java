@@ -35,6 +35,7 @@ import wooteco.subway.TestDataLoader;
 import wooteco.auth.service.AuthService;
 import wooteco.subway.service.LineService;
 import wooteco.subway.domain.Line;
+import wooteco.subway.web.dto.LineResponseAssembler;
 import wooteco.subway.web.dto.request.LineRequest;
 import wooteco.subway.web.dto.response.LineResponse;
 import wooteco.subway.web.dto.request.LineUpdateRequest;
@@ -42,6 +43,7 @@ import wooteco.subway.web.dto.request.SectionRequest;
 import wooteco.subway.web.dto.response.SectionResponse;
 import wooteco.subway.web.api.LineController;
 import wooteco.subway.web.dto.response.StationResponse;
+import wooteco.subway.web.dto.response.StationWithDistanceResponse;
 
 @WebMvcTest(controllers = LineController.class)
 @ActiveProfiles("test")
@@ -62,11 +64,13 @@ class LineControllerTest {
     public void createLines() throws Exception{
         //given
         final LineRequest lineRequest = new LineRequest("2호선", "bg-red-200", 1L, 2L, 5);
-        final StationResponse 강남역 = new StationResponse(1L, "강남역");
-        final StationResponse 잠실역 = new StationResponse(2L, "잠실역");
-        final SectionResponse sectionResponse = new SectionResponse(1L, 강남역, 잠실역, 5);
-        final LineResponse lineResponse = new LineResponse(1L, "2호선", "bg-red-200",
-            Collections.singletonList(sectionResponse));
+
+        final List<StationWithDistanceResponse> stationWithDistanceResponses = Arrays
+            .asList(new StationWithDistanceResponse(1L, "강남역", 3),
+                new StationWithDistanceResponse(2L, "역삼역")
+            );
+
+        final LineResponse lineResponse = new LineResponse(1L, "2호선", "bg-red-200", stationWithDistanceResponses);
 
         given(lineService.saveLine(any(LineRequest.class)))
             .willReturn(lineResponse);
@@ -93,8 +97,7 @@ class LineControllerTest {
     @DisplayName("노선 조회 - 성공")
     public void findLines() throws Exception{
         final TestDataLoader testDataLoader = new TestDataLoader();
-        final List<LineResponse> lineResponses = LineResponse
-            .listOf(Arrays.asList(testDataLoader.신분당선(), testDataLoader.이호선()));
+        final List<LineResponse> lineResponses = Arrays.asList(LineResponseAssembler.assemble(testDataLoader.신분당선()), LineResponseAssembler.assemble(testDataLoader.이호선()));
         given(lineService.findLineResponses()).willReturn(lineResponses);
         //given
         mockMvc.perform(get("/api/lines"))
@@ -112,7 +115,7 @@ class LineControllerTest {
         final Line 신분당선 = testDataLoader.신분당선();
         LineUpdateRequest lineUpdateRequest = new LineUpdateRequest(신분당선.getName(), 신분당선.getColor());
         given(lineService.findLineResponseById(any()))
-            .willReturn(LineResponse.of(신분당선));
+            .willReturn(LineResponseAssembler.assemble(신분당선));
 
         String token = "이것은토큰입니다";
         given(jwtTokenProvider.validateToken(token)).willReturn(true);
@@ -166,7 +169,7 @@ class LineControllerTest {
     @DisplayName("노선 ID 조회 - 성공")
     public void showLineById() throws Exception{
         final TestDataLoader testDataLoader = new TestDataLoader();
-        final LineResponse lineResponse = LineResponse.of(testDataLoader.신분당선());
+        final LineResponse lineResponse = LineResponseAssembler.assemble(testDataLoader.신분당선());
         Long id = testDataLoader.신분당선().getId();
         given(lineService.findLineResponseById(id)).willReturn(lineResponse);
         mockMvc.perform(get("/api/lines/" + id))
@@ -194,32 +197,6 @@ class LineControllerTest {
             .andDo(document("section-create",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint())));
-    }
-
-    @Test
-    @DisplayName("hello")
-    public void hello() throws Exception{
-        //given
-        final LineRequest lineRequest = new LineRequest("ㄴr는", "bg-red-200", 1L, 2L, 5);
-        final StationResponse 강남역 = new StationResponse(1L, "강남역");
-        final StationResponse 잠실역 = new StationResponse(2L, "잠실역");
-        final SectionResponse sectionResponse = new SectionResponse(1L, 강남역, 잠실역, 5);
-        final LineResponse lineResponse = new LineResponse(1L, "2호선", "bg-red-200",
-            Collections.singletonList(sectionResponse));
-
-        given(lineService.saveLine(any(LineRequest.class)))
-            .willReturn(lineResponse);
-
-        String token = "이것은토큰입니다";
-        given(jwtTokenProvider.validateToken(token)).willReturn(true);
-
-        mockMvc.perform(post("/api/lines")
-            .header("Authorization", "Bearer "+token)
-            .content(objectMapper.writeValueAsString(lineRequest))
-            .contentType(MediaType.APPLICATION_JSON)
-        )
-            .andExpect(status().isBadRequest())
-            .andDo(print());
     }
 
 }

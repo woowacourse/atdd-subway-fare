@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.hamcrest.Matchers;
@@ -28,6 +29,8 @@ import wooteco.common.ExceptionAdviceController;
 import wooteco.common.exception.badrequest.StationNameDuplicateException;
 import wooteco.subway.service.StationService;
 import wooteco.subway.web.dto.request.StationRequest;
+import wooteco.subway.web.dto.response.LineResponse;
+import wooteco.subway.web.dto.response.SimpleLineResponse;
 import wooteco.subway.web.dto.response.StationResponse;
 import wooteco.subway.web.api.StationController;
 
@@ -77,12 +80,15 @@ class StationControllerTest {
     @DisplayName("역 조회 - 성공")
     public void showStations() throws Exception{
         //given
+        final SimpleLineResponse 이호선 = new SimpleLineResponse(1L, "2호선", "빨강");
+        final SimpleLineResponse 팔호선 = new SimpleLineResponse(2L, "8호선", "핑크");
+
         final List<StationResponse> stationResponses = Arrays.asList(
-            new StationResponse(1L, "잠실역"),
-            new StationResponse(2L, "강남역"),
+            new StationResponse(1L, "잠실역", Arrays.asList(이호선, 팔호선)),
+            new StationResponse(2L, "강남역", Arrays.asList(이호선)),
             new StationResponse(3L, "사당역"),
-            new StationResponse(4L, "잠실새내역"),
-            new StationResponse(5L, "종합운동장역")
+            new StationResponse(4L, "잠실새내역", Arrays.asList(이호선)),
+            new StationResponse(5L, "종합운동장역", Arrays.asList(이호선))
         );
         given(stationService.findAllStationResponses())
             .willReturn(stationResponses);
