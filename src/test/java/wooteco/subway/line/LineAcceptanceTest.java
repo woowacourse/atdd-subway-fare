@@ -43,7 +43,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         광교역 = 지하철역_등록되어_있음("광교역", tokenResponse);
 
         lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-400", 강남역.getId(), 광교역.getId(), 15);
+        lineRequest2 = new LineRequest("구신분당선", "bg-red-400", 1000, 강남역.getId(), 광교역.getId(), 15);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -54,6 +54,16 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_노선_생성됨(response);
+    }
+
+    @DisplayName("추가 요금 추가해서 지하철 노선을 생성한다.")
+    @Test
+    void createLineWithExtraFare() {
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest2, tokenResponse);
+
+        // then
+        추가요금_있는_지하철_노선_생성됨(response);
     }
 
     @DisplayName("유효하지 않은 토큰으로 지하철 노선을 생성한다.")
@@ -408,9 +418,23 @@ public class LineAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 지하철_노선_생성됨(ExtractableResponse response) {
+        LineResponse lineResponse = response.as(LineResponse.class);
+
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
+
+        assertThat(lineResponse.getExtraFare()).isEqualTo(0);
     }
+
+    public static void 추가요금_있는_지하철_노선_생성됨(ExtractableResponse response) {
+        LineResponse lineResponse = response.as(LineResponse.class);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.header("Location")).isNotBlank();
+
+        assertThat(lineResponse.getExtraFare()).isEqualTo(1000);
+    }
+
 
     public static void 지하철_노선_생성_이름중복으로_실패됨(ExtractableResponse<Response> response) {
         ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);

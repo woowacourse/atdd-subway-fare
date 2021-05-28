@@ -8,6 +8,7 @@ public class Line {
     private Long id;
     private String name;
     private String color;
+    private Integer extraFare;
     private Sections sections = new Sections();
 
     public Line() {
@@ -18,16 +19,37 @@ public class Line {
         this.color = color;
     }
 
+    public Line(String name, String color, Integer extraFare) {
+        this.name = name;
+        this.color = color;
+        this.extraFare = extraFare;
+    }
+
     public Line(Long id, String name, String color) {
         this.id = id;
         this.name = name;
         this.color = color;
     }
 
+    public Line(Long id, String name, String color, Integer extraFare) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
+        this.extraFare = extraFare;
+    }
+
     public Line(Long id, String name, String color, Sections sections) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.sections = sections;
+    }
+
+    public Line(Long id, String name, String color, Integer extraFare, Sections sections) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
+        this.extraFare = extraFare;
         this.sections = sections;
     }
 
@@ -43,12 +65,20 @@ public class Line {
         return color;
     }
 
+    public Integer getExtraFare() {
+        return extraFare;
+    }
+
     public Sections getSections() {
         return sections;
     }
 
-    public Line update(String name, String color) {
-        return new Line(this.id, name, color, this.sections);
+    public Line(Integer extraFare) {
+        this.extraFare = extraFare;
+    }
+
+    public Line update(String name, String color, int extraFare) {
+        return new Line(this.id, name, color, extraFare, this.sections);
     }
 
     public void addSection(Station upStation, Station downStation, int distance) {

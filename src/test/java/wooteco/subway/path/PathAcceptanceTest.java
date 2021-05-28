@@ -72,6 +72,17 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_구간_등록되어_있음(삼호선, 양재역, 구의역, 59, tokenResponse);
     }
 
+    @DisplayName("로그인 되지 않은 상태로 경로를 조회한다.")
+    @Test
+    void findPathByDistanceWithOutLogin() {
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(3L, 2L);
+
+        //then
+        적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
+        총_거리가_응답됨(response, 5, 1250);
+    }
+
     @DisplayName("두 역의 최단 거리 경로를 조회한다.")
     @Test
     void findPathByDistance() {
@@ -118,21 +129,25 @@ public class PathAcceptanceTest extends AcceptanceTest {
         총_거리가_응답됨(response2, 59, 2250);
     }
 
-    public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
+    public static ExtractableResponse<Response> 거리_경로_조회_요청(Long source, Long target) {
         return RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/api/paths?source={sourceId}&target={targetId}", source, target)
+                .queryParam("source", source)
+                .queryParam("target", target)
+                .when().get("/api/paths")
                 .then().log().all()
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target, TokenResponse tokenResponse) {
+    public static ExtractableResponse<Response> 거리_경로_조회_요청(Long source, Long target, TokenResponse tokenResponse) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/api/paths?source={sourceId}&target={targetId}", source, target)
+                .queryParam("source", source)
+                .queryParam("target", target)
+                .when().get("/api/paths")
                 .then().log().all()
                 .extract();
     }

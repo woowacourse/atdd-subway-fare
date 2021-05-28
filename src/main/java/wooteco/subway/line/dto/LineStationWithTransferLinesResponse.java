@@ -12,6 +12,7 @@ public class LineStationWithTransferLinesResponse {
     private Long id;
     private String name;
     private String color;
+    private Integer extraFare;
     private List<StationTranferLinesResponse> stations;
 
     public LineStationWithTransferLinesResponse() {
@@ -24,6 +25,14 @@ public class LineStationWithTransferLinesResponse {
         this.stations = stations;
     }
 
+    public LineStationWithTransferLinesResponse(Long id, String name, String color, Integer extraFare, List<StationTranferLinesResponse> stations) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
+        this.extraFare = extraFare;
+        this.stations = stations;
+    }
+
     public static LineStationWithTransferLinesResponse of(Line line, List<StationTransferLinesDto> allStationWithTransferLines) {
         List<Section> sections = line.getSortSections();
         List<StationTranferLinesResponse> stationTransferLinesResponses = sections.stream()
@@ -31,7 +40,7 @@ public class LineStationWithTransferLinesResponse {
                 .collect(Collectors.toList());
         Section lastSection = sections.get(sections.size() - 1);
         stationTransferLinesResponses.add(StationTranferLinesResponse.of(line.getId(), lastSection.getDownStation(), allStationWithTransferLines));
-        return new LineStationWithTransferLinesResponse(line.getId(), line.getName(), line.getColor(), stationTransferLinesResponses);
+        return new LineStationWithTransferLinesResponse(line.getId(), line.getName(), line.getColor(), line.getExtraFare(), stationTransferLinesResponses);
     }
 
     public Long getId() {
@@ -44,6 +53,10 @@ public class LineStationWithTransferLinesResponse {
 
     public String getColor() {
         return color;
+    }
+
+    public Integer getExtraFare() {
+        return extraFare;
     }
 
     public List<StationTranferLinesResponse> getStations() {

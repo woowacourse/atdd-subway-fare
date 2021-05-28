@@ -30,7 +30,7 @@ public class LineService {
 
     public LineResponse saveLine(LineRequest request) {
         validateUniqueKey(request.getName(), request.getColor());
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
+        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);
     }
@@ -88,7 +88,7 @@ public class LineService {
     public LineNameColorResponse updateLine(Long id, LineUpdateRequest request) {
         Line line = lineDao.findById(id).orElseThrow(LineNotFoundException::new);
         try {
-            Line updatedLine = line.update(request.getName(), request.getColor());
+            Line updatedLine = line.update(request.getName(), request.getColor(), request.getExtraFare());
             lineDao.update(updatedLine);
             return new LineNameColorResponse(id, request.getName(), request.getColor());
         } catch (DuplicateKeyException e) {

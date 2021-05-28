@@ -1,6 +1,8 @@
 package wooteco.subway.member.domain;
 
 public class LoginMember {
+    public static final Member GUEST = new Member(0L, "guest@email.com", 20);
+
     private Long id;
     private String email;
     private Integer age;
