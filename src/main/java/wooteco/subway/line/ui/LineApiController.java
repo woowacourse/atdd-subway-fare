@@ -12,8 +12,7 @@ import wooteco.subway.line.dto.LineResponse;
 
 @RestController
 public class LineApiController {
-
-    private LineService lineService;
+    private final LineService lineService;
 
     public LineApiController(LineService lineService) {
         this.lineService = lineService;

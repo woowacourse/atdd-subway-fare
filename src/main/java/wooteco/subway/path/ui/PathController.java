@@ -13,7 +13,7 @@ import wooteco.subway.path.dto.PathResponse;
 
 @RestController
 public class PathController {
-    private PathService pathService;
+    private final PathService pathService;
 
     public PathController(PathService pathService) {
         this.pathService = pathService;
