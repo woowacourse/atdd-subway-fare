@@ -1,8 +1,19 @@
 package wooteco.subway.line.dto;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+
 public class SectionRequest {
+    private static final String ERROR_MESSAGE = "올바르지 않은 구간 요청 양식입니다.";
+
+    @NotNull(message = ERROR_MESSAGE)
     private Long upStationId;
+
+    @NotNull(message = ERROR_MESSAGE)
     private Long downStationId;
+
+    @NotNull(message = ERROR_MESSAGE)
+    @Positive(message = ERROR_MESSAGE)
     private int distance;
 
     public SectionRequest() {
