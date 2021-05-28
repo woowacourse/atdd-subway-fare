@@ -100,6 +100,10 @@ public class Line {
         return extraFare;
     }
 
+    public boolean hasId(Long otherId) {
+        return id.equals(otherId);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

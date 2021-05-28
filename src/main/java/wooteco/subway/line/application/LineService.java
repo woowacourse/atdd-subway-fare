@@ -108,7 +108,7 @@ public class LineService {
             return;
         }
         Line lineWithName = linesWithName.get(0);
-        if (!lineWithName.getId().equals(lineIdToUpdate)) {
+        if (!lineWithName.hasId(lineIdToUpdate)) {
             throw new HttpException(HttpStatus.BAD_REQUEST, DUPLICATE_LINE_COLOR_ERROR_MESSAGE);
         }
     }
