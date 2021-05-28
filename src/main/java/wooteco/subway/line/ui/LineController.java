@@ -24,9 +24,8 @@ import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.LineUpdateRequest;
 import wooteco.subway.line.dto.SectionRequest;
 
-@RestController
 @RequestMapping("/lines")
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+@RestController
 public class LineController {
     private final LineService lineService;
 

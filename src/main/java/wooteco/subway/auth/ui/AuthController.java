@@ -13,7 +13,6 @@ import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.exception.HttpException;
 
 @RestController
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class AuthController {
     private final AuthService authService;
 

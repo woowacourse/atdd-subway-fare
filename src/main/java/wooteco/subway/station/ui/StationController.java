@@ -21,7 +21,6 @@ import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
 @RestController
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class StationController {
     private StationService stationService;
 

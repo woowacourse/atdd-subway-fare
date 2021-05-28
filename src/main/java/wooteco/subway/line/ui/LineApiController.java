@@ -11,7 +11,6 @@ import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.dto.LineResponse;
 
 @RestController
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class LineApiController {
 
     private LineService lineService;
