@@ -42,6 +42,6 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         }
 
         Long id = Long.parseLong(jwtTokenProvider.getPayload(credentials));
-        return new LoginMember(id, Authority.USER);
+        return new LoginMember(id, Authority.MEMBER);
     }
 }

@@ -6,6 +6,9 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.InvalidPathException;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
+import wooteco.subway.member.application.MemberService;
+import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.dto.MemberResponse;
 import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.path.dto.PathResponseAssembler;
@@ -18,6 +21,7 @@ public class PathService {
 
     private LineService lineService;
     private StationService stationService;
+    private MemberService memberService;
     private PathFinder pathFinder;
     private FareCalculator fareCalculator;
 
@@ -34,21 +38,31 @@ public class PathService {
         this.fareCalculator = fareCalculator;
     }
 
-    public PathResponse findPath(Long source, Long target) {
+    public PathResponse findPath(Long source, Long target, LoginMember loginMember) {
         try {
             List<Line> lines = lineService.findLines();
             Station sourceStation = stationService.findStationById(source);
             Station targetStation = stationService.findStationById(target);
             SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
-            int fare = fareCalculator.calculateFare(
-                subwayPath.calculateDistance(),
-                subwayPath.calculateMaxExtraFare()
-            );
 
+            int fare = calculateFare(loginMember, subwayPath);
             return PathResponseAssembler.assemble(subwayPath, fare);
         } catch (Exception e) {
             throw new InvalidPathException();
         }
     }
 
+    private int calculateFare(LoginMember loginMember, SubwayPath subwayPath) {
+        FareCalculator fareCalculator = this.fareCalculator;
+
+        if (loginMember.isMember()) {
+            MemberResponse member = memberService.findMember(loginMember);
+            fareCalculator = new AgeFareCalculator(fareCalculator, member.getAge());
+        }
+
+        return fareCalculator.calculateFare(
+            subwayPath.calculateDistance(),
+            subwayPath.calculateMaxExtraFare()
+        );
+    }
 }
