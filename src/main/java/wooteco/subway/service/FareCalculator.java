@@ -11,7 +11,7 @@ public class FareCalculator {
     private static final int DISTANCE_BY_FARE_POLICY_FOR_FIFTY_KILOMETER = 8;
     private static final int ADDITIONAL_FARE = 100;
 
-    public int calculateFare(int distance) {
+    public int calculateFare(int distance, int extraFare) {
         int fare = DEFAULT_FARE;
         if (distance > TEN_KILOMETER) {
             fare += calculateOverFare(distance - TEN_KILOMETER, DISTANCE_BY_FARE_POLICY_FOR_TEN_KILOMETER);
@@ -19,7 +19,7 @@ public class FareCalculator {
         if (distance > FIFTY_KILOMETER) {
             fare += calculateOverFare(distance - FIFTY_KILOMETER, DISTANCE_BY_FARE_POLICY_FOR_FIFTY_KILOMETER);
         }
-        return fare;
+        return fare + extraFare;
     }
 
     private int calculateOverFare(int distance, int distanceByPolicy) {

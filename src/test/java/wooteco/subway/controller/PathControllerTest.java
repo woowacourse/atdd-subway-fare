@@ -60,7 +60,7 @@ class PathControllerTest {
         final List<Station> stations = Arrays
                 .asList(testDataLoader.강남역(), testDataLoader.판교역(), testDataLoader.정자역());
         final PathResponse pathResponse =
-                new PathResponse(StationResponse.listOf(stations), totalDistance, fareCalculator.calculateFare(totalDistance));
+                new PathResponse(StationResponse.listOf(stations), totalDistance, fareCalculator.calculateFare(totalDistance, 0));
         final Long source = testDataLoader.강남역().getId();
         final Long target = testDataLoader.정자역().getId();
 

@@ -32,7 +32,7 @@ public class PathService {
             Station sourceStation = stationService.findStationById(source);
             Station targetStation = stationService.findStationById(target);
             SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
-            int fare = fareCalculator.calculateFare(subwayPath.calculateDistance());
+            int fare = fareCalculator.calculateFare(subwayPath.calculateDistance(), subwayPath.calculateMaxExtraFare());
 
             return PathResponseAssembler.assemble(subwayPath, fare);
         } catch (Exception e) {

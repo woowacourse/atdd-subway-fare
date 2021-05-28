@@ -1,5 +1,6 @@
 package wooteco.subway.domain;
 
+import javax.swing.plaf.PanelUI;
 import java.util.List;
 
 public class SubwayPath {
@@ -21,5 +22,12 @@ public class SubwayPath {
 
     public int calculateDistance() {
         return sectionEdges.stream().mapToInt(it -> it.getSection().getDistance()).sum();
+    }
+
+    public int calculateMaxExtraFare() {
+        return sectionEdges.stream()
+                .mapToInt(SectionEdge::getExtraFare)
+                .max()
+                .orElse(0);
     }
 }
