@@ -2,7 +2,7 @@ package wooteco.subway.path.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.fare.domain.Fare;
+import wooteco.subway.fare.domain.*;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.member.domain.LoginMember;
@@ -34,16 +34,24 @@ public class PathService {
         Station sourceStation = stationService.findStationById(source);
         Station targetStation = stationService.findStationById(target);
         SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
-        return getPathResponse(loginMember, subwayPath);
+        return writePathResponse(loginMember, subwayPath);
     }
 
-    private PathResponse getPathResponse(LoginMember loginMember, SubwayPath subwayPath) {
+    private PathResponse writePathResponse(LoginMember loginMember, SubwayPath subwayPath) {
         List<Station> stations = subwayPath.getStations();
         int distance = subwayPath.calculateDistance();
-        Fare fare = new Fare(distance, subwayPath.calculateLineFare());
+        Fare fare = generateFare(loginMember, subwayPath);
+        return PathResponseAssembler.assemble(stations, distance, fare.calculateFare());
+    }
+
+    private Fare generateFare(LoginMember loginMember, SubwayPath subwayPath) {
+        int distance = subwayPath.calculateDistance();
+        int lineExtraFare = subwayPath.calculateLineFare();
+        FareStrategy fareStrategy = DistanceFareStrategy.find(distance);
         if (Objects.isNull(loginMember)) {
-            return PathResponseAssembler.assemble(stations, distance, fare.calculateBasicFare());
+            return new Fare(distance, lineExtraFare, fareStrategy);
         }
-        return PathResponseAssembler.assemble(stations,distance, fare.calculateDiscountFare(loginMember.getAge()));
+        DiscountStrategy discountStrategy = AgeDiscountStrategy.find(loginMember.getAge());
+        return new Fare(distance, lineExtraFare, fareStrategy, discountStrategy);
     }
 }

@@ -1,42 +1,30 @@
 package wooteco.subway.fare.domain;
 
+import java.util.Objects;
+
 public class Fare {
-    private static final int DEFAULT_FARE = 1250;
 
-    private final int totalDistance;
+    private final int distance;
     private final int lineExtraFare;
+    private final FareStrategy fareStrategy;
+    private DiscountStrategy discountStrategy;
 
-    public Fare(int totalDistance, int lineExtraFare) {
-        this.totalDistance = totalDistance;
-        this.lineExtraFare = lineExtraFare;
+    public Fare(int distance, int lineExtraFare, FareStrategy fareStrategy) {
+        this(distance, lineExtraFare, fareStrategy, null);
     }
 
-    public int calculateBasicFare() {
-        int basicFare = DEFAULT_FARE + lineExtraFare;
-        if (totalDistance <= 10) {
+    public Fare(int distance, int lineExtraFare, FareStrategy fareStrategy, DiscountStrategy discountStrategy) {
+        this.distance = distance;
+        this.lineExtraFare = lineExtraFare;
+        this.fareStrategy = fareStrategy;
+        this.discountStrategy = discountStrategy;
+    }
+
+    public int calculateFare() {
+        int basicFare = fareStrategy.calculateFare(distance) + lineExtraFare;
+        if (Objects.isNull(discountStrategy)) {
             return basicFare;
         }
-        if (totalDistance <= 50) {
-            return basicFare + calculateExtraFare(totalDistance - 10, 5);
-        }
-        return basicFare + calculateExtraFare(40, 5) +
-                calculateExtraFare(totalDistance - 50, 8);
-    }
-
-    private int calculateExtraFare(int distance, int unitDistance) {
-        return (int) Math.ceil(((double) (distance)) / unitDistance) * 100;
-    }
-
-    public int calculateDiscountFare(int age) {
-        if (age < 6) {
-            return 0;
-        }
-        if (age >= 19) {
-            return calculateBasicFare();
-        }
-        if (age < 13) {
-            return (calculateBasicFare() - 350) / 2;
-        }
-        return (int) ((calculateBasicFare() - 350) * 0.8);
+        return discountStrategy.applyDiscount(basicFare);
     }
 }
