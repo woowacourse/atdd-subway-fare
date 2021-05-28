@@ -67,7 +67,7 @@ class PathControllerTest {
             new PathResponse(
                 StationResponse.listOf(stations),
                 totalDistance,
-                fareCalculator.calculateFare(totalDistance)
+                fareCalculator.calculateFare(totalDistance, 0)
             );
 
         Long source = testDataLoader.강남역().getId();
