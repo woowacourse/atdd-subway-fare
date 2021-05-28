@@ -296,13 +296,13 @@ public class LineAcceptanceTest extends AcceptanceTest {
         잘못된_토큰으로_요청을_보냄(response);
     }
 
-    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse 광교역, int distance) {
-        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), 광교역.getId(), distance);
+    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, int extraFare, StationResponse upStation, StationResponse downStation, int distance) {
+        LineRequest lineRequest = new LineRequest(name, color, extraFare, upStation.getId(), downStation.getId(), distance);
         return 지하철_노선_등록되어_있음(lineRequest);
     }
 
-    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse 광교역, int distance, TokenResponse tokenResponse) {
-        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), 광교역.getId(), distance);
+    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, int extraFare, StationResponse upStation, StationResponse downStation, int distance, TokenResponse tokenResponse) {
+        LineRequest lineRequest = new LineRequest(name, color, extraFare, upStation.getId(), downStation.getId(), distance);
         return 지하철_노선_등록되어_있음(lineRequest, tokenResponse);
     }
 

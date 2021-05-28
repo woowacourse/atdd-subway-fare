@@ -12,15 +12,15 @@ public class Fare {
         this.money = money;
     }
 
-    public static Fare calculateFare(int distance) {
-        return new Fare(new Money(calculateFareByDistance(distance)));
+    public static Fare calculateFare(int distance, int extraFare) {
+        return new Fare(new Money(calculateFareByDistance(distance, extraFare)));
     }
 
-    private static int calculateFareByDistance(int distance) {
+    private static int calculateFareByDistance(int distance, int extraFare) {
         if (distance > SECOND_BOUND) {
-            return DEFAULT_FARE + plusFirstBound(SECOND_BOUND) + plusSecondBound(distance);
+            return DEFAULT_FARE + plusFirstBound(SECOND_BOUND) + plusSecondBound(distance) + extraFare;
         }
-        return DEFAULT_FARE + plusFirstBound(distance);
+        return DEFAULT_FARE + plusFirstBound(distance) + extraFare;
     }
 
     private static int plusFirstBound(int distance) {
