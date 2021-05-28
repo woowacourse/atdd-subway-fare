@@ -20,8 +20,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
 import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static wooteco.subway.line.SectionAcceptanceTest.지하철_구간_등록되어_있음;
+import static wooteco.subway.member.MemberAcceptanceTest.회원_생성됨;
+import static wooteco.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
 @DisplayName("지하철 경로 조회")
@@ -87,15 +90,69 @@ public class PathAcceptanceTest extends AcceptanceTest {
         총_거리가_응답됨(response, 5, 1550);
     }
 
-    @DisplayName("두 역의 최단 거리 경로를 조회한다.")
+    @DisplayName("성인 회원이 두 역의 최단 거리 경로와 요금을 조회한다.")
     @Test
     void findPathByDistance() {
+        // given
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청("adult@email.com", "1234", 20);
+        회원_생성됨(createResponse);
+
+        TokenResponse tokenResponse = 로그인되어_있음("adult@email.com", "1234");
+
         //when
         ExtractableResponse<Response> response = 거리_경로_조회_요청(3L, 2L, tokenResponse);
 
         //then
         적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
         총_거리가_응답됨(response, 5, 1550);
+    }
+
+    @DisplayName("청소년 회원이 두 역의 최단 거리 경로와 요금을 조회한다.")
+    @Test
+    void findPathByDistanceWithTeenagerMember() {
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청("teenager@email.com", "1234", 18);
+        회원_생성됨(createResponse);
+
+        TokenResponse tokenResponse = 로그인되어_있음("teenager@email.com", "1234");
+
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(3L, 2L, tokenResponse);
+
+        //then
+        적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
+        총_거리가_응답됨(response, 5, 960);
+    }
+
+    @DisplayName("어린이 회원이 두 역의 최단 거리 경로와 요금을 조회한다.")
+    @Test
+    void findPathByDistanceWithChildMember() {
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청("child@email.com", "1234", 12);
+        회원_생성됨(createResponse);
+
+        TokenResponse tokenResponse = 로그인되어_있음("child@email.com", "1234");
+
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(3L, 2L, tokenResponse);
+
+        //then
+        적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
+        총_거리가_응답됨(response, 5, 600);
+    }
+
+    @DisplayName("유아 회원이 두 역의 최단 거리 경로와 요금을 조회한다.")
+    @Test
+    void findPathByDistanceWithBabyMember() {
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청("baby@email.com", "1234", 5);
+        회원_생성됨(createResponse);
+
+        TokenResponse tokenResponse = 로그인되어_있음("baby@email.com", "1234");
+
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(3L, 2L, tokenResponse);
+
+        //then
+        적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
+        총_거리가_응답됨(response, 5, 0);
     }
 
     @DisplayName("10km 초과 ~ 40km 이하일 시 5km마다 100원 추가 요금 발생한다.")

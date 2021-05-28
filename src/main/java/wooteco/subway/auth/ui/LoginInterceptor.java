@@ -17,10 +17,10 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if (isRequestIsPreflight(request)) {
+        if (isRequestPreflight(request)) {
             return true;
         }
-        if (isRequestMethodIsGet(request) && isNotMemberLookUp(request)) {
+        if (isRequestMethodGet(request) && isNotMemberLookUp(request)) {
             return true;
         }
         String accessToken = AuthorizationExtractor.extract(request);
@@ -28,11 +28,11 @@ public class LoginInterceptor implements HandlerInterceptor {
         return true;
     }
 
-    private boolean isRequestIsPreflight(HttpServletRequest request) {
+    private boolean isRequestPreflight(HttpServletRequest request) {
         return request.getMethod().equals(HttpMethod.OPTIONS.name());
     }
 
-    private boolean isRequestMethodIsGet(HttpServletRequest request) {
+    private boolean isRequestMethodGet(HttpServletRequest request) {
         return request.getMethod().equals(HttpMethod.GET.name());
     }
 
