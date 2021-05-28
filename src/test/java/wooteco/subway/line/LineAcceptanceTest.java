@@ -49,6 +49,17 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_생성됨(response);
     }
 
+    @DisplayName("잘못된 이름으로 지하철 노선을 생성한다.")
+    @Test
+    void createLinWithWrongName() {
+        // when
+        LineRequest lineRequest = new LineRequest("구신분당", "bg-red-600", 강남역.getId(), downStation.getId(), 15, 0);
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest);
+
+        // then
+        지하철_노선_생성_실패됨(response);
+    }
+
     @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
     @Test
     void createLineWithDuplicateName() {

@@ -1,6 +1,7 @@
 package wooteco.subway.line.domain;
 
 import java.util.List;
+import wooteco.subway.line.exception.WrongLineNameException;
 import wooteco.subway.station.domain.Station;
 
 public class Line {
@@ -9,49 +10,46 @@ public class Line {
     private String name;
     private String color;
     private Integer extraFare;
-    private Sections sections = new Sections();
+    private Sections sections;
 
     public Line() {
     }
 
     public Line(String name, String color) {
-        this.name = name;
-        this.color = color;
+        this(null, name, color, 0, new Sections());
     }
 
     public Line(Long id, String name, String color) {
-        this.id = id;
-        this.name = name;
-        this.color = color;
+        this(id, name, color, 0, new Sections());
     }
 
     public Line(String name, String color, Integer extraFare) {
-        this.name = name;
-        this.color = color;
-        this.extraFare = extraFare;
+        this(null, name, color, extraFare, new Sections());
     }
 
     public Line(final Long id, final String name, final String color, final Integer extraFare) {
-        this.id = id;
-        this.name = name;
-        this.color = color;
-        this.extraFare = extraFare;
+        this(id, name, color, extraFare, new Sections());
     }
 
     public Line(Long id, String name, String color, Sections sections) {
-        this.id = id;
-        this.name = name;
-        this.color = color;
-        this.sections = sections;
+        this(id, name, color,0, sections);
     }
 
     public Line(final Long id, final String name, final String color, final Integer extraFare,
         final Sections sections) {
+        checkNameConvention(name);
         this.id = id;
         this.name = name;
         this.color = color;
         this.extraFare = extraFare;
         this.sections = sections;
+    }
+
+    private void checkNameConvention(String name) {
+        String lastLetter = name.substring(name.length() - 1);
+        if (!lastLetter.equals("선")) {
+            throw new WrongLineNameException(name);
+        }
     }
 
     public void update(Line line) {
