@@ -12,7 +12,7 @@ import wooteco.subway.station.exception.StationDaoException;
 import java.sql.SQLIntegrityConstraintViolationException;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
-@RestControllerAdvice
+@RestControllerAdvice(assignableTypes = StationController.class)
 public class StationControllerAdvice {
     @ExceptionHandler(DuplicateKeyException.class)
     public ResponseEntity<ErrorResponse> handleDuplicateKeyException(DuplicateKeyException e) {
