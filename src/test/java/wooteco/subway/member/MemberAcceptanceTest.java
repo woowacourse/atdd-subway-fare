@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
+import wooteco.subway.member.dto.EmailRequest;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
@@ -33,6 +34,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> findResponse = 내_회원_정보_조회_요청(사용자);
         회원_정보_조회됨(findResponse, EMAIL, AGE);
+
+        ExtractableResponse<Response> emailCheckResponse = 이메일_중복확인_요청(EMAIL);
+        이메일_중복_응답됨(emailCheckResponse);
 
         ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(사용자, EMAIL, NEW_PASSWORD, NEW_AGE);
         회원_정보_수정됨(updateResponse);
@@ -62,6 +66,20 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
+    }
+
+    private ExtractableResponse<Response> 이메일_중복확인_요청(String email) {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new EmailRequest(email))
+                .when().post("/members/email-check")
+                .then().log().all()
+                .extract();
+    }
+
+    private void 이메일_중복_응답됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CONFLICT.value());
     }
 
     public static ExtractableResponse<Response> 내_회원_정보_수정_요청(TokenResponse tokenResponse, String email, String password, Integer age) {
