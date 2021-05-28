@@ -69,8 +69,9 @@ public class LineService {
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
-    public void deleteLineById(Long id) {
-        lineDao.deleteById(id);
+    public void deleteLineById(Long lineId) {
+        sectionDao.deleteByLineId(lineId);
+        lineDao.deleteById(lineId);
     }
 
     public void addLineStation(Long lineId, SectionRequest request) {
@@ -101,4 +102,5 @@ public class LineService {
         }
         return mapResponses;
     }
+
 }
