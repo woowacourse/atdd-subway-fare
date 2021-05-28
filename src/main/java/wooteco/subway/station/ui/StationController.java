@@ -3,6 +3,7 @@ package wooteco.subway.station.ui;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import wooteco.subway.dto.ErrorResponse;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
@@ -45,7 +46,7 @@ public class StationController {
 
     @ExceptionHandler(StationRelatedException.class)
     public ResponseEntity sectionExistStation(Exception e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
+        return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
     }
 
 }

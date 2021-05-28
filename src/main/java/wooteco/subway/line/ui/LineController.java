@@ -2,6 +2,7 @@ package wooteco.subway.line.ui;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import wooteco.subway.dto.ErrorResponse;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
@@ -70,6 +71,6 @@ public class LineController {
 
     @ExceptionHandler(SectionRelatedException.class)
     public ResponseEntity sectionException(Exception e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
+        return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
     }
 }
