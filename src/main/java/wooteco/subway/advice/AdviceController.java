@@ -1,5 +1,7 @@
 package wooteco.subway.advice;
 
+import java.sql.SQLException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -23,5 +25,12 @@ public class AdviceController {
         return ResponseEntity
             .status(e.getHttpStatus())
             .body(e.getErrorMessage());
+    }
+
+    @ExceptionHandler(SQLException.class)
+    public ResponseEntity<ErrorMessage> handleSQLException(SQLException e) {
+        return ResponseEntity
+            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(new ErrorMessage(e.getMessage()));
     }
 }
