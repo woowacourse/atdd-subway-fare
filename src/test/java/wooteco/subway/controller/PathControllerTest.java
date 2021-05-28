@@ -11,9 +11,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import wooteco.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.TestDataLoader;
-import wooteco.auth.service.AuthService;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
+import wooteco.subway.service.DefaultFareCalculator;
 import wooteco.subway.service.FareCalculator;
 import wooteco.subway.service.PathService;
 import wooteco.subway.web.PathController;
@@ -24,6 +24,8 @@ import wooteco.subway.web.dto.response.StationResponse;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
@@ -56,7 +58,7 @@ class PathControllerTest {
                         .stream()
                         .mapToInt(Section::getDistance)
                         .sum();
-        final FareCalculator fareCalculator = new FareCalculator();
+        final FareCalculator fareCalculator = new DefaultFareCalculator();
         final List<Station> stations = Arrays
                 .asList(testDataLoader.강남역(), testDataLoader.판교역(), testDataLoader.정자역());
         final PathResponse pathResponse =
@@ -64,8 +66,15 @@ class PathControllerTest {
         final Long source = testDataLoader.강남역().getId();
         final Long target = testDataLoader.정자역().getId();
 
-        given(pathService.findPath(source, target)).willReturn(pathResponse);
-        mockMvc.perform(get("/api/paths?source=" + source + "&target=" + target))
+        final String token = "이것은토큰입니다";
+        final Long id = 1L;
+        given(jwtTokenProvider.validateToken(token))
+                .willReturn(true);
+        given(jwtTokenProvider.getPayload(token))
+                .willReturn(Long.toString(id));
+        given(pathService.findPath(eq(source), eq(target), any())).willReturn(pathResponse);
+        mockMvc.perform(get("/api/paths?source=" + source + "&target=" + target)
+           .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("stations[*].name").value(
                         Matchers.containsInRelativeOrder("강남역","판교역","정자역")))

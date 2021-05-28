@@ -28,4 +28,8 @@ public class LoginMember {
         return role.isAnonymous();
     }
 
+    public boolean isMember() {
+        return role.isUser();
+    }
+
 }

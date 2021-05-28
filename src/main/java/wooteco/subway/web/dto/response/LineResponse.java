@@ -47,4 +47,6 @@ public class LineResponse {
     public List<SectionResponse> getSections() {
         return sections;
     }
+
+
 }

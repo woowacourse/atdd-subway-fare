@@ -81,6 +81,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         return 로그인되어_있음(EMAIL, PASSWORD);
     }
 
+    public static TokenResponse 토큰(String email, String password, int age) {
+        회원_등록되어_있음(email, password, age);
+        return 로그인되어_있음(email, password);
+    }
+
     public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
