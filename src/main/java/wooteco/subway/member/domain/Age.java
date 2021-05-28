@@ -6,7 +6,7 @@ public class Age {
     public static final int MINIMUM_CHILDREN_AGE = 6;
     public static final int MINIMUM_TEENAGER_AGE = 13;
     public static final int NON_INCLUSIVE_MAXIMUM_TEENAGER_AGE = 19;
-    public static final int MINIMUM_POSSIBLE_AGE = 0;
+    public static final int MINIMUM_POSSIBLE_AGE = 1;
     public static final int MAXIMUM_POSSIBLE_AGE = 200;
     private final int age;
 
