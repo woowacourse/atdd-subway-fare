@@ -32,7 +32,7 @@ public class LineService {
             persistLine.addSection(addInitSection(persistLine, request));
             return LineResponse.of(persistLine);
         } catch (DuplicateKeyException e) {
-            throw new InvalidInsertException("지하철 노선 이름이 이미 존재합니다");
+            throw new InvalidInsertException("지하철 노선 이름이나 색깔이 이미 존재합니다");
         }
     }
 

@@ -5,7 +5,6 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -23,7 +22,6 @@ import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되�
 import static wooteco.subway.line.SectionAcceptanceTest.지하철_구간_등록되어_있음;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
-@Disabled
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
@@ -65,8 +63,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         여의도역 = 지하철역_등록되어_있음("여의도역");
 
         신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 20);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 10);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-700", 교대역, 강남역, 10);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-800", 교대역, 양재역, 10);
 
         구호선 = 지하철_노선_등록되어_있음("구호선", "황금색", 가양역, 등촌역, 9);
         지하철_구간_등록되어_있음(구호선, 등촌역, 염창역, 40);
@@ -137,8 +135,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     private void 총_요금이_응답됨(ExtractableResponse<Response> response, int fare) {
-//        PathRespone pathResponse = response.as(PathResponse.class);
-//        assertThat(pathResponse.getDefaultFare()).isEqualTo(fare);
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getDefaultFare()).isEqualTo(fare);
     }
 
     public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
