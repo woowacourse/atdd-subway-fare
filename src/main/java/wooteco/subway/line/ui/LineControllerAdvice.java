@@ -1,6 +1,5 @@
 package wooteco.subway.line.ui;
 
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -8,6 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wooteco.subway.ErrorResponse;
 import wooteco.subway.line.exception.*;
+import wooteco.subway.station.exception.StationNotFoundException;
 
 import java.util.Objects;
 
@@ -21,8 +21,8 @@ public class LineControllerAdvice {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
-    @ExceptionHandler(LineNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleLineNotFoundException(LineNotFoundException e) {
+    @ExceptionHandler({LineNotFoundException.class, StationNotFoundException.class})
+    public ResponseEntity<ErrorResponse> handleLineNotFoundException(Exception e) {
         ErrorResponse errorResponse = ErrorResponse.of(e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
@@ -35,6 +35,12 @@ public class LineControllerAdvice {
 
     @ExceptionHandler({InvalidLineNameException.class, InvalidLineColorException.class})
     public ResponseEntity<ErrorResponse> handleInvalidFieldException(Exception e) {
+        ErrorResponse errorResponse = ErrorResponse.of(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    @ExceptionHandler({SectionRegisterException.class, SectionRemovalException.class})
+    public ResponseEntity<ErrorResponse> handleSectionException(Exception e) {
         ErrorResponse errorResponse = ErrorResponse.of(e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
