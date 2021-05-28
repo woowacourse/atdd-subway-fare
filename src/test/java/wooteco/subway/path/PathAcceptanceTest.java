@@ -74,7 +74,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_구간_등록되어_있음(삼호선, 교대역, 남부터미널역, 3, tokenResponse);
     }
 
-    @DisplayName("두 역의 최단 거리 경로를 구하고, 최단 거리가 10km 이하인 일때 요금을 조회한다.")
+    @DisplayName("두 역의 최단 거리 경로를 구하고, 최단 거리가 10km 이하인 요금을 조회한다.")
     @Test
     void findPathByDistance() {
         //when

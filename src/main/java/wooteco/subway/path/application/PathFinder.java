@@ -22,13 +22,11 @@ public class PathFinder {
         graph.addVertexWith(lines);
         graph.addEdge(lines);
 
-        // 다익스트라 최단 경로 찾기
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
         GraphPath<Station, SectionEdge> path = dijkstraShortestPath.getPath(departure, arrival);
         if (path == null) {
             throw new InvalidPathException("연결되어 있지 않은 경로입니다.");
         }
-
         return convertSubwayPath(path);
     }
 

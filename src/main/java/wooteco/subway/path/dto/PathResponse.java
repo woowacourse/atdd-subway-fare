@@ -18,7 +18,6 @@ public class PathResponse {
         this.fare = fare;
     }
 
-
     public List<StationResponse> getStations() {
         return stations;
     }
