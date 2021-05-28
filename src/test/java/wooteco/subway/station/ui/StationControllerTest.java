@@ -170,7 +170,7 @@ public class StationControllerTest {
             .andExpect(jsonPath("$.*.lines[*].name")
                 .value(Matchers.containsInAnyOrder("2호선", "8호선", "2호선")))
             .andDo(print())
-            .andDo(document("station-show",
+            .andDo(document("station-show-line",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint())
             ));

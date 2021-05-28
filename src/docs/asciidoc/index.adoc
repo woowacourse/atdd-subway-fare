@@ -60,9 +60,9 @@ include::{snippets}/station-create-fail/http-request.adoc[]
 include::{snippets}/station-create-fail/http-response.adoc[]
 === 조회
 ==== Request
-include::{snippets}/station-show/http-request.adoc[]
+include::{snippets}/station-show-line/http-request.adoc[]
 ==== Response
-include::{snippets}/station-show/http-response.adoc[]
+include::{snippets}/station-show-line/http-response.adoc[]
 === 수정
 ==== Request
 include::{snippets}/station-update/http-request.adoc[]
