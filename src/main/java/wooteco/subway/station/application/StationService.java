@@ -3,6 +3,7 @@ package wooteco.subway.station.application;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import wooteco.subway.line.application.NotAbleToAddStationInLineRuntimeException;
+import wooteco.subway.line.application.NotAbleToDeleteStationInLineRuntimeException;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;
@@ -45,7 +46,7 @@ public class StationService {
         try {
             stationDao.deleteById(id);
         } catch (DataAccessException e) {
-            throw new NotAbleToAddStationInLineRuntimeException();
+            throw new NotAbleToDeleteStationInLineRuntimeException();
         }
     }
 }
