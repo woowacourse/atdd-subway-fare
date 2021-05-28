@@ -1,4 +1,4 @@
-package wooteco.subway;
+package wooteco.subway.util;
 
 public enum AgePolicy {
     CHILD_MINIMUM(6),
