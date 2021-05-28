@@ -65,7 +65,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         지하철_노선_구간_순서까지_정확히_확인(신분당선.getId(), Arrays.asList(정자역, 강남역, 양재역, 광교역));
     }
 
-    @DisplayName("지하철 노선에 이미 존재하는 구간을 등록한다. - 400 에러 응답")
+    @DisplayName("지하철 노선에 이미 모두 존재하는 역들로 구성된 구간을 등록한다. - 400 에러 응답")
     @Test
     void addLineSectionWithSameSectionError() {
         // when
