@@ -32,21 +32,18 @@ public class MemberController {
 
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
-        checkAuth(loginMember);
         MemberResponse member = memberService.findMember(loginMember);
         return ResponseEntity.ok().body(member);
     }
 
     @PutMapping("/members/me")
     public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest param) {
-        checkAuth(loginMember);
         memberService.updateMember(loginMember, param);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/members/me")
     public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
-        checkAuth(loginMember);
         memberService.deleteMember(loginMember);
         return ResponseEntity.noContent().build();
     }
@@ -55,12 +52,6 @@ public class MemberController {
     public ResponseEntity emailCheck(@RequestBody MemberRequest memberRequest) {
         memberService.checkEmail(memberRequest.getEmail());
         return ResponseEntity.ok().build();
-    }
-
-    private void checkAuth(LoginMember loginMember) {
-        if (loginMember.getId() == null) {
-            throw new AuthorizationException();
-        }
     }
 
     @ExceptionHandler(MemberRelatedException.class)
