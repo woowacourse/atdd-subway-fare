@@ -40,8 +40,6 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @DisplayName("유효한 토큰으로 지하철역을 생성한다.")
     @Test
     void createStationWithValidToken() {
-        // given
-
         // when
         ExtractableResponse<Response> response = 지하철역_생성_요청(강남역 , tokenResponse);
 

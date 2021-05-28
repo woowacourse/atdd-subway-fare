@@ -1,8 +1,16 @@
 package wooteco.subway.line;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.auth.AuthAcceptanceTest.인증_실패됨;
+import static wooteco.subway.auth.AuthAcceptanceTest.회원가입_후_로그인;
+import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,20 +22,8 @@ import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.station.dto.StationResponse;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static wooteco.subway.auth.AuthAcceptanceTest.회원가입_후_로그인;
-import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
-
 @DisplayName("지하철 노선 관련 기능")
 public class LineAcceptanceTest extends AcceptanceTest {
-
-//    @MockBean
-//    JwtTokenProvider jwtTokenProvider;
 
     private StationResponse 강남역;
     private StationResponse downStation;
@@ -50,15 +46,39 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 15);
     }
 
-    @DisplayName("지하철 노선을 생성한다.")
+    @DisplayName("유효한 토큰으로 지하철 노선을 생성한다.")
     @Test
-    void createLine() {
-
+    void createLineWithValidToken() {
         // when
         ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1, tokenResponse);
 
         // then
         지하철_노선_생성됨(response);
+    }
+
+    @DisplayName("유효하지 않은 토큰으로 지하철 노선을 생성한다.")
+    @Test
+    void createLineWithInvalidToken() {
+        // given
+        TokenResponse invalidTokenResponse = new TokenResponse("invalid token");
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1, invalidTokenResponse);
+
+        // then
+        인증_실패됨(response);
+    }
+
+    @DisplayName("토큰 없이 지하철 노선을 생성한다.")
+    @Test
+    void createLineWithoutToken() {
+        // given
+
+        // when
+        ExtractableResponse<Response> response = 토큰없이_지하철_노선_생성_요청(lineRequest1);
+
+        // then
+        인증_실패됨(response);
     }
 
     @DisplayName("존재하지 않는 역으로 지하철 노선을 생성한다.")
@@ -147,23 +167,78 @@ public class LineAcceptanceTest extends AcceptanceTest {
         LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1, tokenResponse);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse, lineRequest2);
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse, lineRequest2, tokenResponse);
 
         // then
         지하철_노선_수정됨(response);
     }
 
-    @DisplayName("지하철 노선을 제거한다.")
+    @DisplayName("유효하지 않은 토큰으로 지하철 노선을 수정한다.")
     @Test
-    void deleteLine() {
+    void updateLineWithInvalidToken() {
+        // given
+        LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1, tokenResponse);
+        TokenResponse invalidTokenResponse = new TokenResponse("invalid token");
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse, lineRequest2, invalidTokenResponse);
+
+        // then
+        인증_실패됨(response);
+    }
+
+    @DisplayName("토큰 없이 지하철 노선을 수정한다.")
+    @Test
+    void updateLineWithoutToken() {
         // given
         LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1, tokenResponse);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_제거_요청(lineResponse);
+        ExtractableResponse<Response> response = 토큰없이_지하철_노선_수정_요청(lineResponse, lineRequest2);
+
+        // then
+        인증_실패됨(response);
+    }
+
+
+    @DisplayName("유효한 토큰으로 지하철 노선을 제거한다.")
+    @Test
+    void deleteLineWithValidToken() {
+        // given
+        LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1, tokenResponse);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_제거_요청(lineResponse, tokenResponse);
 
         // then
         지하철_노선_삭제됨(response);
+    }
+
+    @DisplayName("유효하지 않은 토큰으로 지하철 노선을 제거한다.")
+    @Test
+    void deleteLineWithInvalidToken() {
+        // given
+        LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1, tokenResponse);
+        TokenResponse invalidToken = new TokenResponse("Invalid Token");
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_제거_요청(lineResponse, invalidToken);
+
+        // then
+        인증_실패됨(response);
+    }
+
+    @DisplayName("토큰없이 지하철 노선을 제거한다.")
+    @Test
+    void deleteLineWithoutToken() {
+        // given
+        LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1, tokenResponse);
+
+        // when
+        ExtractableResponse<Response> response = 토큰없이_지하철_노선_제거_요청(lineResponse);
+
+        // then
+        인증_실패됨(response);
     }
 
     public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation,
@@ -191,6 +266,16 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 토큰없이_지하철_노선_생성_요청(LineRequest params) {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/lines")
+                .then().log().all()
+                .extract();
+    }
+
     private static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {
         return RestAssured
                 .given().log().all()
@@ -210,6 +295,19 @@ public class LineAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 지하철_노선_수정_요청(LineResponse response,
+            LineRequest params, TokenResponse tokenResponse) {
+
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().put("/lines/" + response.getId())
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 토큰없이_지하철_노선_수정_요청(LineResponse response,
             LineRequest params) {
 
         return RestAssured
@@ -221,13 +319,24 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_제거_요청(LineResponse lineResponse) {
+    public static ExtractableResponse<Response> 지하철_노선_제거_요청(LineResponse lineResponse,
+            TokenResponse tokenResponse) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .when().delete("/lines/" + lineResponse.getId())
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 토큰없이_지하철_노선_제거_요청(LineResponse lineResponse) {
         return RestAssured
                 .given().log().all()
                 .when().delete("/lines/" + lineResponse.getId())
                 .then().log().all()
                 .extract();
     }
+
 
     public static void 지하철_노선_생성됨(ExtractableResponse response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());

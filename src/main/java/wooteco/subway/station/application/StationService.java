@@ -43,7 +43,7 @@ public class StationService {
 
     public void deleteStationById(Long id) {
         if (sectionDao.existsByStationId(id)) {
-            throw new IllegalArgumentException("이미 노선에 등록되어있는 역은 지울 수 없습니다.");
+            throw new InvalidDeletionException("이미 노선에 등록되어있는 역은 지울 수 없습니다.");
         }
         stationDao.deleteById(id);
     }

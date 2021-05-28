@@ -97,7 +97,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         지하철_구간_생성_요청(신분당선, 양재역, 정자역, 2, tokenResponse);
 
         // when
-        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
+        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역, tokenResponse);
 
         // then
         지하철_노선에_지하철역_제외됨(removeResponse, 신분당선, Arrays.asList(강남역, 정자역, 광교역));
@@ -107,7 +107,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void removeLineSection2() {
         // when
-        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 강남역);
+        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 강남역, tokenResponse);
 
         // then
         지하철_노선에_지하철역_제외_실패됨(removeResponse);
@@ -150,9 +150,10 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(LineResponse line,
-            StationResponse station) {
+            StationResponse station, TokenResponse tokenResponse) {
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .when().delete("/lines/{lineId}/sections?stationId={stationId}", line.getId(),
                         station.getId())
                 .then().log().all()
@@ -178,10 +179,10 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 지하철_구간_등록_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static void 지하철_노선에_지하철역_제외_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
