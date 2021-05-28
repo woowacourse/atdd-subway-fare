@@ -31,7 +31,8 @@ public class FareCalculator {
             return ZERO;
         }
         if (distance > LONG_DISTANCE_PIVOT) {
-            return 800 + calculateAdditionalFareByDistance(distance - LONG_DISTANCE_PIVOT, LONG_ADDITIONAL_FARE_PIVOT);
+            return calculateAdditionalFareByDistance(distance - (distance % LONG_DISTANCE_PIVOT) - DISTANCE_PIVOT, ADDITIONAL_FARE_PIVOT)
+                    + calculateAdditionalFareByDistance(distance - LONG_DISTANCE_PIVOT, LONG_ADDITIONAL_FARE_PIVOT);
         }
         return calculateAdditionalFareByDistance(distance - DISTANCE_PIVOT, ADDITIONAL_FARE_PIVOT);
     }

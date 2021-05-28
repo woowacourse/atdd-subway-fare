@@ -11,7 +11,7 @@ public enum FarePolicy {
         this.fare = fare;
     }
 
-    public int getFare(){
+    public int getFare() {
         return fare;
     }
 }

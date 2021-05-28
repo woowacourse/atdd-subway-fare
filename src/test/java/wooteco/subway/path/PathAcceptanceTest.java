@@ -133,7 +133,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void findFareByDistanceWithLogin1() {
         // given
         double discountRate = 0.8;
-        회원_등록되어_있음("청소년포츈@naver.com","오랑해요포츈", 13);
+        회원_등록되어_있음("청소년포츈@naver.com", "오랑해요포츈", 13);
         TokenResponse tokenResponse = 로그인되어_있음("청소년포츈@naver.com", "오랑해요포츈");
         LineResponse 배달의민족선 = 지하철_노선_등록되어_있음("배달의민족선", "bg-red-800", 양재역, 리뷰잘부탁해요역, 3, 2000, tokenResponse);
         지하철_구간_등록되어_있음(우아한테크코스선, 에어포츈바다우기검프사랑해역, 우린모두취업할거야역, 13, tokenResponse);
@@ -152,7 +152,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void findFareByDistanceWithLogin2() {
         // given
         double discountRate = 0.5;
-        회원_등록되어_있음("아가검프@naver.com","오랑해요포츈", 6);
+        회원_등록되어_있음("아가검프@naver.com", "오랑해요포츈", 6);
         TokenResponse tokenResponse = 로그인되어_있음("아가검프@naver.com", "오랑해요포츈");
         LineResponse 배달의민족선 = 지하철_노선_등록되어_있음("배달의민족선", "bg-red-800", 양재역, 리뷰잘부탁해요역, 3, 2000, tokenResponse);
         지하철_구간_등록되어_있음(우아한테크코스선, 에어포츈바다우기검프사랑해역, 우린모두취업할거야역, 13, tokenResponse);

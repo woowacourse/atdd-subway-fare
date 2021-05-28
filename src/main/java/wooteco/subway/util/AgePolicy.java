@@ -12,7 +12,7 @@ public enum AgePolicy {
         this.age = age;
     }
 
-    public int getAge(){
+    public int getAge() {
         return age;
     }
 
