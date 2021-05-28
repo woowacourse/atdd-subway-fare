@@ -1,6 +1,6 @@
 package wooteco.subway.line.application;
 
-import wooteco.subway.SubwayException;
+import wooteco.subway.aop.exception.SubwayException;
 
 public class DuplicateLineException extends SubwayException {
     public DuplicateLineException() {

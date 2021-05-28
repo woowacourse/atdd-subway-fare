@@ -1,6 +1,6 @@
 package wooteco.subway.station.application;
 
-import wooteco.subway.SubwayException;
+import wooteco.subway.aop.exception.SubwayException;
 
 public class NotFoundStationException extends SubwayException {
     public NotFoundStationException() {

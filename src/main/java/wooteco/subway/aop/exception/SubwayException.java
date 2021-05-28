@@ -1,4 +1,4 @@
-package wooteco.subway;
+package wooteco.subway.aop.exception;
 
 public class SubwayException extends RuntimeException {
     private final String code;

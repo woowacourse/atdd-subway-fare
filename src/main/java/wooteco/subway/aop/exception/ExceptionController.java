@@ -1,4 +1,4 @@
-package wooteco.subway;
+package wooteco.subway.aop.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package wooteco.subway;
+package wooteco.subway.aop.exception;
 
 public class ExceptionDto {
     private String code;

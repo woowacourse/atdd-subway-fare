@@ -1,6 +1,6 @@
 package wooteco.subway.member.application;
 
-import wooteco.subway.SubwayException;
+import wooteco.subway.aop.exception.SubwayException;
 
 public class DuplicateMemberEmailException extends SubwayException {
     public DuplicateMemberEmailException() {
