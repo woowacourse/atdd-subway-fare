@@ -30,7 +30,9 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        existsLine(request);
+        existsName(request);
+        existsColor(request);
+
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);
@@ -91,15 +93,33 @@ public class LineService {
     }
 
     public LineUpdateResponse updateLine(Long id, LineRequest lineUpdateRequest) {
-        existsLine(lineUpdateRequest);
+        Line line = lineDao.findById(id);
+        if (isDifferentName(line, lineUpdateRequest)) {
+            existsName(lineUpdateRequest);
+        }
+        if (isDifferentColor(line, lineUpdateRequest)) {
+            existsColor(lineUpdateRequest);
+        }
+
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
         return LineUpdateResponse.of(lineDao.findById(id));
     }
 
-    private void existsLine(LineRequest request) {
+    private boolean isDifferentName(Line line, LineRequest lineUpdateRequest) {
+        return !line.getName().equals(lineUpdateRequest.getName());
+    }
+
+    private void existsName(LineRequest request) {
         if (lineDao.existsName(request.getName())) {
             throw new DuplicateNameException();
         }
+    }
+
+    private boolean isDifferentColor(Line line, LineRequest lineUpdateRequest) {
+        return !line.getColor().equals(lineUpdateRequest.getColor());
+    }
+
+    private void existsColor(LineRequest request) {
         if (lineDao.existsColor(request.getColor())) {
             throw new DuplicateColorException();
         }

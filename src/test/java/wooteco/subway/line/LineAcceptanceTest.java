@@ -257,12 +257,14 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void updateLineWithDuplicateName() {
         // given
-        LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1);
-        LineRequest 신분당선_불가능 =
-                new LineRequest("신분당선", "bg-blue-600", 강남역.getId(), 광교역.getId(), 10);
+        LineResponse 신분당선 = 지하철_노선_등록되어_있음(lineRequest1);
+        지하철_노선_등록되어_있음(lineRequest2);
+
+        LineRequest 구신분당선_이름_불가능 =
+                new LineRequest("구신분당선", "bg-old-red-600", 강남역.getId(), 광교역.getId(), 10);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse, 신분당선_불가능);
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(신분당선, 구신분당선_이름_불가능);
 
         // then
         지하철_노선_수정_실패됨(response);
@@ -272,12 +274,14 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void updateLineWithDuplicateColor() {
         // given
-        LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1);
-        LineRequest 신분당선_불가능 =
-                new LineRequest("분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
+        LineResponse 신분당선 = 지하철_노선_등록되어_있음(lineRequest1);
+        지하철_노선_등록되어_있음(lineRequest2);
+
+        LineRequest 구신분당선_색깔_불가능 =
+                new LineRequest("신분당선", "bg-old-red-600", 강남역.getId(), 광교역.getId(), 10);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse, 신분당선_불가능);
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(신분당선, 구신분당선_색깔_불가능);
 
         // then
         지하철_노선_수정_실패됨(response);
