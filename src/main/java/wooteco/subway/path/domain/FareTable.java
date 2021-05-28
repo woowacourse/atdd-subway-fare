@@ -1,41 +1,37 @@
 package wooteco.subway.path.domain;
 
-import wooteco.subway.station.domain.Station;
-
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import wooteco.subway.path.dto.FareTableResponse;
 
-public class SubwayPath {
-    private List<SectionEdge> sectionEdges;
-    private List<Station> stations;
+public class FareTable {
+    private final Map<String, Integer> fareTable;
 
-    public SubwayPath(List<SectionEdge> sectionEdges, List<Station> stations) {
-        this.sectionEdges = sectionEdges;
-        this.stations = stations;
+    public FareTable() {
+        this.fareTable = new LinkedHashMap<>();
     }
 
-    public List<SectionEdge> getSectionEdges() {
-        return sectionEdges;
+    public void calculateFare(List<SectionEdge> sectionEdges, int distance) {
+        int fareWithDistanceAndLine = calculateFareByDistanceAndLine(sectionEdges, distance);
+        for (DiscountPolicy discountPolicy : DiscountPolicy.values()) {
+            int totalFare = (int) ((fareWithDistanceAndLine - discountPolicy.getDefaultDeduction())
+                * discountPolicy.getDiscountRate());
+            fareTable.put(discountPolicy.getKorean(), totalFare);
+        }
     }
 
-    public List<Station> getStations() {
-        return stations;
-    }
-
-    public int calculateDistance() {
-        return sectionEdges.stream().mapToInt(it -> it.getSection().getDistance()).sum();
-    }
-
-    public int calculateFare() {
-        int distance = calculateDistance();
+    private int calculateFareByDistanceAndLine(List<SectionEdge> sectionEdges, int distance) {
         int fare = 1_250;
 
         fare += calculateAdditionalFareByDistance(distance);
-        fare += calculateAdditionalLineFare();
+        fare += calculateAdditionalLineFare(sectionEdges);
 
         return fare;
     }
 
-    private int calculateAdditionalLineFare() {
+    private int calculateAdditionalLineFare(List<SectionEdge> sectionEdges) {
         return sectionEdges
             .stream()
             .mapToInt(sectionEdge -> sectionEdge.getLine().getExtraFare())
@@ -66,5 +62,13 @@ public class SubwayPath {
 
     private int calculateOverFareByKM(int distance, int km) {
         return (int) ((Math.ceil((distance - 1) / km) + 1) * 100);
+    }
+
+    public Map<String, Integer> getFareTable() {
+        return fareTable;
+    }
+
+    public int findByAge(String age) {
+        return fareTable.get(age);
     }
 }
