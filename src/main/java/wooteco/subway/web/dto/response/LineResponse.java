@@ -1,6 +1,7 @@
 package wooteco.subway.web.dto.response;
 
 import wooteco.subway.domain.Line;
+import wooteco.subway.web.dto.LineResponseAssembler;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,21 +10,33 @@ public class LineResponse {
     private Long id;
     private String name;
     private String color;
-    private List<SectionResponse> sections;
+    private List<StationWithDistanceResponse> stations;
+    //private List<SectionResponse> sections;
 
     public LineResponse() {
     }
 
-    public LineResponse(Long id, String name, String color, List<SectionResponse> sections) {
+    public LineResponse(Long id, String name, String color, List<StationWithDistanceResponse> stations) {
         this.id = id;
         this.name = name;
         this.color = color;
-        this.sections = sections;
+        this.stations = stations;
     }
 
+    //    public LineResponse(Long id, String name, String color, List<SectionResponse> sections) {
+//        this.id = id;
+//        this.name = name;
+//        this.color = color;
+//        this.sections = sections;
+//    }
+
+//    public static LineResponse of(Line line) {
+//       // List<SectionResponse> sections = SectionResponse.listOf(line.getSections().getSortedSections());
+//        return new LineResponse(line.getId(), line.getName(), line.getColor(), sections);
+//    }
+
     public static LineResponse of(Line line) {
-        List<SectionResponse> sections = SectionResponse.listOf(line.getSections().getSortedSections());
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), sections);
+        return LineResponseAssembler.assemble(line);
     }
 
     public static List<LineResponse> listOf(List<Line> lines) {
@@ -44,9 +57,12 @@ public class LineResponse {
         return color;
     }
 
-    public List<SectionResponse> getSections() {
-        return sections;
+//    public List<SectionResponse> getSections() {
+//        return sections;
+//    }
+
+
+    public List<StationWithDistanceResponse> getStations() {
+        return stations;
     }
-
-
 }

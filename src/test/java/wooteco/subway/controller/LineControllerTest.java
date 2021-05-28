@@ -1,7 +1,6 @@
 package wooteco.subway.controller;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Arrays;
-import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,16 +12,17 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import wooteco.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.TestDataLoader;
-import wooteco.auth.service.AuthService;
-import wooteco.subway.service.LineService;
 import wooteco.subway.domain.Line;
+import wooteco.subway.service.LineService;
+import wooteco.subway.web.LineController;
 import wooteco.subway.web.dto.request.LineRequest;
-import wooteco.subway.web.dto.response.LineResponse;
 import wooteco.subway.web.dto.request.LineUpdateRequest;
 import wooteco.subway.web.dto.request.SectionRequest;
-import wooteco.subway.web.dto.response.SectionResponse;
-import wooteco.subway.web.LineController;
-import wooteco.subway.web.dto.response.StationResponse;
+import wooteco.subway.web.dto.response.LineResponse;
+import wooteco.subway.web.dto.response.StationWithDistanceResponse;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -30,15 +30,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = LineController.class)
 @ActiveProfiles("test")
@@ -61,17 +55,13 @@ class LineControllerTest {
     public void createLine() throws Exception {
         //given
         String token = "이것은토큰입니다";
-        List<SectionResponse> sections = Arrays.asList(
-                new SectionResponse(
-                        1L,
-                        new StationResponse(1L, "강남역"),
-                        new StationResponse(2L, "역삼역"),
-                        5
-                )
+        List<StationWithDistanceResponse> stations = Arrays.asList(
+                new StationWithDistanceResponse(1L, "강남역", 5),
+                new StationWithDistanceResponse(2L, "역삼역")
         );
         LineRequest lineRequest = new LineRequest("2호선", "bg-green-200", 1L, 2L, 5);
         LineResponse lineResponse = new LineResponse(1L, "2호선", "bg-green-200",
-                sections
+                stations
         );
         given(jwtTokenProvider.validateToken(token))
                 .willReturn(true);
@@ -88,11 +78,9 @@ class LineControllerTest {
                 .andExpect(header().exists("Location"))
                 .andExpect(jsonPath("name").value(lineResponse.getName()))
                 .andExpect(jsonPath("color").value(lineResponse.getColor()))
-                .andExpect(jsonPath("sections[*].upStation.name")
-                        .value(contains("강남역")))
-                .andExpect(jsonPath("sections[*].downStation.name")
-                        .value(contains("역삼역")))
-                .andExpect(jsonPath("sections[*].distance")
+                .andExpect(jsonPath("stations[*].name")
+                        .value(containsInAnyOrder("강남역", "역삼역")))
+                .andExpect(jsonPath("stations[*].distance")
                         .value(contains(5)))
                 .andDo(print())
                 .andDo(document("line-create",
@@ -118,10 +106,8 @@ class LineControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*].name")
                         .value(containsInAnyOrder("신분당선", "2호선")))
-                .andExpect(jsonPath("$[*].sections[*].upStation.name")
-                        .value(containsInAnyOrder("강남역", "강남역", "판교역", "역삼역")))
-                .andExpect(jsonPath("$[*].sections[*].downStation.name")
-                        .value(containsInAnyOrder("정자역", "잠실역", "판교역", "역삼역")))
+                .andExpect(jsonPath("$[*].stations[*].name")
+                        .value(containsInAnyOrder("강남역", "판교역", "정자역", "강남역", "역삼역", "잠실역")))
                 .andDo(print())
                 .andDo(document("line-findAll",
                         preprocessRequest(prettyPrint()),
@@ -143,10 +129,8 @@ class LineControllerTest {
                 // then
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("name").value("신분당선"))
-                .andExpect(jsonPath("sections[*].upStation.name")
-                        .value(containsInAnyOrder("강남역", "판교역")))
-                .andExpect(jsonPath("sections[*].downStation.name")
-                        .value(containsInAnyOrder("판교역", "정자역")))
+                .andExpect(jsonPath("stations[*].name")
+                        .value(containsInAnyOrder("강남역", "판교역", "정자역")))
                 .andDo(print())
                 .andDo(document("line-findById",
                         preprocessRequest(prettyPrint()),
