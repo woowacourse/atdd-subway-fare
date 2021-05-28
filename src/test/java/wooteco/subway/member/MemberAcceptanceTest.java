@@ -140,13 +140,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     private void 이메일_중복됨(ExtractableResponse<Response> duplicateEmailResponse) {
         assertThat(duplicateEmailResponse.statusCode()).isEqualTo(HttpStatus.CONFLICT.value());
-        EmailResponse emailResponse = duplicateEmailResponse.as(EmailResponse.class);
-        assertThat(emailResponse.getMessage()).isEqualTo("중복되는 이메일입니다.");
     }
 
     private void 이메일_중복_안됨(ExtractableResponse<Response> emailResponse) {
         assertThat(emailResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
-        EmailResponse availableEmailResponse = emailResponse.as(EmailResponse.class);
-        assertThat(availableEmailResponse.getMessage()).isEqualTo("사용 가능한 이메일입니다.");
     }
 }
