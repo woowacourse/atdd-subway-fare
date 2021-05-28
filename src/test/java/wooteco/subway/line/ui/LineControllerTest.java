@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import wooteco.subway.TestDataLoader;
-import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.auth.infrastructure.LoginInterceptor;
 import wooteco.subway.line.application.LineService;
@@ -40,8 +39,7 @@ import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.LineUpdateRequest;
 import wooteco.subway.line.dto.SectionRequest;
-import wooteco.subway.line.dto.SectionResponse;
-import wooteco.subway.station.dto.StationResponse;
+import wooteco.subway.line.dto.StationWithDistanceResponse;
 
 @WebMvcTest(controllers = LineController.class)
 @ActiveProfiles("test")
@@ -64,17 +62,13 @@ class LineControllerTest {
     @Test
     public void createLine() throws Exception {
         //given
-        List<SectionResponse> sections = Arrays.asList(
-            new SectionResponse(
-                1L,
-                new StationResponse(1L, "강남역"),
-                new StationResponse(2L, "역삼역"),
-                5
-            )
+        List<StationWithDistanceResponse> stations = Arrays.asList(
+            new StationWithDistanceResponse(1L, "강남역", 10),
+            new StationWithDistanceResponse(2L, "역삼역")
         );
         LineRequest lineRequest = new LineRequest("2호선", "bg-green-200", 1L, 2L, 5);
         LineResponse lineResponse = new LineResponse(1L, "2호선", "bg-green-200",
-            sections
+            stations
         );
 
         given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
@@ -90,12 +84,10 @@ class LineControllerTest {
             .andExpect(header().exists("Location"))
             .andExpect(jsonPath("name").value(lineResponse.getName()))
             .andExpect(jsonPath("color").value(lineResponse.getColor()))
-            .andExpect(jsonPath("sections[*].upStation.name")
-                .value(contains("강남역")))
-            .andExpect(jsonPath("sections[*].downStation.name")
-                .value(contains("역삼역")))
-            .andExpect(jsonPath("sections[*].distance")
-                .value(contains(5)))
+            .andExpect(jsonPath("stations[*].name")
+                .value(Matchers.containsInAnyOrder("강남역", "역삼역")))
+            .andExpect(jsonPath("stations[*].distance")
+                .value(contains(10)))
             .andDo(print())
             .andDo(document("line-create",
                 preprocessRequest(prettyPrint()),
@@ -123,11 +115,10 @@ class LineControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$[*].name")
                 .value(containsInAnyOrder("신분당선", "2호선")))
-            .andExpect(jsonPath("$[*].sections[*].upStation.name")
-                .value(containsInAnyOrder("강남역", "강남역", "판교역", "역삼역")))
-            .andExpect(jsonPath("$[*].sections[*].downStation.name")
-                .value(containsInAnyOrder("정자역", "잠실역", "판교역", "역삼역")))
-            .andDo(print())
+            .andExpect(jsonPath("$[*].stations[*].name")
+                .value(containsInAnyOrder("강남역", "강남역", "판교역", "역삼역", "정자역", "잠실역")))
+            .andExpect(jsonPath("$[*].stations[*].distance")
+                .value(containsInAnyOrder(10, 10, 10, 10)))
             .andDo(document("line-findAll",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint())
@@ -152,10 +143,10 @@ class LineControllerTest {
             // then
             .andExpect(status().isOk())
             .andExpect(jsonPath("name").value("신분당선"))
-            .andExpect(jsonPath("sections[*].upStation.name")
-                .value(containsInAnyOrder("강남역", "판교역")))
-            .andExpect(jsonPath("sections[*].downStation.name")
-                .value(containsInAnyOrder("판교역", "정자역")))
+            .andExpect(jsonPath("stations[*].name")
+                .value(containsInAnyOrder("강남역", "판교역", "정자역")))
+            .andExpect(jsonPath("stations[*].distance")
+                .value(containsInAnyOrder(10, 10)))
             .andDo(print())
             .andDo(document("line-findById",
                 preprocessRequest(prettyPrint()),
@@ -171,14 +162,7 @@ class LineControllerTest {
         TestDataLoader testDataLoader = new TestDataLoader();
         Line line = testDataLoader.이호선();
         LineUpdateRequest lineUpdateRequest = new LineUpdateRequest("2호선", "bg-red-200");
-        LineResponse lineResponse = new LineResponse(
-            line.getId(),
-            line.getName(),
-            "bg-red-200",
-            line.getSortedSections().stream()
-                .map(SectionResponse::of)
-                .collect(Collectors.toList())
-        );
+        LineResponse lineResponse = LineResponse.of(line);
 
         given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
         given(lineService.updateLine(any(Long.class), any(LineUpdateRequest.class)))

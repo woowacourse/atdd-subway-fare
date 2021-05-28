@@ -167,7 +167,7 @@ public class StationControllerTest {
             .andExpect(jsonPath("$.*.name")
                 .value(Matchers.containsInAnyOrder("잠실역", "강남역"))
             )
-            .andExpect(jsonPath("$.*.lineResponses[*].name")
+            .andExpect(jsonPath("$.*.lines[*].name")
                 .value(Matchers.containsInAnyOrder("2호선", "8호선", "2호선")))
             .andDo(print())
             .andDo(document("station-show",

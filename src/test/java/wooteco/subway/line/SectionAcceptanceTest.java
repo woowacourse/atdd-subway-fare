@@ -12,7 +12,6 @@ import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +20,7 @@ import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
-import wooteco.subway.line.dto.SectionResponse;
+import wooteco.subway.line.dto.StationWithDistanceResponse;
 import wooteco.subway.station.dto.StationResponse;
 
 @DisplayName("지하철 구간 관련 기능")
@@ -53,8 +52,9 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_구간_생성됨(response, 신분당선, Arrays.asList(
-            new SectionResponse(강남역, 양재역),
-            new SectionResponse(양재역, 광교역)
+            new StationWithDistanceResponse(1L, "강남역", 3),
+            new StationWithDistanceResponse(2L, "양재역", 7),
+            new StationWithDistanceResponse(4L, "광교역")
         ));
     }
 
@@ -67,9 +67,10 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_구간_생성됨(response, 신분당선, Arrays.asList(
-            new SectionResponse(정자역, 강남역),
-            new SectionResponse(강남역, 양재역),
-            new SectionResponse(양재역, 광교역)
+            new StationWithDistanceResponse(3L, "정자역", 5),
+            new StationWithDistanceResponse(1L, "강남역", 2),
+            new StationWithDistanceResponse(2L, "양재역", 8),
+            new StationWithDistanceResponse(4L, "광교역")
         ));
     }
 
@@ -105,8 +106,9 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_노선에_지하철역_제외됨(removeResponse, 신분당선, Arrays.asList(
-            new SectionResponse(강남역, 정자역),
-            new SectionResponse(정자역, 광교역)
+            new StationWithDistanceResponse(1L, "강남역", 4),
+            new StationWithDistanceResponse(3L, "정자역", 6),
+            new StationWithDistanceResponse(4L, "광교역")
         ));
     }
 
@@ -141,15 +143,14 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 지하철_노선에_지하철역_순서_정렬됨(ExtractableResponse<Response> response,
-        List<SectionResponse> expectedSections) {
+        List<StationWithDistanceResponse> stationResponses) {
         LineResponse line = response.as(LineResponse.class);
-        List<Long> stationIds = line.getSections().stream()
-            .flatMap(li -> Stream.of(li.getUpStation(), li.getDownStation()))
-            .map(StationResponse::getId).collect(Collectors.toList());
+        List<Long> stationIds = line.getStations().stream()
+            .map(StationWithDistanceResponse::getId).collect(Collectors.toList());
 
-        List<Long> expectedStationIds = expectedSections.stream()
-            .flatMap(li -> Stream.of(li.getUpStation(), li.getDownStation()))
-            .map(StationResponse::getId).collect(Collectors.toList());
+        List<Long> expectedStationIds = stationResponses.stream()
+            .map(StationWithDistanceResponse::getId)
+            .collect(Collectors.toList());
 
         assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
     }
@@ -172,17 +173,17 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     }
 
     private void 지하철_구간_생성됨(ExtractableResponse<Response> result, LineResponse lineResponse,
-        List<SectionResponse> sectionResponses) {
+        List<StationWithDistanceResponse> stationResponses) {
         assertThat(result.statusCode()).isEqualTo(HttpStatus.OK.value());
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(lineResponse);
-        지하철_노선에_지하철역_순서_정렬됨(response, sectionResponses);
+        지하철_노선에_지하철역_순서_정렬됨(response, stationResponses);
     }
 
     public static void 지하철_노선에_지하철역_제외됨(ExtractableResponse<Response> result,
-        LineResponse lineResponse, List<SectionResponse> sectionResponses) {
+        LineResponse lineResponse, List<StationWithDistanceResponse> stationResponses) {
         assertThat(result.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(lineResponse);
-        지하철_노선에_지하철역_순서_정렬됨(response, sectionResponses);
+        지하철_노선에_지하철역_순서_정렬됨(response, stationResponses);
     }
 
     public static void 지하철_구간_등록_실패됨(ExtractableResponse<Response> response) {
