@@ -1,17 +1,13 @@
 package wooteco.subway.station.ui;
 
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import wooteco.subway.auth.domain.AuthenticationPrincipal;
-import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.dto.StationNameRequest;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
@@ -27,7 +23,7 @@ public class StationController {
     }
 
     @PostMapping
-    public ResponseEntity<StationResponse> createStation(@AuthenticationPrincipal LoginMember loginMember, @RequestBody @Valid StationRequest stationRequest) {
+    public ResponseEntity<StationResponse> createStation(@RequestBody @Valid StationRequest stationRequest) {
         StationResponse station = stationService.saveStation(stationRequest);
         return ResponseEntity.created(URI.create("/api/stations/" + station.getId())).body(station);
     }
@@ -38,13 +34,13 @@ public class StationController {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity updateStation(@AuthenticationPrincipal LoginMember loginMember, @PathVariable Long id, @RequestBody @Valid StationNameRequest req) {
+    public ResponseEntity updateStation(@PathVariable Long id, @RequestBody @Valid StationNameRequest req) {
         StationResponse station = stationService.updateName(id, req);
         return ResponseEntity.ok().body(station);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteStation(@AuthenticationPrincipal LoginMember loginMember, @PathVariable Long id) {
+    public ResponseEntity deleteStation(@PathVariable Long id) {
         stationService.deleteStationById(id);
         return ResponseEntity.noContent().build();
     }

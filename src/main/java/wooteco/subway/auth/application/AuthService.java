@@ -45,4 +45,10 @@ public class AuthService {
             return new LoginMember();
         }
     }
+
+    public void validateToken(String accessToken) {
+        if (!jwtTokenProvider.validateToken(accessToken)) {
+            throw new AuthorizationException("다시 로그인 후 시도해주세요");
+        }
+    }
 }
