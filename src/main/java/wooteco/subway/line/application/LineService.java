@@ -11,6 +11,7 @@ import wooteco.subway.line.dto.SectionRequest;
 import wooteco.subway.line.exception.DuplicateLineColorException;
 import wooteco.subway.line.exception.DuplicateLineNameException;
 import wooteco.subway.line.exception.LineNotFoundException;
+import wooteco.subway.line.exception.SectionRemovalException;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
@@ -113,10 +114,18 @@ public class LineService {
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
+        validateStationInLine(line, station);
+
         line.removeSection(station);
 
         sectionDao.deleteByLineId(lineId);
         sectionDao.insertSections(line);
+    }
+
+    private void validateStationInLine(Line line, Station station) {
+        if (!line.containsStation(station)) {
+            throw new SectionRemovalException();
+        }
     }
 
 }
