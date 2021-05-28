@@ -1,5 +1,6 @@
 package wooteco.subway.line.ui;
 
+import io.swagger.v3.oas.annotations.Operation;
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
@@ -32,27 +33,32 @@ public class LineController {
         this.lineService = lineService;
     }
 
+    @Operation(summary = "Create new line")
     @PostMapping
     public ResponseEntity<LineResponse> createLine(@Valid @RequestBody LineRequest lineRequest) {
         LineResponse line = lineService.saveLine(lineRequest);
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
 
+    @Operation(summary = "Find All lines")
     @GetMapping
     public ResponseEntity<List<LineResponse>> findAllLines() {
         return ResponseEntity.ok(lineService.findLineResponses());
     }
 
+    @Operation(summary = "Find All lines v2")
     @GetMapping("/all")
     public ResponseEntity<List<LineResponse>> findSubwayLines() {
         return ResponseEntity.ok(lineService.findLineResponses());
     }
 
+    @Operation(summary = "Find specific line By lineId")
     @GetMapping("/{id}")
     public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
         return ResponseEntity.ok(lineService.findLineResponseById(id));
     }
 
+    @Operation(summary = "Update specific line")
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateLine(@PathVariable Long id,
             @RequestBody LineRequest lineUpdateRequest) {
@@ -60,12 +66,14 @@ public class LineController {
         return ResponseEntity.ok().build();
     }
 
+    @Operation(summary = "Delete specific line")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
         lineService.deleteLineById(id);
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Add station to specific line")
     @PostMapping("/{lineId}/sections")
     public ResponseEntity<Void> addLineStation(@PathVariable Long lineId,
             @Valid @RequestBody SectionRequest sectionRequest) {
@@ -73,6 +81,7 @@ public class LineController {
         return ResponseEntity.ok().build();
     }
 
+    @Operation(summary = "Delete station from specific line")
     @DeleteMapping("/{lineId}/sections")
     public ResponseEntity<Void> removeLineStation(@PathVariable Long lineId,
             @RequestParam Long stationId) {

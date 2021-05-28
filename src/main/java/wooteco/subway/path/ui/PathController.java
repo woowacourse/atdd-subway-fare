@@ -1,5 +1,6 @@
 package wooteco.subway.path.ui;
 
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,7 @@ public class PathController {
         this.pathService = pathService;
     }
 
+    @Operation(summary = "Find path from source to target")
     @GetMapping("/paths")
     public ResponseEntity<PathResponse> findPath(@RequestParam Long source, @RequestParam Long target) {
         return ResponseEntity.ok(pathService.findPath(source, target));
