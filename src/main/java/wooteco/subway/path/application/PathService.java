@@ -4,12 +4,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
+import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.path.domain.DiscountPolicy;
+import wooteco.subway.path.domain.FareTable;
 import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -24,16 +28,28 @@ public class PathService {
         this.pathFinder = pathFinder;
     }
 
-    public PathResponse findPath(Long source, Long target) {
+    public PathResponse findPath(LoginMember loginMember, Long source, Long target) {
         try {
             List<Line> lines = lineService.findLines();
             Station sourceStation = stationService.findStationById(source);
             Station targetStation = stationService.findStationById(target);
             SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
 
-            return PathResponse.of(subwayPath);
+            FareTable fareTable = getFareTable(subwayPath);
+
+            int distance = subwayPath.calculateDistance();
+            int defaultFare = fareTable.calculateByAgeType(DiscountPolicy.findAge(loginMember.getAge()).getKorean());
+            Map<String, Integer> fare = fareTable.getFareTable();
+
+            return PathResponse.of(subwayPath, distance, defaultFare, fare);
         } catch (Exception e) {
             throw new InvalidPathException();
         }
+    }
+
+    private FareTable getFareTable(SubwayPath subwayPath) {
+        FareTable fareTable = new FareTable();
+        fareTable.calculateFare(subwayPath.calculateDistance(), subwayPath.getSectionEdges());
+        return fareTable;
     }
 }
