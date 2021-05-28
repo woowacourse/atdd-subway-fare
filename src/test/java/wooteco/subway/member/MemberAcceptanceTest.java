@@ -29,9 +29,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> editMemberInfo(MemberRequest memberRequest, String token) {
+    private ExtractableResponse<Response> editMemberInfo(MemberRequest memberRequest) {
         return RestAssured.given().log().all()
-                .auth().oauth2(token)
+                .auth().oauth2(loginToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(memberRequest)
                 .when().put("/members/me")
@@ -39,9 +39,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> deleteMember(String token) {
+    private ExtractableResponse<Response> deleteMemberRequest() {
         return RestAssured.given().log().all()
-                .auth().oauth2(token)
+                .auth().oauth2(loginToken)
                 .when().delete("/members/me")
                 .then().log().all()
                 .extract();
@@ -57,8 +57,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
         registerMember("kevin@naver.com", "123", 123);
-        loginToken = TestUtil.login("kevin@naver.com", "123")
-                .getAccessToken();
+        loginToken = TestUtil.login("kevin@naver.com", "123").getAccessToken();
     }
 
     @DisplayName("회원 생성시 중복된 이메일로 생성할 수 없다.")
@@ -84,7 +83,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     void editMember() {
         MemberRequest memberRequest = new MemberRequest("kevin@naver.com", "newpass", 10);
 
-        ExtractableResponse<Response> response = editMemberInfo(memberRequest, loginToken);
+        ExtractableResponse<Response> response = editMemberInfo(memberRequest);
 
         assertResponseStatus(response, HttpStatus.OK);
     }
@@ -95,7 +94,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         registerMember("dup@naver.com", "abc", 10);
         MemberRequest memberRequest = new MemberRequest("dup@naver.com", "newpass", 10);
 
-        ExtractableResponse<Response> response = editMemberInfo(memberRequest, loginToken);
+        ExtractableResponse<Response> response = editMemberInfo(memberRequest);
 
         assertResponseStatus(response, HttpStatus.BAD_REQUEST);
         assertResponseMessage(response, "중복된 이메일입니다.");
@@ -104,7 +103,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("회원 정보를 삭제한다.")
     @Test
     void deleteMember() {
-        ExtractableResponse<Response> response = deleteMember(loginToken);
+        ExtractableResponse<Response> response = deleteMemberRequest();
 
         assertResponseStatus(response, HttpStatus.NO_CONTENT);
     }

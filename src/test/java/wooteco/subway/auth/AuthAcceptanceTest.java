@@ -26,25 +26,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    public static TokenResponse 로그인되어_있음(String email, String password) {
-        ExtractableResponse<Response> response = 로그인_요청(email, password);
-        return response.as(TokenResponse.class);
-    }
-
-    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
-
-        return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract();
-    }
-
     private ExtractableResponse<Response> requestLogin(String email, String password) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);

@@ -82,20 +82,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
         registerMember("kevin@naver.com", "123", 27);
-        loginToken = login("kevin@naver.com", "123")
-                .getAccessToken();
+        loginToken = login("kevin@naver.com", "123").getAccessToken();
 
         강남역 = createStation("강남역", loginToken).as(StationResponse.class);
         양재역 = createStation("양재역", loginToken).as(StationResponse.class);
         교대역 = createStation("교대역", loginToken).as(StationResponse.class);
         남부터미널역 = createStation("남부터미널역", loginToken).as(StationResponse.class);
 
-        신분당선 = createLine(new LineRequest("신분당선", "bg-redd-600", 강남역.getId(), 양재역.getId(), 10), loginToken)
-                .as(LineResponse.class);
-        이호선 = createLine(new LineRequest("이호선", "bg-redd-601", 교대역.getId(), 강남역.getId(), 10), loginToken)
-                .as(LineResponse.class);
-        삼호선 = createLine(new LineRequest("삼호선", "bg-redd-603", 교대역.getId(), 양재역.getId(), 5), loginToken)
-                .as(LineResponse.class);
+        신분당선 = createLine(new LineRequest("신분당선", "bg-redd-600", 강남역.getId(), 양재역.getId(), 10), loginToken).as(LineResponse.class);
+        이호선 = createLine(new LineRequest("이호선", "bg-redd-601", 교대역.getId(), 강남역.getId(), 10), loginToken).as(LineResponse.class);
+        삼호선 = createLine(new LineRequest("삼호선", "bg-redd-603", 교대역.getId(), 양재역.getId(), 5), loginToken).as(LineResponse.class);
 
         addSection(삼호선.getId(), new SectionRequest(교대역.getId(), 남부터미널역.getId(), 3), loginToken);
     }

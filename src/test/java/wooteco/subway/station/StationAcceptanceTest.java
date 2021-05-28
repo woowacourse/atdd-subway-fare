@@ -14,6 +14,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 import wooteco.subway.util.TestUtil;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.line.LineAcceptanceTest.createLine;
 import static wooteco.subway.util.TestUtil.assertResponseMessage;
 import static wooteco.subway.util.TestUtil.assertResponseStatus;
 
@@ -43,7 +45,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> findStations(String loginToken) {
+    private ExtractableResponse<Response> findStationRequest() {
         return RestAssured.given().log().all()
                 .auth().oauth2(loginToken)
                 .when().get("/stations")
@@ -86,8 +88,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
         TestUtil.registerMember("kevin@naver.com", "123", 123);
-        loginToken = TestUtil.login("kevin@naver.com", "123")
-                .getAccessToken();
+        loginToken = TestUtil.login("kevin@naver.com", "123").getAccessToken();
     }
 
     @DisplayName("지하철 역을 생성한다.")
@@ -123,13 +124,11 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("지하철역 목록을 조회한다.")
     @Test
-    void findStations() {
-        StationResponse response1 = createStation("강남역", loginToken)
-                .as(StationResponse.class);
-        StationResponse response2 = createStation("청담역", loginToken)
-                .as(StationResponse.class);
+    void findStation() {
+        StationResponse response1 = createStation("강남역", loginToken).as(StationResponse.class);
+        StationResponse response2 = createStation("청담역", loginToken).as(StationResponse.class);
 
-        ExtractableResponse<Response> stationsResponse = findStations(loginToken);
+        ExtractableResponse<Response> stationsResponse = findStationRequest();
 
         assertResponseStatus(stationsResponse, HttpStatus.OK);
         assertThatStationsIncluded(stationsResponse, Arrays.asList(response1, response2));
@@ -138,8 +137,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철역을 수정한다.")
     @Test
     void editStation() {
-        StationResponse stationResponse = createStation("강남역", loginToken)
-                .as(StationResponse.class);
+        StationResponse stationResponse = createStation("강남역", loginToken).as(StationResponse.class);
         StationRequest stationRequest = new StationRequest("청담역");
 
         ExtractableResponse<Response> response = editStation(stationResponse.getId(), stationRequest);
@@ -150,8 +148,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철역 수정시 중복된 이름으로 수정할 수 없다.")
     @Test
     void cannotEditStation() {
-        StationResponse stationResponse = createStation("강남역", loginToken)
-                .as(StationResponse.class);
+        StationResponse stationResponse = createStation("강남역", loginToken).as(StationResponse.class);
         createStation("청담역", loginToken);
         StationRequest stationRequest = new StationRequest("청담역");
 
@@ -175,8 +172,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 역을 삭제한다.")
     @Test
     void deleteStation() {
-        StationResponse stationResponse = createStation("강남역", loginToken)
-                .as(StationResponse.class);
+        StationResponse stationResponse = createStation("강남역", loginToken).as(StationResponse.class);
 
         ExtractableResponse<Response> response = deleteStation(stationResponse.getId());
 
@@ -195,6 +191,14 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철역 삭제시 노선에 등록된 지하철역은 삭제할 수 없다.")
     @Test
     void cannotDeleteRegisteredStation() {
-        //todo
+        StationResponse stationResponse1 = createStation("강남역", loginToken).as(StationResponse.class);
+        StationResponse stationResponse2 = createStation("청담역", loginToken).as(StationResponse.class);
+        LineRequest lineRequest = new LineRequest("1호선", "black", stationResponse1.getId(), stationResponse2.getId(), 10);
+        createLine(lineRequest, loginToken);
+
+        ExtractableResponse<Response> response = deleteStation(stationResponse1.getId());
+
+        assertResponseStatus(response, HttpStatus.BAD_REQUEST);
+        assertResponseMessage(response, "이미 노선에 등록된 역은 삭제할 수 없습니다.");
     }
 }

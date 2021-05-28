@@ -45,9 +45,9 @@ public class SectionAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> deleteSection(long lineId, long stationId, String token) {
+    private ExtractableResponse<Response> deleteSection(long lineId, long stationId) {
         return RestAssured.given().log().all()
-                .auth().oauth2(token)
+                .auth().oauth2(loginToken)
                 .when().delete("/lines/{lineId}/sections?stationId={stationId}", lineId, stationId)
                 .then().log().all()
                 .extract();
@@ -70,17 +70,12 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
         TestUtil.registerMember("kevin@naver.com", "123", 123);
-        loginToken = TestUtil.login("kevin@naver.com", "123")
-                .getAccessToken();
+        loginToken = TestUtil.login("kevin@naver.com", "123").getAccessToken();
 
-        station1 = createStation("강남역", loginToken)
-                .as(StationResponse.class);
-        station2 = createStation("양재역", loginToken)
-                .as(StationResponse.class);
-        station3 = createStation("정자역", loginToken)
-                .as(StationResponse.class);
-        station4 = createStation("광교역", loginToken)
-                .as(StationResponse.class);
+        station1 = createStation("강남역", loginToken).as(StationResponse.class);
+        station2 = createStation("양재역", loginToken).as(StationResponse.class);
+        station3 = createStation("정자역", loginToken).as(StationResponse.class);
+        station4 = createStation("광교역", loginToken).as(StationResponse.class);
 
         LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", station1.getId(), station4.getId(), 10);
         lineResponse = createLine(lineRequest, loginToken)
@@ -141,7 +136,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         addSection(lineResponse.getId(), sectionRequest1, loginToken);
         addSection(lineResponse.getId(), sectionRequest2, loginToken);
 
-        ExtractableResponse<Response> response = deleteSection(lineResponse.getId(), station1.getId(), loginToken);
+        ExtractableResponse<Response> response = deleteSection(lineResponse.getId(), station1.getId());
 
         assertResponseStatus(response, HttpStatus.OK);
         assertOrderedStations(lineResponse.getId(), Arrays.asList(station3, station2, station4));
@@ -150,7 +145,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @DisplayName("구간이 1개밖에 없는 노선의 구간을 삭제할 수 없다.")
     @Test
     void cannotDeleteOnlyOneSection() {
-        ExtractableResponse<Response> response = deleteSection(lineResponse.getId(), station1.getId(), loginToken);
+        ExtractableResponse<Response> response = deleteSection(lineResponse.getId(), station1.getId());
 
         assertResponseStatus(response, HttpStatus.BAD_REQUEST);
         assertResponseMessage(response, "노선에는 최소한 하나의 구간은 존재해야합니다.");
