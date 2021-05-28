@@ -13,8 +13,8 @@ import wooteco.subway.auth.dto.TokenResponse;
 import java.util.HashMap;
 import java.util.Map;
 
-import static wooteco.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static wooteco.subway.member.MemberAcceptanceTest.회원_정보_조회됨;
+import static wooteco.subway.member.MemberRestAssuredRequestUtils.회원_생성을_요청;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
     private static final String EMAIL = "email@email.com";
