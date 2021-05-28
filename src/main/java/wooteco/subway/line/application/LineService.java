@@ -72,11 +72,10 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        try {
+        if (lineDao.isExistById(id)) {
             return lineDao.findById(id);
-        } catch (RuntimeException e) {
-            throw new NoSuchElementException("존재하지 않는 노선입니다.");
         }
+        throw new NoSuchElementException("존재하지 않는 노선입니다.");
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
