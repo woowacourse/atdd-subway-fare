@@ -1,7 +1,7 @@
 package wooteco.subway.member.domain;
 
 import org.apache.commons.lang3.StringUtils;
-import wooteco.subway.member.application.InvalidPasswordRuntimeException;
+import wooteco.subway.member.exception.InvalidPasswordRuntimeException;
 
 public class Member {
     private Long id;

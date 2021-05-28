@@ -1,4 +1,4 @@
-package wooteco.subway.member.application;
+package wooteco.subway.member.exception;
 
 import wooteco.subway.exception.SubwayRuntimeException;
 

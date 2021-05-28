@@ -7,6 +7,7 @@ import wooteco.subway.line.domain.Line;
 import wooteco.subway.path.domain.SectionEdge;
 import wooteco.subway.path.domain.SubwayGraph;
 import wooteco.subway.path.domain.SubwayPath;
+import wooteco.subway.path.exception.InvalidPathRuntimeException;
 import wooteco.subway.station.domain.Station;
 
 import java.util.ArrayList;

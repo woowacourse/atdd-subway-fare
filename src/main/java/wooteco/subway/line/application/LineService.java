@@ -8,6 +8,9 @@ import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.line.exception.ExistLineColorException;
+import wooteco.subway.line.exception.ExistLineNameException;
+import wooteco.subway.line.exception.LineNotExistRuntimeException;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
@@ -28,15 +31,25 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        if (lineDao.findByName(request.getName()).isPresent()) {
-            throw new ExistLineNameException();
-        }
-        if (lineDao.findByColor(request.getColor()).isPresent()) {
-            throw new ExistLineColorException();
-        }
+        List<Line> lines = lineDao.findAll();
+        findOptionalLineByName(request, lines).ifPresent(exception -> new ExistLineNameException());
+        findOptionalLineByColor(request, lines).ifPresent(exception -> new ExistLineColorException());
+
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);
+    }
+
+    private Optional<Line> findOptionalLineByName(LineRequest request, List<Line> lines) {
+        return lines.stream()
+                .filter(line -> line.isSameName(request.getName()))
+                .findAny();
+    }
+
+    private Optional<Line> findOptionalLineByColor(LineRequest request, List<Line> lines) {
+        return lines.stream()
+                .filter(line -> line.isSameColor(request.getColor()))
+                .findAny();
     }
 
     private Section addInitSection(Line line, LineRequest request) {
@@ -71,12 +84,14 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Optional<Line> findWithNameLine = lineDao.findByName(lineUpdateRequest.getName());
-        if (findWithNameLine.isPresent() && !id.equals(findWithNameLine.get().getId())) {
+        List<Line> lines = lineDao.findAll();
+
+        Optional<Line> findWithNameLine = findOptionalLineByName(lineUpdateRequest, lines);
+        if (findWithNameLine.isPresent() && !findWithNameLine.get().isSameId(id)) {
             throw new ExistLineNameException();
         }
-        Optional<Line> findWithColorLine = lineDao.findByColor(lineUpdateRequest.getColor());
-        if (findWithColorLine.isPresent() && !id.equals(findWithColorLine.get().getId())) {
+        Optional<Line> findWithColorLine = findOptionalLineByColor(lineUpdateRequest, lines);
+        if (findWithColorLine.isPresent() && !findWithColorLine.get().isSameId(id)) {
             throw new ExistLineColorException();
         }
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));

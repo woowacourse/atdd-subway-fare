@@ -1,4 +1,4 @@
-package wooteco.subway.auth.application;
+package wooteco.subway.auth.exception;
 
 import wooteco.subway.exception.SubwayAuthorizationException;
 

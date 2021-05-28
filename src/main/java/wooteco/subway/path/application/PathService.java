@@ -8,6 +8,7 @@ import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.path.domain.SubwayPathFare;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.path.dto.PathResponseAssembler;
+import wooteco.subway.path.exception.InvalidPathRuntimeException;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 

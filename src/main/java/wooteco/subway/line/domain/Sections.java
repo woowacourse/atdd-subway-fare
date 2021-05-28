@@ -1,9 +1,9 @@
 package wooteco.subway.line.domain;
 
-import wooteco.subway.line.application.NotAbleToAddStationInLineRuntimeException;
-import wooteco.subway.line.application.NotAbleToDeleteInSectionRuntimeException;
-import wooteco.subway.line.application.SameUpAndDownStationRuntimeException;
-import wooteco.subway.line.application.SectionDistanceInvalidRuntimeException;
+import wooteco.subway.line.exception.NotAbleToAddStationInLineRuntimeException;
+import wooteco.subway.line.exception.NotAbleToDeleteInSectionRuntimeException;
+import wooteco.subway.line.exception.SameUpAndDownStationRuntimeException;
+import wooteco.subway.line.exception.SectionDistanceInvalidRuntimeException;
 import wooteco.subway.station.domain.Station;
 
 import java.util.ArrayList;

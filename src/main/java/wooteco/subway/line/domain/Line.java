@@ -98,4 +98,16 @@ public class Line {
     public boolean containsStation(Station station) {
         return getStations().contains(station);
     }
+
+    public boolean isSameId(Long id){
+        return this.id.equals(id);
+    }
+
+    public boolean isSameColor(String color){
+        return this.color.equals(color);
+    }
+
+    public boolean isSameName(String name){
+        return this.name.equals(name);
+    }
 }
