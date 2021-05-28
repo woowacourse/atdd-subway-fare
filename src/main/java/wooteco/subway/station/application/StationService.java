@@ -2,7 +2,7 @@ package wooteco.subway.station.application;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-import wooteco.subway.exception.DuplicateNameException;
+import wooteco.subway.exception.DuplicateException;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;
@@ -24,7 +24,7 @@ public class StationService {
         try {
             return StationResponse.of(stationDao.insert(stationRequest.toStation()));
         } catch (Exception e) {
-            throw new DuplicateNameException("이미 존재하는 역입니다.");
+            throw new DuplicateException("이미 존재하는 역입니다.");
         }
     }
 

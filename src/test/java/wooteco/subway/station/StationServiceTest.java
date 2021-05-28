@@ -4,8 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
-import wooteco.subway.exception.DuplicateNameException;
+import wooteco.subway.exception.DuplicateException;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.dto.StationRequest;
 
@@ -23,7 +22,7 @@ public class StationServiceTest {
     void throw_DuplicateNameException_When_Find_NonExists() {
         stationService.saveStation(new StationRequest("잠실역"));
         assertThatThrownBy(() -> stationService.saveStation(new StationRequest("잠실역")))
-                .isInstanceOf(DuplicateNameException.class)
+                .isInstanceOf(DuplicateException.class)
                 .hasMessage("이미 존재하는 역입니다.");
     }
 

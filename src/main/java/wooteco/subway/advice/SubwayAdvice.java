@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import wooteco.subway.exception.DuplicateNameException;
+import wooteco.subway.exception.DuplicateException;
 import wooteco.subway.exception.ErrorResponse;
 
 import java.util.NoSuchElementException;
@@ -14,13 +14,13 @@ import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class SubwayAdvice {
-    @ExceptionHandler(DuplicateNameException.class)
-    public ResponseEntity<ErrorResponse> handleDuplicateName(DuplicateNameException e) {
+    @ExceptionHandler(DuplicateException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateName(DuplicateException e) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponse(e.getMessage()));
     }
 
     @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<ErrorResponse> handleNoSuchElement(DuplicateNameException e) {
+    public ResponseEntity<ErrorResponse> handleNoSuchElement(DuplicateException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(e.getMessage()));
     }
 

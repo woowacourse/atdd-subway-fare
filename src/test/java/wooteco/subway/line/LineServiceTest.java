@@ -7,8 +7,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.exception.DuplicateColorException;
-import wooteco.subway.exception.DuplicateNameException;
+import wooteco.subway.exception.DuplicateException;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
@@ -37,42 +36,42 @@ public class LineServiceTest {
         stationService.saveStation(new StationRequest("교대역"));
     }
 
-    @DisplayName("중복되는 이름을 가지는 노선을 추가할 시 DuplicateNameException이 발생한다.")
+    @DisplayName("중복되는 이름을 가지는 노선을 추가할 시 DuplicateException이 발생한다.")
     @Test
-    void throw_DuplicateNameException_When_Insert_DuplicateName() {
+    void throw_DuplicateException_When_Insert_DuplicateName() {
         lineService.saveLine(new LineRequest("2호선", "bg-red-600", 1L, 2L, 10));
         assertThatThrownBy(() -> lineService.saveLine(new LineRequest("2호선", "black", 3L, 4L, 20)))
-                .isInstanceOf(DuplicateNameException.class)
+                .isInstanceOf(DuplicateException.class)
                 .hasMessage("이미 존재하는 노선입니다.");
     }
 
-    @DisplayName("중복되는 색깔을 가지는 노선을 추가할 시 DuplicateColorException이 발생한다.")
+    @DisplayName("중복되는 색깔을 가지는 노선을 추가할 시 DuplicateException이 발생한다.")
     @Test
-    void throw_DuplicateColorException_When_Insert_DuplicateColor() {
+    void throw_DuplicateException_When_Insert_DuplicateColor() {
         lineService.saveLine(new LineRequest("2호선", "bg-red-600", 1L, 2L, 10));
         assertThatThrownBy(() -> lineService.saveLine(new LineRequest("3호선", "bg-red-600", 3L, 4L, 20)))
-                .isInstanceOf(DuplicateColorException.class)
+                .isInstanceOf(DuplicateException.class)
                 .hasMessage("이미 존재하는 노선 색깔입니다.");
     }
 
 
-    @DisplayName("중복되는 이름을 가지는 노선으로 수정할 시 DuplicateNameException이 발생한다.")
+    @DisplayName("중복되는 이름을 가지는 노선으로 수정할 시 DuplicateException이 발생한다.")
     @Test
-    void throw_DuplicateNameException_When_Update_DuplicateName() {
+    void throw_DuplicateException_When_Update_DuplicateName() {
         lineService.saveLine(new LineRequest("2호선", "bg-red-600", 1L, 2L, 10));
         LineResponse lineResponse = lineService.saveLine(new LineRequest("4호선", "black", 1L, 2L, 10));
         assertThatThrownBy(() -> lineService.updateLine(lineResponse.getId(), new LineRequest("2호선", "black", 3L, 4L, 20)))
-                .isInstanceOf(DuplicateNameException.class)
+                .isInstanceOf(DuplicateException.class)
                 .hasMessage("이미 존재하는 노선입니다.");
     }
 
-    @DisplayName("중복되는 색깔을 가지는 노선으로 수정할 시 DuplicateColorException이 발생한다.")
+    @DisplayName("중복되는 색깔을 가지는 노선으로 수정할 시 DuplicateException이 발생한다.")
     @Test
-    void throw_DuplicateColorException_When_Update_DuplicateColor() {
+    void throw_DuplicateException_When_Update_DuplicateColor() {
         lineService.saveLine(new LineRequest("2호선", "bg-red-600", 1L, 2L, 10));
         LineResponse lineResponse = lineService.saveLine(new LineRequest("4호선", "black", 1L, 2L, 10));
         assertThatThrownBy(() -> lineService.updateLine(lineResponse.getId(), new LineRequest("4호선", "bg-red-600", 3L, 4L, 20)))
-                .isInstanceOf(DuplicateColorException.class)
+                .isInstanceOf(DuplicateException.class)
                 .hasMessage("이미 존재하는 노선 색깔입니다.");
     }
 
