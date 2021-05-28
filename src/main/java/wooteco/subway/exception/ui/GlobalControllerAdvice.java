@@ -3,13 +3,13 @@ package wooteco.subway.exception.ui;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wooteco.subway.exception.AuthorizationException;
 import wooteco.subway.exception.SubwayException;
 import wooteco.subway.exception.dto.ErrorDto;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalControllerAdvice {
     @ExceptionHandler({SubwayException.class, DataAccessException.class})
     public ResponseEntity<ErrorDto> handleBadRequestException(final Exception e) {
