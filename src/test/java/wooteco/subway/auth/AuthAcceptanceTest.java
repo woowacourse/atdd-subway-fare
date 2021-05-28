@@ -68,12 +68,23 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
-    public static TokenResponse 회원가입_후_로그인() {
-        String email = "pkeugine@gmail.com";
+    public static TokenResponse 회원가입_후_로그인(String email, int age) {
         String password = "password";
-        회원_등록되어_있음(email, password, 20);
+
+        회원_등록되어_있음(email, password, age);
         return 로그인되어_있음(email, password);
     }
+
+    public static TokenResponse 회원가입_후_로그인(int age) {
+        String email = "pkeugine@gmail.com";
+
+        return 회원가입_후_로그인(email, age);
+    }
+
+    public static TokenResponse 회원가입_후_로그인() {
+        return 회원가입_후_로그인(20);
+    }
+
 
     public static ExtractableResponse<Response> 회원_등록되어_있음(String email, String password, Integer age) {
         return 회원_생성을_요청(email, password, age);

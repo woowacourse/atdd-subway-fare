@@ -19,7 +19,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
             return true;
         }
-        if ("GET".equalsIgnoreCase(request.getMethod())) {
+        if ("GET".equalsIgnoreCase(request.getMethod()) && !request.getRequestURI().contains("members")) {
             return true;
         }
 

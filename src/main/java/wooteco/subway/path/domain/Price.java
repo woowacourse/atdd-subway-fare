@@ -7,6 +7,7 @@ public class Price {
 
     private static final Price ZERO = new Price(0);
     public static final Price BASIC = new Price(1_250);
+    private static final Price DEDUCTION = new Price(350);
     public static final Price ADDITION = new Price(100);
 
     private final BigDecimal value;
@@ -65,8 +66,33 @@ public class Price {
         return new Price(this.value.add(other.value));
     }
 
+    public Price subtract(Price other) {
+        return new Price(this.value.subtract(other.value));
+    }
+
+    private int multiply(double multiplier) {
+        return this.value.multiply(BigDecimal.valueOf(multiplier)).intValue();
+    }
+
     public BigDecimal getValue() {
         return value;
+    }
+
+    public Price discountByAge(int age) {
+        if(age >= 20) {
+            return this;
+        }
+
+        Price basicPrice = this.subtract(DEDUCTION);
+        if(age >= 13) {
+            return new Price(basicPrice.multiply(0.8));
+        }
+
+        if (age >= 6) {
+            return new Price(basicPrice.multiply(0.5));
+        }
+
+        return ZERO;
     }
 
     @Override

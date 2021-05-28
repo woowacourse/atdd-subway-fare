@@ -27,6 +27,7 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
                         "/members/me/**",
                         "/stations/**",
                         "/lines/**"
+//                        , "/paths"
                 ));
     }
 

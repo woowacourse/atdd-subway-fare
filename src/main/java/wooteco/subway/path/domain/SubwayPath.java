@@ -24,4 +24,10 @@ public class SubwayPath {
     public int calculateDistance() {
         return sectionEdges.stream().mapToInt(it -> it.getSection().getDistance()).sum();
     }
+
+    public Price calculatePrice() {
+        int distance = calculateDistance();
+        // 노선 추가요금 로직 필요
+        return Price.calculateRate(distance);
+    }
 }
