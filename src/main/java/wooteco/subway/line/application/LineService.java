@@ -123,18 +123,18 @@ public class LineService {
                     line.getName(),
                     line.getColor(),
                     line.getSections().getTotalDistance(),
-                    createSectionsFromLine(line)));
+                    createStationsFromLine(line)));
         }
         return mapDetailResponses.stream().sorted(Comparator.comparing(MapDetailResponse::getName))
             .collect(Collectors.toList());
     }
 
-    private List<MapSectionDto> createSectionsFromLine(Line line) {
+    private List<MapSectionDto> createStationsFromLine(Line line) {
         List<MapSectionDto> mapSectionDtos = new ArrayList<MapSectionDto>();
 
         for (Section section : line.getSections().getSections()) {
             mapSectionDtos.add(
-                new MapSectionDto(section.getId(), section.getUpStation().getName(),
+                new MapSectionDto(section.getUpStation().getId(), section.getUpStation().getName(),
                     section.getDistance(),
                     createTransferLines(line.getId(), section.getUpStation()))
             );
@@ -142,7 +142,8 @@ public class LineService {
         Section lastSection = line.getSections().getSections()
             .get(line.getSections().getSections().size() - 1);
         mapSectionDtos.add(
-            new MapSectionDto(lastSection.getId(), lastSection.getDownStation().getName(), 0,
+            new MapSectionDto(lastSection.getDownStation().getId(),
+                lastSection.getDownStation().getName(), 0,
                 createTransferLines(line.getId(), lastSection.getDownStation())));
 
         return mapSectionDtos;
