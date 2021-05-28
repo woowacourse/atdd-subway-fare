@@ -1,7 +1,5 @@
 package wooteco.subway.domain;
 
-import wooteco.subway.domain.Station;
-
 public class Section {
     private Long id;
     private Station upStation;
