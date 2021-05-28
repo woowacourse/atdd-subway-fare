@@ -116,6 +116,26 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_삭제됨(response, lineRequest1);
     }
 
+    @Test
+    void getMap() {
+        // given
+        LineResponse lineResponse1 = 지하철_노선_등록되어_있음(lineRequest1);
+        LineResponse lineResponse2 = 지하철_노선_등록되어_있음(lineRequest2);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_지도_조회_요청();
+
+        // then
+        지하철_노선_목록_포함됨(response, Arrays.asList(lineResponse1, lineResponse2));
+        각_노선에_구간이_포함됨(response);
+    }
+
+    public static void 각_노선에_구간이_포함됨(ExtractableResponse<Response> response) {
+        response.jsonPath().getList(".", LineResponse.class)
+                .stream().map(LineResponse::getSections)
+                .collect(Collectors.toList());
+    }
+
     public static LineResponse 지하철_노선_등록되어_있음(String name, StationResponse upStation, StationResponse downStation, int distance) {
         return 지하철_노선_등록되어_있음(name, upStation, downStation, distance, 0);
     }
@@ -150,6 +170,15 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/lines")
+                .then().log().all()
+                .extract();
+    }
+
+    private static ExtractableResponse<Response> 지하철_지도_조회_요청() {
+        return RestAssured
+                .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/map")
                 .then().log().all()
                 .extract();
     }
