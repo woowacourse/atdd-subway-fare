@@ -52,4 +52,6 @@ public class Member {
             throw new AuthorizationException();
         }
     }
+
+
 }
