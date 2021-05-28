@@ -16,7 +16,7 @@ spring:
         password:
     h2:
         console:
-              enabled: true
+            enabled: true
 handlebars:
     suffix: .html
     enabled: true

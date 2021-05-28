@@ -44,15 +44,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private static TokenResponse tokenResponse;
 
     /**
-     *               건대입구
-     *                 ㅣ
-     *               *3호선*
-     *                 ㅣ
-     *잠실역-- *4호선* --교대역    --- *2호선* ---   강남역 -- *2호선* -- 강북역
-     *                 |                        |
-     *               *3호선*                   *신분당선*
-     *                 |                        |
-     *                 남부터미널역  --- *3호선* --- 양재역 -- *3호선* - 구의역
+     * 건대입구
+     * ㅣ
+     * *3호선*
+     * ㅣ
+     * 잠실역-- *4호선* --교대역    --- *2호선* ---   강남역 -- *2호선* -- 강북역
+     * |                        |
+     * *3호선*                   *신분당선*
+     * |                        |
+     * 남부터미널역  --- *3호선* --- 양재역 -- *3호선* - 구의역
      */
     @BeforeEach
     public void setUp() {
@@ -75,7 +75,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         지하철_구간_등록되어_있음(삼호선, 교대역, 남부터미널역, 3, tokenResponse);
         지하철_구간_등록되어_있음(이호선, 강남역, 강북역, 49, tokenResponse);
-        지하철_구간_등록되어_있음(삼호선, 건대입구역, 교대역,  50, tokenResponse);
+        지하철_구간_등록되어_있음(삼호선, 건대입구역, 교대역, 50, tokenResponse);
         지하철_구간_등록되어_있음(삼호선, 양재역, 구의역, 59, tokenResponse);
     }
 

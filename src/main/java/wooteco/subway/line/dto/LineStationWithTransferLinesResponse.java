@@ -2,8 +2,8 @@ package wooteco.subway.line.dto;
 
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
-import wooteco.subway.station.dto.StationTransferLinesResponse;
 import wooteco.subway.station.dto.StationTransferLinesDto;
+import wooteco.subway.station.dto.StationTransferLinesResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
