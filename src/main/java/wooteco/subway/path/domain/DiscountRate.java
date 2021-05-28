@@ -1,32 +1,30 @@
 package wooteco.subway.path.domain;
 
-public enum DiscountRate {
-    TWENTIES(19, 0, 0),
-    TEENAGERS(13, 350, 0.2),
-    PRESCHOOLER(6, 350, 0.5),
-    BABIES(0, 0, 1);
+import java.util.Arrays;
+import java.util.NoSuchElementException;
+import java.util.function.IntPredicate;
 
-    private final int ageBaseline;
+public enum DiscountRate {
+    ADULTS(0, 0, (age) -> 19 <= age),
+    TEENAGERS(350, 0.2, (age) -> 13 <= age),
+    PRESCHOOLER(350, 0.5, (age) -> 6 <= age),
+    BABIES(0, 1, (age) -> 6 > age);
+
     private final int deductionFare;
     private final double discountRate;
+    private final IntPredicate predicate;
 
-    DiscountRate(int ageBaseline, int deductionFare, double discountRate) {
-        this.ageBaseline = ageBaseline;
+    DiscountRate(int deductionFare, double discountRate, IntPredicate predicate) {
         this.deductionFare = deductionFare;
         this.discountRate = discountRate;
+        this.predicate = predicate;
     }
 
     public static DiscountRate compareAgeBaseline(int age) {
-        if (TWENTIES.ageBaseline <= age) {
-            return TWENTIES;
-        }
-        if (TEENAGERS.ageBaseline <= age) {
-            return TEENAGERS;
-        }
-        if (PRESCHOOLER.ageBaseline <= age) {
-            return PRESCHOOLER;
-        }
-        return BABIES;
+        return Arrays.stream(values())
+            .filter(discountRate -> discountRate.predicate.test(age))
+            .findFirst()
+            .orElseThrow(() -> new NoSuchElementException("해당하는 DiscountRate 객체가 없습니다."));
     }
 
     public int calculateFare(int currentFare) {

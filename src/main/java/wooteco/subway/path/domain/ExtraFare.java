@@ -1,6 +1,7 @@
 package wooteco.subway.path.domain;
 
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
@@ -28,7 +29,7 @@ public enum ExtraFare {
         final ExtraFare extraFare = Arrays.stream(values())
             .filter(decideExtraFarePredicate(distance))
             .findAny()
-            .orElseThrow(() -> new RuntimeException("해당하는 ExtraFare 객체가 없습니다."));
+            .orElseThrow(() -> new NoSuchElementException("해당하는 ExtraFare 객체가 없습니다."));
 
         return extraFare.calculator.apply(distance);
     }
