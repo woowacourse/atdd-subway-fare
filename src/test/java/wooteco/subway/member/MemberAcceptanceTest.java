@@ -3,55 +3,35 @@ package wooteco.subway.member;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
-import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
+import wooteco.subway.util.TestUtil;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
+import static wooteco.subway.util.TestUtil.*;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
-    public static final String EMAIL = "email@email.com";
-    public static final String PASSWORD = "password";
-    public static final int AGE = 20;
-    public static final String NEW_EMAIL = "new_email@email.com";
-    public static final String NEW_PASSWORD = "new_password";
-    public static final int NEW_AGE = 30;
 
-    public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
-        MemberRequest memberRequest = new MemberRequest(email, password, age);
+    private String loginToken;
 
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(memberRequest)
-                .when().post("/members")
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(tokenResponse.getAccessToken())
+    public static ExtractableResponse<Response> getMyMemberInfo(String token) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(token)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 내_회원_정보_수정_요청(TokenResponse tokenResponse, String email, String password, Integer age) {
-        MemberRequest memberRequest = new MemberRequest(email, password, age);
-
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(tokenResponse.getAccessToken())
+    private ExtractableResponse<Response> editMemberInfo(MemberRequest memberRequest, String token) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(memberRequest)
                 .when().put("/members/me")
@@ -59,58 +39,82 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 내_회원_삭제_요청(TokenResponse tokenResponse) {
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(tokenResponse.getAccessToken())
+    private ExtractableResponse<Response> deleteMember(String token) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(token)
                 .when().delete("/members/me")
                 .then().log().all()
                 .extract();
     }
 
-    public static void 회원_생성됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    private void assertUserInformation(ExtractableResponse<Response> response, String email, int age) {
+        MemberResponse member = response.as(MemberResponse.class);
+        assertThat(member.getEmail()).isEqualTo(email);
+        assertThat(member.getAge()).isEqualTo(age);
     }
 
-    public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
-        MemberResponse memberResponse = response.as(MemberResponse.class);
-        assertThat(memberResponse.getId()).isNotNull();
-        assertThat(memberResponse.getEmail()).isEqualTo(email);
-        assertThat(memberResponse.getAge()).isEqualTo(age);
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        registerMember("kevin@naver.com", "123", 123);
+        loginToken = TestUtil.login("kevin@naver.com", "123")
+                .getAccessToken();
     }
 
-    public static void 회원_정보_수정됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    @DisplayName("회원 생성시 중복된 이메일로 생성할 수 없다.")
+    @Test
+    void cannotRegisterMemberAsDuplicated() {
+        ExtractableResponse<Response> response = registerMember("kevin@naver.com", "123", 123);
+
+        assertResponseStatus(response, HttpStatus.BAD_REQUEST);
+        assertResponseMessage(response, "중복된 이메일입니다.");
     }
 
-    public static void 회원_삭제됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
-    @DisplayName("회원 정보를 관리한다.")
+    @DisplayName("회원 정보를 확인한다.")
     @Test
     void manageMember() {
-        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
-        회원_생성됨(createResponse);
+        ExtractableResponse<Response> memberInfoResponse = getMyMemberInfo(loginToken);
 
-        TokenResponse 사용자 = 로그인되어_있음(EMAIL, PASSWORD);
+        assertResponseStatus(memberInfoResponse, HttpStatus.OK);
+        assertUserInformation(memberInfoResponse, "kevin@naver.com", 123);
+    }
 
-        ExtractableResponse<Response> findResponse = 내_회원_정보_조회_요청(사용자);
-        회원_정보_조회됨(findResponse, EMAIL, AGE);
+    @DisplayName("회원 정보를 수정한다.")
+    @Test
+    void editMember() {
+        MemberRequest memberRequest = new MemberRequest("kevin@naver.com", "newpass", 10);
 
-        ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(사용자, EMAIL, NEW_PASSWORD, NEW_AGE);
-        회원_정보_수정됨(updateResponse);
+        ExtractableResponse<Response> response = editMemberInfo(memberRequest, loginToken);
 
-        ExtractableResponse<Response> deleteResponse = 내_회원_삭제_요청(사용자);
-        회원_삭제됨(deleteResponse);
+        assertResponseStatus(response, HttpStatus.OK);
+    }
+
+    @DisplayName("회원 정보 수정시 중복된 이메일로 수정할 수 없다.")
+    @Test
+    void cannotEditMemberWhenDuplicatedEmail() {
+        registerMember("dup@naver.com", "abc", 10);
+        MemberRequest memberRequest = new MemberRequest("dup@naver.com", "newpass", 10);
+
+        ExtractableResponse<Response> response = editMemberInfo(memberRequest, loginToken);
+
+        assertResponseStatus(response, HttpStatus.BAD_REQUEST);
+        assertResponseMessage(response, "중복된 이메일입니다.");
+    }
+
+    @DisplayName("회원 정보를 삭제한다.")
+    @Test
+    void deleteMember() {
+        ExtractableResponse<Response> response = deleteMember(loginToken);
+
+        assertResponseStatus(response, HttpStatus.NO_CONTENT);
     }
 
     @DisplayName("가입 요청시 나이는 1 이상이어야 한다.")
     @Test
-    void cannotBindMemberRequest() {
-        ExtractableResponse<Response> response = 회원_생성을_요청(EMAIL, PASSWORD, 0);
+    void ageMustBeOverOne() {
+        ExtractableResponse<Response> response = registerMember("agb@naver.com", "312", 0);
 
-        assertThat(response.statusCode()).isEqualTo(400);
-        assertThat(response.body().asString()).isEqualTo("잘못된 나이입니다.");
+        assertResponseStatus(response, HttpStatus.BAD_REQUEST);
+        assertResponseMessage(response, "잘못된 나이입니다.");
     }
 }

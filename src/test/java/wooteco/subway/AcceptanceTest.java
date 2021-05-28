@@ -11,8 +11,9 @@ import org.springframework.test.context.ActiveProfiles;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @ActiveProfiles("test")
 public class AcceptanceTest {
+
     @LocalServerPort
-    int port;
+    private int port;
 
     @BeforeEach
     public void setUp() {
