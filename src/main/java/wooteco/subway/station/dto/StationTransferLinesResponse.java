@@ -7,23 +7,23 @@ import wooteco.subway.station.domain.Station;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class StationTranferLinesResponse {
+public class StationTransferLinesResponse {
     private Long id;
     private String name;
     private int distance;
     private List<LineNameColorResponse> transferLines;
 
-    public StationTranferLinesResponse() {
+    public StationTransferLinesResponse() {
     }
 
-    public StationTranferLinesResponse(Long id, String name, int distance, List<LineNameColorResponse> transferLines) {
+    public StationTransferLinesResponse(Long id, String name, int distance, List<LineNameColorResponse> transferLines) {
         this.id = id;
         this.name = name;
         this.distance = distance;
         this.transferLines = transferLines;
     }
 
-    public static StationTranferLinesResponse of(Long id, Section section, List<StationTransferLinesDto> allStationWithTransferLines) {
+    public static StationTransferLinesResponse of(Long id, Section section, List<StationTransferLinesDto> allStationWithTransferLines) {
         StationTransferLinesDto stationTransferLinesDto = allStationWithTransferLines.stream()
                 .filter(stationWithTransferLine -> section.getUpStation().getId().equals(stationWithTransferLine.getId()))
                 .findAny().orElseThrow(IllegalArgumentException::new);
@@ -31,10 +31,10 @@ public class StationTranferLinesResponse {
                 .filter(lineNameColorDto -> !lineNameColorDto.getId().equals(id))
                 .map(LineNameColorResponse::of)
                 .collect(Collectors.toList());
-        return new StationTranferLinesResponse(stationTransferLinesDto.getId(), stationTransferLinesDto.getName(), section.getDistance(), lineNameColorResponses);
+        return new StationTransferLinesResponse(stationTransferLinesDto.getId(), stationTransferLinesDto.getName(), section.getDistance(), lineNameColorResponses);
     }
 
-    public static StationTranferLinesResponse of(Long lineId, Station downStation, List<StationTransferLinesDto> allStationWithTransferLines) {
+    public static StationTransferLinesResponse of(Long lineId, Station downStation, List<StationTransferLinesDto> allStationWithTransferLines) {
         StationTransferLinesDto stationTransferLinesDto = allStationWithTransferLines.stream()
                 .filter(stationWithTransferLine -> downStation.getId().equals(stationWithTransferLine.getId()))
                 .findAny().orElseThrow(IllegalArgumentException::new);
@@ -42,7 +42,7 @@ public class StationTranferLinesResponse {
                 .filter(lineNameColorDto -> !lineNameColorDto.getId().equals(lineId))
                 .map(LineNameColorResponse::of)
                 .collect(Collectors.toList());
-        return new StationTranferLinesResponse(downStation.getId(), downStation.getName(), 0, lineNameColorResponses);
+        return new StationTransferLinesResponse(downStation.getId(), downStation.getName(), 0, lineNameColorResponses);
     }
 
     public Long getId() {

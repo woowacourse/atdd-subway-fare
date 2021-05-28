@@ -4,9 +4,9 @@ import wooteco.subway.line.domain.Section;
 import wooteco.subway.station.dto.StationResponse;
 
 public class SectionResponse {
-    private StationResponse upStation;
-    private StationResponse downStation;
-    private Integer distance;
+    private final StationResponse upStation;
+    private final StationResponse downStation;
+    private final Integer distance;
 
     public SectionResponse(StationResponse upStation, StationResponse downStation, Integer distance) {
         this.upStation = upStation;

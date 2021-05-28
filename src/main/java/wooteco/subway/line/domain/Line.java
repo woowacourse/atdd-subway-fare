@@ -15,34 +15,23 @@ public class Line {
     }
 
     public Line(String name, String color) {
-        this.name = name;
-        this.color = color;
+        this(null, name, color, 0, null);
     }
 
     public Line(String name, String color, Integer extraFare) {
-        this.name = name;
-        this.color = color;
-        this.extraFare = extraFare;
+        this(null, name, color, extraFare, null);
     }
 
     public Line(Long id, String name, String color) {
-        this.id = id;
-        this.name = name;
-        this.color = color;
+        this(id, name, color, 0, null);
     }
 
     public Line(Long id, String name, String color, Integer extraFare) {
-        this.id = id;
-        this.name = name;
-        this.color = color;
-        this.extraFare = extraFare;
+        this(id, name, color, extraFare, null);
     }
 
     public Line(Long id, String name, String color, Sections sections) {
-        this.id = id;
-        this.name = name;
-        this.color = color;
-        this.sections = sections;
+        this(id, name, color, 0, sections);
     }
 
     public Line(Long id, String name, String color, Integer extraFare, Sections sections) {
@@ -51,30 +40,6 @@ public class Line {
         this.color = color;
         this.extraFare = extraFare;
         this.sections = sections;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public Integer getExtraFare() {
-        return extraFare;
-    }
-
-    public Sections getSections() {
-        return sections;
-    }
-
-    public Line(Integer extraFare) {
-        this.extraFare = extraFare;
     }
 
     public Line update(String name, String color, int extraFare) {
@@ -103,5 +68,25 @@ public class Line {
 
     public List<Section> getSortSections() {
         return sections.getSortSections();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public Integer getExtraFare() {
+        return extraFare;
+    }
+
+    public Sections getSections() {
+        return sections;
     }
 }

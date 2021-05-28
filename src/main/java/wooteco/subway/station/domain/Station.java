@@ -9,13 +9,17 @@ public class Station {
     public Station() {
     }
 
+    public Station(String name) {
+        this(null, name);
+    }
+
     public Station(Long id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public Station(String name) {
-        this.name = name;
+    public Station update(String name) {
+        return new Station(this.id, name);
     }
 
     public Long getId() {
@@ -37,9 +41,5 @@ public class Station {
     @Override
     public int hashCode() {
         return Objects.hash(id, name);
-    }
-
-    public Station update(String name) {
-        return new Station(this.id, name);
     }
 }

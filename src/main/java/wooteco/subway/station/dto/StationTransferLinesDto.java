@@ -14,19 +14,13 @@ public class StationTransferLinesDto {
     }
 
     public StationTransferLinesDto(Long id, String name) {
-        this.id = id;
-        this.name = name;
-        this.transferLines = new ArrayList<>();
+        this(id, name, new ArrayList<>());
     }
 
     public StationTransferLinesDto(Long id, String name, List<LineNameColorDto> transferLines) {
         this.id = id;
         this.name = name;
         this.transferLines = transferLines;
-    }
-
-    public void addTransferLine(LineNameColorDto lineNameColorDto) {
-        transferLines.add(lineNameColorDto);
     }
 
     public Long getId() {
