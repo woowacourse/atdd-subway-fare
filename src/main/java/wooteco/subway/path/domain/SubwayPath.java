@@ -11,9 +11,9 @@ public class SubwayPath {
     private static final int OVER_LIMIT_DISTANCE = 50;
     private final int DEFAULT_FARE = 1250;
 
-    private List<SectionEdge> sectionEdges;
-    private List<Station> stations;
-    private Set<Line> lines;
+    private final List<SectionEdge> sectionEdges;
+    private final List<Station> stations;
+    private final Set<Line> lines;
 
     public SubwayPath(List<SectionEdge> sectionEdges, List<Station> stations, Set<Line> lines) {
         this.sectionEdges = sectionEdges;
@@ -42,7 +42,7 @@ public class SubwayPath {
 
         if (distance <= OVER_LIMIT_DISTANCE) {
             int overFare = calculateAdditionalFareOver10km(distance - DEFAULT_DISTANCE);
-            return discountByAge(age,DEFAULT_FARE + overFare + maxExtraFare);
+            return discountByAge(age, DEFAULT_FARE + overFare + maxExtraFare);
         }
 
         int additionalFareOver10km = calculateAdditionalFareOver10km(OVER_LIMIT_DISTANCE - DEFAULT_DISTANCE);
@@ -65,11 +65,11 @@ public class SubwayPath {
             return 0;
         }
         if (age < 13) {
-            return (int) ((fare-350)*0.5);
+            return (int) ((fare - 350) * 0.5);
         }
 
-        if( age < 19) {
-            return (int) ((fare-350)*0.8);
+        if (age < 19) {
+            return (int) ((fare - 350) * 0.8);
         }
         return fare;
     }

@@ -20,7 +20,7 @@ public class SectionResponse {
 
     public static List<SectionResponse> listOf(Sections sections) {
         List<SectionResponse> sectionResponses = new ArrayList<>();
-        for(Section section : sections.getSections()) {
+        for (Section section : sections.getSections()) {
             sectionResponses.add(new SectionResponse(
                     StationResponse.of(section.getUpStation()),
                     StationResponse.of(section.getDownStation()),

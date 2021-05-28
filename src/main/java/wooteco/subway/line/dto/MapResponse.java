@@ -7,11 +7,11 @@ import java.util.List;
 
 public class MapResponse {
 
-    private Long id;
-    private String name;
-    private String color;
-    private List<StationResponse> stations;
-    private List<SectionResponse> sections;
+    private final Long id;
+    private final String name;
+    private final String color;
+    private final List<StationResponse> stations;
+    private final List<SectionResponse> sections;
 
     public MapResponse(Long id, String name, String color, List<StationResponse> stations, List<SectionResponse> sections) {
         this.id = id;

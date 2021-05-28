@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class StationService {
-    private StationDao stationDao;
+    private final StationDao stationDao;
 
     public StationService(StationDao stationDao) {
         this.stationDao = stationDao;
@@ -36,7 +36,7 @@ public class StationService {
     }
 
     public void deleteStationById(Long id) {
-        try{
+        try {
             stationDao.deleteById(id);
         } catch (Exception e) {
             throw new StationRelatedException("노선에 등록된 역이라 지울 수 없습니다.");

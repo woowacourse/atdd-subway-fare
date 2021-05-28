@@ -18,7 +18,7 @@ public class LineRequest {
         this.downStationId = downStationId;
         this.distance = distance;
         this.extraFare = extraFare;
-        
+
     }
 
     public String getName() {
