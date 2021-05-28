@@ -45,7 +45,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void createMemberWhenEmailOverLength() throws Exception {
         //given
-        String overEmail = "abcdefghijklnmopqrstuvwxyz123456789@google.com";
+        String overEmail = "abcdefghijklnmopqrstuvwxyz123dsfkldafskldasfkladfskjl456789@google.com";
 
         //when
         ExtractableResponse<Response> createFailResponse = 회원_생성을_요청(overEmail, PASSWORD, AGE);
@@ -68,7 +68,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_생성되지않음(createFailResponse);
 
         //given
-        errorPassword = "abcdefghijklnmopqrstuvwxyz";
+        errorPassword = "abcdefghijklnmopqrstuvwsadsfkasdfdsafjdfsljdsflkasdfjlxyz";
 
         //when
         createFailResponse = 회원_생성을_요청(EMAIL, errorPassword, AGE);

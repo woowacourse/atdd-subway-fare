@@ -6,10 +6,9 @@ import wooteco.subway.exception.StationInvalidBoundaryException;
 import wooteco.subway.exception.UnsupportedSubwayCharacterException;
 import wooteco.subway.station.dto.StationRequest;
 
-import java.util.regex.Pattern;
-
 public class StationValidator implements Validator {
-    private static final String PATTERN = "[a-zA-Z0-9ㄱ-ㅎ|ㅏ-ㅣ|가-힣]";
+    private static final String SPACE = " ";
+    private static final int WORD_LENGTH = 1;
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -20,12 +19,16 @@ public class StationValidator implements Validator {
     public void validate(Object target, Errors errors) {
         StationRequest stationRequest = (StationRequest) target;
 
-        if (Pattern.matches(PATTERN, stationRequest.getName())) {
+        if (hasSpace(stationRequest.getName())) {
             throw new UnsupportedSubwayCharacterException();
         }
 
-        if (stationRequest.getName().length() < 2 && stationRequest.getName().length() > 20) {
+        if (stationRequest.getName().length() < 2 || stationRequest.getName().length() > 20) {
             throw new StationInvalidBoundaryException();
         }
+    }
+
+    private boolean hasSpace(String value) {
+        return value.split(SPACE).length != WORD_LENGTH;
     }
 }

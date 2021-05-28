@@ -11,7 +11,7 @@ import wooteco.subway.member.dto.MemberRequest;
 import java.util.regex.Pattern;
 
 public class MemberValidator implements Validator {
-    private static final String PATTERN = "^[a-zA-Z0-9]*$";
+    private static final String PATTERN = "/^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i";
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -30,11 +30,11 @@ public class MemberValidator implements Validator {
             throw new EmailInvalidBoundaryException();
         }
 
-        if (memberRequest.getPassword().length() < 4 && memberRequest.getPassword().length() > 20) {
+        if (memberRequest.getPassword().length() < 4 || memberRequest.getPassword().length() > 20) {
             throw new PasswordInvalidBoundaryException();
         }
 
-        if (memberRequest.getAge() < 0 && memberRequest.getAge() > 200) {
+        if (memberRequest.getAge() < 0 || memberRequest.getAge() > 200) {
             throw new AgeInvalidBoundaryException();
         }
     }
