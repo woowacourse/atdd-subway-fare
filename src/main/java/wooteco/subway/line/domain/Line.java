@@ -75,32 +75,16 @@ public class Line {
         }
     }
 
+    public boolean containsStation(Station station) {
+        return sections.containsStation(station);
+    }
+
     public boolean hasSameName(String name) {
         return this.name.equals(name);
     }
 
     public boolean hasSameColor(String color) {
         return this.color.equals(color);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public int getExtraFare() {
-        return extraFare;
-    }
-
-    public Sections getSections() {
-        return sections;
     }
 
     public void addSection(Station upStation, Station downStation, int distance) {
@@ -121,5 +105,25 @@ public class Line {
 
     public List<Station> getStations() {
         return sections.getStations();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
+    }
+
+    public Sections getSections() {
+        return sections;
     }
 }
