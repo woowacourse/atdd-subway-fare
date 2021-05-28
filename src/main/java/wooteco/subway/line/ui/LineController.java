@@ -33,10 +33,9 @@ public class LineController {
         this.lineService = lineService;
     }
 
-    @PostMapping
-    public ResponseEntity createLine(@Valid @RequestBody LineRequest lineRequest) {
-        LineResponse line = lineService.saveLine(lineRequest);
-        return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
+    @GetMapping("/{id}")
+    public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
+        return ResponseEntity.ok(lineService.findLineResponseById(id));
     }
 
     @GetMapping
@@ -44,9 +43,10 @@ public class LineController {
         return ResponseEntity.ok(lineService.findLineResponses());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
-        return ResponseEntity.ok(lineService.findLineResponseById(id));
+    @PostMapping
+    public ResponseEntity createLine(@Valid @RequestBody LineRequest lineRequest) {
+        LineResponse line = lineService.saveLine(lineRequest);
+        return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
 
     @PutMapping("/{id}")

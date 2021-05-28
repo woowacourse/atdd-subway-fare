@@ -28,16 +28,16 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    @PostMapping
-    public ResponseEntity createMember(@Valid @RequestBody MemberRequest request) {
-        MemberResponse member = memberService.createMember(request);
-        return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
-    }
-
     @GetMapping("/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         MemberResponse member = memberService.findMember(loginMember);
         return ResponseEntity.ok().body(member);
+    }
+
+    @PostMapping
+    public ResponseEntity createMember(@Valid @RequestBody MemberRequest request) {
+        MemberResponse member = memberService.createMember(request);
+        return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
     }
 
     @PutMapping("/me")
