@@ -23,10 +23,11 @@ import static wooteco.subway.line.SectionAcceptanceTest.지하철_구간_생성_
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {
 
+    private static final long INVALID_ID = Long.MAX_VALUE;
+
     private static final String A역 = "A역";
     private static final String B역 = "B역";
     private static final String C역 = "C역";
-    private static final long INVALID_ID = Long.MAX_VALUE;
 
     @DisplayName("지하철역을 생성한다.")
     @Test

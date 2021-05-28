@@ -114,7 +114,6 @@ public class LineDao {
     }
 
     public void deleteById(Long id) {
-        // todo 구간 삭제후 삭제 가능
         jdbcTemplate.update("delete from LINE where id = ?", id);
     }
 }

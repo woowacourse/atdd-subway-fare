@@ -41,7 +41,6 @@ public class StationService {
     }
 
     public void deleteStationById(Long id) {
-        // todo 삭제하려는 역이 노선에 등록되어있는지 체크: 모든 구간 돌면서 up/down에 역id가 있는지 검사
         findStationById(id);
         stationDao.deleteById(id);
     }

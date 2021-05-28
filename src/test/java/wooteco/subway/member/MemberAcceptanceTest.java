@@ -17,10 +17,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
+
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
     public static final int AGE = 20;
-    public static final String NEW_EMAIL = "new_email@email.com";
     public static final String NEW_PASSWORD = "new_password";
     public static final int NEW_AGE = 30;
 

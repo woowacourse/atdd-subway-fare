@@ -22,6 +22,7 @@ import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록�
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineAcceptanceTest extends AcceptanceTest {
+
     private static final String COLOR = "bg-red-600";
     private static final long INVALID_ID = Long.MAX_VALUE;
 
