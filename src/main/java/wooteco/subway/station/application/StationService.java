@@ -36,7 +36,6 @@ public class StationService {
     }
 
     public void deleteStationById(Long id) {
-        System.out.println(stationDao.countStationOccurrenceOnPath(id));
         if (stationDao.countStationOccurrenceOnPath(id) != 0) {
             throw new ExistedStationOnPathException();
         }
