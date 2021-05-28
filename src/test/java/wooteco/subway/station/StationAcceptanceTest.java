@@ -27,7 +27,8 @@ import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되�
 public class StationAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
-    public static final int AGE = 20;
+    public static final int AGE = 10;
+
     private static final String 강남역 = "강남역";
     private static final String 역삼역 = "역삼역";
 

@@ -36,7 +36,7 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
                         "/api/members/me/**",
                         "/api/stations/**",
                         "/api/lines/**",
-                        "/api/paths/**"
+                        "/api/paths"
                 );
     }
 }

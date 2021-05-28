@@ -5,7 +5,6 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -31,7 +30,7 @@ import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록�
 public class PathAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
-    public static final int AGE = 20;
+    public static final int AGE = 10;
 
     private LineResponse 신분당선;
     private LineResponse 이호선;
@@ -124,7 +123,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역, 선릉역));
         총_거리가_응답됨(response, 10);
-        총_요금이_응답됨(response, 2150);
+        총_요금이_응답됨(response, 900);
     }
 
     @DisplayName("경로 조회 - 두 역의 최단 거리 경로에 따른 거리와 요금을 조회한다. (노선 추가 요금 없음, 회원)")
@@ -137,10 +136,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
         총_거리가_응답됨(response, 5);
-        총_요금이_응답됨(response, 1250);
+        총_요금이_응답됨(response, 450);
     }
 
-    @Disabled
     @DisplayName("경로 조회 - 두 역의 최단 거리 경로에 따른 거리와 요금을 조회한다. (노선 추가 요금 있음, 비회원)")
     @Test
     void findFareByLineWithExtraFareByNonMember() {
@@ -148,10 +146,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역, 선릉역));
         총_거리가_응답됨(response, 10);
-//        총_요금이_응답됨(response, 2150);
+        총_요금이_응답됨(response, 2150);
     }
 
-    @Disabled
     @DisplayName("경로 조회 - 두 역의 최단 거리 경로에 따른 거리와 요금을 조회한다. (노선 추가 요금 없음, 비회원)")
     @Test
     void findFareByLineWithoutExtraFareByNonMember() {
@@ -159,6 +156,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
         총_거리가_응답됨(response, 5);
-//        총_요금이_응답됨(response, 1250);
+        총_요금이_응답됨(response, 1250);
     }
 }

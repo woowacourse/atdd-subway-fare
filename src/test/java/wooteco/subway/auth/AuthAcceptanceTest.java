@@ -20,7 +20,7 @@ import static wooteco.subway.member.MemberAcceptanceTest.회원_정보_조회됨
 public class AuthAcceptanceTest extends AcceptanceTest {
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
-    private static final Integer AGE = 20;
+    private static final Integer AGE = 10;
 
     public static ExtractableResponse<Response> 회원_등록되어_있음(String email, String password, Integer age) {
         return 회원_생성_요청(new MemberRequest(email, password, age));
