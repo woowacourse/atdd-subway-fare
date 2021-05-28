@@ -13,7 +13,7 @@ public class Fare {
 
     public Fare(final int fare) {
         if (fare < MINIMUM_POSSIBLE_FARE) {
-            throw new IllegalArgumentException();
+            throw new IllegalFareException();
         }
         this.fare = fare;
     }
