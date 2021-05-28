@@ -32,7 +32,10 @@ import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.auth.infrastructure.LoginInterceptor;
 import wooteco.subway.exception.AuthorizationException;
 import wooteco.subway.exception.DuplicatedStationNameException;
+import wooteco.subway.line.domain.Line;
 import wooteco.subway.station.application.StationService;
+import wooteco.subway.station.domain.Station;
+import wooteco.subway.station.dto.SimpleLineResponse;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
@@ -114,7 +117,7 @@ public class StationControllerTest {
             new StationResponse(4L, "삼성역"),
             new StationResponse(5L, "선릉역")
         );
-        given(stationService.findAllStationResponses()).willReturn(stationResponses);
+        given(stationService.findAllStations()).willReturn(stationResponses);
         given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         //when
@@ -125,6 +128,47 @@ public class StationControllerTest {
             .andExpect(jsonPath("$.*.name")
                 .value(Matchers.containsInAnyOrder("잠실역", "잠실새내역", "종합운동장역", "삼성역", "선릉역"))
             )
+            .andDo(print())
+            .andDo(document("station-show",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint())
+            ));
+    }
+
+    @DisplayName("역 조회 - 성공(노선 정보 포함)")
+    @Test
+    public void showStationsWithLine() throws Exception {
+        //given
+        List<StationResponse> stationResponses = Arrays.asList(
+            StationResponse.of(
+                new Station(1L, "잠실역"),
+                SimpleLineResponse.listOf(
+                    Arrays.asList(
+                        new Line(1L, "2호선", "be-green-200"),
+                        new Line(2L, "8호선", "be-pink-200")
+                    )
+                )
+            ),
+            StationResponse.of(
+                new Station(2L, "강남역"),
+                SimpleLineResponse.listOf(
+                    Arrays.asList(new Line(1L, "2호선", "be-green-200"))
+                )
+            )
+        );
+        given(stationService.findAllStations()).willReturn(stationResponses);
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
+
+        //when
+        mockMvc.perform(get("/api/stations"))
+            // then
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.*").isArray())
+            .andExpect(jsonPath("$.*.name")
+                .value(Matchers.containsInAnyOrder("잠실역", "강남역"))
+            )
+            .andExpect(jsonPath("$.*.lineResponses[*].name")
+                .value(Matchers.containsInAnyOrder("2호선", "8호선", "2호선")))
             .andDo(print())
             .andDo(document("station-show",
                 preprocessRequest(prettyPrint()),

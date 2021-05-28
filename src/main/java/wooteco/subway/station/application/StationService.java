@@ -6,9 +6,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.CannotRemoveStationException;
 import wooteco.subway.exception.DuplicatedStationNameException;
+import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
+import wooteco.subway.line.domain.Lines;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
+import wooteco.subway.station.dto.SimpleLineResponse;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
@@ -19,10 +22,13 @@ public class StationService {
     private static final int ZERO_COUNT = 0;
     private StationDao stationDao;
     private SectionDao sectionDao;
+    private LineDao lineDao;
 
-    public StationService(StationDao stationDao, SectionDao sectionDao) {
+    public StationService(StationDao stationDao, SectionDao sectionDao,
+        LineDao lineDao) {
         this.stationDao = stationDao;
         this.sectionDao = sectionDao;
+        this.lineDao = lineDao;
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
@@ -37,11 +43,15 @@ public class StationService {
         return stationDao.findById(id);
     }
 
-    public List<StationResponse> findAllStationResponses() {
+    public List<StationResponse> findAllStations() {
         List<Station> stations = stationDao.findAll();
+        Lines lines = new Lines(lineDao.findAll());
 
         return stations.stream()
-            .map(StationResponse::of)
+            .map(station -> StationResponse.of(
+                station,
+                SimpleLineResponse.listOf(lines.getLineContainStation(station))
+            ))
             .collect(Collectors.toList());
     }
 
