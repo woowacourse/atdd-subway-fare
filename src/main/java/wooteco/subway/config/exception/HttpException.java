@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 
 public class HttpException extends RuntimeException {
 
-    public static final String ERROR_MESSAGE = "오류가 발생했습니다";
+    private static final String ERROR_MESSAGE = "오류가 발생했습니다";
 
     private final HttpStatus status;
 
