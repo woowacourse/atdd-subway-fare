@@ -1,6 +1,8 @@
 package wooteco.subway.line.application;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import wooteco.subway.config.exception.NotFoundException;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
@@ -61,14 +63,22 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        return lineDao.findById(id);
+        try {
+            return lineDao.findById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new NotFoundException("존재하지 않는 노선입니다.");
+        }
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor(), lineUpdateRequest.getExtraFare()));
+        findLineById(id);
+        Line newLineForUpdate = new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor(), lineUpdateRequest.getExtraFare());
+        lineDao.update(newLineForUpdate);
     }
 
     public void deleteLineById(Long id) {
+        findLineById(id);
+        sectionDao.deleteByLineId(id);
         lineDao.deleteById(id);
     }
 

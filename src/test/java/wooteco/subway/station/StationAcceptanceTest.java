@@ -26,6 +26,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     private static final String A역 = "A역";
     private static final String B역 = "B역";
     private static final String C역 = "C역";
+    private static final long INVALID_ID = Long.MAX_VALUE;
 
     @DisplayName("지하철역을 생성한다.")
     @Test
@@ -93,7 +94,18 @@ public class StationAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철역_제거_요청(stationA);
 
         // then
-        지하철역_삭제_실패(response);
+        지하철역_삭제_실패_400(response);
+    }
+
+    @DisplayName("삭제 실패: 존재하지 않은 역을 삭제 시도")
+    @Test
+    void deleteStation3() {
+        // when
+        StationResponse invalidStation = new StationResponse(INVALID_ID, "Z역");
+        ExtractableResponse<Response> response = 지하철역_제거_요청(invalidStation);
+
+        // then
+        지하철역_삭제_실패_404(response);
     }
 
     public static StationResponse 지하철역_등록되어_있음(String name) {
@@ -145,8 +157,12 @@ public class StationAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    public static void 지하철역_삭제_실패(ExtractableResponse<Response> response) {
+    public static void 지하철역_삭제_실패_400(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    public static void 지하철역_삭제_실패_404(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
     public static void 지하철역_목록_포함됨(ExtractableResponse<Response> response, List<StationResponse> createdResponses) {
