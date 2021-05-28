@@ -22,10 +22,10 @@ import wooteco.subway.station.domain.Station;
 public class PathService {
     private static final int DEFAULT_FARE = 1250;
 
-    private LineService lineService;
-    private StationService stationService;
-    private PathFinder pathFinder;
-    private LineExtraFareCalculator lineExtraFareCalculator;
+    private final LineService lineService;
+    private final StationService stationService;
+    private final PathFinder pathFinder;
+    private final LineExtraFareCalculator lineExtraFareCalculator;
 
     public PathService(LineService lineService, StationService stationService, PathFinder pathFinder) {
         this.lineService = lineService;
