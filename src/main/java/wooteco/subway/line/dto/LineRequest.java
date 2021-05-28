@@ -4,7 +4,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 public class LineRequest {
-    @NotBlank
+    @NotBlank(message = "잘못된 노선 이름입니다.")
     @Size(min = 2, max = 20, message = "잘못된 노선 이름입니다.")
     private String name;
     @NotBlank

@@ -10,6 +10,7 @@ import wooteco.subway.exception.addition.CannotAddException;
 import wooteco.subway.exception.auth.AuthorizationException;
 import wooteco.subway.exception.deletion.CannotDeleteException;
 import wooteco.subway.exception.duplication.DuplicatedException;
+import wooteco.subway.exception.line.InvalidDistanceException;
 import wooteco.subway.exception.notfound.NotFoundException;
 import wooteco.subway.exception.path.InvalidPathException;
 
@@ -24,12 +25,13 @@ public class ExceptionAdvice {
         String message = methodArgumentNotValidException.getFieldErrors()
                 .stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .distinct()
                 .collect(Collectors.joining(System.lineSeparator()));
         return ResponseEntity.badRequest()
                 .body(message);
     }
 
-    @ExceptionHandler({CannotAddException.class, CannotDeleteException.class, DuplicatedException.class, InvalidPathException.class})
+    @ExceptionHandler({CannotAddException.class, CannotDeleteException.class, DuplicatedException.class, InvalidPathException.class, InvalidDistanceException.class})
     public ResponseEntity<String> handleBadRequest(RuntimeException runtimeException) {
         return ResponseEntity.badRequest()
                 .body(runtimeException.getMessage());

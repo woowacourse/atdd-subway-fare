@@ -29,7 +29,9 @@ public class MemberService {
 
     private void validateEmailDuplication(String email) {
         memberDao.findByEmail(email)
-                .ifPresent(member -> { throw new EmailDuplicatedException(); });
+                .ifPresent(member -> {
+                    throw new EmailDuplicatedException();
+                });
     }
 
     public MemberResponse findMember(LoginMember loginMember) {
@@ -45,7 +47,12 @@ public class MemberService {
     @Transactional
     public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
         Member member = findMemberByEmail(loginMember.getEmail());
-        Member newMember = new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge());
+        String currentEmail = member.getEmail();
+        String newEmail = memberRequest.getEmail();
+        if (!currentEmail.equals(newEmail)) {
+            validateEmailDuplication(newEmail);
+        }
+        Member newMember = new Member(member.getId(), newEmail, memberRequest.getPassword(), memberRequest.getAge());
         memberDao.update(newMember);
     }
 
