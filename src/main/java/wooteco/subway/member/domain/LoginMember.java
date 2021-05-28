@@ -1,7 +1,7 @@
 package wooteco.subway.member.domain;
 
 public class LoginMember {
-    public static final Member GUEST = new Member(0L, "guest@email.com", 20);
+    private static final LoginMember GUEST = new LoginMember(0L, "guest@email.com", 20);
 
     private Long id;
     private String email;
@@ -14,6 +14,10 @@ public class LoginMember {
         this.id = id;
         this.email = email;
         this.age = age;
+    }
+
+    public static LoginMember guest() {
+        return GUEST;
     }
 
     public Long getId() {
