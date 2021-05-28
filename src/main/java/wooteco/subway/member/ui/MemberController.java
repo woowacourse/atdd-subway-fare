@@ -9,6 +9,7 @@ import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
+import wooteco.subway.member.exception.MemberRelatedException;
 
 import java.net.URI;
 
@@ -51,8 +52,7 @@ public class MemberController {
 
     @PostMapping("/members/email-check")
     public ResponseEntity emailCheck(@RequestBody MemberRequest memberRequest) {
-        String email = memberRequest.getEmail();
-        memberService.checkEmail(email);
+        memberService.checkEmail(memberRequest.getEmail());
         return ResponseEntity.ok().build();
     }
 
@@ -62,7 +62,7 @@ public class MemberController {
         }
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
+    @ExceptionHandler(MemberRelatedException.class)
     public ResponseEntity duplicateEmail(Exception e) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
     }

@@ -11,6 +11,7 @@ import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
+import wooteco.subway.member.exception.MemberRelatedException;
 
 @Service
 public class MemberService {
@@ -42,7 +43,7 @@ public class MemberService {
 
     public void checkEmail(String email) {
         if (memberDao.isDuplicateEmail(email)) {
-            throw new IllegalArgumentException("이미 사용된 이메일입니다.");
+            throw new MemberRelatedException("이미 사용된 이메일입니다.");
         }
     }
 
