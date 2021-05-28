@@ -7,6 +7,7 @@ public class Line {
     private String name;
     private String color;
     private Sections sections = new Sections();
+    private int extraFare;
 
     public Line() {
     }
@@ -14,6 +15,12 @@ public class Line {
     public Line(String name, String color) {
         this.name = name;
         this.color = color;
+    }
+
+    public Line(String name, String color, int extraFare) {
+        this.name = name;
+        this.color = color;
+        this.extraFare = extraFare;
     }
 
     public Line(Long id, String name, String color) {
@@ -27,6 +34,21 @@ public class Line {
         this.name = name;
         this.color = color;
         this.sections = sections;
+    }
+
+    public Line(Long id, String name, String color, int extraFare) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
+        this.extraFare = extraFare;
+    }
+
+    public Line(Long id, String name, String color, Sections sections, int extraFare) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
+        this.sections = sections;
+        this.extraFare = extraFare;
     }
 
     public Long getId() {
@@ -47,6 +69,10 @@ public class Line {
 
     public List<Section> getSortedSections() {
         return sections.getSortedSections();
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 
     public void update(Line line) {

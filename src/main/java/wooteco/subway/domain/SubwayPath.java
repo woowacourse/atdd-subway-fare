@@ -26,5 +26,10 @@ public class SubwayPath {
                 .sum();
     }
 
-
+    public int calculateMaxExtraFare() {
+        return sectionEdges.stream()
+                .mapToInt(SectionEdge::getExtraFare)
+                .max()
+                .orElse(0);
+    }
 }
