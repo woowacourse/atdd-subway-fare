@@ -6,4 +6,4 @@ cd atdd-subway-fare/
 ./gradlew clean build
 cd build/libs/
 kill $(lsof -t -i:8080)
-nohup java -jar -Dspring.profiles.active=remote atdd-subway-fare-0.0.1-SNAPSHOT.jar 1> log.txt 2>&1 &
+nohup java -jar -Dspring.profiles.active=remote atdd-subway-fare-0.0.1-SNAPSHOT.jar &
