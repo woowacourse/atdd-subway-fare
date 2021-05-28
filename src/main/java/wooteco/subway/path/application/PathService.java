@@ -2,6 +2,7 @@ package wooteco.subway.path.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.exception.badrequest.InvalidPathException;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.member.domain.LoginMember;
@@ -38,7 +39,7 @@ public class PathService {
             FareTable fareTable = FareTable.of(fare);
             return PathResponseAssembler.assemble(subwayPath, fare.discountByAge(loginMember.getAge()), fareTable);
         } catch (Exception e) {
-            throw new InvalidPathException();
+            throw new IllegalStateException("경로를 조회할 수 없습니다");
         }
     }
 }
