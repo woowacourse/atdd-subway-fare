@@ -29,7 +29,7 @@ public class StationController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<StationResponse>> showStations() {
-        return ResponseEntity.ok().body(stationService.findAllStationResponses());
+        return ResponseEntity.ok().body(stationService.findAllStations());
     }
 
     @PutMapping("/{id}")

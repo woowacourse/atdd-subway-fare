@@ -15,11 +15,11 @@ include::{snippets}/station-create/http-request.adoc[]
 === Response
 include::{snippets}/station-create/http-response.adoc[]
 
-=== 역 조회
+=== 역 조회 (노선 정보 포함)
 === Request
-include::{snippets}/station-find/http-request.adoc[]
+include::{snippets}/station-show/http-request.adoc[]
 === Response
-include::{snippets}/station-find/http-response.adoc[]
+include::{snippets}/station-show/http-response.adoc[]
 
 === 역 수정
 === Request
