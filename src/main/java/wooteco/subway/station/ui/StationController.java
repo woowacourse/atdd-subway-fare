@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
+import wooteco.subway.station.exception.StationRelatedException;
 
 import java.net.URI;
 import java.sql.SQLException;
@@ -41,4 +42,10 @@ public class StationController {
     public ResponseEntity handleSQLException() {
         return ResponseEntity.badRequest().build();
     }
+
+    @ExceptionHandler(StationRelatedException.class)
+    public ResponseEntity sectionExistStation(Exception e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
 }
