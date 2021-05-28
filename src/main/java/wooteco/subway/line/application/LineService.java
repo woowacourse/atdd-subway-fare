@@ -30,8 +30,6 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Line persistLine;
-
         if (lineDao.isExistByName(request.getName())) {
             throw new DuplicateNameException("이미 존재하는 노선입니다.");
         }
@@ -40,7 +38,7 @@ public class LineService {
             throw new DuplicateColorException("이미 존재하는 노선 색깔입니다.");
         }
 
-        persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
+        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);
     }
@@ -79,14 +77,37 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        if (lineDao.isExistByName(lineUpdateRequest.getName())) {
+        if (lineDao.isExistById(id)) {
+            Line originalLine = lineDao.findById(id);
+            validateDuplicate(originalLine, lineUpdateRequest);
+        }
+        lineDao.update(new Line(id, lineUpdateRequest));
+    }
+
+    private void validateDuplicate(Line originalLine, LineRequest lineUpdateRequest) {
+        if (isUpdatedNameDuplicate(originalLine, lineUpdateRequest)) {
             throw new DuplicateNameException("이미 존재하는 노선입니다.");
         }
 
-        if (lineDao.isExistByColor(lineUpdateRequest.getColor())) {
+        if (isUpdatedColorDuplicate(originalLine, lineUpdateRequest)) {
             throw new DuplicateColorException("이미 존재하는 노선 색깔입니다.");
         }
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor(), lineUpdateRequest.getExtraFare()));
+    }
+
+    private boolean isUpdatedNameDuplicate(Line originalLine, LineRequest lineUpdateRequest) {
+        return isNameUpdated(originalLine, lineUpdateRequest) && lineDao.isExistByName(lineUpdateRequest.getName());
+    }
+
+    private boolean isNameUpdated(Line originalLine, LineRequest lineUpdateRequest) {
+        return originalLine.hasDifferentName(lineUpdateRequest);
+    }
+
+    private boolean isUpdatedColorDuplicate(Line originalLine, LineRequest lineUpdateRequest) {
+        return isColorUpdated(originalLine, lineUpdateRequest) && lineDao.isExistByColor(lineUpdateRequest.getColor());
+    }
+
+    private boolean isColorUpdated(Line originalLine, LineRequest lineUpdateRequest) {
+        return originalLine.hasDifferentColor(lineUpdateRequest);
     }
 
     public void deleteLineById(Long id) {

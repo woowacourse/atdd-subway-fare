@@ -1,5 +1,6 @@
 package wooteco.subway.line.domain;
 
+import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
@@ -17,6 +18,13 @@ public class Line {
     public Line(String name, String color) {
         this.name = name;
         this.color = color;
+    }
+
+    public Line(Long id, LineRequest lineUpdateRequest) {
+        this.id = id;
+        this.name = lineUpdateRequest.getName();
+        this.color = lineUpdateRequest.getColor();
+        this.extraFare = lineUpdateRequest.getExtraFare();
     }
 
     public Line(String name, String color, int extraFare) {
@@ -44,6 +52,14 @@ public class Line {
         this.color = color;
         this.extraFare = extraFare;
         this.sections = sections;
+    }
+
+    public boolean hasDifferentName(LineRequest lineUpdateRequest) {
+        return !name.equals(lineUpdateRequest.getName());
+    }
+
+    public boolean hasDifferentColor(LineRequest lineUpdateRequest) {
+        return !color.equals(lineUpdateRequest.getColor());
     }
 
     public Long getId() {
