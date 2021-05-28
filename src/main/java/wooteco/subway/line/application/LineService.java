@@ -32,6 +32,9 @@ public class LineService {
 
     @Transactional
     public LineResponse saveLine(LineRequest request) {
+        if (request.getUpStationId().equals(request.getDownStationId())) {
+            throw new SameUpAndDownStationException();
+        }
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), new Fare(request.getExtraFare())));
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);
@@ -84,6 +87,9 @@ public class LineService {
     @Transactional
     public void addLineStation(Long lineId, SectionRequest request) {
         validateLineExistence(lineId);
+        if (request.getUpStationId().equals(request.getDownStationId())) {
+            throw new SameUpAndDownStationException();
+        }
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
