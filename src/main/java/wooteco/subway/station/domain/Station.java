@@ -18,14 +18,6 @@ public class Station {
         this.name = name;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -37,5 +29,13 @@ public class Station {
     @Override
     public int hashCode() {
         return Objects.hash(id, name);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
     }
 }

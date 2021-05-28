@@ -54,26 +54,6 @@ public class Line {
         this.sections = sections;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public Integer getExtraFare() {
-        return extraFare;
-    }
-
-    public Sections getSections() {
-        return sections;
-    }
-
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
@@ -93,6 +73,26 @@ public class Line {
 
     public void removeSection(Station station) {
         sections.removeStation(station);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public Integer getExtraFare() {
+        return extraFare;
+    }
+
+    public Sections getSections() {
+        return sections;
     }
 
     public List<Station> getStations() {
