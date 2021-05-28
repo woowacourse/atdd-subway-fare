@@ -37,4 +37,20 @@ public class Section {
     public int getDistance() {
         return distance;
     }
+
+    public long getUpStationId() {
+        return upStation.getId();
+    }
+
+    public long getDownStationId() {
+        return downStation.getId();
+    }
+
+    public String getUpStationName() {
+        return upStation.getName();
+    }
+
+    public String getDownStationName() {
+        return downStation.getName();
+    }
 }
