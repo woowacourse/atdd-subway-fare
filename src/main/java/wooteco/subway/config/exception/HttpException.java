@@ -20,4 +20,8 @@ public class HttpException extends RuntimeException {
     public HttpStatus getStatus() {
         return status;
     }
+
+    public ErrorResponse getErrorResponse() {
+        return new ErrorResponse(getMessage());
+    }
 }
