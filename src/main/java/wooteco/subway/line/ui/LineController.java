@@ -44,31 +44,31 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity createLine(@Valid @RequestBody LineRequest lineRequest) {
+    public ResponseEntity<LineResponse> createLine(@Valid @RequestBody LineRequest lineRequest) {
         LineResponse line = lineService.saveLine(lineRequest);
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity updateLine(@PathVariable Long id, @Valid @RequestBody LineUpdateRequest request) {
+    public ResponseEntity<Void> updateLine(@PathVariable Long id, @Valid @RequestBody LineUpdateRequest request) {
         lineService.updateLine(id, request);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteLine(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
         lineService.deleteLineById(id);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{lineId}/sections")
-    public ResponseEntity addLineStation(@PathVariable Long lineId, @Valid @RequestBody SectionRequest sectionRequest) {
+    public ResponseEntity<Void> addLineStation(@PathVariable Long lineId, @Valid @RequestBody SectionRequest sectionRequest) {
         lineService.addLineStation(lineId, sectionRequest);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{lineId}/sections")
-    public ResponseEntity removeLineStation(@PathVariable Long lineId, @RequestParam Long stationId) {
+    public ResponseEntity<Void> removeLineStation(@PathVariable Long lineId, @RequestParam Long stationId) {
         lineService.removeLineStation(lineId, stationId);
         return ResponseEntity.ok().build();
     }

@@ -35,9 +35,9 @@ public class MemberController {
     }
 
     @PostMapping
-    public ResponseEntity createMember(@Valid @RequestBody MemberRequest request) {
-        MemberResponse member = memberService.createMember(request);
-        return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
+    public ResponseEntity<MemberResponse> createMember(@Valid @RequestBody MemberRequest request) {
+        MemberResponse memberResponse = memberService.createMember(request);
+        return ResponseEntity.created(URI.create("/members/" + memberResponse.getId())).body(memberResponse);
     }
 
     @PutMapping("/me")
