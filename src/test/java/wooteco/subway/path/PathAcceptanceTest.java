@@ -41,7 +41,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 남부터미널역;
 
     /**
-     * 교대역    --- *2호선* ---   강남역 |                        | *3호선*                   *신분당선* |                        | 남부터미널역  --- *3호선* ---   양재
+     * 교대역    --- *2호선* ---   강남역
+     * |                           |
+     * *3호선*                   *신분당선*
+     * |                           |
+     * 남부터미널역  --- *3호선* --- 양재
      */
     @BeforeEach
     public void setUp() {
@@ -61,24 +65,24 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findPathByDistanceWithLineExtraFare() {
         //when
-        ExtractableResponse<Response> response = 거리_경로_조회_요청(3L, 2L);
+        ExtractableResponse<Response> response = 거리_경로_조회_요청_비로그인_상태(3L, 2L, "find-path");
 
         //then
         적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
-        총_거리가_응답됨(response, 5);
-        총_요금이_응답됨(response, 1250 + 300);
+        총_거리가_정확히_응답됨(response, 5);
+        총_요금이_정확히_응답됨(response, 1250 + 300);
     }
 
     @DisplayName("두 역의 최단 거리 경로와 노선 거리 추가요금에 따른 총 요금을 조회한다.")
     @Test
     void findPathByDistanceWithLineExtraFareByDistance() {
         //when
-        ExtractableResponse<Response> response = 거리_경로_조회_요청(1L, 4L);
+        ExtractableResponse<Response> response = 거리_경로_조회_요청_비로그인_상태(1L, 4L, "find-path");
 
         //then
         적절한_경로_응답됨(response, Lists.newArrayList(강남역, 양재역, 남부터미널역));
-        총_거리가_응답됨(response, 12);
-        총_요금이_응답됨(response, 1250 + 100 + 300);
+        총_거리가_정확히_응답됨(response, 12);
+        총_요금이_정확히_응답됨(response, 1250 + 100 + 300);
     }
 
     @DisplayName("로그인 상태에서 경로 조회 시, 로그인 되어있는 사용자의 나이에 따라 요금 할인을 적용한다.")
@@ -92,25 +96,25 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //when
         회원_가입_요청(email, "PASSWORD", age, "sign-up");
         TokenResponse tokenResponse = 로그인되어_있음(email, "PASSWORD");
-        ExtractableResponse<Response> response = 거리_경로_조회_요청_로그인(1L, 4L, tokenResponse.getAccessToken());
+        ExtractableResponse<Response> response = 거리_경로_조회_요청_로그인_상태(1L, 4L, tokenResponse.getAccessToken());
 
         //then
         적절한_경로_응답됨(response, Lists.newArrayList(강남역, 양재역, 남부터미널역));
-        총_거리가_응답됨(response, 12);
-        총_요금이_응답됨(response, expectedFare);
+        총_거리가_정확히_응답됨(response, 12);
+        총_요금이_정확히_응답됨(response, expectedFare);
     }
 
-    public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
+    public static ExtractableResponse<Response> 거리_경로_조회_요청_비로그인_상태(Long source, Long target, String docsIdentifier) {
         return RestAssured
             .given(spec).log().all()
-            .filter(document("find-path", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())))
+            .filter(document(docsIdentifier, preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())))
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .when().get("/paths?source={sourceId}&target={targetId}", source, target)
             .then().log().all()
             .extract();
     }
 
-    public static ExtractableResponse<Response> 거리_경로_조회_요청_로그인(long source, long target, String accessToken) {
+    public static ExtractableResponse<Response> 거리_경로_조회_요청_로그인_상태(Long source, Long target, String accessToken) {
         return RestAssured
             .given().log().all()
             .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -134,13 +138,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(stationIds).containsExactlyElementsOf(expectedPathIds);
     }
 
-    public static void 총_거리가_응답됨(ExtractableResponse<Response> response, int totalDistance) {
+    public static void 총_거리가_정확히_응답됨(ExtractableResponse<Response> response, int expectedDistance) {
         PathResponse pathResponse = response.as(PathResponse.class);
-        assertThat(pathResponse.getDistance()).isEqualTo(totalDistance);
+        int actualDistance = pathResponse.getDistance();
+        assertThat(actualDistance).isEqualTo(expectedDistance);
     }
 
-    private void 총_요금이_응답됨(ExtractableResponse<Response> response, int expectedTotalFare) {
+    private void 총_요금이_정확히_응답됨(ExtractableResponse<Response> response, int expectedTotalFare) {
         PathResponse pathResponse = response.as(PathResponse.class);
-        assertThat(pathResponse.getTotalFare()).isEqualTo(expectedTotalFare);
+        int actualTotalFare = pathResponse.getTotalFare();
+        assertThat(actualTotalFare).isEqualTo(expectedTotalFare);
     }
 }
