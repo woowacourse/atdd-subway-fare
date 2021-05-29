@@ -13,7 +13,8 @@ import wooteco.subway.path.domain.fare.distance.UnderTenStrategy;
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.line.LineFixture.이호선;
 
-class FareTest {
+@DisplayName("요금 도메인 테스트")
+public class FareTest {
 
     @DisplayName("요금 계산 - ~ 10km")
     @Test

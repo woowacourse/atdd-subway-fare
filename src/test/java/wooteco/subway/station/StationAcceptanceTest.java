@@ -32,6 +32,92 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
     private TokenResponse tokenResponse;
 
+    @BeforeEach
+    void init() {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
+    }
+
+    @DisplayName("지하철역을 생성한다.")
+    @Test
+    void createStation() {
+        // when
+        ExtractableResponse<Response> response = 지하철역_생성_요청(강남역, tokenResponse);
+
+        // then
+        지하철역_생성됨(response);
+    }
+
+    @DisplayName("기존에 존재하는 지하철역 이름으로 지하철역을 생성하면, 400 에러를 받는다.")
+    @Test
+    void createStationWithDuplicateName() {
+        //given
+        지하철역_등록되어_있음(강남역, tokenResponse);
+
+        // when
+        ExtractableResponse<Response> response = 지하철역_생성_요청(강남역, tokenResponse);
+
+        // then
+        지하철역_생성_실패됨(response);
+    }
+
+    @DisplayName("지하철역을 조회한다.")
+    @Test
+    void getStations() {
+        // given
+        StationResponse stationResponse1 = 지하철역_등록되어_있음(강남역, tokenResponse);
+        StationResponse stationResponse2 = 지하철역_등록되어_있음(역삼역, tokenResponse);
+
+        // when
+        ExtractableResponse<Response> response = 지하철역_목록_조회_요청();
+
+        // then
+        지하철역_목록_응답됨(response);
+        지하철역_목록_포함됨(response, Arrays.asList(stationResponse1, stationResponse2));
+    }
+
+    @DisplayName("지하철역을 제거한다.")
+    @Test
+    void deleteStation() {
+        // given
+        StationResponse stationResponse = 지하철역_등록되어_있음(강남역, tokenResponse);
+
+        // when
+        ExtractableResponse<Response> response = 지하철역_제거_요청(stationResponse, tokenResponse);
+
+        // then
+        지하철역_삭제됨(response);
+    }
+
+    @DisplayName("노선에 등록된 지하철역을 삭제하려고 하면, 400 에러를 받는다.")
+    @Test
+    void deleteStationFail() {
+        // given
+        StationResponse upStation = 지하철역_등록되어_있음(강남역, tokenResponse);
+        StationResponse downStation = 지하철역_등록되어_있음(역삼역, tokenResponse);
+
+        LineRequest lineRequest1 = new LineRequest("신분당선", "bg-red-600", upStation.getId(), downStation.getId(), 10);
+        지하철_노선_생성_요청(lineRequest1, tokenResponse);
+
+        // when
+        ExtractableResponse<Response> response = 지하철역_제거_요청(upStation, tokenResponse);
+
+        // then
+        지하철역_삭제_실패됨(response);
+    }
+
+    @DisplayName("지하철역 이름에 공백이 있거나 길이가 2미만, 20 초과인경우, 400 에러를 받는다.")
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"에", "우아한테크코스검프에어바다포츈우기화이팅짱"})
+    void createStationFail(String name) {
+        //when
+        ExtractableResponse<Response> response = 지하철역_생성_요청(name, tokenResponse);
+
+        // then
+        지하철역_생성_실패됨(response);
+    }
+
     public static StationResponse 지하철역_등록되어_있음(String name, TokenResponse tokenResponse) {
         return 지하철역_생성_요청(name, tokenResponse).as(StationResponse.class);
     }
@@ -97,91 +183,5 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 .collect(Collectors.toList());
 
         assertThat(resultLineIds).containsAll(expectedLineIds);
-    }
-
-    @BeforeEach
-    void init() {
-        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
-        tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
-    }
-
-    @DisplayName("지하철역을 생성한다.")
-    @Test
-    void createStation() {
-        // when
-        ExtractableResponse<Response> response = 지하철역_생성_요청(강남역, tokenResponse);
-
-        // then
-        지하철역_생성됨(response);
-    }
-
-    @DisplayName("기존에 존재하는 지하철역 이름으로 지하철역을 생성한다.")
-    @Test
-    void createStationWithDuplicateName() {
-        //given
-        지하철역_등록되어_있음(강남역, tokenResponse);
-
-        // when
-        ExtractableResponse<Response> response = 지하철역_생성_요청(강남역, tokenResponse);
-
-        // then
-        지하철역_생성_실패됨(response);
-    }
-
-    @DisplayName("지하철역을 조회한다.")
-    @Test
-    void getStations() {
-        // given
-        StationResponse stationResponse1 = 지하철역_등록되어_있음(강남역, tokenResponse);
-        StationResponse stationResponse2 = 지하철역_등록되어_있음(역삼역, tokenResponse);
-
-        // when
-        ExtractableResponse<Response> response = 지하철역_목록_조회_요청();
-
-        // then
-        지하철역_목록_응답됨(response);
-        지하철역_목록_포함됨(response, Arrays.asList(stationResponse1, stationResponse2));
-    }
-
-    @DisplayName("지하철역을 제거한다.")
-    @Test
-    void deleteStation() {
-        // given
-        StationResponse stationResponse = 지하철역_등록되어_있음(강남역, tokenResponse);
-
-        // when
-        ExtractableResponse<Response> response = 지하철역_제거_요청(stationResponse, tokenResponse);
-
-        // then
-        지하철역_삭제됨(response);
-    }
-
-    @DisplayName("노선에 등록된 지하철역을 삭제하려고 하면 실패한다.")
-    @Test
-    void deleteStationFail() {
-        // given
-        StationResponse upStation = 지하철역_등록되어_있음(강남역, tokenResponse);
-        StationResponse downStation = 지하철역_등록되어_있음(역삼역, tokenResponse);
-
-        LineRequest lineRequest1 = new LineRequest("신분당선", "bg-red-600", upStation.getId(), downStation.getId(), 10);
-        지하철_노선_생성_요청(lineRequest1, tokenResponse);
-
-        // when
-        ExtractableResponse<Response> response = 지하철역_제거_요청(upStation, tokenResponse);
-
-        // then
-        지하철역_삭제_실패됨(response);
-    }
-
-    @DisplayName("지하철역 이름에 공백이 있거나 길이가 2미만, 20 초과인경우, 400 에러를 받는다.")
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {"에", "우아한테크코스검프에어바다포츈우기화이팅짱"})
-    void createStationFail(String name) {
-        //when
-        ExtractableResponse<Response> response = 지하철역_생성_요청(name, tokenResponse);
-
-        // then
-        지하철역_생성_실패됨(response);
     }
 }

@@ -1,4 +1,4 @@
-package wooteco.subway.line;
+package wooteco.subway.line.domain;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -8,6 +8,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.line.LineFixture.이호선;
 import static wooteco.subway.station.StationFixture.*;
 
+@DisplayName("지하철 노선 도메인 테스트")
 public class LineTest {
 
     @BeforeEach

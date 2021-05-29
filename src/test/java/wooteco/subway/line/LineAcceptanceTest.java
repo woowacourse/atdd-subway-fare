@@ -57,7 +57,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_생성됨(response);
     }
 
-    @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
+    @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성하면, 400 에러를 받는다.")
     @Test
     void createLineWithDuplicateName() {
         // given
@@ -71,7 +71,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_생성_실패됨(response);
     }
 
-    @DisplayName("기존에 존재하는 지하철 노선 색깔로 지하철 노선을 생성한다.")
+    @DisplayName("기존에 존재하는 지하철 노선 색깔로 지하철 노선을 생성하면, 400 에러를 받는다.")
     @Test
     void createLineWithDuplicateColor() {
         // given

@@ -1,13 +1,13 @@
-package wooteco.subway.line;
+package wooteco.subway.line.domain;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.line.domain.Line;
 import wooteco.subway.station.domain.Station;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("지하철 구간 도메인 테스트")
 public class SectionsTest {
     Station 양재역 = new Station(2L, "양재역");;
     Station 교대역 = new Station(3L, "교대역");;

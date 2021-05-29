@@ -15,6 +15,7 @@ import wooteco.subway.member.dto.MemberResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
 
+@DisplayName("회원 관련 기능")
 public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
@@ -41,7 +42,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_삭제됨(deleteResponse);
     }
 
-    @DisplayName("중복된 이메일로 가입하는 경우")
+    @DisplayName("중복된 이메일로 가입하는 경우, 400 에러를 받는다.")
     @Test
     void joinDuplicatedEmail() {
         // given
