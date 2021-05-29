@@ -32,12 +32,12 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
-    public LoginMember findMemberByToken(String credentials) {
-        if (!jwtTokenProvider.validateToken(credentials)) {
+    public LoginMember findMemberByToken(String token) {
+        if (!jwtTokenProvider.validateToken(token)) {
             return new LoginMember();
         }
 
-        String email = jwtTokenProvider.getPayload(credentials);
+        String email = jwtTokenProvider.getPayload(token);
         try {
             Member member = memberDao.findByEmail(email);
             return new LoginMember(member.getId(), member.getEmail(), member.getAge());
