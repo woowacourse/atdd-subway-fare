@@ -31,23 +31,24 @@ public class AuthService {
     }
 
     private void validateRightPassword(TokenRequest request) {
-        try {
-            Member member = memberDao.findByEmail(request.getEmail());
-            member.checkPassword(request.getPassword());
-        } catch (Exception e) {
-            throw new AuthorizationException();
-        }
+        validateThatEmailExists(request.getEmail());
+
+        Member member = memberDao.findByEmail(request.getEmail());
+        member.checkPassword(request.getPassword());
     }
 
     public LoginMember findMemberByToken(String credentials) {
-        try {
-            jwtTokenProvider.validateToken(credentials);
+        jwtTokenProvider.validateToken(credentials);
+        String email = jwtTokenProvider.getPayload(credentials);
 
-            String email = jwtTokenProvider.getPayload(credentials);
-            Member member = memberDao.findByEmail(email);
+        validateThatEmailExists(email);
+        Member member = memberDao.findByEmail(email);
 
-            return new LoginMember(member.getId(), member.getEmail(), member.getAge());
-        } catch (Exception e) {
+        return new LoginMember(member.getId(), member.getEmail(), member.getAge());
+    }
+
+    private void validateThatEmailExists(String email) {
+        if (memberDao.existsByEmail(email)) {
             throw new AuthorizationException();
         }
     }
