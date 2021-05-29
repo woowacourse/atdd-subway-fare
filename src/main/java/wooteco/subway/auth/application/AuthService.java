@@ -1,5 +1,6 @@
 package wooteco.subway.auth.application;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.auth.dto.TokenRequest;
@@ -10,14 +11,10 @@ import wooteco.subway.member.domain.Member;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class AuthService {
-    private MemberDao memberDao;
-    private JwtTokenProvider jwtTokenProvider;
-
-    public AuthService(MemberDao memberDao, JwtTokenProvider jwtTokenProvider) {
-        this.memberDao = memberDao;
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
+    private final MemberDao memberDao;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public TokenResponse login(TokenRequest request) {
         Long id = getIdWhenValidLogin(request);
