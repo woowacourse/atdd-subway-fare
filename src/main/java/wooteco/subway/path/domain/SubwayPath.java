@@ -1,10 +1,10 @@
 package wooteco.subway.path.domain;
 
+import java.util.List;
 import wooteco.subway.station.domain.Station;
 
-import java.util.List;
-
 public class SubwayPath {
+
     private final List<SectionEdge> sectionEdges;
     private final List<Station> stations;
 
@@ -21,7 +21,7 @@ public class SubwayPath {
         return sectionEdges.stream().mapToInt(it -> it.getSection().getDistance()).sum();
     }
 
-    public int subwayFare(int age){
+    public int subwayFare(int age) {
         FareCalculator fareCalculator = new FareCalculator(sectionEdges, distance(), age);
         return fareCalculator.fare();
     }
