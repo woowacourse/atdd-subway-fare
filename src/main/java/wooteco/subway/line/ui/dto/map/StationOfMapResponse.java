@@ -27,15 +27,6 @@ public class StationOfMapResponse {
         this.transferLines = transferLines;
     }
 
-    public StationOfMapResponse(Station station, int distance, List<Line> lines) {
-        this.id = station.getId();
-        this.name = station.getName();
-        this.distance = distance;
-        this.transferLines = lines.stream()
-                .map(TransferLineResponse::new)
-                .collect(toList());
-    }
-
     public Long getId() {
         return id;
     }

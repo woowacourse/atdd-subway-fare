@@ -11,12 +11,6 @@ public class SectionResponse {
     private final StationOfSectionResponse downStation;
     private final int distance;
 
-    public SectionResponse(Section section) {
-        this.upStation = new StationOfSectionResponse(section.getUpStation());
-        this.downStation = new StationOfSectionResponse(section.getDownStation());
-        this.distance = section.getDistance();
-    }
-
     @ConstructorProperties({"upStation", "downStation", "distance"})
     public SectionResponse(StationOfSectionResponse upStation,
         StationOfSectionResponse downStation,
@@ -24,6 +18,12 @@ public class SectionResponse {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    public SectionResponse(Section section) {
+        this.upStation = new StationOfSectionResponse(section.getUpStation());
+        this.downStation = new StationOfSectionResponse(section.getDownStation());
+        this.distance = section.getDistance();
     }
 
     public StationOfSectionResponse getUpStation() {
