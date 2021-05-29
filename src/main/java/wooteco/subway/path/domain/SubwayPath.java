@@ -24,36 +24,8 @@ public class SubwayPath {
         this.fareStrategy = fareStrategy;
     }
 
-    public List<SectionEdge> getSectionEdges() {
-        return sectionEdges;
-    }
-
-    public List<Station> getStations() {
-        return stations;
-    }
-
-    public int calculateDistance() {
-        return sectionEdges.stream().mapToInt(it -> it.getSection().getDistance()).sum();
-    }
-
     public int calculateFare(int distance) {
-        int maxExtraFare = findExtraFare();
-
-        if (distance <= DEFAULT_DISTANCE) {
-            return fareStrategy.discount(DEFAULT_FARE + maxExtraFare);
-        }
-
-        if (distance <= OVER_LIMIT_DISTANCE) {
-            int overFare = calculateAdditionalFareOver10km(distance - DEFAULT_DISTANCE);
-            return fareStrategy.discount(DEFAULT_FARE + overFare + maxExtraFare);
-        }
-
-        int additionalFareOver10km = calculateAdditionalFareOver10km(OVER_LIMIT_DISTANCE - DEFAULT_DISTANCE);
-        int additionalFareOver50km = calculateAdditionalFareOver50km(distance - OVER_LIMIT_DISTANCE);
-
-        return fareStrategy.discount(DEFAULT_FARE + maxExtraFare
-                + additionalFareOver10km
-                + additionalFareOver50km);
+        return fareStrategy.discount(calculateDistance(), findExtraFare());
     }
 
     private int findExtraFare() {
@@ -63,11 +35,16 @@ public class SubwayPath {
                 .orElse(0);
     }
 
-    private int calculateAdditionalFareOver10km(int distance) {
-        return (int) ((Math.ceil((distance - 1) / 5) + 1) * 100);
+    public int calculateDistance() {
+        return sectionEdges.stream().mapToInt(it -> it.getSection().getDistance()).sum();
     }
 
-    private int calculateAdditionalFareOver50km(int distance) {
-        return (int) ((Math.ceil((distance - 1) / 8) + 1) * 100);
+    public List<SectionEdge> getSectionEdges() {
+        return sectionEdges;
     }
+
+    public List<Station> getStations() {
+        return stations;
+    }
+
 }
