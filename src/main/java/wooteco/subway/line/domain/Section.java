@@ -1,5 +1,6 @@
 package wooteco.subway.line.domain;
 
+import wooteco.subway.line.application.SameUpAndDownStationException;
 import wooteco.subway.path.domain.Distance;
 import wooteco.subway.station.domain.Station;
 
@@ -12,14 +13,15 @@ public class Section {
     public Section() {
     }
 
-    public Section(Long id, Station upStation, Station downStation, Distance distance) {
-        this.id = id;
-        this.upStation = upStation;
-        this.downStation = downStation;
-        this.distance = distance;
+    public Section(Station upStation, Station downStation, Distance distance) {
+        this(null, upStation, downStation, distance);
     }
 
-    public Section(Station upStation, Station downStation, Distance distance) {
+    public Section(Long id, Station upStation, Station downStation, Distance distance) {
+        if (upStation.equals(downStation)) {
+            throw new SameUpAndDownStationException();
+        }
+        this.id = id;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;

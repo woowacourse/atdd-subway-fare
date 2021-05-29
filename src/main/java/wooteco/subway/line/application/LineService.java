@@ -32,10 +32,11 @@ public class LineService {
 
     @Transactional
     public LineResponse saveLine(LineRequest request) {
+        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), new Fare(request.getExtraFare())));
+
         if (request.getUpStationId().equals(request.getDownStationId())) {
             throw new SameUpAndDownStationException();
         }
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), new Fare(request.getExtraFare())));
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);
     }
@@ -74,7 +75,6 @@ public class LineService {
     @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         validateLineExistence(id);
-        //TODO: 중복 이름 검사?
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
