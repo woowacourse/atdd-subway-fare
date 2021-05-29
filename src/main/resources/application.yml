@@ -24,9 +24,9 @@ spring:
     url: jdbc:h2:mem:testdb
     username: sa
     password:
-    h2:
-      console:
-        enabled: true
+  h2:
+    console:
+      enabled: true
 
 ---
 # local 프로파일
@@ -35,10 +35,13 @@ spring:
     activate:
       on-profile: local
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:13306/subway_local?useSSL=false&serverTimezone=UTC&characterEncoding=utf8
-    username: root
-    password: root
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
 
 ---
 # prod 프로파일
