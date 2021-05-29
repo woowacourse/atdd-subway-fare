@@ -6,10 +6,8 @@ import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
-import wooteco.subway.member.domain.AuthorizationMember;
-import wooteco.subway.member.domain.GuestMember;
-import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
+import wooteco.subway.member.domain.LoginMember;
 
 @Service
 @Transactional(readOnly = true)
@@ -24,8 +22,8 @@ public class AuthService {
 
     public TokenResponse login(TokenRequest request) {
         try {
-            AuthorizationMember authorizationMember = memberDao.findByEmail(request.getEmail());
-            authorizationMember.checkPassword(request.getPassword());
+            Member member = memberDao.findByEmail(request.getEmail());
+            member.checkPassword(request.getPassword());
         } catch (Exception e) {
             throw new AuthorizationException();
         }
@@ -33,17 +31,17 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
-    public Member findMemberByToken(String credentials) {
+    public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return new GuestMember();
+            return new LoginMember();
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
         try {
-            AuthorizationMember authorizationMember = memberDao.findByEmail(email);
-            return new LoginMember(authorizationMember.getId(), authorizationMember.getEmail(), authorizationMember.getAge());
+            Member member = memberDao.findByEmail(email);
+            return new LoginMember(member.getId(), member.getEmail(), member.getAge());
         } catch (Exception e) {
-            return new GuestMember();
+            return new LoginMember();
         }
     }
 

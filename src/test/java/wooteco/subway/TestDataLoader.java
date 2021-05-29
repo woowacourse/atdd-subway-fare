@@ -2,7 +2,7 @@ package wooteco.subway;
 
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
-import wooteco.subway.member.domain.Member;
+import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.station.domain.Station;
 
 public class TestDataLoader {
@@ -20,10 +20,10 @@ public class TestDataLoader {
     Line 이호선;
     Line 사호선;
 
-    Member 청소년;
-    Member 어린이;
-    Member 일반;
-    Member 게스트;
+    LoginMember 청소년;
+    LoginMember 어린이;
+    LoginMember 일반;
+    LoginMember 게스트;
 
     public TestDataLoader() {
         강남역 = new Station(1L, "강남역");

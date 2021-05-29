@@ -2,7 +2,9 @@ package wooteco.subway.member.domain;
 
 import wooteco.subway.path.domain.Fare;
 
-public class LoginMember implements Member {
+import java.util.Objects;
+
+public class LoginMember {
     private Long id;
     private String email;
     private Integer age;
@@ -16,23 +18,22 @@ public class LoginMember implements Member {
         this.age = age;
     }
 
-    @Override
     public Long getId() {
         return id;
     }
 
-    @Override
     public String getEmail() {
         return email;
     }
 
-    @Override
     public Integer getAge() {
         return age;
     }
 
-    @Override
     public Fare calculateFare(Fare fare) {
+        if (Objects.isNull(age)){
+            return AgeFarePolicy.DEFAULT.calculateFare(fare);
+        }
         AgeFarePolicy myAgePolicy = AgeFarePolicy.of(this.age);
         return myAgePolicy.calculateFare(fare);
     }

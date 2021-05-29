@@ -21,8 +21,8 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
 import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_조회_요청;
-import static wooteco.subway.member.AuthorizationMemberAcceptanceTest.회원_생성됨;
-import static wooteco.subway.member.AuthorizationMemberAcceptanceTest.회원_생성을_요청;
+import static wooteco.subway.member.AuthorizationLoginMemberAcceptanceTest.회원_생성됨;
+import static wooteco.subway.member.AuthorizationLoginMemberAcceptanceTest.회원_생성을_요청;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음_외부토큰;
 
 @DisplayName("지하철 구간 관련 기능")

@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = MemberController.class)
 @ActiveProfiles("test")
 @AutoConfigureRestDocs
-class AuthorizationMemberControllerTest {
+class AuthorizationLoginMemberControllerTest {
 
     @Autowired
     private MockMvc mockMvc;

@@ -1,6 +1,6 @@
 package wooteco.subway.path.domain;
 
-import wooteco.subway.member.domain.Member;
+import wooteco.subway.member.domain.LoginMember;
 
 import java.util.Objects;
 
@@ -28,8 +28,8 @@ public class Fare {
         return distanceFarePolicy.calculateFare(distance);
     }
 
-    public Fare applyMemberDiscount(Member member) {
-        return member.calculateFare(this);
+    public Fare applyMemberDiscount(LoginMember loginMember) {
+        return loginMember.calculateFare(this);
     }
 
     public int getFare() {

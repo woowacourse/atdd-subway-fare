@@ -19,8 +19,8 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
-import static wooteco.subway.member.AuthorizationMemberAcceptanceTest.회원_생성됨;
-import static wooteco.subway.member.AuthorizationMemberAcceptanceTest.회원_생성을_요청;
+import static wooteco.subway.member.AuthorizationLoginMemberAcceptanceTest.회원_생성됨;
+import static wooteco.subway.member.AuthorizationLoginMemberAcceptanceTest.회원_생성을_요청;
 
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {

@@ -1,6 +1,6 @@
 package wooteco.subway.member.dto;
 
-import wooteco.subway.member.domain.AuthorizationMember;
+import wooteco.subway.member.domain.Member;
 
 public class MemberRequest {
     private String email;
@@ -28,7 +28,7 @@ public class MemberRequest {
         return age;
     }
 
-    public AuthorizationMember toMember() {
-        return new AuthorizationMember(email, password, age);
+    public Member toMember() {
+        return new Member(email, password, age);
     }
 }
