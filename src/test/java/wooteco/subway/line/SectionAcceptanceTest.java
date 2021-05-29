@@ -207,6 +207,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(loginSetUp().getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(sectionRequest)
                 .when().post("/lines/{lineId}/sections", line.getId())
@@ -217,6 +218,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철_구간_생성_요청(LineResponse line, SectionRequest sectionRequest) {
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(loginSetUp().getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(sectionRequest)
                 .when().post("/lines/{lineId}/sections", line.getId())
@@ -240,6 +242,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(LineResponse line, StationResponse station) {
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(loginSetUp().getAccessToken())
                 .when().delete("/lines/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
                 .then().log().all()
                 .extract();

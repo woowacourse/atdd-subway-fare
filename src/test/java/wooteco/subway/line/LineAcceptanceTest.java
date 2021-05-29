@@ -104,7 +104,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_생성_실패됨(response3);
         지하철_노선_생성_실패됨(response4);
     }
-    
+
     @DisplayName("지하철 노선 목록을 조회한다.")
     @Test
     void getLines() {
@@ -263,6 +263,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest params) {
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(loginSetUp().getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().post("/lines")
@@ -292,6 +293,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(loginSetUp().getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().put("/lines/" + response.getId())
@@ -302,6 +304,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철_노선_제거_요청(LineResponse lineResponse) {
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(loginSetUp().getAccessToken())
                 .when().delete("/lines/" + lineResponse.getId())
                 .then().log().all()
                 .extract();
