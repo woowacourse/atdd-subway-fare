@@ -10,7 +10,6 @@ import wooteco.subway.station.dto.StationWithTransferResponse;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.sql.SQLException;
 import java.util.List;
 
 @RestController
