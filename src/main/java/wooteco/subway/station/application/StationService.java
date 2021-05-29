@@ -48,7 +48,7 @@ public class StationService {
     }
 
     private void validateThatStationExists(Long id) {
-        if (stationDao.existsById(id)) {
+        if (!stationDao.existsById(id)) {
             throw new NotFoundException("존재하지 않는 역입니다.");
         }
     }

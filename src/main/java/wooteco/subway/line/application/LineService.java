@@ -113,7 +113,7 @@ public class LineService {
     }
 
     private void validateThatLineExists(Long id) {
-        if (lineDao.existsById(id)) {
+        if (!lineDao.existsById(id)) {
             throw new NotFoundException("존재하지 않는 노선입니다.");
         }
     }

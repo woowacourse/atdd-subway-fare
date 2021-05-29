@@ -13,7 +13,7 @@ import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.path.domain.policy.FarePolicyFactory;
 import wooteco.subway.station.domain.Station;
 
-class SubwayPathTest {
+public class SubwayPathTest {
 
     @DisplayName("요금 계산")
     @ParameterizedTest

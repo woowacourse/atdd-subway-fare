@@ -119,6 +119,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         );
     }
 
+    @DisplayName("역을 수정한다.")
     @Test
     void updateStation() {
         지하철역_등록되어_있음(강남역);
@@ -128,12 +129,14 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_수정됨(response, "남강역");
     }
 
+    @DisplayName("한글과 숫자로 이루어져 있지 않은 역 이름을 생성한다.")
     @Test
     void stationNameRegExpTest() {
         ExtractableResponse<Response> hello = 지하철역_생성_요청("hello");
         assertThat(hello.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
+    @DisplayName("노선에 등록되어 있는 역을 삭제한다.")
     @Test
     void stationDeleteWhenIsRegisteredOnLine() {
         StationResponse 강남역_응답 = 지하철역_등록되어_있음(강남역);

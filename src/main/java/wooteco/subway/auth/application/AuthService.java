@@ -48,7 +48,7 @@ public class AuthService {
     }
 
     private void validateThatEmailExists(String email) {
-        if (memberDao.existsByEmail(email)) {
+        if (!memberDao.existsByEmail(email)) {
             throw new AuthorizationException();
         }
     }
