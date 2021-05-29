@@ -29,17 +29,16 @@ public class PathService {
     }
 
     public PathResponse findPath(LoginMember loginMember, Long source, Long target) {
-        try {
-            List<Line> lines = lineService.findLines();
-            Station sourceStation = stationService.findStationById(source);
-            Station targetStation = stationService.findStationById(target);
-            SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
-
-            int totalFare = calculateTotalFare(loginMember, subwayPath);
-            return PathResponseAssembler.assemble(subwayPath, totalFare);
-        } catch (Exception e) {
-            throw new InvalidPathException();
+        List<Line> lines = lineService.findLines();
+        if (source.equals(target)) {
+            throw new InvalidPathException("출발지와 목적지는 같을 수 없습니다.");
         }
+        Station sourceStation = stationService.findStationById(source);
+        Station targetStation = stationService.findStationById(target);
+        SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
+
+        int totalFare = calculateTotalFare(loginMember, subwayPath);
+        return PathResponseAssembler.assemble(subwayPath, totalFare);
     }
 
     private int calculateTotalFare(LoginMember loginMember, SubwayPath subwayPath) {

@@ -2,9 +2,9 @@ package wooteco.subway.path.application;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import wooteco.subway.exception.InvalidRequestException;
 
-@ResponseStatus(HttpStatus.BAD_REQUEST)
-public class InvalidPathException extends RuntimeException {
+public class InvalidPathException extends InvalidRequestException {
 
     public InvalidPathException() {
     }

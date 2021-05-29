@@ -33,6 +33,9 @@ public class StationService {
     }
 
     public Station findStationById(Long id) {
+        if (!stationDao.isExistById(id)) {
+            throw new StationNotFoundException(id + "역");
+        }
         return stationDao.findById(id);
     }
 
