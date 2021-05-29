@@ -10,7 +10,7 @@ import static wooteco.subway.station.StationFixture.*;
 
 class SectionsTest {
 
-    @DisplayName("")
+    @DisplayName("전체 거리 계산")
     @Test
     void totalDistance() {
         // given
