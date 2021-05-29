@@ -13,6 +13,7 @@ import wooteco.auth.web.dto.response.TokenResponse;
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class AuthController {
+
     private final AuthService authService;
 
     public AuthController(AuthService authService) {

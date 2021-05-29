@@ -3,6 +3,7 @@ package wooteco.subway.domain;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 public class SectionEdge extends DefaultWeightedEdge {
+
     private Section section;
     private Line line;
 

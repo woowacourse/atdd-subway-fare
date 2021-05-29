@@ -3,6 +3,7 @@ package wooteco.subway.web.dto.response;
 import java.util.List;
 
 public class PathResponse {
+
     private List<StationResponse> stations;
     private int distance;
     private int fare;

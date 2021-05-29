@@ -4,12 +4,14 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 public class StationWithDistanceResponse {
+
     private Long id;
     private String name;
     @JsonInclude(Include.NON_DEFAULT)
     private int distance;
 
-    public StationWithDistanceResponse() {}
+    public StationWithDistanceResponse() {
+    }
 
     public StationWithDistanceResponse(Long id, String name) {
         this.id = id;

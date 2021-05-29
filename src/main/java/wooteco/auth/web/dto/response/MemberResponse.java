@@ -3,6 +3,7 @@ package wooteco.auth.web.dto.response;
 import wooteco.auth.domain.Member;
 
 public class MemberResponse {
+
     private Long id;
     private String email;
     private Integer age;

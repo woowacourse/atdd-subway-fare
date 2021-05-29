@@ -18,11 +18,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -32,23 +30,21 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import wooteco.auth.util.JwtTokenProvider;
 import wooteco.subway.TestDataLoader;
-import wooteco.auth.service.AuthService;
-import wooteco.subway.service.LineService;
 import wooteco.subway.domain.Line;
+import wooteco.subway.service.LineService;
+import wooteco.subway.web.api.LineController;
 import wooteco.subway.web.dto.LineResponseAssembler;
 import wooteco.subway.web.dto.request.LineRequest;
-import wooteco.subway.web.dto.response.LineResponse;
 import wooteco.subway.web.dto.request.LineUpdateRequest;
 import wooteco.subway.web.dto.request.SectionRequest;
-import wooteco.subway.web.dto.response.SectionResponse;
-import wooteco.subway.web.api.LineController;
-import wooteco.subway.web.dto.response.StationResponse;
+import wooteco.subway.web.dto.response.LineResponse;
 import wooteco.subway.web.dto.response.StationWithDistanceResponse;
 
 @WebMvcTest(controllers = LineController.class)
 @ActiveProfiles("test")
 @AutoConfigureRestDocs
 class LineControllerTest {
+
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -61,7 +57,7 @@ class LineControllerTest {
 
     @Test
     @DisplayName("노선 생성 - 성공")
-    public void createLines() throws Exception{
+    public void createLines() throws Exception {
         //given
         final LineRequest lineRequest = new LineRequest("2호선", "bg-red-200", 1L, 2L, 5);
 
@@ -70,7 +66,8 @@ class LineControllerTest {
                 new StationWithDistanceResponse(2L, "역삼역")
             );
 
-        final LineResponse lineResponse = new LineResponse(1L, "2호선", "bg-red-200", stationWithDistanceResponses);
+        final LineResponse lineResponse = new LineResponse(1L, "2호선", "bg-red-200",
+            stationWithDistanceResponses);
 
         given(lineService.saveLine(any(LineRequest.class)))
             .willReturn(lineResponse);
@@ -79,7 +76,7 @@ class LineControllerTest {
         given(jwtTokenProvider.validateToken(token)).willReturn(true);
 
         mockMvc.perform(post("/api/lines")
-            .header("Authorization", "Bearer "+token)
+            .header("Authorization", "Bearer " + token)
             .content(objectMapper.writeValueAsString(lineRequest))
             .contentType(MediaType.APPLICATION_JSON)
         )
@@ -95,9 +92,11 @@ class LineControllerTest {
 
     @Test
     @DisplayName("노선 조회 - 성공")
-    public void findLines() throws Exception{
+    public void findLines() throws Exception {
         final TestDataLoader testDataLoader = new TestDataLoader();
-        final List<LineResponse> lineResponses = Arrays.asList(LineResponseAssembler.assemble(testDataLoader.신분당선()), LineResponseAssembler.assemble(testDataLoader.이호선()));
+        final List<LineResponse> lineResponses = Arrays
+            .asList(LineResponseAssembler.assemble(testDataLoader.신분당선()),
+                LineResponseAssembler.assemble(testDataLoader.이호선()));
         given(lineService.findLineResponses()).willReturn(lineResponses);
         //given
         mockMvc.perform(get("/api/lines"))
@@ -110,10 +109,11 @@ class LineControllerTest {
 
     @Test
     @DisplayName("노선 수정 - 성공")
-    public void updateLines() throws Exception{
+    public void updateLines() throws Exception {
         final TestDataLoader testDataLoader = new TestDataLoader();
         final Line 신분당선 = testDataLoader.신분당선();
-        LineUpdateRequest lineUpdateRequest = new LineUpdateRequest(신분당선.getName(), 신분당선.getColor());
+        LineUpdateRequest lineUpdateRequest = new LineUpdateRequest(신분당선.getName(),
+            신분당선.getColor());
         given(lineService.findLineResponseById(any()))
             .willReturn(LineResponseAssembler.assemble(신분당선));
 
@@ -122,7 +122,7 @@ class LineControllerTest {
 
         mockMvc.perform(
             put("/api/lines/1")
-                .header("Authorization", "Bearer "+token)
+                .header("Authorization", "Bearer " + token)
                 .content(objectMapper.writeValueAsString(lineUpdateRequest))
                 .contentType(MediaType.APPLICATION_JSON)
         )
@@ -141,7 +141,7 @@ class LineControllerTest {
 
         mockMvc.perform(
             delete("/api/lines/1")
-                .header("Authorization", "Bearer "+token)
+                .header("Authorization", "Bearer " + token)
         )
             .andExpect(status().isNoContent())
             .andDo(print())
@@ -157,7 +157,7 @@ class LineControllerTest {
         given(jwtTokenProvider.validateToken(token)).willReturn(true);
 
         mockMvc.perform(delete("/api/lines/1/sections?stationId=1")
-            .header("Authorization", "Bearer "+token))
+            .header("Authorization", "Bearer " + token))
             .andExpect(status().isNoContent())
             .andDo(print())
             .andDo(document("section-delete",
@@ -167,7 +167,7 @@ class LineControllerTest {
 
     @Test
     @DisplayName("노선 ID 조회 - 성공")
-    public void showLineById() throws Exception{
+    public void showLineById() throws Exception {
         final TestDataLoader testDataLoader = new TestDataLoader();
         final LineResponse lineResponse = LineResponseAssembler.assemble(testDataLoader.신분당선());
         Long id = testDataLoader.신분당선().getId();
@@ -189,7 +189,7 @@ class LineControllerTest {
 
         SectionRequest sectionRequest = new SectionRequest(1L, 2L, 5);
         mockMvc.perform(post("/api/lines/1/sections")
-            .header("Authorization", "Bearer "+token)
+            .header("Authorization", "Bearer " + token)
             .content(objectMapper.writeValueAsBytes(sectionRequest))
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())

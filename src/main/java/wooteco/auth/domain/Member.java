@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import wooteco.common.exception.forbidden.AuthorizationException;
 
 public class Member {
+
     private Long id;
     private String email;
     private String password;

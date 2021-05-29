@@ -11,6 +11,7 @@ import org.springframework.validation.ObjectError;
 
 @JsonComponent
 public class ErrorSerializer extends JsonSerializer<Errors> {
+
     @Override
     public void serialize(Errors errors, JsonGenerator gen, SerializerProvider serializers)
         throws IOException {
@@ -35,10 +36,12 @@ public class ErrorSerializer extends JsonSerializer<Errors> {
         });
         gen.writeEndArray();
     }
+
     private void fieldError(JsonGenerator gen, FieldError error) throws IOException {
         gen.writeStringField("field", error.getField());
         globalError(gen, error);
     }
+
     private void globalError(JsonGenerator gen, ObjectError error) throws IOException {
         gen.writeStringField("objectName", error.getObjectName());
         gen.writeStringField("code", error.getCode());

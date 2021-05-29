@@ -6,7 +6,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -22,9 +22,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import wooteco.auth.service.AuthService;
 import wooteco.auth.util.JwtTokenProvider;
+import wooteco.auth.web.api.AuthController;
 import wooteco.auth.web.dto.request.TokenRequest;
 import wooteco.auth.web.dto.response.TokenResponse;
-import wooteco.auth.web.api.AuthController;
 
 @WebMvcTest(controllers = AuthController.class)
 @ActiveProfiles("test")
@@ -42,7 +42,7 @@ public class AuthControllerTest {
 
     @Test
     @DisplayName("로그인 - 성공")
-    public void login() throws Exception{
+    public void login() throws Exception {
         final TokenResponse tokenResponse = new TokenResponse("이것은토큰비밀번호");
         given(authService.login(any())).willReturn(tokenResponse);
         final TokenRequest tokenRequest = new TokenRequest("test@test.com", "password");

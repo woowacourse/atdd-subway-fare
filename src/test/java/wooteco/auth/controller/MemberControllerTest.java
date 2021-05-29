@@ -26,13 +26,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import wooteco.auth.service.AuthService;
-import wooteco.auth.service.MemberService;
 import wooteco.auth.domain.LoginMember;
+import wooteco.auth.service.MemberService;
 import wooteco.auth.util.JwtTokenProvider;
+import wooteco.auth.web.api.MemberController;
 import wooteco.auth.web.dto.request.MemberRequest;
 import wooteco.auth.web.dto.response.MemberResponse;
-import wooteco.auth.web.api.MemberController;
 import wooteco.common.ExceptionAdviceController;
 
 @WebMvcTest(controllers = {MemberController.class, ExceptionAdviceController.class})
@@ -52,7 +51,7 @@ public class MemberControllerTest {
 
     @Test
     @DisplayName("유저 생성 - 성공")
-    public void createMember() throws Exception{
+    public void createMember() throws Exception {
         final String email = "test@email.com";
         final int age = 20;
         final MemberRequest memberRequest = new MemberRequest(email, "password", age);
@@ -74,7 +73,7 @@ public class MemberControllerTest {
 
     @Test
     @DisplayName("현재 유저 조회 - 성공")
-    public void findMe() throws Exception{
+    public void findMe() throws Exception {
         //given
         String token = "이것은토큰입니다";
         final long id = 1L;
@@ -87,7 +86,7 @@ public class MemberControllerTest {
             .willReturn(new MemberResponse(id, email, age));
 
         mockMvc.perform(get("/api/members/me")
-            .header("Authorization", "Bearer "+token)
+            .header("Authorization", "Bearer " + token)
         )
             .andExpect(status().isOk())
             .andExpect(jsonPath("email").value(email))
@@ -99,7 +98,7 @@ public class MemberControllerTest {
 
     @Test
     @DisplayName("현재 유저 수정 - 성공")
-    public void updateMe() throws Exception{
+    public void updateMe() throws Exception {
         String token = "이것은토큰입니다";
         final long id = 1L;
         final String email = "test@email.com";
@@ -114,7 +113,7 @@ public class MemberControllerTest {
             .willReturn(new MemberResponse(id, email, newAge));
 
         mockMvc.perform(put("/api/members/me")
-            .header("Authorization", "Bearer "+token)
+            .header("Authorization", "Bearer " + token)
             .content(objectMapper.writeValueAsString(new MemberRequest(email, "password", newAge)))
             .contentType(MediaType.APPLICATION_JSON)
         )
@@ -153,7 +152,7 @@ public class MemberControllerTest {
         final String email = "test@email.com";
         given(memberService.existsMember(email)).willReturn(true);
 
-        mockMvc.perform(get("/api/members?email="+email))
+        mockMvc.perform(get("/api/members?email=" + email))
             .andExpect(status().isOk())
             .andExpect(content().string("true"))
             .andDo(document("member-duplicate",

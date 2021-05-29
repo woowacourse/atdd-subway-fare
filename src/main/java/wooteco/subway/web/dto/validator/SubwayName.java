@@ -11,6 +11,7 @@ import javax.validation.Payload;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface SubwayName {
+
     String message() default "잘못된 이름 형식입니다.";
 
     Class<?>[] groups() default {};

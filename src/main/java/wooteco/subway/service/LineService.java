@@ -1,5 +1,7 @@
 package wooteco.subway.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.common.exception.badrequest.LineColorDuplicateException;
@@ -8,19 +10,17 @@ import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Station;
 import wooteco.subway.web.dto.LineResponseAssembler;
 import wooteco.subway.web.dto.request.LineRequest;
-import wooteco.subway.web.dto.response.LineResponse;
 import wooteco.subway.web.dto.request.LineUpdateRequest;
 import wooteco.subway.web.dto.request.SectionRequest;
-import wooteco.subway.domain.Station;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import wooteco.subway.web.dto.response.LineResponse;
 
 @Service
 @Transactional(readOnly = true)
 public class LineService {
+
     private final LineDao lineDao;
     private final SectionDao sectionDao;
     private final StationService stationService;
@@ -34,16 +34,17 @@ public class LineService {
     @Transactional
     public LineResponse saveLine(LineRequest request) {
         validateLineRequest(request);
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
+        Line persistLine = lineDao
+            .insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponseAssembler.assemble(persistLine);
     }
 
     private void validateLineRequest(LineRequest request) {
-        if(lineDao.findByName(request.getName()).isPresent()) {
+        if (lineDao.findByName(request.getName()).isPresent()) {
             throw new LineNameDuplicateException();
         }
-        if(lineDao.findByColor(request.getColor()).isPresent()) {
+        if (lineDao.findByColor(request.getColor()).isPresent()) {
             throw new LineColorDuplicateException();
         }
     }
@@ -61,8 +62,8 @@ public class LineService {
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
-                .map(LineResponseAssembler::assemble)
-                .collect(Collectors.toList());
+            .map(LineResponseAssembler::assemble)
+            .collect(Collectors.toList());
     }
 
     public List<Line> findLines() {

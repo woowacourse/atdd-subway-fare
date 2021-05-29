@@ -25,7 +25,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         }
         final String credentials = AuthorizationExtractor.extract(request);
 
-        if(credentials == null || !jwtTokenProvider.validateToken(credentials)) {
+        if (credentials == null || !jwtTokenProvider.validateToken(credentials)) {
             throw new AuthorizationException();
         }
 

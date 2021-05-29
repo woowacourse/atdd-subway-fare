@@ -2,18 +2,17 @@ package wooteco.auth.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.auth.domain.LoginMember;
+import wooteco.auth.dao.MemberDao;
+import wooteco.auth.domain.Member;
+import wooteco.auth.util.JwtTokenProvider;
 import wooteco.auth.web.dto.request.TokenRequest;
 import wooteco.auth.web.dto.response.TokenResponse;
 import wooteco.common.exception.forbidden.AuthorizationException;
-import wooteco.auth.util.JwtTokenProvider;
-import wooteco.common.exception.notfound.MemberNotFoundException;
-import wooteco.auth.dao.MemberDao;
-import wooteco.auth.domain.Member;
 
 @Service
 @Transactional(readOnly = true)
 public class AuthService {
+
     private MemberDao memberDao;
     private JwtTokenProvider jwtTokenProvider;
 

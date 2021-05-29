@@ -5,6 +5,7 @@ import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 
 public class TestDataLoader {
+
     Station 강남역;
     Station 판교역;
     Station 정자역;
@@ -17,7 +18,7 @@ public class TestDataLoader {
     public TestDataLoader() {
         강남역 = new Station(1L, "강남역");
         판교역 = new Station(2L, "판교역");
-        정자역 = new Station(3L,"정자역");
+        정자역 = new Station(3L, "정자역");
         역삼역 = new Station(4L, "역삼역");
         잠실역 = new Station(5L, "잠실역");
 

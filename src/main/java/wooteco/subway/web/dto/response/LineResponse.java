@@ -1,11 +1,9 @@
 package wooteco.subway.web.dto.response;
 
-import wooteco.subway.domain.Line;
-
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class LineResponse {
+
     private Long id;
     private String name;
     private String color;

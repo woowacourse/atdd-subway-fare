@@ -7,14 +7,14 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
+import wooteco.auth.domain.LoginMember;
 import wooteco.auth.domain.Role;
-import wooteco.auth.service.AuthService;
 import wooteco.auth.util.AuthorizationExtractor;
 import wooteco.auth.util.JwtTokenProvider;
 import wooteco.common.exception.forbidden.AuthorizationException;
-import wooteco.auth.domain.LoginMember;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
+
     private final JwtTokenProvider jwtTokenProvider;
 
     public AuthenticationPrincipalArgumentResolver(JwtTokenProvider jwtTokenProvider) {
@@ -27,9 +27,11 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
-        if(credentials == null) {
+    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
+        NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+        String credentials = AuthorizationExtractor
+            .extract(webRequest.getNativeRequest(HttpServletRequest.class));
+        if (credentials == null) {
             return LoginMember.anonymous();
         }
         try {

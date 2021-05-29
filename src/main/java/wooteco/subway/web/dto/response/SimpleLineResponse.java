@@ -5,9 +5,19 @@ import java.util.stream.Collectors;
 import wooteco.subway.domain.Line;
 
 public class SimpleLineResponse {
+
     private Long id;
     private String name;
     private String color;
+
+    public SimpleLineResponse() {
+    }
+
+    public SimpleLineResponse(Long id, String name, String color) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
+    }
 
     public static SimpleLineResponse of(Line line) {
         return new SimpleLineResponse(line.getId(), line.getName(), line.getColor());
@@ -17,14 +27,6 @@ public class SimpleLineResponse {
         return lines.stream()
             .map(SimpleLineResponse::of)
             .collect(Collectors.toList());
-    }
-
-    public SimpleLineResponse() {}
-
-    public SimpleLineResponse(Long id, String name, String color) {
-        this.id = id;
-        this.name = name;
-        this.color = color;
     }
 
     public Long getId() {

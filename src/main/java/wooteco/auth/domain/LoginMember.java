@@ -1,6 +1,7 @@
 package wooteco.auth.domain;
 
 public class LoginMember {
+
     private Long id;
     private Role role;
 

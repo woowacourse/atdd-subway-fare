@@ -12,6 +12,7 @@ import wooteco.common.exception.notfound.MemberNotFoundException;
 @Service
 @Transactional(readOnly = true)
 public class MemberService {
+
     private MemberDao memberDao;
 
     public MemberService(MemberDao memberDao) {

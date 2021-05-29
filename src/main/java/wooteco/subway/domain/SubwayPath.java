@@ -1,9 +1,9 @@
 package wooteco.subway.domain;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class SubwayPath {
+
     private List<SectionEdge> sectionEdges;
     private List<Station> stations;
 

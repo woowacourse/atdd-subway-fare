@@ -26,11 +26,11 @@ import wooteco.auth.util.JwtTokenProvider;
 import wooteco.subway.TestDataLoader;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
+import wooteco.subway.domain.Station;
 import wooteco.subway.service.DefaultFareCalculator;
 import wooteco.subway.service.PathService;
-import wooteco.subway.web.dto.response.PathResponse;
 import wooteco.subway.web.api.PathController;
-import wooteco.subway.domain.Station;
+import wooteco.subway.web.dto.response.PathResponse;
 import wooteco.subway.web.dto.response.StationResponse;
 
 @WebMvcTest(controllers = PathController.class)
@@ -78,10 +78,10 @@ class PathControllerTest {
         given(pathService.findPath(eq(source), eq(target), any())).willReturn(pathResponse);
 
         mockMvc.perform(get("/api/paths?source=" + source + "&target=" + target)
-            .header("Authorization", "Bearer "+token))
+            .header("Authorization", "Bearer " + token))
             .andExpect(status().isOk())
             .andExpect(jsonPath("stations[*].name").value(
-                Matchers.containsInRelativeOrder("강남역","판교역","정자역")))
+                Matchers.containsInRelativeOrder("강남역", "판교역", "정자역")))
             .andDo(document("path-find",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint())));

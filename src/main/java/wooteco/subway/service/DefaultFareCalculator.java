@@ -3,7 +3,7 @@ package wooteco.subway.service;
 import org.springframework.stereotype.Service;
 
 @Service
-public class DefaultFareCalculator implements FareCalculator{
+public class DefaultFareCalculator implements FareCalculator {
 
     private static final int DEFAULT_FARE = 1250;
     private static final int TEN_KILOMETER = 10;
@@ -15,10 +15,12 @@ public class DefaultFareCalculator implements FareCalculator{
     public int calculateFare(int distance, int extraFare) {
         int fare = DEFAULT_FARE;
         if (distance > TEN_KILOMETER) {
-            fare += calculateOverFare(distance - TEN_KILOMETER, DISTANCE_BY_POLICY_FOR_TEN_KILOMETER);
+            fare += calculateOverFare(distance - TEN_KILOMETER,
+                DISTANCE_BY_POLICY_FOR_TEN_KILOMETER);
         }
         if (distance > FIFTY_KILOMETER) {
-            fare += calculateOverFare(distance - FIFTY_KILOMETER, DISTANCE_BY_POLICY_FOR_FIFTY_KILOMETER);
+            fare += calculateOverFare(distance - FIFTY_KILOMETER,
+                DISTANCE_BY_POLICY_FOR_FIFTY_KILOMETER);
         }
         return fare + extraFare;
     }

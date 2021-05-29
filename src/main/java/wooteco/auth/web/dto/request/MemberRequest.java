@@ -7,6 +7,7 @@ import wooteco.auth.domain.Member;
 import wooteco.auth.web.dto.Password;
 
 public class MemberRequest {
+
     @Email
     private String email;
     @Password(minSize = 8, maxSize = 14)

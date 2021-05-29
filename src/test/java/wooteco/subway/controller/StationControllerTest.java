@@ -6,12 +6,17 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.hamcrest.Matchers;
@@ -28,11 +33,10 @@ import wooteco.auth.util.JwtTokenProvider;
 import wooteco.common.ExceptionAdviceController;
 import wooteco.common.exception.badrequest.StationNameDuplicateException;
 import wooteco.subway.service.StationService;
+import wooteco.subway.web.api.StationController;
 import wooteco.subway.web.dto.request.StationRequest;
-import wooteco.subway.web.dto.response.LineResponse;
 import wooteco.subway.web.dto.response.SimpleLineResponse;
 import wooteco.subway.web.dto.response.StationResponse;
-import wooteco.subway.web.api.StationController;
 
 @WebMvcTest(controllers = {StationController.class, ExceptionAdviceController.class})
 @ActiveProfiles("test")
@@ -50,10 +54,9 @@ class StationControllerTest {
     private JwtTokenProvider jwtTokenProvider;
 
 
-
     @Test
     @DisplayName("역 생성 - 성공")
-    public void createStations() throws Exception{
+    public void createStations() throws Exception {
         //given
         StationRequest stationRequest = new StationRequest("잠실역");
         StationResponse stationResponse = new StationResponse(1L, "잠실역");
@@ -63,7 +66,7 @@ class StationControllerTest {
         given(jwtTokenProvider.validateToken(token)).willReturn(true);
 
         mockMvc.perform(post("/api/stations")
-            .header("Authorization", "Bearer "+token)
+            .header("Authorization", "Bearer " + token)
             .content(objectMapper.writeValueAsString(stationRequest))
             .contentType(MediaType.APPLICATION_JSON)
         )
@@ -78,7 +81,7 @@ class StationControllerTest {
 
     @Test
     @DisplayName("역 조회 - 성공")
-    public void showStations() throws Exception{
+    public void showStations() throws Exception {
         //given
         final SimpleLineResponse 이호선 = new SimpleLineResponse(1L, "2호선", "빨강");
         final SimpleLineResponse 팔호선 = new SimpleLineResponse(2L, "8호선", "핑크");
@@ -108,14 +111,14 @@ class StationControllerTest {
 
     @Test
     @DisplayName("역 삭제 - 성공")
-    public void deleteStations() throws Exception{
+    public void deleteStations() throws Exception {
 
         String token = "이것은토큰입니다";
         given(jwtTokenProvider.validateToken(token)).willReturn(true);
 
         mockMvc.perform(
             delete("/api/stations/1")
-                .header("Authorization", "Bearer "+token)
+                .header("Authorization", "Bearer " + token)
         )
             .andExpect(status().isNoContent())
             .andDo(document("station-delete",
@@ -135,7 +138,7 @@ class StationControllerTest {
         final StationRequest stationRequest = new StationRequest("새로운역");
 
         mockMvc.perform(put("/api/stations/1")
-            .header("Authorization", "Bearer "+token)
+            .header("Authorization", "Bearer " + token)
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(stationRequest))
         )
@@ -158,7 +161,7 @@ class StationControllerTest {
         final StationRequest stationRequest = new StationRequest(newName);
 
         mockMvc.perform(put("/api/stations/1")
-            .header("Authorization", "Bearer "+token)
+            .header("Authorization", "Bearer " + token)
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(stationRequest))
         )

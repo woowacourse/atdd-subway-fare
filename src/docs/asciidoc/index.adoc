@@ -10,125 +10,202 @@ endif::[]
 == Stations (역)
 
 === 역 생성
+
 ==== Request
+
 include::{snippets}/station-create/http-request.adoc[]
+
 ==== Response
+
 include::{snippets}/station-create/http-response.adoc[]
 
 === 역 조회
+
 ==== Request
+
 include::{snippets}/station-find/http-request.adoc[]
+
 ==== Response
+
 include::{snippets}/station-find/http-response.adoc[]
 
 === 역 삭제
+
 ==== Request
+
 include::{snippets}/station-delete/http-request.adoc[]
+
 ==== Response
+
 include::{snippets}/station-delete/http-response.adoc[]
 
 === 역 수정
+
 ==== Request
+
 include::{snippets}/station-update/http-request.adoc[]
+
 ==== Response
+
 include::{snippets}/station-update/http-response.adoc[]
 
 === 역 수정 실패 - 존재하는 이름으로 변경시
+
 ==== Request
+
 include::{snippets}/station-update-duplicate/http-request.adoc[]
+
 ==== Response
+
 include::{snippets}/station-update-duplicate/http-response.adoc[]
 
-
-
 == Lines (노선)
+
 === 노선 생성
+
 ==== Request
+
 include::{snippets}/line-create/http-request.adoc[]
+
 ==== Response
+
 include::{snippets}/line-create/http-response.adoc[]
+
 === 노선 조회
+
 ==== Request
+
 include::{snippets}/line-find/http-request.adoc[]
+
 ==== Response
+
 include::{snippets}/line-find/http-response.adoc[]
+
 === 노선 ID 조회
+
 ==== Request
+
 include::{snippets}/line-findbyid/http-request.adoc[]
+
 ==== Response
+
 include::{snippets}/line-findbyid/http-response.adoc[]
 
 === 노선 수정
+
 ==== Request
+
 include::{snippets}/lines-update/http-request.adoc[]
+
 ==== Response
+
 include::{snippets}/lines-update/http-response.adoc[]
 
 === 노선 삭제
-==== Request
-include::{snippets}/line-delete/http-request.adoc[]
-==== Response
-include::{snippets}/line-delete/http-response.adoc[]
 
+==== Request
+
+include::{snippets}/line-delete/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/line-delete/http-response.adoc[]
 
 == Section (구간)
 
 === 삭제
 
 ==== Request
+
 include::{snippets}/section-delete/http-request.adoc[]
+
 ==== Response
+
 include::{snippets}/section-delete/http-response.adoc[]
 
 === 구간 생성
+
 ==== Request
+
 include::{snippets}/section-create/http-request.adoc[]
+
 ==== Response
+
 include::{snippets}/section-create/http-response.adoc[]
 
 == Path (경로)
 
 === 경로 검색
+
 ==== Request
+
 include::{snippets}/path-find/http-request.adoc[]
+
 ==== Response
+
 include::{snippets}/path-find/http-response.adoc[]
 
 == Auth (인증)
+
 === 유저 로그인
+
 ==== Request
+
 include::{snippets}/auth-login/http-request.adoc[]
+
 ==== Response
+
 include::{snippets}/auth-login/http-response.adoc[]
 
 == Member (유저)
+
 === 유저 생성
+
 ==== Request
+
 include::{snippets}/member-create/http-request.adoc[]
+
 ==== Response
+
 include::{snippets}/member-create/http-response.adoc[]
 
 === 현재 유저 조회
+
 ==== Request
+
 include::{snippets}/members-findme/http-request.adoc[]
+
 ==== Response
+
 include::{snippets}/members-findme/http-response.adoc[]
 
 === 현재 유저 수정
+
 ==== Request
+
 include::{snippets}/members-updateme/http-request.adoc[]
+
 ==== Response
+
 include::{snippets}/members-updateme/http-response.adoc[]
 
 === 현재 유저 삭제
+
 ==== Request
+
 include::{snippets}/members-deleteme/http-request.adoc[]
+
 ==== Response
+
 include::{snippets}/members-deleteme/http-response.adoc[]
 
 === 유저 중복 확인
+
 ==== Request
+
 include::{snippets}/member-duplicate/http-request.adoc[]
+
 ==== Response
+
 include::{snippets}/member-duplicate/http-response.adoc[]
 

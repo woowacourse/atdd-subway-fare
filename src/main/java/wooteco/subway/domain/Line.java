@@ -1,10 +1,9 @@
 package wooteco.subway.domain;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import wooteco.subway.web.dto.response.StationWithDistanceResponse;
 
 public class Line {
+
     private Long id;
     private String name;
     private String color;
