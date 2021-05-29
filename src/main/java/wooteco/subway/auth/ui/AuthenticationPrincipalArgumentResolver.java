@@ -27,15 +27,16 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
-        String credentials = AuthorizationExtractor.extract(request);
-        LoginMember member = authService.findMemberByToken(credentials);
+        LoginMember member = getLoginMember(webRequest);
         if (member.getId() == null) {
-            if (request.getRequestURL().toString().contains("paths")) {
-                return member;
-            }
             throw new AuthorizationException();
         }
         return member;
+    }
+
+    protected LoginMember getLoginMember(final NativeWebRequest webRequest) {
+        HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
+        String credentials = AuthorizationExtractor.extract(request);
+        return authService.findMemberByToken(credentials);
     }
 }
