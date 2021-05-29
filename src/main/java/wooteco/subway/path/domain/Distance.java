@@ -25,6 +25,10 @@ public class Distance {
         return SECOND_DISTANCE_CHARGE_THRESHOLD < distance;
     }
 
+    public boolean isNoOverCharge() {
+        return distance <= FIRST_DISTANCE_CHARGE_THRESHOLD;
+    }
+
     public int calculateFirstOverCharge() {
         return (int) ((Math.ceil((distance - FIRST_DISTANCE_CHARGE_THRESHOLD) / FIRST_CHARGE_DISTANCE) + 1) * CHARGE_AMOUNT);
     }
