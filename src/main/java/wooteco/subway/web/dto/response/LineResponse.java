@@ -11,7 +11,6 @@ public class LineResponse {
     private String name;
     private String color;
     private List<StationWithDistanceResponse> stations;
-    //private List<SectionResponse> sections;
 
     public LineResponse() {
     }
@@ -22,18 +21,6 @@ public class LineResponse {
         this.color = color;
         this.stations = stations;
     }
-
-    //    public LineResponse(Long id, String name, String color, List<SectionResponse> sections) {
-//        this.id = id;
-//        this.name = name;
-//        this.color = color;
-//        this.sections = sections;
-//    }
-
-//    public static LineResponse of(Line line) {
-//       // List<SectionResponse> sections = SectionResponse.listOf(line.getSections().getSortedSections());
-//        return new LineResponse(line.getId(), line.getName(), line.getColor(), sections);
-//    }
 
     public static LineResponse of(Line line) {
         return LineResponseAssembler.assemble(line);
@@ -56,11 +43,6 @@ public class LineResponse {
     public String getColor() {
         return color;
     }
-
-//    public List<SectionResponse> getSections() {
-//        return sections;
-//    }
-
 
     public List<StationWithDistanceResponse> getStations() {
         return stations;

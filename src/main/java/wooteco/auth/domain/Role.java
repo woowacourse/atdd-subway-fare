@@ -7,8 +7,4 @@ public enum Role {
     public boolean isAnonymous() {
         return this.equals(ANONYMOUS);
     }
-
-    public boolean isUser() {
-        return this.equals(USER);
-    }
 }

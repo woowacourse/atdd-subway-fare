@@ -14,19 +14,7 @@ public class SectionResponse {
     public SectionResponse() {
     }
 
-    public SectionResponse(StationResponse upStation, StationResponse downStation) {
-        this.upStation = upStation;
-        this.downStation = downStation;
-    }
-
     public SectionResponse(StationResponse upStation, StationResponse downStation, int distance) {
-        this.upStation = upStation;
-        this.downStation = downStation;
-        this.distance = distance;
-    }
-
-    public SectionResponse(Long id, StationResponse upStation, StationResponse downStation, int distance) {
-        this.id = id;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;

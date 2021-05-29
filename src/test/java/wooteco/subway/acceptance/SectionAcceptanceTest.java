@@ -9,16 +9,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.AcceptanceTest;
-import wooteco.subway.web.dto.response.LineResponse;
 import wooteco.subway.web.dto.request.SectionRequest;
-import wooteco.subway.web.dto.response.SectionResponse;
+import wooteco.subway.web.dto.response.LineResponse;
 import wooteco.subway.web.dto.response.StationResponse;
 import wooteco.subway.web.dto.response.StationWithDistanceResponse;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.auth.acceptatnce.AuthAcceptanceTest.토큰;

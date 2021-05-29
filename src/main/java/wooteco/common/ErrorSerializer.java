@@ -42,10 +42,10 @@ public class ErrorSerializer extends JsonSerializer<Errors> {
         gen.writeStringField("field", error.getField());
         globalError(gen, error);
     }
+
     private void globalError(JsonGenerator gen, ObjectError error) throws IOException {
         gen.writeStringField("objectName", error.getObjectName());
         gen.writeStringField("code", error.getCode());
         gen.writeStringField("defaultMessage", error.getDefaultMessage());
     }
-
 }

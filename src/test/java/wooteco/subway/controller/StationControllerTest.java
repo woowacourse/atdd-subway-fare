@@ -107,35 +107,6 @@ class StationControllerTest {
                 ));
     }
 
-
-//    @Test
-//    @DisplayName("역 조회 - 성공")
-//    public void showStations() throws Exception {
-//        //given
-//        final List<StationResponse> stationResponses = Arrays.asList(
-//                new StationResponse(1L, "잠실역"),
-//                new StationResponse(2L, "강남역"),
-//                new StationResponse(3L, "사당역"),
-//                new StationResponse(4L, "잠실새내역"),
-//                new StationResponse(5L, "종합운동장역")
-//        );
-//        given(stationService.findAllStationResponses())
-//                .willReturn(stationResponses);
-//
-//        mockMvc.perform(
-//                get("/api/stations")
-//        )
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.*").isArray())
-//                .andExpect(jsonPath("$.*.name")
-//                .value(Matchers.containsInAnyOrder("잠실역", "강남역", "사당역", "잠실새내역", "종합운동장역")))
-//                .andDo(print())
-//                .andDo(document("station-find",
-//                        preprocessRequest(prettyPrint()),
-//                        preprocessResponse(prettyPrint())
-//                ));
-//    }
-
     @Test
     @DisplayName("역 수정 - 성공")
     public void updateStation() throws Exception {

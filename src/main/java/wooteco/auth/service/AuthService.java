@@ -12,6 +12,7 @@ import wooteco.common.exception.forbidden.AuthorizationException;
 @Service
 @Transactional
 public class AuthService {
+    private static final String EMAIL_ERROR_MESSAGE = "가입된 e-mail이 아닙니다.";
     private MemberDao memberDao;
     private JwtTokenProvider jwtTokenProvider;
 
@@ -22,7 +23,7 @@ public class AuthService {
 
     public TokenResponse login(TokenRequest request) {
         Member member = memberDao.findByEmail(request.getEmail())
-                .orElseThrow(AuthorizationException::new);
+                .orElseThrow(() -> new AuthorizationException(EMAIL_ERROR_MESSAGE));
         member.checkPassword(request.getPassword());
         String token = jwtTokenProvider.createToken(String.valueOf(member.getId()));
         return new TokenResponse(token);

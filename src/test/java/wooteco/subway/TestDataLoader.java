@@ -46,12 +46,4 @@ public class TestDataLoader {
     public Station 정자역() {
         return 정자역;
     }
-
-    public Station 역삼역() {
-        return 역삼역;
-    }
-
-    public Station 잠실역() {
-        return 잠실역;
-    }
 }

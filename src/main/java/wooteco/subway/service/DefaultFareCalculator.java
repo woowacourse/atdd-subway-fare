@@ -26,5 +26,4 @@ public class DefaultFareCalculator implements FareCalculator{
     private int calculateOverFare(int distance, int distanceByPolicy) {
         return (int) ((Math.ceil((distance - 1) / distanceByPolicy) + 1) * ADDITIONAL_FARE);
     }
-
 }

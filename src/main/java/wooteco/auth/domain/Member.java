@@ -4,6 +4,8 @@ import org.apache.commons.lang3.StringUtils;
 import wooteco.common.exception.forbidden.AuthorizationException;
 
 public class Member {
+    private static final String PASSWORD_ERROR_MESSAGE = "비밀번호가 일치하지 않습니다.";
+
     private Long id;
     private String email;
     private String password;
@@ -49,7 +51,7 @@ public class Member {
 
     public void checkPassword(String password) {
         if (!StringUtils.equals(this.password, password)) {
-            throw new AuthorizationException();
+            throw new AuthorizationException(PASSWORD_ERROR_MESSAGE);
         }
     }
 }

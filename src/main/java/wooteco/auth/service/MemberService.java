@@ -34,7 +34,7 @@ public class MemberService {
     public MemberResponse updateMember(LoginMember loginMember, MemberRequest memberRequest) {
         Member member = memberDao.findById(loginMember.getId())
                 .orElseThrow(MemberNotFoundException::new);
-        final Member updatedMember = new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge());
+        Member updatedMember = new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge());
         memberDao.update(updatedMember);
         return MemberResponse.of(updatedMember);
     }

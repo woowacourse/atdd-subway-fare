@@ -2,6 +2,7 @@ package wooteco.subway.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Lines {
     private final List<Line> lines;
@@ -11,12 +12,8 @@ public class Lines {
     }
 
     public List<Line> getLineContainStation(Station station) {
-        List<Line> containStationLines = new ArrayList<>();
-        for (Line line : lines) {
-            if (line.getStations().contains(station)) {
-                containStationLines.add(line);
-            }
-        }
-        return containStationLines;
+        return lines.stream()
+                .filter(line -> line.getStations().contains(station))
+                .collect(Collectors.toList());
     }
 }

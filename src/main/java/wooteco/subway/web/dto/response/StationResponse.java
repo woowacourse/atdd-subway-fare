@@ -17,7 +17,6 @@ public class StationResponse {
         return new StationResponse(station.getId(), station.getName());
     }
 
-
     public static StationResponse of(Station station, List<Line> lines) {
         List<SimpleLineResponse> simpleLines = lines.stream()
                 .map(line -> new SimpleLineResponse(line.getId(), line.getName(), line.getColor()))

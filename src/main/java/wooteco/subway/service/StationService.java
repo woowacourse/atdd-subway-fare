@@ -7,14 +7,12 @@ import wooteco.common.exception.badrequest.NotRemovalStationException;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Lines;
 import wooteco.subway.domain.Station;
 import wooteco.subway.web.dto.request.StationRequest;
 import wooteco.subway.web.dto.response.StationResponse;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -42,21 +40,12 @@ public class StationService {
         return stationDao.findById(id);
     }
 
-
     public List<StationResponse> findAllStationResponses() {
         List<Station> stations = stationDao.findAll();
         Lines lines = new Lines(lineDao.findAll());
 
         return StationResponse.listOf(stations, lines);
     }
-
-//    public List<StationResponse> findAllStationResponses() {
-//        List<Station> stations = stationDao.findAll();
-//
-//        return stations.stream()
-//                .map(StationResponse::of)
-//                .collect(Collectors.toList());
-//    }
 
     @Transactional
     public void deleteStationById(Long id) {

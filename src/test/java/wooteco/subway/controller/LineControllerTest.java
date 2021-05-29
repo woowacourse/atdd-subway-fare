@@ -114,6 +114,7 @@ class LineControllerTest {
                         preprocessResponse(prettyPrint())
                 ));
     }
+
     @Test
     @DisplayName("노선 ID 조회 - 성공")
     public void showLineById() throws Exception {
@@ -182,6 +183,7 @@ class LineControllerTest {
                         preprocessResponse(prettyPrint())
                 ));
     }
+
     @Test
     @DisplayName("구간 추가 - 성공")
     public void createSection() throws Exception {
@@ -205,6 +207,7 @@ class LineControllerTest {
                         preprocessResponse(prettyPrint())
                 ));
     }
+
     @DisplayName("구간 삭제 - 성공")
     @Test
     public void removeLineStation() throws Exception {

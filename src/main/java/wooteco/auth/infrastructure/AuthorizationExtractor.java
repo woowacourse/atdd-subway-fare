@@ -22,7 +22,6 @@ public class AuthorizationExtractor {
                 return authHeaderValue;
             }
         }
-
         return null;
     }
 }

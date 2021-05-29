@@ -6,12 +6,11 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
-import wooteco.auth.domain.Role;
-import wooteco.auth.infrastructure.JwtTokenProvider;
-import wooteco.auth.service.AuthService;
-import wooteco.common.exception.forbidden.AuthorizationException;
-import wooteco.auth.infrastructure.AuthorizationExtractor;
 import wooteco.auth.domain.LoginMember;
+import wooteco.auth.domain.Role;
+import wooteco.auth.infrastructure.AuthorizationExtractor;
+import wooteco.auth.infrastructure.JwtTokenProvider;
+import wooteco.common.exception.forbidden.AuthorizationException;
 
 import javax.servlet.http.HttpServletRequest;
 

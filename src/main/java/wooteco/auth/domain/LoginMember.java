@@ -27,9 +27,4 @@ public class LoginMember {
     public boolean isAnonymous() {
         return role.isAnonymous();
     }
-
-    public boolean isMember() {
-        return role.isUser();
-    }
-
 }

@@ -13,12 +13,13 @@ import wooteco.auth.web.dto.response.TokenResponse;
 import wooteco.subway.web.dto.response.LineResponse;
 import wooteco.subway.web.dto.response.PathResponse;
 import wooteco.subway.web.dto.response.StationResponse;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.auth.acceptatnce.AuthAcceptanceTest.토큰;
-import static wooteco.auth.acceptatnce.MemberAcceptanceTest.회원_생성을_요청;
 import static wooteco.subway.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static wooteco.subway.acceptance.SectionAcceptanceTest.지하철_구간_등록되어_있음;
 import static wooteco.subway.acceptance.StationAcceptanceTest.지하철역_등록되어_있음;

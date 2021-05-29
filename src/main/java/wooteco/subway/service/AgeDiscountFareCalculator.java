@@ -5,6 +5,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class AgeDiscountFareCalculator implements FareCalculator {
+    private static final String POLICY_ERROR_MESSAGE = "존재하지 않는 요금 정책입니다.";
 
     private final FareCalculator fareCalculator;
     private final int age;
@@ -42,7 +43,7 @@ public class AgeDiscountFareCalculator implements FareCalculator {
             return Arrays.stream(values())
                     .filter(val -> val.predicate.test(age))
                     .findAny()
-                    .orElseThrow(IllegalArgumentException::new);
+                    .orElseThrow(() -> new IllegalArgumentException(POLICY_ERROR_MESSAGE));
         }
 
         private int calculate(int fare) {
