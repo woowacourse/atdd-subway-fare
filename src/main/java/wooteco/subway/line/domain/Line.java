@@ -34,35 +34,6 @@ public class Line {
         this.extraFare = extraFare;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public Sections getSections() {
-        return sections;
-    }
-
-    public List<Section> sections() {
-        return sections.getSections();
-    }
-
-    public int getExtraFare() {
-        return extraFare;
-    }
-
-    public void update(Line line) {
-        this.name = line.getName();
-        this.color = line.getColor();
-    }
-
     public void addSection(Station upStation, Station downStation, int distance) {
         Section section = new Section(upStation, downStation, distance);
         sections.addSection(section);
@@ -79,11 +50,35 @@ public class Line {
         sections.removeStation(station);
     }
 
+    public List<Section> sections() {
+        return sections.getSections();
+    }
+
     public List<Station> getStations() {
         return sections.getStations();
     }
 
     public int distance() {
         return sections.totalDistance();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public Sections getSections() {
+        return sections;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 }
