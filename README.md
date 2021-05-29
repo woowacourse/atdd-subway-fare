@@ -10,8 +10,8 @@
     - [x] Production 환경 : Mysql (Server)
     - [x] Remote 환경 : Mysql (다른 인스턴스 Server)
 
-- [ ] **전체 조회 기능**
-  - [ ] GET: /stations/transfer로 환승 가능한 역의 목록을 노선 이름과 함께 반환
+- [x] **전체 조회 기능**
+  - [x] GET: /stations/transfer로 환승 가능한 역의 목록을 노선 이름과 함께 반환
 
 - [x] **요금 조회 기능**
   - [x] 거리에 따른 운임 계산 로직 구현

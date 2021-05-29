@@ -8,6 +8,7 @@ import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
+import wooteco.subway.station.dto.StationWithTransferResponse;
 import wooteco.subway.station.exception.StationNotFoundException;
 
 import java.util.List;
@@ -45,6 +46,10 @@ public class StationService {
         return stations.stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    public List<StationWithTransferResponse> findAllStationWithTransferResponse() {
+        return stationDao.findAllStationWithTransfer();
     }
 
     public void deleteStationById(Long id) {

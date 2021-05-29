@@ -9,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.sql.SQLException;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
@@ -47,6 +48,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotPermittedException.class)
     public ResponseEntity<ErrorResponse> handle(NotPermittedException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(SQLException.class)
+    public ResponseEntity<Void> handleSQLException() {
+        return ResponseEntity.badRequest().build();
     }
 
     @ExceptionHandler(Exception.class)

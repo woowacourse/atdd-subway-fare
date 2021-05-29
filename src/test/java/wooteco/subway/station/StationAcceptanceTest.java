@@ -18,6 +18,7 @@ import wooteco.subway.station.dto.StationResponse;
 import wooteco.subway.station.dto.StationWithTransferResponse;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -76,7 +77,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static  ExtractableResponse<Response> 환승역을_포함한_지하철역_목록_조회_요청() {
+    public static ExtractableResponse<Response> 환승역을_포함한_지하철역_목록_조회_요청() {
         return RestAssured
                 .given().log().all()
                 .when().get("/stations/transfer")
@@ -126,8 +127,11 @@ public class StationAcceptanceTest extends AcceptanceTest {
     }
 
     // TODO 변경
-    public static void 환승역을_포함한_지하철역_목록_응답됨(ExtractableResponse<Response> response) {
+    public static void 환승역을_포함한_지하철역_목록_응답됨(ExtractableResponse<Response> response, List<String> expected) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getList(".", StationWithTransferResponse.class).stream()
+                .map(StationWithTransferResponse::getTransfer)
+                .collect(Collectors.toList())).containsAll(Collections.singleton(expected));
     }
 
     public static void 지하철역_삭제됨(ExtractableResponse<Response> response) {
@@ -236,12 +240,13 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_목록_포함됨(response, Arrays.asList(stationResponse1, stationResponse2));
     }
 
-    /**      갑상선
+    /**
+     * 갑상선
      * 강남역 ------ 역삼역
-     *  |  \
-     *  |박미선\ 이호선
-     *  |      \
-     *  잠실역    강변역
+     * |  \
+     * |박미선\ 이호선
+     * |      \
+     * 잠실역    강변역
      */
     @DisplayName("환승 노선 정보를 담은 지하철역을 조회한다.")
     @Test
@@ -263,7 +268,8 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철역_목록_응답됨(response);
-        환승역을_포함한_지하철역_목록_응답됨(response);
+        List<String> expected = Arrays.asList("갑상선", "박미선", "이호선");
+        환승역을_포함한_지하철역_목록_응답됨(response, expected);
     }
 
     @DisplayName("노선에 등록된 지하철역은 제거할 수 없다.")

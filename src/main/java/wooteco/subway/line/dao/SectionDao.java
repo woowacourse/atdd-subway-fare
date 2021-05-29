@@ -1,10 +1,12 @@
 package wooteco.subway.line.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
+import wooteco.subway.station.domain.Station;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -62,5 +64,15 @@ public class SectionDao {
     public boolean isIncludedInLine(Long id) {
         String sql = "select EXISTS (select * from SECTION where up_station_id = ? or down_station_id = ?)";
         return jdbcTemplate.queryForObject(sql, Boolean.class, id, id);
+    }
+
+    public List<Long> getLineIdIfStationIncluded(Station station) {
+        Long stationId = station.getId();
+        String sql = "select line_id from SECTION where up_station_id = ? or down_station_id = ?";
+        return jdbcTemplate.query(sql,
+                (resultSet, rowNum) -> resultSet.getLong("line_id"),
+                stationId,
+                stationId
+        );
     }
 }
