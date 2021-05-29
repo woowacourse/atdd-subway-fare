@@ -15,6 +15,4 @@ public class TenToFiftyStrategy implements DistanceStrategy {
     public int maxFare() {
         return calculate(MAX_DISTANCE);
     }
-
-
 }

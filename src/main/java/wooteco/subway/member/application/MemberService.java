@@ -18,11 +18,15 @@ public class MemberService {
     }
 
     public MemberResponse createMember(MemberRequest request) {
-        if (memberDao.existsEmail(request.getEmail())) {
-            throw new DuplicateException("이미 존재하는 이메일입니다.");
-        }
+        validateDuplicateEmail(request.getEmail());
         Member member = memberDao.insert(request.toMember());
         return MemberResponse.of(member);
+    }
+
+    private void validateDuplicateEmail(String email) {
+        if (memberDao.existsEmail(email)) {
+            throw new DuplicateException("이미 존재하는 이메일입니다.");
+        }
     }
 
     public MemberResponse findMember(LoginMember loginMember) {

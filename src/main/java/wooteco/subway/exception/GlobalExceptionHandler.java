@@ -17,36 +17,36 @@ public class GlobalExceptionHandler {
     private final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> unValidBinding(final MethodArgumentNotValidException exception) {
+    public ResponseEntity<ErrorResponse> unValidBinding(MethodArgumentNotValidException exception) {
         logger.error(exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(bindingResultMessage(exception)));
     }
 
     @ExceptionHandler(SubwayException.class)
-    public ResponseEntity<ErrorResponse> subwayExceptionHandler(final SubwayException exception) {
+    public ResponseEntity<ErrorResponse> subwayExceptionHandler(SubwayException exception) {
         logger.error(exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(exception.getMessage()));
     }
 
     @ExceptionHandler(AuthorizationException.class)
-    public ResponseEntity<ErrorResponse> authorizeException(final AuthorizationException exception) {
+    public ResponseEntity<ErrorResponse> authorizeException(AuthorizationException exception) {
         logger.error(exception.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(exception.getMessage()));
     }
 
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
-    public ResponseEntity<ErrorResponse> unsupportedMediaType(final HttpMediaTypeNotSupportedException exception) {
+    public ResponseEntity<ErrorResponse> unsupportedMediaType(HttpMediaTypeNotSupportedException exception) {
         logger.error(exception.getMessage());
         return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(new ErrorResponse(exception.getMessage()));
     }
 
     @ExceptionHandler(SQLException.class)
-    public ResponseEntity<ErrorResponse> handleSQLException(final SQLException exception) {
+    public ResponseEntity<ErrorResponse> handleSQLException(SQLException exception) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse(exception.getMessage()));
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> unExpectException(final Exception exception) {
+    public ResponseEntity<ErrorResponse> unExpectException(Exception exception) {
         logger.error(exception.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse(exception.getMessage()));
     }
