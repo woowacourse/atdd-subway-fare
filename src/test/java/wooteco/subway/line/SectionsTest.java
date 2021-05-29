@@ -13,7 +13,7 @@ public class SectionsTest {
     Station 교대역 = new Station(3L, "교대역");;
     Station 남부터미널역 = new Station(4L, "남부터미널역");;
 
-    Line 삼호선 = new Line("삼호선", "brown");
+    Line 삼호선 = new Line("삼호선", "brown", 0);
 
     @BeforeEach
     void setUp() {

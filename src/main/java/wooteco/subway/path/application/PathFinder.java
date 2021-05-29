@@ -9,8 +9,8 @@ import wooteco.subway.path.domain.SubwayGraph;
 import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.station.domain.Station;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class PathFinder {
@@ -22,7 +22,7 @@ public class PathFinder {
         graph.addVertexWith(lines);
         graph.addEdge(lines);
 
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+        DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         GraphPath<Station, SectionEdge> path = dijkstraShortestPath.getPath(departure, arrival);
         if (path == null) {
             throw new InvalidPathException("연결되어 있지 않은 경로입니다.");
@@ -31,8 +31,8 @@ public class PathFinder {
         return convertSubwayPath(path);
     }
 
-    private SubwayPath convertSubwayPath(GraphPath graphPath) {
-        List<SectionEdge> edges = (List<SectionEdge>) graphPath.getEdgeList().stream().collect(Collectors.toList());
+    private SubwayPath convertSubwayPath(GraphPath<Station, SectionEdge> graphPath) {
+        List<SectionEdge> edges = new ArrayList<>(graphPath.getEdgeList());
         List<Station> stations = graphPath.getVertexList();
         return new SubwayPath(edges, stations);
     }

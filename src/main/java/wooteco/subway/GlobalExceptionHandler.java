@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wooteco.subway.auth.application.AuthorizationException;
 import wooteco.subway.exception.SubwayException;
 
+import java.sql.SQLException;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    private Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+    private final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> unValidBinding(final MethodArgumentNotValidException exception) {
@@ -37,6 +39,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> unsupportedMediaType(final HttpMediaTypeNotSupportedException exception) {
         logger.error(exception.getMessage());
         return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(new ErrorResponse(exception.getMessage()));
+    }
+
+    @ExceptionHandler(SQLException.class)
+    public ResponseEntity<ErrorResponse> handleSQLException(final SQLException exception) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse(exception.getMessage()));
     }
 
     @ExceptionHandler(Exception.class)

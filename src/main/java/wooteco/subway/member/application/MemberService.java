@@ -11,14 +11,14 @@ import wooteco.subway.member.dto.MemberResponse;
 
 @Service
 public class MemberService {
-    private MemberDao memberDao;
+    private final MemberDao memberDao;
 
     public MemberService(MemberDao memberDao) {
         this.memberDao = memberDao;
     }
 
     public MemberResponse createMember(MemberRequest request) {
-        if(memberDao.existsEmail(request.getEmail())) {
+        if (memberDao.existsEmail(request.getEmail())) {
             throw new DuplicateException("이미 존재하는 이메일입니다.");
         }
         Member member = memberDao.insert(request.toMember());
@@ -32,7 +32,8 @@ public class MemberService {
 
     public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
         Member member = findByEmail(loginMember);
-        memberDao.update(new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
+        memberDao.update(new Member(member.getId(), memberRequest.getEmail(),
+                memberRequest.getPassword(), memberRequest.getAge()));
     }
 
     public void deleteMember(LoginMember loginMember) {

@@ -1,7 +1,5 @@
 package wooteco.subway.auth.infrastructure;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.HandlerInterceptor;
 import wooteco.subway.auth.application.AuthService;
 
@@ -10,7 +8,6 @@ import javax.servlet.http.HttpServletResponse;
 
 public class LoginInterceptor implements HandlerInterceptor {
     private final AuthService authService;
-    private Logger logger = LoggerFactory.getLogger(LoginInterceptor.class);
 
     public LoginInterceptor(AuthService authService) {
         this.authService = authService;

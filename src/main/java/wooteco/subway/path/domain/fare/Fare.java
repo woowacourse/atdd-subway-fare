@@ -4,11 +4,10 @@ import wooteco.subway.path.domain.fare.age.AgeStrategy;
 import wooteco.subway.path.domain.fare.distance.DistanceStrategy;
 
 public class Fare {
-    public static final int BASIC_FARE = 1250;
-
+    private static final int BASIC_FARE = 1250;
+    private final DistanceStrategy distanceStrategy;
+    private final AgeStrategy ageStrategy;
     private int fare;
-    private DistanceStrategy distanceStrategy;
-    private AgeStrategy ageStrategy;
 
     public Fare(int extraFare, DistanceStrategy distanceStrategy, AgeStrategy ageStrategy) {
         this.fare = BASIC_FARE + extraFare;
