@@ -2,7 +2,7 @@ package wooteco.subway.member.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.auth.application.AuthorizationException;
+import wooteco.subway.exception.AuthorizationException;
 import wooteco.subway.exception.DuplicateException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;

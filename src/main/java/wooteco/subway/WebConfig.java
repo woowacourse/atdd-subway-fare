@@ -1,4 +1,4 @@
-package wooteco.subway.config;
+package wooteco.subway;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
