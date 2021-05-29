@@ -29,7 +29,7 @@ public class ClassifyingMemberPrincipalArgumentResolver implements HandlerMethod
     public Object resolveArgument(MethodParameter parameter,
         ModelAndViewContainer mavContainer,
         NativeWebRequest webRequest,
-        WebDataBinderFactory binderFactory) throws Exception {
+        WebDataBinderFactory binderFactory) {
 
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
         Objects.requireNonNull(request);

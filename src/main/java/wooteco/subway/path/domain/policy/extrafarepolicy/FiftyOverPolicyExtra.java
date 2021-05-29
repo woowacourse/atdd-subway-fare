@@ -1,4 +1,4 @@
-package wooteco.subway.path.domain.policy.farepolicy;
+package wooteco.subway.path.domain.policy.extrafarepolicy;
 
 import java.math.BigDecimal;
 

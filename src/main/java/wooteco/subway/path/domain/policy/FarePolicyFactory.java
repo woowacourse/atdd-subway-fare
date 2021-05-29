@@ -5,10 +5,10 @@ import java.util.List;
 import wooteco.subway.path.domain.policy.discountpolicy.ChildrenDiscountPolicy;
 import wooteco.subway.path.domain.policy.discountpolicy.DiscountFarePolicy;
 import wooteco.subway.path.domain.policy.discountpolicy.TeenageDiscountPolicy;
-import wooteco.subway.path.domain.policy.farepolicy.DefaultExtraFarePolicy;
-import wooteco.subway.path.domain.policy.farepolicy.ExtraFarePolicy;
-import wooteco.subway.path.domain.policy.farepolicy.FiftyOverPolicyExtra;
-import wooteco.subway.path.domain.policy.farepolicy.TenFiftyPolicyExtra;
+import wooteco.subway.path.domain.policy.extrafarepolicy.DefaultExtraFarePolicy;
+import wooteco.subway.path.domain.policy.extrafarepolicy.ExtraFarePolicy;
+import wooteco.subway.path.domain.policy.extrafarepolicy.FiftyOverPolicyExtra;
+import wooteco.subway.path.domain.policy.extrafarepolicy.TenFiftyPolicyExtra;
 
 public class FarePolicyFactory {
 

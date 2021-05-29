@@ -6,9 +6,9 @@ import java.math.BigDecimal;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import wooteco.subway.path.domain.policy.farepolicy.DefaultExtraFarePolicy;
-import wooteco.subway.path.domain.policy.farepolicy.FiftyOverPolicyExtra;
-import wooteco.subway.path.domain.policy.farepolicy.TenFiftyPolicyExtra;
+import wooteco.subway.path.domain.policy.extrafarepolicy.DefaultExtraFarePolicy;
+import wooteco.subway.path.domain.policy.extrafarepolicy.FiftyOverPolicyExtra;
+import wooteco.subway.path.domain.policy.extrafarepolicy.TenFiftyPolicyExtra;
 
 @DisplayName("요금 정책 테스트")
 public class ExtraFarePolicyTest {

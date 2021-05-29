@@ -5,7 +5,7 @@ import java.util.List;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.path.domain.policy.discountpolicy.DiscountFarePolicy;
-import wooteco.subway.path.domain.policy.farepolicy.ExtraFarePolicy;
+import wooteco.subway.path.domain.policy.extrafarepolicy.ExtraFarePolicy;
 
 public class Fare {
 
@@ -17,8 +17,7 @@ public class Fare {
         this.discountPolicies = discountPolicies;
     }
 
-    public BigDecimal calculate(SubwayPath subwayPath,
-        LoginMember loginMember) {
+    public BigDecimal calculate(SubwayPath subwayPath, LoginMember loginMember) {
         BigDecimal fare = calculateExtraFareOfDistance(subwayPath)
             .add(calculateMaximumExtraFareOfLines(subwayPath));
 

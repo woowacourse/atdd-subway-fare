@@ -21,7 +21,6 @@ public class LoginMember {
         return !this.equals(EMPTY_LOGIN_MEMBER);
     }
 
-
     public Long getId() {
         return id;
     }
