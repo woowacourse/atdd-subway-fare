@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.ErrorResponse;
+import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
 
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {
@@ -109,6 +111,19 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_등록되어있지_않음(response);
     }
 
+    @DisplayName("구간에 등록된 역에 대해 삭제 요청은 처리할 수 없음.")
+    @Test
+    void deleteStationFailWhenRegisteredInSection() {
+        // when
+        StationResponse 강남역 = 지하철역_등록되어_있음("강남역");
+        StationResponse 광교역 = 지하철역_등록되어_있음("광교역");
+        LineResponse 신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 광교역, 10);
+
+        ExtractableResponse<Response> response = 지하철역_제거_요청(강남역);
+
+        // then
+        지하철역_구간에_등록되어_있음(response);
+    }
 
     public static StationResponse 지하철역_등록되어_있음(String name) {
         return 지하철역_생성_요청(name).as(StationResponse.class);
@@ -182,6 +197,12 @@ public class StationAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
         ErrorResponse errorResponse = response.jsonPath().getObject(".", ErrorResponse.class);
         assertThat(errorResponse.getErrorMessage()).isEqualTo("역이 등록되어 있지 않습니다.");
+    }
+
+    public static void 지하철역_구간에_등록되어_있음(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        ErrorResponse errorResponse = response.jsonPath().getObject(".", ErrorResponse.class);
+        assertThat(errorResponse.getErrorMessage()).isEqualTo("노선에 등록된 역은 삭제할 수 없습니다.");
     }
 
     public static void 지하철역_목록_포함됨(ExtractableResponse<Response> response, List<StationResponse> createdResponses) {
