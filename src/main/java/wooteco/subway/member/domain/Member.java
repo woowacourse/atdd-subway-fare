@@ -1,5 +1,7 @@
 package wooteco.subway.member.domain;
 
+import wooteco.subway.path.domain.Fare;
+
 public interface Member {
     Long getId();
 
@@ -7,5 +9,5 @@ public interface Member {
 
     Integer getAge();
 
-    int calculateFare(int fare);
+    Fare calculateFare(Fare fare);
 }

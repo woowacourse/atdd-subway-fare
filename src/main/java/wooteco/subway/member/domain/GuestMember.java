@@ -1,5 +1,7 @@
 package wooteco.subway.member.domain;
 
+import wooteco.subway.path.domain.Fare;
+
 public class GuestMember implements Member {
     @Override
     public Long getId() {
@@ -17,7 +19,7 @@ public class GuestMember implements Member {
     }
 
     @Override
-    public int calculateFare(int fare) {
+    public Fare calculateFare(Fare fare) {
         return fare;
     }
 }

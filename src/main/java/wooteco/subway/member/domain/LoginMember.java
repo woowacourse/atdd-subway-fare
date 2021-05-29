@@ -1,5 +1,7 @@
 package wooteco.subway.member.domain;
 
+import wooteco.subway.path.domain.Fare;
+
 public class LoginMember implements Member {
     private Long id;
     private String email;
@@ -30,15 +32,8 @@ public class LoginMember implements Member {
     }
 
     @Override
-    public int calculateFare(int fare) {
-        if (age >= 13 && age < 19) {
-            return (int) ((fare - 350) * 0.8);
-        }
-
-        if (age >= 6 && age < 13) {
-            return (int) ((fare - 350) * 0.5);
-        }
-
-        return fare;
+    public Fare calculateFare(Fare fare) {
+        AgeFarePolicy myAgePolicy = AgeFarePolicy.of(this.age);
+        return myAgePolicy.calculateFare(fare);
     }
 }

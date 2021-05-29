@@ -15,13 +15,21 @@ public class Fare {
         return new Fare(this.fare + that.fare);
     }
 
+    public Fare minus(Fare that) {
+        return new Fare(this.fare - that.fare);
+    }
+
+    public Fare multiply(double ratio) {
+        return new Fare((int) (this.fare * ratio));
+    }
+
     public static Fare createDefaultFare(int distance) {
         FarePolicy distanceFarePolicy = FarePolicy.of(distance);
         return distanceFarePolicy.calculateFare(distance);
     }
 
     public Fare applyMemberDiscount(Member member) {
-        return new Fare(member.calculateFare(fare));
+        return member.calculateFare(this);
     }
 
     public int getFare() {

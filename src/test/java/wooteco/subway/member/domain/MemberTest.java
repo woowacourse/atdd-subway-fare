@@ -2,6 +2,7 @@ package wooteco.subway.member.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wooteco.subway.path.domain.Fare;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -15,12 +16,12 @@ class MemberTest {
         LoginMember 일반인 = new LoginMember(3L, "nabom@gmail.com", 30);
 
         GuestMember 게스트 = new GuestMember();
-        int baseFare = 1250;
+        Fare baseFare = new Fare(1250);
 
-        assertThat(청소년.calculateFare(baseFare)).isEqualTo(720); // 350원 공제 후 80%
-        assertThat(어린이.calculateFare(baseFare)).isEqualTo(450); // 350원 공제 후 50%
-        assertThat(일반인.calculateFare(baseFare)).isEqualTo(1250); // 그대로
-        assertThat(게스트.calculateFare(baseFare)).isEqualTo(1250); // 그대로
+        assertThat(청소년.calculateFare(baseFare)).isEqualTo(new Fare(720)); // 350원 공제 후 80%
+        assertThat(어린이.calculateFare(baseFare)).isEqualTo(new Fare(450)); // 350원 공제 후 50%
+        assertThat(일반인.calculateFare(baseFare)).isEqualTo(new Fare(1250)); // 그대로
+        assertThat(게스트.calculateFare(baseFare)).isEqualTo(new Fare(1250)); // 그대로
     }
 
 }
