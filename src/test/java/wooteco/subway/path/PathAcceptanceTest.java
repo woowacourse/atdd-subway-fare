@@ -29,17 +29,12 @@ import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록�
 
 @DisplayName("지하철 경로 조회 관련 기능")
 public class PathAcceptanceTest extends AcceptanceTest {
-    private LineResponse 신분당선;
-    private LineResponse 이호선;
-    private LineResponse 삼호선;
-    private LineResponse 우아한테크코스선;
     private StationResponse 강남역;
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
     private StationResponse 에어포츈바다우기검프사랑해역;
     private StationResponse 우린모두취업할거야역;
-    private StationResponse 리뷰잘부탁해요역;
     private TokenResponse tokenResponse;
 
     /**
@@ -61,13 +56,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역", tokenResponse);
         에어포츈바다우기검프사랑해역 = 지하철역_등록되어_있음("에어포츈바다우기검프사랑해역", tokenResponse);
         우린모두취업할거야역 = 지하철역_등록되어_있음("우린모두취업할거야역", tokenResponse);
-        리뷰잘부탁해요역 = 지하철역_등록되어_있음("리뷰잘부탁해요역", tokenResponse);
+//        StationResponse 리뷰잘부탁해요역 = 지하철역_등록되어_있음("리뷰잘부탁해요역", tokenResponse);
 
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-400", 강남역, 양재역, 10, 100, tokenResponse);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-500", 교대역, 강남역, 10, 200, tokenResponse);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5, 300, tokenResponse);
-        우아한테크코스선 = 지하철_노선_등록되어_있음("우아한테크코스선", "bg-red-700", 우린모두취업할거야역, 리뷰잘부탁해요역, 5, 400, tokenResponse);
-
+//        LineResponse 신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-400", 강남역, 양재역, 10, 100, tokenResponse);
+//        LineResponse 이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-500", 교대역, 강남역, 10, 200, tokenResponse);
+        LineResponse 삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5, 300, tokenResponse);
+//        LineResponse 우아한테크코스선 = 지하철_노선_등록되어_있음("우아한테크코스선", "bg-red-700", 우린모두취업할거야역, 리뷰잘부탁해요역, 5, 400, tokenResponse);
 
         지하철_구간_등록되어_있음(삼호선, 교대역, 남부터미널역, 3, tokenResponse);
     }
