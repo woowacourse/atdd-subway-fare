@@ -24,6 +24,7 @@ public class ExceptionAdvice {
         String message = methodArgumentNotValidException.getFieldErrors()
                 .stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .distinct()
                 .collect(Collectors.joining(System.lineSeparator()));
         return ResponseEntity.badRequest()
                 .body(message);
