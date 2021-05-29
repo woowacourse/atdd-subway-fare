@@ -23,12 +23,16 @@ public class StationService {
 
     @Transactional
     public StationResponse saveStation(StationRequest stationRequest) {
-        if (stationDao.existsByName(stationRequest.getName())) {
-            throw new DuplicateException("이미 존재하는 역 이름 입니다. (입력된 이름 값: " + stationRequest.getName() + ")");
-        }
+        validateDuplicatedName(stationRequest.getName());
 
         Station station = stationDao.insert(stationRequest.toStation());
         return StationResponse.of(station);
+    }
+
+    private void validateDuplicatedName(String name) {
+        if (stationDao.existsByName(name)) {
+            throw new DuplicateException("이미 존재하는 역 이름 입니다. (입력된 이름 값: " + name + ")");
+        }
     }
 
     @Transactional(readOnly = true)

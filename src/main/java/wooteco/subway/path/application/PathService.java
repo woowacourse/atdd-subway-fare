@@ -42,13 +42,17 @@ public class PathService {
             SubwayPath subwayPath = pathFinder.findPath(lines, departureStation, arrivalStation);
 
             int distance = subwayPath.calculateDistance();
-            DistanceStrategy distanceStrategy = DistanceType.distanceStrategy(distance);
-            AgeStrategy ageStrategy = AgeType.ageStrategy(loginMember.getAge());
-            Fare fare = new Fare(subwayPath.extraFare(), distanceStrategy, ageStrategy);
+            Fare fare = calculateFare(loginMember, subwayPath, distance);
 
             return PathResponseAssembler.assemble(subwayPath, fare.calculate(distance));
         } catch (Exception e) {
             throw new InvalidPathException(e.getMessage());
         }
+    }
+
+    private Fare calculateFare(LoginMember loginMember, SubwayPath subwayPath, int distance) {
+        DistanceStrategy distanceStrategy = DistanceType.distanceStrategy(distance);
+        AgeStrategy ageStrategy = AgeType.ageStrategy(loginMember.getAge());
+        return new Fare(subwayPath.extraFare(), distanceStrategy, ageStrategy);
     }
 }

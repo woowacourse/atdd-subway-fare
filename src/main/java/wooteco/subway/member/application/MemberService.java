@@ -20,18 +20,26 @@ public class MemberService {
 
     @Transactional
     public MemberResponse createMember(MemberRequest request) {
-        if (memberDao.existsEmail(request.getEmail())) {
-            throw new DuplicateException("이미 존재하는 이메일입니다.");
-        }
+        validateDuplicatedEmail(request);
         Member member = memberDao.insert(request.toMember());
         return MemberResponse.of(member);
     }
 
+    private void validateDuplicatedEmail(MemberRequest request) {
+        if (memberDao.existsEmail(request.getEmail())) {
+            throw new DuplicateException("이미 존재하는 이메일입니다.");
+        }
+    }
+
     @Transactional(readOnly = true)
     public MemberResponse findMember(LoginMember loginMember) {
-        validatesMember(loginMember);
-        Member member = memberDao.findByEmail(loginMember.getEmail());
+        Member member = findByEmail(loginMember);
         return MemberResponse.of(member);
+    }
+
+    private Member findByEmail(LoginMember loginMember) {
+        validatesMember(loginMember);
+        return memberDao.findByEmail(loginMember.getEmail());
     }
 
     private void validatesMember(LoginMember loginMember) {
@@ -42,8 +50,7 @@ public class MemberService {
 
     @Transactional
     public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
-        validatesMember(loginMember);
-        Member member = memberDao.findByEmail(loginMember.getEmail());
+        Member member = findByEmail(loginMember);
         memberDao.update(
                 new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge())
         );
@@ -51,8 +58,7 @@ public class MemberService {
 
     @Transactional
     public void deleteMember(LoginMember loginMember) {
-        validatesMember(loginMember);
-        Member member = memberDao.findByEmail(loginMember.getEmail());
+        Member member = findByEmail(loginMember);
         memberDao.deleteById(member.getId());
     }
 }

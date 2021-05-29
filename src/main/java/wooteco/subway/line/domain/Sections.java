@@ -63,8 +63,8 @@ public class Sections {
 
     private void replaceSectionWithUpStation(Section newSection, Section existSection) {
         if (existSection.getDistance() <= newSection.getDistance()) {
-            throw new InvalidInputException("등록하려는 구간의 길이가 기존의 구간보다 깁니다. 기존 구간의 길이 "
-                    + existSection.getDistance());
+            throw new InvalidInputException("등록하려는 구간의 길이가 기존의 구간보다 깁니다. " +
+                    "(기존 구간의 길이 " + existSection.getDistance() + ")");
         }
         this.sections.add(
                 new Section(
@@ -76,8 +76,8 @@ public class Sections {
 
     private void replaceSectionWithDownStation(Section newSection, Section existSection) {
         if (existSection.getDistance() <= newSection.getDistance()) {
-            throw new InvalidInputException("등록하려는 구간의 길이가 기존의 구간보다 깁니다. 기존 구간의 길이 "
-                    + existSection.getDistance());
+            throw new InvalidInputException("등록하려는 구간의 길이가 기존의 구간보다 깁니다. " +
+                    "(기존 구간의 길이 " + existSection.getDistance() + ")");
         }
         this.sections.add(
                 new Section(newSection.getDownStation(), existSection.getDownStation(),

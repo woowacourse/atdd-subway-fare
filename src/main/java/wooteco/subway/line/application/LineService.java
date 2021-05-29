@@ -31,15 +31,23 @@ public class LineService {
 
     @Transactional
     public LineResponse saveLine(LineRequest request) {
-        if (lineDao.existsByName(request.getName())) {
-            throw new DuplicateException("이미 존재하는 노선 이름 입니다. (입력된 이름 값: " + request.getName() + ")");
-        }
-        if (lineDao.existsByColor(request.getColor())) {
-            throw new DuplicateException("이미 존재하는 노선 색깔 입니다. (입력된 이름 값: " + request.getColor() + ")");
-        }
+        validateDuplicatedName(request.getName());
+        validateDuplicatedColor(request.getColor());
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);
+    }
+
+    private void validateDuplicatedName(String name) {
+        if (lineDao.existsByName(name)) {
+            throw new DuplicateException("이미 존재하는 노선 이름 입니다. (입력된 이름 값: " + name + ")");
+        }
+    }
+
+    private void validateDuplicatedColor(String color) {
+        if (lineDao.existsByColor(color)) {
+            throw new DuplicateException("이미 존재하는 노선 색깔 입니다. (입력된 이름 값: " + color + ")");
+        }
     }
 
     private Section addInitSection(Line line, LineRequest request) {
