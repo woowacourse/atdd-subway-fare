@@ -60,7 +60,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
     void createLineWithDuplicateName() {
         // given
         지하철_노선_등록되어_있음(신분당선, tokenResponse);
-        LineRequest newRequest = new LineRequest(신분당선.getName(), 구신분당선.getColor(), 구신분당선.getUpStationId(), 구신분당선.getDownStationId(), 구신분당선.getDistance());
+        LineRequest newRequest = new LineRequest(신분당선.getName(), 구신분당선.getColor(),
+                구신분당선.getUpStationId(), 구신분당선.getDownStationId(), 구신분당선.getDistance());
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_생성_요청(newRequest, tokenResponse);
@@ -74,7 +75,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
     void createLineWithDuplicateColor() {
         // given
         지하철_노선_등록되어_있음(신분당선, tokenResponse);
-        LineRequest newRequest = new LineRequest(구신분당선.getName(), 신분당선.getColor(), 구신분당선.getUpStationId(), 구신분당선.getDownStationId(), 구신분당선.getDistance());
+        LineRequest newRequest = new LineRequest(구신분당선.getName(), 신분당선.getColor(),
+                구신분당선.getUpStationId(), 구신분당선.getDownStationId(), 구신분당선.getDistance());
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_생성_요청(newRequest, tokenResponse);
@@ -89,7 +91,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @ValueSource(strings = {"에", "우아한테크코스검프에어바다포츈우기화이팅짱"})
     void createStationFail(String name) {
         //given
-        LineRequest lineRequest = new LineRequest(name, 신분당선.getColor(), 신분당선.getUpStationId(), 신분당선.getDownStationId(), 신분당선.getDistance());
+        LineRequest lineRequest = new LineRequest(name, 신분당선.getColor(),
+                신분당선.getUpStationId(), 신분당선.getDownStationId(), 신분당선.getDistance());
 
         //when
         ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest, tokenResponse);
@@ -180,8 +183,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_삭제됨(response);
     }
 
-    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance, int extraFare, TokenResponse tokenResponse) {
-        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance, extraFare);
+    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation,
+                                              StationResponse downStation, int distance, int extraFare,
+                                              TokenResponse tokenResponse) {
+        LineRequest lineRequest =
+                new LineRequest(name, color, upStation.getId(), downStation.getId(), distance, extraFare);
         return 지하철_노선_등록되어_있음(lineRequest, tokenResponse);
     }
 
@@ -236,7 +242,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_수정_요청(LineResponse response, LineRequest params, TokenResponse tokenResponse) {
+    public static ExtractableResponse<Response> 지하철_노선_수정_요청(LineResponse response, LineRequest params,
+                                                             TokenResponse tokenResponse) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())

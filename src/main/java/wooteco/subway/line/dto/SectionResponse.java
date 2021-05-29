@@ -18,7 +18,8 @@ public class SectionResponse {
     }
 
     public static SectionResponse of(final Section section) {
-        return new SectionResponse(StationResponse.of(section.getUpStation()), StationResponse.of(section.getDownStation()), section.getDistance());
+        return new SectionResponse(StationResponse.of(section.getUpStation()),
+                StationResponse.of(section.getDownStation()), section.getDistance());
     }
 
     public StationResponse getUpStation() {

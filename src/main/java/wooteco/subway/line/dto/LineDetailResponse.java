@@ -17,7 +17,8 @@ public class LineDetailResponse {
     public LineDetailResponse() {
     }
 
-    public LineDetailResponse(final Long id, final String name, final String color, final int distance, final List<StationResponse> stations, final List<SectionResponse> sections) {
+    public LineDetailResponse(Long id, String name, String color, int distance,
+                              List<StationResponse> stations, List<SectionResponse> sections) {
         this.id = id;
         this.name = name;
         this.color = color;
