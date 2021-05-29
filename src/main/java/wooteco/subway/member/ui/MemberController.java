@@ -43,7 +43,7 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/check-validation")
+    @PostMapping("/check-validation")
     public ResponseEntity<Void> validateMember(@RequestBody EmailRequest emailRequest) {
         memberService.checkEmail(emailRequest);
         return ResponseEntity.noContent().build();
