@@ -41,19 +41,16 @@ public class LineService {
 
     @Transactional
     public LineResponse saveLine(LineRequest request) {
-<<<<<<< HEAD
         validateSavableLine(request);
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
-=======
         Line persistLine = lineDao.insert(
-                new Line(
-                    1L,
-                    request.getName(),
-                    request.getColor(),
-                    request.getExtraFare()
-                )
-            );
->>>>>>> feat: 노선 별 추가요금 구현
+            new Line(
+                1L,
+                request.getName(),
+                request.getColor(),
+                request.getExtraFare()
+            )
+        );
+
         persistLine.addSection(addInitSection(persistLine, request));
 
         return LineResponse.of(persistLine);
@@ -104,10 +101,7 @@ public class LineService {
 
     @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-<<<<<<< HEAD
         validateUpdatableLine(id, lineUpdateRequest);
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
-=======
         lineDao.update(
             new Line(
                 id,
@@ -116,7 +110,6 @@ public class LineService {
                 lineUpdateRequest.getExtraFare()
             )
         );
->>>>>>> feat: 노선 별 추가요금 구현
     }
 
     @Transactional
