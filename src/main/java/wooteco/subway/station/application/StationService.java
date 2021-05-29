@@ -2,10 +2,9 @@ package wooteco.subway.station.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.line.dao.LineDao;
-import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
+import wooteco.subway.station.domain.StationWithLines;
 import wooteco.subway.station.dto.StationLineResponse;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
@@ -30,8 +29,9 @@ public class StationService {
         return stationDao.findById(id).orElseThrow(NoSuchStationException::new);
     }
 
-    public List<StationLineResponse> findAllStationResponses() {
-        return stationDao.findAll();
+    public List<StationLineResponse> findAllStationsWithLines() {
+        List<StationWithLines> stationsWithLines = stationDao.findAllWithLines();
+        return StationLineResponse.listOf(stationsWithLines);
     }
 
     @Transactional

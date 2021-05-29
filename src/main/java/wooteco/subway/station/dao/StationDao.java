@@ -6,8 +6,10 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.dto.TransferLineResponse;
 import wooteco.subway.station.domain.Station;
+import wooteco.subway.station.domain.StationWithLines;
 import wooteco.subway.station.dto.StationLineResponse;
 import wooteco.subway.station.dto.StationTransferResponse;
 
@@ -43,7 +45,7 @@ public class StationDao {
         return new Station(id, station.getName());
     }
 
-    public List<StationLineResponse> findAll() {
+    public List<StationWithLines> findAllWithLines() {
         String sql = "select S.id AS station_id, S.name AS station_name, L.id AS line_id, L.name AS line_name, L.color AS line_color " +
                 "FROM STATION AS S " +
                 "LEFT JOIN SECTION AS SE ON (SE.up_station_id = S.id OR SE.down_station_id = S.id) " +
@@ -59,21 +61,21 @@ public class StationDao {
                 .collect(Collectors.toList());
     }
 
-    private StationLineResponse mapStationLineResponse(final List<Map<String, Object>> result) {
+    private StationWithLines mapStationLineResponse(final List<Map<String, Object>> result) {
         if (result.size() == 0) {
             throw new RuntimeException();
         }
 
-        List<TransferLineResponse> transferLineResponses = extractTransferLine(result);
+        List<Line> lines = extractTransferLine(result);
 
-        return new StationLineResponse(
+        return new StationWithLines(
                 (Long) result.get(0).get("station_id"),
                 (String) result.get(0).get("station_name"),
-                transferLineResponses
+                lines
         );
     }
 
-    private List<TransferLineResponse> extractTransferLine(List<Map<String, Object>> result) {
+    private List<Line> extractTransferLine(List<Map<String, Object>> result) {
         if (result.isEmpty() || result.get(0).get("line_id") == null) {
             return Collections.EMPTY_LIST;
         }
@@ -82,7 +84,7 @@ public class StationDao {
                 .entrySet()
                 .stream()
                 .map(it ->
-                        new TransferLineResponse(
+                        new Line(
                                 (Long) it.getKey(),
                                 (String) it.getValue().get(0).get("line_name"),
                                 (String) it.getValue().get(0).get("line_color")
