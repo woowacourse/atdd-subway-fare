@@ -1,4 +1,4 @@
-package wooteco.subway;
+package wooteco.subway.exception;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,8 +8,7 @@ import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import wooteco.subway.auth.application.AuthorizationException;
-import wooteco.subway.exception.SubwayException;
+import wooteco.subway.exception.dto.ErrorResponse;
 
 import java.sql.SQLException;
 
