@@ -14,6 +14,10 @@ public class LoginMember {
         this.age = age;
     }
 
+    public LoginMember(Integer age) {
+        this.age = age;
+    }
+
     public Long getId() {
         return id;
     }

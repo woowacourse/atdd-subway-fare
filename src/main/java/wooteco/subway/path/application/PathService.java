@@ -9,6 +9,7 @@ import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.path.domain.Price;
 import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.path.dto.PathResponseAssembler;
@@ -39,8 +40,16 @@ public class PathService {
 
             SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
 
+            int distance = subwayPath.calculateDistance();
             LoginMember loginMember = authService.findMemberByToken(accessToken);
-            return PathResponseAssembler.assemble(subwayPath, loginMember);
+            // Price price = new Price(subwayPath.findMaxExtraPrice(), loginMember);
+
+            Price price = new Price(0);
+            price.calculatePrice(distance);
+            price.addExtraPrice(subwayPath.findMaxExtraPrice());
+            price.calculateDiscountRateFromAge(loginMember);    //ok
+
+            return PathResponseAssembler.assemble(subwayPath, distance, price);
         } catch (Exception e) {
             throw new InvalidPathException();
         }

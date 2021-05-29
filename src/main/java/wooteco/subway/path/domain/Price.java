@@ -17,6 +17,7 @@ public class Price {
     private static final double DISCOUNT_RATE_50 = 0.5;
     private static final double DISCOUNT_RATE_20 = 0.2;
 
+    private AgePolicy ageStrategy;
     private int price;
 
     public Price() {
@@ -27,44 +28,16 @@ public class Price {
     }
 
     public void calculatePrice(int distance) {
-        if (distance <= DEFAULT_DISTANCE) {
-            this.price = DEFAULT_PRICE;
-            return;
-        }
-        if (distance <= EXTRA_DISTANCE) {
-            this.price = (int)(DEFAULT_PRICE + calculateExtraPrice(distance, DEFAULT_DISTANCE, MINIMUM_UNIT_DISTANCE));
-            return;
-        }
-        if (distance > EXTRA_DISTANCE) {
-            this.price = (int)(EXTRA_PRICE + calculateExtraPrice(distance, EXTRA_DISTANCE, MAXIMUM_UNIT_DISTANCE));
-        }
+        this.price = FareByDistance.calculate(distance);
     }
 
-    private double calculateExtraPrice(int distance, int extraDistance, int unitDistance) {
-        return Math.ceil((distance - extraDistance - 1) / unitDistance + 1) * UNIT_PRICE;
-    }
 
     public void addExtraPrice(int extraPrice) {
         this.price += extraPrice;
     }
 
     public void calculateDiscountRateFromAge(LoginMember loginMember) {
-        if (loginMember.getAge() == null) {
-            return;
-        }
-        if (loginMember.getAge() < DISCOUNT_FIRST_BOUNDARY_FROM_AGE) {
-            this.price = 0;
-            return;
-        }
-        if (loginMember.getAge() < DISCOUNT_SECOND_BOUNDARY_FROM_AGE) {
-            this.price -= DEDUCTION_PRICE;
-            this.price -= (int)(this.price * DISCOUNT_RATE_50);
-            return;
-        }
-        if (loginMember.getAge() < DISCOUNT_THIRD_BOUNDARY_FROM_AGE) {
-            this.price -= DEDUCTION_PRICE;
-            this.price -= (int)(this.price * DISCOUNT_RATE_20);
-        }
+        this.price = FareByAge.calculate(price, loginMember.getAge());
     }
 
     public int getPrice() {
