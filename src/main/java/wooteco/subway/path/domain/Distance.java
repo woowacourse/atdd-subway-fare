@@ -30,11 +30,11 @@ public class Distance {
     }
 
     public int calculateFirstOverCharge() {
-        return (int) ((Math.ceil((distance - FIRST_DISTANCE_CHARGE_THRESHOLD) / FIRST_CHARGE_DISTANCE) + 1) * CHARGE_AMOUNT);
+        return (int) ((Math.ceil((distance - FIRST_DISTANCE_CHARGE_THRESHOLD - 1) / FIRST_CHARGE_DISTANCE) + 1) * CHARGE_AMOUNT);
     }
 
     public int calculateSecondOverCharge() {
-        return FIRST_DISTANCE_FULL_CHARGE + (int) ((Math.ceil((distance - SECOND_DISTANCE_CHARGE_THRESHOLD) / SECOND_CHARGE_DISTANCE) + 1) * CHARGE_AMOUNT);
+        return FIRST_DISTANCE_FULL_CHARGE + (int) ((Math.ceil((distance - SECOND_DISTANCE_CHARGE_THRESHOLD - 1) / SECOND_CHARGE_DISTANCE) + 1) * CHARGE_AMOUNT);
     }
 
     public Distance add(final Distance that) {
