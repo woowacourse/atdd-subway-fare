@@ -17,7 +17,7 @@ import java.util.List;
 public class PathFinder {
 
     public SubwayPath findPath(List<Line> lines, Station departure, Station arrival) {
-        if (departure.equals(arrival)) {
+        if (departure.same(arrival)) {
             throw new InvalidPathException("출발역과 도착역은 같을 수 없습니다!");
         }
         SubwayGraph graph = new SubwayGraph(SectionEdge.class);

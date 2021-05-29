@@ -30,6 +30,26 @@ public class Section {
         }
     }
 
+    public boolean isSameUpStation(Station station) {
+        return this.upStation.same(station);
+    }
+
+    public boolean isSameDownStation(Station station) {
+        return this.downStation.same(station);
+    }
+
+    public int adjustDistance(Section newSection) {
+        return this.distance - newSection.distance;
+    }
+
+    public boolean isShorter(Section section) {
+        return this.distance <= section.distance;
+    }
+
+    public int increaseDistance(Section section) {
+        return this.distance + section.distance;
+    }
+
     public Long getId() {
         return id;
     }

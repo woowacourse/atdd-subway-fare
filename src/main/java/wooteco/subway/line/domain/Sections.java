@@ -49,30 +49,27 @@ public class Sections {
 
     private void addSectionUpToUp(Section section) {
         this.sections.stream()
-                .filter(it -> it.getUpStation().equals(section.getUpStation()))
+                .filter(it -> it.isSameUpStation(section.getUpStation()))
                 .findFirst()
                 .ifPresent(it -> replaceSectionWithDownStation(section, it));
     }
 
     private void addSectionDownToDown(Section section) {
         this.sections.stream()
-                .filter(it -> it.getDownStation().equals(section.getDownStation()))
+                .filter(it -> it.isSameDownStation(section.getDownStation()))
                 .findFirst()
                 .ifPresent(it -> replaceSectionWithUpStation(section, it));
     }
 
     private void replaceSectionWithUpStation(Section newSection, Section existSection) {
         validateDistance(newSection, existSection);
-        this.sections.add(
-                new Section(
-                        existSection.getUpStation(), newSection.getUpStation(),
-                        existSection.getDistance() - newSection.getDistance()
-                ));
+        int distance = existSection.adjustDistance(newSection);
+        this.sections.add(new Section(existSection.getUpStation(), newSection.getUpStation(), distance));
         this.sections.remove(existSection);
     }
 
     private void validateDistance(Section newSection, Section existSection) {
-        if (existSection.getDistance() <= newSection.getDistance()) {
+        if (existSection.isShorter(newSection)) {
             throw new InvalidInputException("등록하려는 구간의 길이가 기존의 구간보다 깁니다. " +
                     "(기존 구간의 길이 " + existSection.getDistance() + ")");
         }
@@ -80,10 +77,8 @@ public class Sections {
 
     private void replaceSectionWithDownStation(Section newSection, Section existSection) {
         validateDistance(newSection, existSection);
-        this.sections.add(
-                new Section(newSection.getDownStation(), existSection.getDownStation(),
-                        existSection.getDistance() - newSection.getDistance()
-                ));
+        int distance = existSection.adjustDistance(newSection);
+        this.sections.add(new Section(newSection.getDownStation(), existSection.getDownStation(), distance));
         this.sections.remove(existSection);
     }
 
@@ -118,7 +113,7 @@ public class Sections {
 
     private Section findSectionByNextUpStation(Station station) {
         return this.sections.stream()
-                .filter(it -> it.getUpStation().equals(station))
+                .filter(it -> it.isSameUpStation(station))
                 .findFirst()
                 .orElse(null);
     }
@@ -129,17 +124,17 @@ public class Sections {
         }
 
         Optional<Section> upSection = sections.stream()
-                .filter(it -> it.getUpStation().equals(station))
+                .filter(it -> it.isSameUpStation(station))
                 .findFirst();
         Optional<Section> downSection = sections.stream()
-                .filter(it -> it.getDownStation().equals(station))
+                .filter(it -> it.isSameDownStation(station))
                 .findFirst();
 
         if (upSection.isPresent() && downSection.isPresent()) {
             Station newUpStation = downSection.get().getUpStation();
             Station newDownStation = upSection.get().getDownStation();
-            int newDistance = upSection.get().getDistance() + downSection.get().getDistance();
-            sections.add(new Section(newUpStation, newDownStation, newDistance));
+            int distance = upSection.get().increaseDistance(downSection.get());
+            sections.add(new Section(newUpStation, newDownStation, distance));
         }
 
         upSection.ifPresent(it -> sections.remove(it));
