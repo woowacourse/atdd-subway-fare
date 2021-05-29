@@ -16,6 +16,10 @@ public class MemberRequest {
         this.age = age;
     }
 
+    public Member toMember() {
+        return new Member(email, password, age);
+    }
+
     public String getEmail() {
         return email;
     }
@@ -26,9 +30,5 @@ public class MemberRequest {
 
     public Integer getAge() {
         return age;
-    }
-
-    public Member toMember() {
-        return new Member(email, password, age);
     }
 }

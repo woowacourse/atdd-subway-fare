@@ -18,9 +18,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class LineService {
-    private LineDao lineDao;
-    private SectionDao sectionDao;
-    private StationService stationService;
+    private final LineDao lineDao;
+    private final SectionDao sectionDao;
+    private final StationService stationService;
 
     public LineService(LineDao lineDao, SectionDao sectionDao, StationService stationService) {
         this.lineDao = lineDao;
@@ -53,14 +53,14 @@ public class LineService {
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
-                .map(line -> LineResponse.of(line))
+                .map(LineResponse::of)
                 .collect(Collectors.toList());
     }
 
     public List<LineDetailResponse> findDetailLineResponse() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
-                .map(line -> LineDetailResponse.of(line))
+                .map(LineDetailResponse::of)
                 .collect(Collectors.toList());
     }
 

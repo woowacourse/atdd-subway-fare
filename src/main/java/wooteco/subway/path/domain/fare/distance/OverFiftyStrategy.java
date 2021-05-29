@@ -11,6 +11,7 @@ public class OverFiftyStrategy implements DistanceStrategy {
         TenToFiftyStrategy strategy = new TenToFiftyStrategy();
         int underFiftyFare = strategy.maxFare();
         distance -= MAX_DISTANCE;
-        return underFiftyFare + (int) ((Math.ceil((distance - 1) / UNIT) + 1) * UNIT_FARE);
+        int count = (distance - 1) / UNIT;
+        return underFiftyFare + (int) ((Math.ceil(count) + 1) * UNIT_FARE);
     }
 }

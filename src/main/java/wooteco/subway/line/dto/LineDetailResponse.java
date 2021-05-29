@@ -28,11 +28,11 @@ public class LineDetailResponse {
 
     public static LineDetailResponse of(Line line) {
         List<StationResponse> stations = line.getStations().stream()
-                .map(it -> StationResponse.of(it))
+                .map(StationResponse::of)
                 .collect(Collectors.toList());
 
         List<SectionResponse> sections = line.sections().stream()
-                .map(it -> SectionResponse.of(it))
+                .map(SectionResponse::of)
                 .collect(Collectors.toList());
         return new LineDetailResponse(line.getId(), line.getName(), line.getColor(), line.distance(), stations, sections);
     }

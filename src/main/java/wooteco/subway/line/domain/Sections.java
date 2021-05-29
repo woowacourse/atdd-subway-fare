@@ -4,18 +4,11 @@ import wooteco.subway.exception.DuplicateException;
 import wooteco.subway.exception.InvalidInputException;
 import wooteco.subway.station.domain.Station;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Sections {
     private List<Section> sections = new ArrayList<>();
-
-    public List<Section> getSections() {
-        return sections;
-    }
 
     public Sections() {
     }
@@ -70,23 +63,32 @@ public class Sections {
 
     private void replaceSectionWithUpStation(Section newSection, Section existSection) {
         if (existSection.getDistance() <= newSection.getDistance()) {
-            throw new InvalidInputException("등록하려는 구간의 길이가 기존의 구간보다 깁니다. 기존 구간의 길이 " + existSection.getDistance());
+            throw new InvalidInputException("등록하려는 구간의 길이가 기존의 구간보다 깁니다. 기존 구간의 길이 "
+                    + existSection.getDistance());
         }
-        this.sections.add(new Section(existSection.getUpStation(), newSection.getUpStation(), existSection.getDistance() - newSection.getDistance()));
+        this.sections.add(
+                new Section(
+                        existSection.getUpStation(), newSection.getUpStation(),
+                        existSection.getDistance() - newSection.getDistance()
+                ));
         this.sections.remove(existSection);
     }
 
     private void replaceSectionWithDownStation(Section newSection, Section existSection) {
         if (existSection.getDistance() <= newSection.getDistance()) {
-            throw new InvalidInputException("등록하려는 구간의 길이가 기존의 구간보다 깁니다. 기존 구간의 길이 " + existSection.getDistance());
+            throw new InvalidInputException("등록하려는 구간의 길이가 기존의 구간보다 깁니다. 기존 구간의 길이 "
+                    + existSection.getDistance());
         }
-        this.sections.add(new Section(newSection.getDownStation(), existSection.getDownStation(), existSection.getDistance() - newSection.getDistance()));
+        this.sections.add(
+                new Section(newSection.getDownStation(), existSection.getDownStation(),
+                        existSection.getDistance() - newSection.getDistance()
+                ));
         this.sections.remove(existSection);
     }
 
     public List<Station> getStations() {
         if (sections.isEmpty()) {
-            return Arrays.asList();
+            return Collections.emptyList();
         }
 
         List<Station> stations = new ArrayList<>();
@@ -104,7 +106,7 @@ public class Sections {
 
     private Section findUpEndSection() {
         List<Station> downStations = this.sections.stream()
-                .map(it -> it.getDownStation())
+                .map(Section::getDownStation)
                 .collect(Collectors.toList());
 
         return this.sections.stream()
@@ -147,5 +149,9 @@ public class Sections {
         return sections.stream()
                 .map(Section::getDistance)
                 .reduce(0, Integer::sum);
+    }
+
+    public List<Section> getSections() {
+        return sections;
     }
 }
