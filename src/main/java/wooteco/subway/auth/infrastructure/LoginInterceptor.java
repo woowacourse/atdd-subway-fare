@@ -15,11 +15,20 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if ("OPTIONS".equals(request.getMethod()) || "GET".equals(request.getMethod())) {
+        if (isPreflight(request) || isGetRequestExcludeMemberRequest(request)) {
             return true;
         }
         String token = AuthorizationExtractor.extract(request);
         authService.validateToken(token);
         return true;
+    }
+
+    private boolean isGetRequestExcludeMemberRequest(HttpServletRequest request) {
+        return "GET".equals(request.getMethod()) &&
+                !request.getRequestURI().contains("/members/me");
+    }
+
+    private boolean isPreflight(HttpServletRequest request) {
+        return "OPTIONS".equals(request.getMethod());
     }
 }
