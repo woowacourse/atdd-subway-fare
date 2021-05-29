@@ -8,9 +8,9 @@ import java.util.function.Predicate;
 public enum Discount {
     CHILDREN(0.5, Age::isChildren),
     TEENAGER(0.2, Age::isTeenager),
-    NONE(0, (age) -> true);
+    NONE(0, (age) -> !age.isChildren() && !age.isTeenager());
 
-    public static final int DEFAULT_DISCOUNT_AMOUNT = 350;
+    private static final int DEFAULT_DISCOUNT_AMOUNT = 350;
 
     private final double discountRate;
     private final Predicate<Age> discountScheme;
@@ -20,13 +20,14 @@ public enum Discount {
         this.discountScheme = discountScheme;
     }
 
-    public static int getDiscountAmount(final Age age, final int fareAmount) {
-        Double discountRate = Arrays.stream(values())
+    public static Discount getDiscount(final Age age) {
+        return Arrays.stream(values())
                 .filter(it -> it.discountScheme.test(age))
                 .findFirst()
-                .map(it -> it.discountRate)
                 .orElseThrow(IllegalArgumentException::new);
+    }
 
-        return (int) ((fareAmount - DEFAULT_DISCOUNT_AMOUNT) * discountRate);
+    public int calculateDiscountAmount(final int fare) {
+        return (int) ((fare - DEFAULT_DISCOUNT_AMOUNT) * discountRate);
     }
 }

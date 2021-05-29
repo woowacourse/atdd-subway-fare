@@ -40,7 +40,8 @@ public class Fare {
         if (loginMember.getId() == null) {
             return this;
         }
-        int discountAmount = Discount.getDiscountAmount(loginMember.getAge(), this.fare);
+        Discount discount = Discount.getDiscount(loginMember.getAge());
+        int discountAmount = discount.calculateDiscountAmount(this.fare);
         return new Fare(this.fare - discountAmount);
     }
 
