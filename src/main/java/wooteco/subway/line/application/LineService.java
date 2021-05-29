@@ -43,7 +43,6 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
-    @Transactional
     private Section addInitSection(Line line, LineRequest request) {
         if (request.getUpStationId() != null && request.getDownStationId() != null) {
             Station upStation = stationService.findStationById(request.getUpStationId());
