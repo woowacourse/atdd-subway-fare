@@ -7,6 +7,7 @@ import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Objects;
 
 public class AuthInterceptor implements HandlerInterceptor {
     private final AuthService authService;
@@ -17,12 +18,12 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        if ("OPTIONS".equals(request.getMethod())) {
+        if ("OPTIONS".equals(request.getMethod()) || "GET".equals(request.getMethod())) {
             return true;
         }
 
         final String token = AuthorizationExtractor.extract(request);
-        if (!authService.validateToken(token)) {
+        if (Objects.isNull(token) || !authService.validateToken(token)) {
             throw new AuthorizationException();
         }
         return true;
