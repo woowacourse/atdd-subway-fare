@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.function.Predicate;
 
 public enum FareByDistance {
-    DEFAULT_DISTANCE(0, 0, 0, (distance) -> distance <= 10),
+    DEFAULT_DISTANCE(1, 0, 0, (distance) -> distance <= 10),
     EXTRA_DISTANCE(5, 10, 1250, (distance) -> distance > 10 && distance <= 50),
     FAR_DISTANCE(8, 50, 2250, (distance) -> distance > 50);
 
@@ -30,7 +30,9 @@ public enum FareByDistance {
     }
 
     private int calculateExtraFare(int distance) {
-        if (unitDistance == 0) return previousFare;
-        return previousFare + (int)((Math.ceil((distance - extraDistance) / unitDistance) +1) * 100);
+        if(distance <= 10) {
+            return 1250;
+        }
+        return previousFare + (int)((Math.ceil((distance - extraDistance - 1) / unitDistance) +1) * 100);
     }
 }

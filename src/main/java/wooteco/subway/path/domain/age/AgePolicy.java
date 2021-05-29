@@ -1,4 +1,4 @@
-package wooteco.subway.path.domain;
+package wooteco.subway.path.domain.age;
 
 public abstract class AgePolicy {
     private final double rate;

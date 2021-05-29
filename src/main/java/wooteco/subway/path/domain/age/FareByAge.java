@@ -1,7 +1,9 @@
-package wooteco.subway.path.domain;
+package wooteco.subway.path.domain.age;
 
 import java.util.Arrays;
 import java.util.function.Predicate;
+
+import wooteco.subway.path.domain.TeenagerPolicy;
 
 public enum FareByAge {
     BABY(new BabyPolicy(), (age) -> age < 6),

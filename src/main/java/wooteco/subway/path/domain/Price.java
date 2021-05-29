@@ -1,6 +1,8 @@
 package wooteco.subway.path.domain;
 
 import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.path.domain.age.AgePolicy;
+import wooteco.subway.path.domain.age.FareByAge;
 
 public class Price {
     private static final int DEFAULT_DISTANCE = 10;
