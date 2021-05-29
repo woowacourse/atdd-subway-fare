@@ -18,8 +18,8 @@ public enum FarePolicy {
     );
 
     private static final Fare BASE_FARE = new Fare(1250);
-    private static final int LESS_THAN_FIFTY_KM = 5;
-    private static final int OVER_FIFTY_KM = 8;
+    private static final int FIVE_KILO_METER = 5;
+    private static final int EIGHT_KILO_METER = 8;
     private static final int EXTRA_CHARGE_UNIT = 100;
 
     private final Function<Integer, Fare> fareFunction;
@@ -42,15 +42,15 @@ public enum FarePolicy {
     }
 
     private static Fare overTenLessThanFiftyCalculate(int distance) {
-        return baseCalculate().add(calculateOverFare(distance - 10, LESS_THAN_FIFTY_KM));
+        return baseCalculate().add(calculateOverFare(distance - 10, FIVE_KILO_METER));
     }
 
     private static Fare overFiftyCalculate(int distance) {
-        return overTenLessThanFiftyCalculate(50).add(calculateOverFare(distance - 50, OVER_FIFTY_KM));
+        return overTenLessThanFiftyCalculate(50).add(calculateOverFare(distance - 50, EIGHT_KILO_METER));
     }
 
-    private static Fare calculateOverFare(int distance, int km) {
-        return new Fare(((distance - 1) / km + 1) * EXTRA_CHARGE_UNIT);
+    private static Fare calculateOverFare(int distance, int kmUnit) {
+        return new Fare(((distance - 1) / kmUnit + 1) * EXTRA_CHARGE_UNIT);
     }
 
     public Fare calculateFare(int distance) {
