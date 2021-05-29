@@ -3,6 +3,7 @@ package wooteco.subway.station.application;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.DuplicateException;
+import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.exception.SubwayException;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.infrastructure.dao.LineDao;
@@ -42,7 +43,14 @@ public class StationService {
     }
 
     public Station findStationById(Long id) {
+        validateThatStationExists(id);
         return stationDao.findById(id);
+    }
+
+    private void validateThatStationExists(Long id) {
+        if (stationDao.existsById(id)) {
+            throw new NotFoundException("존재하지 않는 역입니다.");
+        }
     }
 
     public List<StationWithLinesResponse> findAllStationResponses() {
@@ -70,6 +78,7 @@ public class StationService {
 
     @Transactional
     public void deleteStationById(Long id) {
+        validateThatStationExists(id);
         validateDeletableStation(id);
         stationDao.deleteById(id);
     }
