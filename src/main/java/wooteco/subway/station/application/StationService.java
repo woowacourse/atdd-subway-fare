@@ -1,11 +1,13 @@
 package wooteco.subway.station.application;
 
 import org.springframework.stereotype.Service;
+import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 import wooteco.subway.station.exception.DuplicateStationNameException;
+import wooteco.subway.station.exception.StationInLineException;
 import wooteco.subway.station.exception.StationNotFoundException;
 
 import java.util.List;
@@ -15,9 +17,11 @@ import java.util.stream.Collectors;
 @Service
 public class StationService {
     private StationDao stationDao;
+    private SectionDao sectionDao;
 
-    public StationService(StationDao stationDao) {
+    public StationService(StationDao stationDao, SectionDao sectionDao) {
         this.stationDao = stationDao;
+        this.sectionDao = sectionDao;
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
@@ -48,6 +52,14 @@ public class StationService {
 
     public void deleteStationById(Long id) {
         final Station station = findStationById(id);
+        validateNotInAnyLines(station);
         stationDao.deleteById(station.getId());
+    }
+
+    private void validateNotInAnyLines(Station station) {
+        Optional<List<Long>> lineIds = sectionDao.findLineIdsContains(station.getId());
+        if (lineIds.isPresent()) {
+            throw new StationInLineException();
+        }
     }
 }
