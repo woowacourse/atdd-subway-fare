@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wooteco.subway.ErrorResponse;
 import wooteco.subway.station.exception.DuplicateStationNameException;
+import wooteco.subway.station.exception.StationInLineException;
 import wooteco.subway.station.exception.StationNotFoundException;
 import wooteco.subway.station.exception.InvalidStationNameException;
 
@@ -36,6 +37,12 @@ public class StationControllerAdvice {
 
     @ExceptionHandler(InvalidStationNameException.class)
     public ResponseEntity<ErrorResponse> handleInvalidStationNameException(InvalidStationNameException e) {
+        ErrorResponse errorResponse = ErrorResponse.of(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    @ExceptionHandler(StationInLineException.class)
+    public ResponseEntity<ErrorResponse> handleStationInLineException(StationInLineException e) {
         ErrorResponse errorResponse = ErrorResponse.of(e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
