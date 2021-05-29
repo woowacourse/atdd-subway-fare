@@ -6,18 +6,12 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wooteco.subway.ErrorResponse;
-import wooteco.subway.auth.application.AuthorizationException;
 import wooteco.subway.member.exception.DuplicateEmailException;
 
 import java.util.Objects;
 
 @RestControllerAdvice(basePackageClasses = MemberController.class)
 public class MemberControllerAdvice {
-
-    @ExceptionHandler(AuthorizationException.class)
-    public ResponseEntity<Void> handleAuthorizationException() {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
