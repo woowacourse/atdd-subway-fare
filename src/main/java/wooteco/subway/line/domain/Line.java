@@ -26,6 +26,10 @@ public class Line {
         this(id, name, color, Sections.empty(), extraFare);
     }
 
+    public Line(String name, String color, int extraFare) {
+        this(null, name, color, extraFare);
+    }
+
     public void addSection(Station upStation, Station downStation, int distance) {
         Section section = new Section(upStation, downStation, distance);
         sections.addSection(section);
