@@ -31,6 +31,8 @@ public class PathService {
         this.pathFinder = pathFinder;
     }
 
+
+    @Transactional(readOnly = true)
     public PathResponse findPath(LoginMember loginMember, Long departure, Long arrival) {
         try {
             List<Line> lines = lineService.findLines();
