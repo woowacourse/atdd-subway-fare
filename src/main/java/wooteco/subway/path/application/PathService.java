@@ -14,7 +14,6 @@ import wooteco.subway.station.domain.Station;
 import java.util.List;
 
 @Service
-@Transactional
 public class PathService {
     private final LineService lineService;
     private final StationService stationService;
@@ -26,6 +25,7 @@ public class PathService {
         this.pathFinder = pathFinder;
     }
 
+    @Transactional(readOnly = true)
     public PathResponse findPath(Long departure, Long arrival, LoginMember loginMember) {
         try {
             List<Line> lines = lineService.findLines();
