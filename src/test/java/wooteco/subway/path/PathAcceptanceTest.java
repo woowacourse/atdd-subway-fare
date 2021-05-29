@@ -27,7 +27,7 @@ import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되�
 import static wooteco.subway.line.SectionAcceptanceTest.지하철_구간_등록되어_있음;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
-@DisplayName("지하철 경로 조회")
+@DisplayName("지하철 경로 조회 관련 기능")
 public class PathAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
     private LineResponse 이호선;
@@ -99,7 +99,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         총_요금이_응답됨(response, fare);
     }
 
-    @DisplayName("departure와 arrival가 같은경우 예외가 발생한다.")
+    @DisplayName("departure와 arrival이 같은경우, 400 에러를 받는다.")
     @Test
     void samePositionException() {
         //when
@@ -109,7 +109,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         거리_경로_조회_요청_실패(response);
     }
 
-    @DisplayName("departure와 arrival가 이어지지 않는 경우 예외발생한다.")
+    @DisplayName("departure와 arrival이 이어지지 않는 경우, 400 에러를 받는다.")
     @Test
     void noPathException() {
         //when
@@ -119,7 +119,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         거리_경로_조회_요청_실패(response);
     }
 
-    @DisplayName("departure와 arrival중 하나라도 노선에 등록되어 있지 않을 시 예외발생한다.")
+    @DisplayName("departure와 arrival중 하나라도 노선에 등록되어 있지 않을 시, 400 에러를 받는다.")
     @Test
     void noInLineStationException() {
         //when

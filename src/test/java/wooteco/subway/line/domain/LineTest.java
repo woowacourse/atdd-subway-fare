@@ -7,14 +7,11 @@ import wooteco.subway.station.domain.Station;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class LineTest {
-
+@DisplayName("노선 도메인 테스트")
+public class LineTest {
     Station 양재역 = new Station(2L, "양재역");
-    ;
     Station 교대역 = new Station(3L, "교대역");
-    ;
     Station 남부터미널역 = new Station(4L, "남부터미널역");
-    ;
     Line 삼호선 = new Line("삼호선", "brown", 1000);
 
     @BeforeEach

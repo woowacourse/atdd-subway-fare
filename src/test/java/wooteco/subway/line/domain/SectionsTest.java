@@ -8,7 +8,8 @@ import java.util.Arrays;
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.station.StationFixture.*;
 
-class SectionsTest {
+@DisplayName("지하철 구간 도메인 테스트")
+public class SectionsTest {
 
     @DisplayName("전체 거리 계산")
     @Test

@@ -11,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.line.LineFixture.*;
 import static wooteco.subway.line.SectionFixture.*;
 
+@DisplayName("지하철 경로 도메인 테스트")
 class SubwayPathTest {
 
     @DisplayName("환승 시 노선 최대 추가 요금 확인")
