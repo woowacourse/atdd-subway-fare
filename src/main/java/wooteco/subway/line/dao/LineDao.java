@@ -3,6 +3,7 @@ package wooteco.subway.line.dao;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import wooteco.subway.line.application.NoSuchLineException;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.domain.Sections;
@@ -78,8 +79,8 @@ public class LineDao {
     }
 
     private Line mapLine(List<Map<String, Object>> result) {
-        if (result.size() == 0) {
-            throw new RuntimeException();
+        if (result.isEmpty()) {
+            throw new NoSuchLineException();
         }
 
         List<Section> sections = extractSections(result);
@@ -94,7 +95,7 @@ public class LineDao {
 
     private List<Section> extractSections(List<Map<String, Object>> result) {
         if (result.isEmpty() || result.get(0).get("SECTION_ID") == null) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         return result.stream()
                 .collect(Collectors.groupingBy(it -> it.get("SECTION_ID")))
