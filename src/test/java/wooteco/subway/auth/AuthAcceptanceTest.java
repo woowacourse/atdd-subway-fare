@@ -1,21 +1,20 @@
 package wooteco.subway.auth;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.member.MemberAcceptanceTest.회원_생성을_요청;
+import static wooteco.subway.member.MemberAcceptanceTest.회원_정보_조회됨;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.subway.member.MemberAcceptanceTest.회원_생성을_요청;
-import static wooteco.subway.member.MemberAcceptanceTest.회원_정보_조회됨;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
     private static final String EMAIL = "email@email.com";

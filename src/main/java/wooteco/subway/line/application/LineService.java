@@ -1,6 +1,7 @@
 package wooteco.subway.line.application;
 
 import java.util.ArrayList;
+import java.util.List;
 import org.springframework.stereotype.Service;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
@@ -16,9 +17,6 @@ import wooteco.subway.line.exception.DuplicateLineColorException;
 import wooteco.subway.line.exception.DuplicateLineNameException;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
-
-import java.util.List;
-import java.util.stream.Collectors;
 import wooteco.subway.station.dto.StationWithTransferAndNextDistanceResponse;
 
 @Service

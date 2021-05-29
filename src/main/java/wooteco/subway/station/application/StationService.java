@@ -1,6 +1,8 @@
 package wooteco.subway.station.application;
 
 import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.domain.Line;
@@ -8,9 +10,6 @@ import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
-
-import java.util.List;
-import java.util.stream.Collectors;
 import wooteco.subway.station.exception.DuplicateStationNameException;
 import wooteco.subway.station.exception.InvalidStationDeletionException;
 

@@ -1,8 +1,18 @@
 package wooteco.subway.station;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
+import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_생성_요청_withToken;
+import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_생성됨;
+import static wooteco.subway.member.MemberAcceptanceTest.회원_생성됨;
+import static wooteco.subway.member.MemberAcceptanceTest.회원_생성을_요청;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,17 +23,6 @@ import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
-import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_생성_요청_withToken;
-import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_생성됨;
-import static wooteco.subway.member.MemberAcceptanceTest.회원_생성됨;
-import static wooteco.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {

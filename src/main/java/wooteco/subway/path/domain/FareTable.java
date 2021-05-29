@@ -1,10 +1,8 @@
 package wooteco.subway.path.domain;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import wooteco.subway.path.dto.FareTableResponse;
 
 public class FareTable {
     private final Map<String, Integer> fareTable;
