@@ -11,7 +11,7 @@ import wooteco.subway.auth.application.AuthorizationException;
 import java.sql.SQLException;
 
 @RestControllerAdvice
-public class ExceptionController {
+public class ControllerExceptionAdvice {
     @ExceptionHandler(SQLException.class)
     public ResponseEntity<Void> handleSQLException() {
         return ResponseEntity.badRequest().build();
