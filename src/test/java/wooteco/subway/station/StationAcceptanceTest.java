@@ -15,6 +15,7 @@ import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
+import wooteco.subway.station.dto.StationWithTransferResponse;
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,6 +29,8 @@ import static wooteco.subway.line.LineAcceptanceTest.로그인_사용자_지하�
 public class StationAcceptanceTest extends AcceptanceTest {
     private static final String 강남역 = "강남역";
     private static final String 역삼역 = "역삼역";
+    private static final String 잠실역 = "잠실역";
+    private static final String 강변역 = "강변역";
     private static final String abc = "abc";
     private static final String _ = "1";
     private static final String 공백이_포함된_역 = "공백 공백";
@@ -73,6 +76,15 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+    public static  ExtractableResponse<Response> 환승역을_포함한_지하철역_목록_조회_요청() {
+        return RestAssured
+                .given().log().all()
+                .when().get("/stations/transfer")
+                .then().log().all()
+                .extract();
+    }
+
+
     public static ExtractableResponse<Response> 지하철역_제거_요청(StationResponse stationResponse) {
         return RestAssured
                 .given().log().all()
@@ -110,6 +122,11 @@ public class StationAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 지하철역_목록_응답됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    // TODO 변경
+    public static void 환승역을_포함한_지하철역_목록_응답됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
@@ -217,6 +234,36 @@ public class StationAcceptanceTest extends AcceptanceTest {
         // then
         지하철역_목록_응답됨(response);
         지하철역_목록_포함됨(response, Arrays.asList(stationResponse1, stationResponse2));
+    }
+
+    /**      갑상선
+     * 강남역 ------ 역삼역
+     *  |  \
+     *  |박미선\ 이호선
+     *  |      \
+     *  잠실역    강변역
+     */
+    @DisplayName("환승 노선 정보를 담은 지하철역을 조회한다.")
+    @Test
+    void getStationsWithTransferInfo() {
+        // given
+        StationResponse stationResponse1 = 로그인_사용자_지하철역_등록되어_있음(tokenResponse, 강남역);
+        StationResponse stationResponse2 = 로그인_사용자_지하철역_등록되어_있음(tokenResponse, 역삼역);
+        StationResponse stationResponse3 = 로그인_사용자_지하철역_등록되어_있음(tokenResponse, 잠실역);
+        StationResponse stationResponse4 = 로그인_사용자_지하철역_등록되어_있음(tokenResponse, 강변역);
+        LineRequest lineRequest1 = new LineRequest("갑상선", "bg-red-600", stationResponse1.getId(), stationResponse2.getId(), 10);
+        LineRequest lineRequest2 = new LineRequest("박미선", "bg-red-700", stationResponse1.getId(), stationResponse3.getId(), 10);
+        LineRequest lineRequest3 = new LineRequest("이호선", "bg-red-800", stationResponse1.getId(), stationResponse4.getId(), 10);
+        로그인_사용자_지하철_노선_등록되어_있음(tokenResponse, lineRequest1);
+        로그인_사용자_지하철_노선_등록되어_있음(tokenResponse, lineRequest2);
+        로그인_사용자_지하철_노선_등록되어_있음(tokenResponse, lineRequest3);
+
+        // when
+        ExtractableResponse<Response> response = 환승역을_포함한_지하철역_목록_조회_요청();
+
+        // then
+        지하철역_목록_응답됨(response);
+        환승역을_포함한_지하철역_목록_응답됨(response);
     }
 
     @DisplayName("노선에 등록된 지하철역은 제거할 수 없다.")
