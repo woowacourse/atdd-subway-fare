@@ -48,15 +48,14 @@ ext {
 }
 
 test {
-    outputs.dir snippetsDir
     useJUnitPlatform()
+    outputs.dir snippetsDir
 }
 
 asciidoctor {
     sourceDir file('src/docs/asciidoc')
     outputDir file('build/html5')
-    attributes snippets: snippetsDir
-    dependsOn test
+    mustRunAfter test
 }
 
 asciidoctor.doLast {
@@ -66,3 +65,5 @@ asciidoctor.doLast {
         include '*.html'
     }
 }
+
+build.dependsOn asciidoctor
