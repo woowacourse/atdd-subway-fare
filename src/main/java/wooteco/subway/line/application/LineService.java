@@ -30,8 +30,8 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        existsName(request);
-        existsColor(request);
+        existsName(request.getName());
+        existsColor(request.getColor());
 
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
         persistLine.addSection(addInitSection(persistLine, request));
@@ -92,35 +92,35 @@ public class LineService {
         return lineDao.findById(id);
     }
 
-    public LineUpdateResponse updateLine(Long id, LineRequest lineUpdateRequest) {
+    public LineUpdateResponse updateLine(Long id, LineUpdateRequest updateRequest) {
         Line line = lineDao.findById(id);
-        if (isDifferentName(line, lineUpdateRequest)) {
-            existsName(lineUpdateRequest);
+        if (isDifferentName(line, updateRequest)) {
+            existsName(updateRequest.getName());
         }
-        if (isDifferentColor(line, lineUpdateRequest)) {
-            existsColor(lineUpdateRequest);
+        if (isDifferentColor(line, updateRequest)) {
+            existsColor(updateRequest.getColor());
         }
 
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        lineDao.update(new Line(id, updateRequest.getName(), updateRequest.getColor()));
         return LineUpdateResponse.of(lineDao.findById(id));
     }
 
-    private boolean isDifferentName(Line line, LineRequest lineUpdateRequest) {
-        return !line.getName().equals(lineUpdateRequest.getName());
+    private boolean isDifferentName(Line line, LineUpdateRequest updateRequest) {
+        return !line.getName().equals(updateRequest.getName());
     }
 
-    private void existsName(LineRequest request) {
-        if (lineDao.existsName(request.getName())) {
+    private boolean isDifferentColor(Line line, LineUpdateRequest updateRequest) {
+        return !line.getColor().equals(updateRequest.getColor());
+    }
+
+    private void existsName(String name) {
+        if (lineDao.existsName(name)) {
             throw new DuplicateNameException();
         }
     }
 
-    private boolean isDifferentColor(Line line, LineRequest lineUpdateRequest) {
-        return !line.getColor().equals(lineUpdateRequest.getColor());
-    }
-
-    private void existsColor(LineRequest request) {
-        if (lineDao.existsColor(request.getColor())) {
+    private void existsColor(String color) {
+        if (lineDao.existsColor(color)) {
             throw new DuplicateColorException();
         }
     }
