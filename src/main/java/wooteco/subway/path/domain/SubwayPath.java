@@ -1,6 +1,7 @@
 package wooteco.subway.path.domain;
 
 import wooteco.subway.line.domain.Line;
+import wooteco.subway.path.strategy.FareStrategy;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
@@ -14,11 +15,13 @@ public class SubwayPath {
     private final List<SectionEdge> sectionEdges;
     private final List<Station> stations;
     private final Set<Line> lines;
+    private final FareStrategy fareStrategy;
 
-    public SubwayPath(List<SectionEdge> sectionEdges, List<Station> stations, Set<Line> lines) {
+    public SubwayPath(List<SectionEdge> sectionEdges, List<Station> stations, Set<Line> lines, FareStrategy fareStrategy) {
         this.sectionEdges = sectionEdges;
         this.stations = stations;
         this.lines = lines;
+        this.fareStrategy = fareStrategy;
     }
 
     public List<SectionEdge> getSectionEdges() {
@@ -33,22 +36,22 @@ public class SubwayPath {
         return sectionEdges.stream().mapToInt(it -> it.getSection().getDistance()).sum();
     }
 
-    public int calculateFare(Integer age, int distance) {
+    public int calculateFare(int distance) {
         int maxExtraFare = findExtraFare();
 
         if (distance <= DEFAULT_DISTANCE) {
-            return discountByAge(age, DEFAULT_FARE + maxExtraFare);
+            return fareStrategy.discount(DEFAULT_FARE + maxExtraFare);
         }
 
         if (distance <= OVER_LIMIT_DISTANCE) {
             int overFare = calculateAdditionalFareOver10km(distance - DEFAULT_DISTANCE);
-            return discountByAge(age, DEFAULT_FARE + overFare + maxExtraFare);
+            return fareStrategy.discount(DEFAULT_FARE + overFare + maxExtraFare);
         }
 
         int additionalFareOver10km = calculateAdditionalFareOver10km(OVER_LIMIT_DISTANCE - DEFAULT_DISTANCE);
         int additionalFareOver50km = calculateAdditionalFareOver50km(distance - OVER_LIMIT_DISTANCE);
 
-        return discountByAge(age, DEFAULT_FARE + maxExtraFare
+        return fareStrategy.discount(DEFAULT_FARE + maxExtraFare
                 + additionalFareOver10km
                 + additionalFareOver50km);
     }
@@ -58,20 +61,6 @@ public class SubwayPath {
                 .mapToInt(Line::getExtraFare)
                 .max()
                 .orElse(0);
-    }
-
-    private int discountByAge(Integer age, int fare) {
-        if (age < 6) {
-            return 0;
-        }
-        if (age < 13) {
-            return (int) ((fare - 350) * 0.5);
-        }
-
-        if (age < 19) {
-            return (int) ((fare - 350) * 0.8);
-        }
-        return fare;
     }
 
     private int calculateAdditionalFareOver10km(int distance) {

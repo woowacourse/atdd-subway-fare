@@ -32,9 +32,9 @@ public class PathService {
             Station sourceStation = stationService.findStationById(source);
             Station targetStation = stationService.findStationById(target);
 
-            SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
+            SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation, loginMember);
 
-            return PathResponseAssembler.assemble(loginMember.getAge(), subwayPath);
+            return PathResponseAssembler.assemble(subwayPath);
         } catch (Exception e) {
             throw new InvalidPathException();
         }
