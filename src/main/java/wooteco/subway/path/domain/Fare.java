@@ -24,16 +24,16 @@ public class Fare {
 
     public static Fare calculateTotalFare(final List<SectionEdge> sectionEdges, final Distance distance) {
         int lineExtraFare = getLineExtraFare(sectionEdges);
-        int distanceCharge = DistanceCharge.getDistanceCharge(distance);
+        int distanceCharge = DistanceCharge.calculateDistanceCharge(distance);
 
         return new Fare(DEFAULT_FARE_AMOUNT + lineExtraFare + distanceCharge);
     }
 
     private static int getLineExtraFare(final List<SectionEdge> sectionEdges) {
         return sectionEdges.stream()
-                .mapToInt(it -> it.getLine().getExtraFare().fare)
+                .mapToInt(it -> it.getExtraFare().fare)
                 .max()
-                .getAsInt();
+                .orElseThrow(IllegalFareException::new);
     }
 
     public Fare calculateFareAfterDiscount(final LoginMember loginMember) {

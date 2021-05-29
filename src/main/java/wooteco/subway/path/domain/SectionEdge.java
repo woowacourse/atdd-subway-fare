@@ -13,12 +13,20 @@ public class SectionEdge extends DefaultWeightedEdge {
         this.line = line;
     }
 
+    public Distance getDistance() {
+        return section.getDistance();
+    }
+
     public Section getSection() {
         return section;
     }
 
     public Line getLine() {
         return line;
+    }
+
+    public Fare getExtraFare() {
+        return line.getExtraFare();
     }
 
     @Override

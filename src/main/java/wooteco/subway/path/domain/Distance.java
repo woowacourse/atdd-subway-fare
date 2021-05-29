@@ -17,14 +17,6 @@ public class Distance {
         this.distance = distance;
     }
 
-    public static Distance calculateDistance(final List<SectionEdge> sectionEdges) {
-        return new Distance(
-                sectionEdges.stream()
-                        .mapToInt(it -> it.getSection().getDistance().distance)
-                        .sum()
-        );
-    }
-
     public boolean isFirstOverCharge() {
         return distance > FIRST_DISTANCE_CHARGE_THRESHOLD && distance <= SECOND_DISTANCE_CHARGE_THRESHOLD;
     }

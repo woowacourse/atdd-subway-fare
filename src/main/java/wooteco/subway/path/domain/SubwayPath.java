@@ -4,6 +4,7 @@ import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
+import java.util.Optional;
 
 public class SubwayPath {
     private final List<SectionEdge> sectionEdges;
@@ -23,7 +24,10 @@ public class SubwayPath {
     }
 
     public Distance calculateTotalDistance() {
-        return Distance.calculateDistance(sectionEdges);
+        return sectionEdges.stream()
+                .map(SectionEdge::getDistance)
+                .reduce(Distance::add)
+                .orElseThrow(IllegalDistanceException::new);
     }
 
     public Fare calculateFare(Distance distance, LoginMember loginMember) {

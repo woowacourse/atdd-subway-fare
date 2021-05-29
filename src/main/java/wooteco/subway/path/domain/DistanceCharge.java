@@ -17,7 +17,7 @@ public enum DistanceCharge {
         this.chargeScheme = chargeScheme;
     }
 
-    public static int getDistanceCharge(final Distance distance) {
+    public static int calculateDistanceCharge(final Distance distance) {
         return Arrays.stream(values())
                 .filter(it -> it.chargeScheme.test(distance))
                 .findFirst()
