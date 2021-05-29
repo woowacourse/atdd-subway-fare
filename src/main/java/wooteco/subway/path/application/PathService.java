@@ -6,6 +6,11 @@ import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.path.domain.SubwayPath;
+import wooteco.subway.path.domain.fare.Fare;
+import wooteco.subway.path.domain.fare.age.AgeStrategy;
+import wooteco.subway.path.domain.fare.age.AgeType;
+import wooteco.subway.path.domain.fare.distance.DistanceStrategy;
+import wooteco.subway.path.domain.fare.distance.DistanceType;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.path.dto.PathResponseAssembler;
 import wooteco.subway.station.application.StationService;
@@ -33,7 +38,12 @@ public class PathService {
             Station arrivalStation = stationService.findStationById(arrival);
             SubwayPath subwayPath = pathFinder.findPath(lines, departureStation, arrivalStation);
 
-            return PathResponseAssembler.assemble(subwayPath, loginMember);
+            int distance = subwayPath.calculateDistance();
+            DistanceStrategy distanceStrategy = DistanceType.distanceStrategy(distance);
+            AgeStrategy ageStrategy = AgeType.ageStrategy(loginMember.getAge());
+            Fare fare = new Fare(subwayPath.extraFare(), distanceStrategy, ageStrategy);
+
+            return PathResponseAssembler.assemble(subwayPath, fare.calculate(distance));
         } catch (Exception e) {
             throw new InvalidPathException(e.getMessage());
         }
