@@ -19,8 +19,8 @@ import wooteco.subway.station.domain.Station;
 @Repository
 public class LineDao {
 
-    private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcInsert insertAction;
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert insertAction;
 
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
@@ -73,8 +73,8 @@ public class LineDao {
         List<Map<String, Object>> result = jdbcTemplate.queryForList(sql);
         Map<Long, List<Map<String, Object>>> resultByLine = result.stream()
             .collect(Collectors.groupingBy(it -> (Long) it.get("line_id")));
-        return resultByLine.entrySet().stream()
-            .map(it -> mapLine(it.getValue()))
+        return resultByLine.values().stream()
+            .map(this::mapLine)
             .collect(Collectors.toList());
     }
 
@@ -123,15 +123,5 @@ public class LineDao {
     public boolean existColor(Long id, String color) {
         String sql = "select exists (select * from LINE where color = ? and id <> ?)";
         return Objects.requireNonNull(jdbcTemplate.queryForObject(sql, Boolean.class, color, id));
-    }
-
-    public List<Line> findAllSimple() {
-        String sql = "select * from LINE";
-        return jdbcTemplate.query(sql, ((rs, rowNum) -> {
-            Long id = rs.getLong("id");
-            String name = rs.getString("name");
-            String color = rs.getString("color");
-            return new Line(id, name, color);
-        }));
     }
 }

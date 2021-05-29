@@ -57,7 +57,7 @@ public class LineService {
     }
 
     public List<SimpleLineResponse> findAllSimpleLineResponses() {
-        List<Line> simpleLines = lineDao.findAllSimple();
+        List<Line> simpleLines = lineDao.findAll();
         return SimpleLineResponse.listOf(simpleLines);
     }
 

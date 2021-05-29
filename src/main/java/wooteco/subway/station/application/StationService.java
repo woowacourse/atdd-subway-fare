@@ -1,5 +1,6 @@
 package wooteco.subway.station.application;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -44,6 +45,7 @@ public class StationService {
 
         return stations.stream()
             .map(StationResponse::of)
+            .sorted(Comparator.comparing(StationResponse::getId))
             .collect(Collectors.toList());
     }
 
