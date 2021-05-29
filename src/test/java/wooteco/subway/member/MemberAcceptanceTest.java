@@ -214,7 +214,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .body(emailRequest)
                 .when()
-                .get("/api/members/check-validation")
+                .post("/api/members/check-validation")
                 .then().extract();
     }
 }

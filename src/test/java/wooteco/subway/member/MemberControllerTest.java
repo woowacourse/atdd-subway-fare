@@ -23,6 +23,8 @@ import wooteco.subway.member.ui.MemberController;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -60,7 +62,9 @@ public class MemberControllerTest {
                 .content(objectMapper.writeValueAsString(memberRequest)))
                 .andExpect(status().isCreated())
                 .andDo(print())
-                .andDo(document("createMember"));
+                .andDo(document("createMember",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
     }
 
     @Test
@@ -77,7 +81,9 @@ public class MemberControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andDo(document("findMemberOfMine"));
+                .andDo(document("findMemberOfMine",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
     }
 
     @Test
@@ -94,7 +100,9 @@ public class MemberControllerTest {
                 .content(objectMapper.writeValueAsString(memberRequest)))
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andDo(document("updateMemberOfMine"));
+                .andDo(document("updateMemberOfMine",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
     }
 
     @Test
@@ -109,7 +117,9 @@ public class MemberControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isNoContent())
                 .andDo(print())
-                .andDo(document("deleteMemberOfMine"));
+                .andDo(document("deleteMemberOfMine",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
     }
 
     @Test
@@ -126,6 +136,8 @@ public class MemberControllerTest {
                 .content(objectMapper.writeValueAsString(emailRequest)))
                 .andExpect(status().isNoContent())
                 .andDo(print())
-                .andDo(document("validateMember"));
+                .andDo(document("validateMember",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
     }
 }

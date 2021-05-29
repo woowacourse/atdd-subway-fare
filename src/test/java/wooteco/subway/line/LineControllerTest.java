@@ -25,6 +25,8 @@ import java.util.Collections;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -67,7 +69,9 @@ public class LineControllerTest {
                 .content(objectMapper.writeValueAsString(lineRequest)))
                 .andExpect(status().isCreated())
                 .andDo(print())
-                .andDo(document("createLine"));
+                .andDo(document("createLine",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
     }
 
     @Test
@@ -87,7 +91,9 @@ public class LineControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andDo(document("findAllLines"));
+                .andDo(document("findAllLines",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
     }
 
     @Test
@@ -105,7 +111,9 @@ public class LineControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andDo(document("findLineById"));
+                .andDo(document("findLineById",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
     }
 
     @Test
@@ -120,7 +128,9 @@ public class LineControllerTest {
                 .content(objectMapper.writeValueAsString(lineRequest)))
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andDo(document("updateLine"));
+                .andDo(document("updateLine",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
     }
 
     @Test
@@ -132,7 +142,9 @@ public class LineControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isNoContent())
                 .andDo(print())
-                .andDo(document("deleteLine"));
+                .andDo(document("deleteLine",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
     }
 
     @Test
@@ -148,7 +160,9 @@ public class LineControllerTest {
                 .content(objectMapper.writeValueAsString(sectionRequest)))
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andDo(document("addLineStation"));
+                .andDo(document("addLineStation",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
     }
 
     @Test
@@ -164,7 +178,9 @@ public class LineControllerTest {
                 .param("stationId", "1"))
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andDo(document("removeLineStation"));
+                .andDo(document("removeLineStation",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
     }
 
     @Test
@@ -192,6 +208,8 @@ public class LineControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andDo(document("findLineMap"));
+                .andDo(document("findLineMap",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
     }
 }

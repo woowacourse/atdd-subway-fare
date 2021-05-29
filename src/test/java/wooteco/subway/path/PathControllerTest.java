@@ -1,6 +1,5 @@
 package wooteco.subway.path;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,20 +11,18 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.ui.LoginInterceptor;
-import wooteco.subway.line.dto.LineRequest;
-import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.path.application.PathService;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.path.ui.PathController;
 import wooteco.subway.station.dto.StationResponse;
-import wooteco.subway.station.ui.StationController;
 
 import java.util.Arrays;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -36,9 +33,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class PathControllerTest {
     @Autowired
     private MockMvc mockMvc;
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @MockBean
     private LoginInterceptor loginInterceptor;
 
@@ -65,6 +59,8 @@ public class PathControllerTest {
                 .param("target", "2"))
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andDo(document("findPath"));
+                .andDo(document("findPath",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
     }
 }
