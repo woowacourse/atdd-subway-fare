@@ -16,8 +16,7 @@ public class FareTable {
     public void calculateFare(List<SectionEdge> sectionEdges, int distance) {
         int fareWithDistanceAndLine = calculateFareByDistanceAndLine(sectionEdges, distance);
         for (DiscountPolicy discountPolicy : DiscountPolicy.values()) {
-            int totalFare = (int) ((fareWithDistanceAndLine - discountPolicy.getDefaultDeduction())
-                * discountPolicy.getDiscountRate());
+            int totalFare = (int) ((fareWithDistanceAndLine - discountPolicy.getDefaultDeduction()) * discountPolicy.getDiscountRate());
             fareTable.put(discountPolicy.getKorean(), totalFare);
         }
     }

@@ -31,11 +31,10 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
         String credentials = AuthorizationExtractor.extract(request);
         LoginMember member = authService.findMemberByToken(credentials);
+        if (member.getId() == null && isFindPathRequest(request)) {
+            return LoginMember.DUMMY;
+        }
         if (member.getId() == null) {
-            if (isFindPathRequest(request)) {
-                return LoginMember.DUMMY;
-            }
-
             throw new InvalidTokenException();
         }
         return member;

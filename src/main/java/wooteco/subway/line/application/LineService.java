@@ -74,16 +74,7 @@ public class LineService {
 
         List<StationWithTransferAndNextDistanceResponse> stationsWithTransferAndNextDistance = new ArrayList<>();
         for (Station station : persistStations) {
-            List<LineWithoutSectionsResponse> transferLines = new ArrayList<>();
-            for (Line line : persistLines) {
-                if (line.contains(station) && !line.getId().equals(persistLine.getId())) {
-                    transferLines.add(new LineWithoutSectionsResponse(
-                        line.getId(),
-                        line.getName(),
-                        line.getColor()
-                    ));
-                }
-            }
+            List<LineWithoutSectionsResponse> transferLines = findTransferLines(persistLines, station, persistLine);
 
             int nextStationDistance = persistLine.getNextStationDistance(station);
             stationsWithTransferAndNextDistance.add(new StationWithTransferAndNextDistanceResponse(
@@ -99,6 +90,20 @@ public class LineService {
             persistLine.getColor(),
             stationsWithTransferAndNextDistance
         );
+    }
+
+    private List<LineWithoutSectionsResponse> findTransferLines(List<Line> persistLines, Station station, Line persistLine) {
+        List<LineWithoutSectionsResponse> transferLines = new ArrayList<>();
+        for (Line line : persistLines) {
+            if (line.contains(station) && !line.getId().equals(persistLine.getId())) {
+                transferLines.add(new LineWithoutSectionsResponse(
+                    line.getId(),
+                    line.getName(),
+                    line.getColor()
+                ));
+            }
+        }
+        return transferLines;
     }
 
     public Line findLineById(Long id) {
