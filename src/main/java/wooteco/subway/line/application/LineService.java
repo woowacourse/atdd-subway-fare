@@ -1,9 +1,13 @@
 package wooteco.subway.line.application;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import wooteco.subway.exception.DuplicatedLineException;
 import wooteco.subway.exception.NoAnyLineException;
@@ -22,12 +26,6 @@ import wooteco.subway.line.dto.SectionResponse;
 import wooteco.subway.line.dto.TransferLineResponse;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class LineService {
@@ -59,17 +57,17 @@ public class LineService {
         return sectionDao.insert(line, section);
     }
 
-
     public List<LineInfoResponse> findLineResponses() {
         List<Line> persistLines = findLines();
 
-        if(persistLines.isEmpty()){
+        if (persistLines.isEmpty()) {
             throw new NoAnyLineException();
         }
 
         return persistLines.stream()
-                .map(line -> new LineInfoResponse(line.getId(), line.getName(), line.getColor(), line.getStartStation(), line.getEndStation(), line.getTotalDistance()))
-                .collect(Collectors.toList());
+            .map(line -> new LineInfoResponse(line.getId(), line.getName(), line.getColor(), line.getStartStation(),
+                line.getEndStation(), line.getTotalDistance()))
+            .collect(Collectors.toList());
     }
 
     public List<Line> findLines() {
@@ -92,13 +90,13 @@ public class LineService {
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line line = new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor());
-        if(lineDao.update(line) == 0) {
+        if (lineDao.update(line) == 0) {
             throw new NoSuchLineException();
         }
     }
 
     public void deleteLineById(Long id) {
-        if(lineDao.deleteById(id) == 0) {
+        if (lineDao.deleteById(id) == 0) {
             throw new NoSuchLineException();
         }
     }
@@ -109,7 +107,7 @@ public class LineService {
         Station downStation = stationService.findStationById(request.getDownStationId());
         line.addSection(upStation, downStation, request.getDistance());
 
-        if(sectionDao.deleteByLineId(lineId) == 0) {
+        if (sectionDao.deleteByLineId(lineId) == 0) {
             throw new NoSuchSectionException();
         }
         sectionDao.insertSections(line);
@@ -120,14 +118,14 @@ public class LineService {
         Station station = stationService.findStationById(stationId);
         line.removeSection(station);
 
-        if(sectionDao.deleteByLineId(lineId) == 0) {
+        if (sectionDao.deleteByLineId(lineId) == 0) {
             throw new NoSuchSectionException();
         }
         sectionDao.insertSections(line);
     }
 
     public void deleteSectionsByLineId(Long id) {
-        if(sectionDao.deleteByLineId(id) == 0) {
+        if (sectionDao.deleteByLineId(id) == 0) {
             throw new NoSuchSectionException();
         }
     }
@@ -139,7 +137,9 @@ public class LineService {
             List<SectionResponse> sectionResponses = line.getSections().getSections().stream()
                 .map(section -> matchSectionsByLine(line, section))
                 .collect(Collectors.toList());
-            lineResponsesWithSections.add(new LineResponseWithSection(line.getId(), line.getName(), line.getColor(), line.getTotalDistance(), sectionResponses));
+            lineResponsesWithSections.add(
+                new LineResponseWithSection(line.getId(), line.getName(), line.getColor(), line.getTotalDistance(),
+                    sectionResponses));
         }
         lineResponsesWithSections.sort(Comparator.comparing(LineResponseWithSection::getName));
         return lineResponsesWithSections;
@@ -154,9 +154,8 @@ public class LineService {
             .map(id -> lineDao.findById(id))
             .collect(Collectors.toList());
         List<TransferLineResponse> lineResponses = linesByStationId.stream()
-                .filter(line1 -> !line1.equals(line))
-                .map(line1 -> new TransferLineResponse(line1.getId(), line1.getName(), line1.getColor()))
-                .collect(Collectors.toList());
+            .map(line1 -> new TransferLineResponse(line1.getId(), line1.getName(), line1.getColor()))
+            .collect(Collectors.toList());
         return new SectionResponse(upStation.getId(), upStation.getName(), section.getDistance(), lineResponses);
     }
 }
