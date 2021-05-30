@@ -1,6 +1,6 @@
 package wooteco.subway.path.domain.fare;
 
-import static wooteco.subway.path.application.FarePrincipalFinder.FARE_PER_KM;
+import static wooteco.subway.path.domain.fare.FarePrincipalFinder.FARE_PER_KM;
 
 public interface FarePrincipal {
     int DEDUCTED_AMOUNT = 350;

@@ -1,6 +1,4 @@
-package wooteco.subway.path.application;
-
-import wooteco.subway.path.domain.fare.*;
+package wooteco.subway.path.domain.fare;
 
 public class FarePrincipalFinder {
     public static final int BASIC_FARE = 1250;
@@ -9,7 +7,7 @@ public class FarePrincipalFinder {
     public static final int FIRST_OVER_FARE_DISTANCE = 10;
     public static final int SECOND_OVER_FARE_DISTANCE = 50;
 
-    public FarePrincipal findFarePrincipal(Integer age) {
+    public static FarePrincipal findFarePrincipal(Integer age) {
         if (age == null) {
             return new NoneLoginFarePrincipal();
         }

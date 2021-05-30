@@ -1,6 +1,6 @@
 package wooteco.subway.path.domain.fare;
 
-import static wooteco.subway.path.application.FarePrincipalFinder.*;
+import static wooteco.subway.path.domain.fare.FarePrincipalFinder.*;
 
 public class TeenagerFarePrincipal implements FarePrincipal {
     private static final double discountRate = 0.2;
