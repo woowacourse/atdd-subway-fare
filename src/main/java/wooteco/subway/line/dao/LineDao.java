@@ -111,24 +111,4 @@ public class LineDao {
     public void deleteById(Long id) {
         jdbcTemplate.update("delete from Line where id = ?", id);
     }
-
-    public Optional<Line> findByName(String name) {
-        String sql = "select * from line WHERE name = ?";
-
-        List<Line> result = jdbcTemplate.query(sql, (rs, rowNum) ->
-                new Line(rs.getLong("id"),
-                        rs.getString("name"),
-                        rs.getString("color")), name);
-        return Optional.ofNullable(DataAccessUtils.singleResult(result));
-    }
-
-    public Optional<Line> findByColor(String color) {
-        String sql = "select * from line WHERE name = ?";
-
-        List<Line> result = jdbcTemplate.query(sql, (rs, rowNum) ->
-                new Line(rs.getLong("id"),
-                        rs.getString("name"),
-                        rs.getString("color")), color);
-        return Optional.ofNullable(DataAccessUtils.singleResult(result));
-    }
 }
