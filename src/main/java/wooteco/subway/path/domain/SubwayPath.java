@@ -21,10 +21,6 @@ public class SubwayPath {
         this.stations = stations;
     }
 
-    public List<SectionEdge> getSectionEdges() {
-        return sectionEdges;
-    }
-
     public List<Station> getStations() {
         return stations;
     }
@@ -33,7 +29,12 @@ public class SubwayPath {
         return sectionEdges.stream().mapToInt(it -> it.getSection().getDistance()).sum();
     }
 
-    public int calculateFare() {
+    public int calculateFare(Integer age) {
+        int fareWithAdditional = calculateAdditionalFare();
+        return calculateDiscountFare(fareWithAdditional, age);
+    }
+
+    private int calculateAdditionalFare() {
         int extraFare = findMaximumExtraFare();
 
         int distance = calculateDistance();
@@ -46,6 +47,17 @@ public class SubwayPath {
         }
 
         return DEFAULT_FARE + calculateAdditionalFare(distance - DEFAULT_DISTANCE_PIVOT, DEFAULT_CONDITION_PIVOT) + extraFare;
+    }
+
+    private int calculateDiscountFare(int fare, int age) {
+        if (age >= 6 && age < 13) {
+            return (int) ((fare - 350) * 0.5);
+        }
+
+        if (age >= 13 && age < 19) {
+            return (int) ((fare - 350) * 0.8);
+        }
+        return fare;
     }
 
     private int findMaximumExtraFare() {

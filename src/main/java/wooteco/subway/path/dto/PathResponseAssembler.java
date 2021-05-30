@@ -14,19 +14,7 @@ public class PathResponseAssembler {
                 .collect(Collectors.toList());
 
         int distance = subwayPath.calculateDistance();
-        int fare = subwayPath.calculateFare();
-        return new PathResponse(stationResponses, distance, calculateDiscountFare(fare, loginMember.getAge()));
+        int fare = subwayPath.calculateFare(loginMember.getAge());
+        return new PathResponse(stationResponses, distance, fare);
     }
-
-    private static int calculateDiscountFare(int fare, int age) {
-        if (age >= 6 && age < 13) {
-            return (int) ((fare - 350) * 0.5);
-        }
-
-        if (age >= 13 && age < 19) {
-            return (int) ((fare - 350) * 0.8);
-        }
-        return fare;
-    }
-
 }
