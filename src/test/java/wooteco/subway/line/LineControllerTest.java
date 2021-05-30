@@ -158,7 +158,7 @@ public class LineControllerTest {
         mockMvc.perform(post("/api/lines/1/sections")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(sectionRequest)))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andDo(print())
                 .andDo(document("addLineStation",
                         preprocessRequest(prettyPrint()),
@@ -176,7 +176,7 @@ public class LineControllerTest {
         mockMvc.perform(delete("/api/lines/1/sections")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .param("stationId", "1"))
-                .andExpect(status().isOk())
+                .andExpect(status().isNoContent())
                 .andDo(print())
                 .andDo(document("removeLineStation",
                         preprocessRequest(prettyPrint()),
