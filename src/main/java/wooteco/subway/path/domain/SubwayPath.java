@@ -8,10 +8,6 @@ import java.util.List;
 import java.util.Set;
 
 public class SubwayPath {
-    private static final int DEFAULT_DISTANCE = 10;
-    private static final int OVER_LIMIT_DISTANCE = 50;
-    private final int DEFAULT_FARE = 1250;
-
     private final List<SectionEdge> sectionEdges;
     private final List<Station> stations;
     private final Set<Line> lines;

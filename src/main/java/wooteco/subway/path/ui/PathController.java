@@ -3,7 +3,6 @@ package wooteco.subway.path.ui;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.auth.domain.AuthenticationMember;
-import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.dto.ErrorResponse;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.path.application.InvalidPathException;

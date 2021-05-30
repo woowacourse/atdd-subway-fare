@@ -3,7 +3,6 @@ package wooteco.subway.member.ui;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import wooteco.subway.auth.application.AuthorizationException;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.dto.ErrorResponse;
 import wooteco.subway.member.application.MemberService;
