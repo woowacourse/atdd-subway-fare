@@ -20,6 +20,7 @@ import wooteco.subway.line.dto.LineDetailResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.line.exception.SameStationsInSameSectionException;
 import wooteco.subway.map.dto.MapDetailResponse;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.ui.SubwayController;
@@ -72,13 +73,22 @@ public class LineController extends SubwayController {
     }
 
     @PostMapping("/{lineId}/sections")
-    public ResponseEntity addLineStation(@PathVariable Long lineId, @RequestBody SectionRequest sectionRequest) {
+    public ResponseEntity addLineStation(@PathVariable Long lineId,
+        @RequestBody SectionRequest sectionRequest) {
+        if (isSameBothStation(sectionRequest)) {
+            throw new SameStationsInSameSectionException("같은 역 두 개가 올 수 없습니다.");
+        }
         lineService.addLineStation(lineId, sectionRequest);
         return ResponseEntity.ok().build();
     }
 
+    private boolean isSameBothStation(SectionRequest sectionRequest) {
+        return sectionRequest.getUpStationId().equals(sectionRequest.getDownStationId());
+    }
+
     @DeleteMapping("/{lineId}/sections")
-    public ResponseEntity removeLineStation(@PathVariable Long lineId, @RequestParam Long stationId) {
+    public ResponseEntity removeLineStation(@PathVariable Long lineId,
+        @RequestParam Long stationId) {
         lineService.removeLineStation(lineId, stationId);
         return ResponseEntity.ok().build();
     }

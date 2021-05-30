@@ -72,7 +72,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
             uploadedStation2, 3);
 
         // then
-        지하철_구간_등록_실패됨(response);
+        ExceptionCheck.코드_400_응답됨(response);
+        ExceptionCheck.에러_문구_확인(response, "BOTH_STATION_ALREADY_REGISTERED_IN_LINE");
     }
 
     @DisplayName("두 역 모두 노선에 존재하지 않을 때 등록 요청.")
@@ -109,6 +110,17 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_노선에_지하철역_제외_실패됨(removeResponse);
+    }
+
+    @DisplayName("두 역이 같을 경우")
+    @Test
+    void FindEmptySection() {
+        // when
+        ExtractableResponse<Response> response = 지하철_구간_생성_요청(신분당선, uploadedStation1,
+            uploadedStation1, 3);
+        // then
+        ExceptionCheck.코드_400_응답됨(response);
+        ExceptionCheck.에러_문구_확인(response, "SAME_STATIONS_IN_SAME_SECTION");
     }
 
     private void 지하철_구간_생성됨(ExtractableResponse<Response> result, LineResponse lineResponse,

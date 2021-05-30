@@ -9,9 +9,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import wooteco.subway.auth.exception.InvalidEmailException;
 import wooteco.subway.auth.exception.InvalidPasswordException;
 import wooteco.subway.auth.exception.InvalidTokenException;
+import wooteco.subway.line.exception.BothStationAlreadyRegisteredInLineException;
 import wooteco.subway.line.exception.BothStationNotRegisteredInLineException;
 import wooteco.subway.line.exception.DuplicatedLineNameException;
 import wooteco.subway.line.exception.NoSuchLineException;
+import wooteco.subway.line.exception.SameStationsInSameSectionException;
 import wooteco.subway.member.exception.DuplicatedIdException;
 import wooteco.subway.station.exception.DuplicatedStationNameException;
 import wooteco.subway.station.exception.NoSuchStationException;
@@ -87,4 +89,17 @@ public class controllerAdvice {
         BothStationNotRegisteredInLineException e) {
         return ResponseEntity.badRequest().body(new ExceptionResponse(e));
     }
+
+    @ExceptionHandler(BothStationAlreadyRegisteredInLineException.class)
+    public ResponseEntity<ExceptionResponse> invalidPasswordExceptionHandle(
+        BothStationAlreadyRegisteredInLineException e) {
+        return ResponseEntity.badRequest().body(new ExceptionResponse(e));
+    }
+
+    @ExceptionHandler(SameStationsInSameSectionException.class)
+    public ResponseEntity<ExceptionResponse> invalidPasswordExceptionHandle(
+        SameStationsInSameSectionException e) {
+        return ResponseEntity.badRequest().body(new ExceptionResponse(e));
+    }
+
 }

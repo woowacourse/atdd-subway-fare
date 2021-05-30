@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import wooteco.subway.line.exception.BothStationAlreadyRegisteredInLineException;
 import wooteco.subway.line.exception.BothStationNotRegisteredInLineException;
 import wooteco.subway.station.domain.Station;
 
@@ -48,7 +49,7 @@ public class Sections {
         List<Station> stations = getStations();
         List<Station> stationsOfNewSection = Arrays.asList(section.getUpStation(), section.getDownStation());
         if (stations.containsAll(stationsOfNewSection)) {
-            throw new RuntimeException();
+            throw new BothStationAlreadyRegisteredInLineException("이미 노선에 존재한느 역입니다.");
         }
     }
 
