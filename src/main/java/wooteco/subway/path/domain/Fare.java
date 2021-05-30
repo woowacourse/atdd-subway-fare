@@ -1,7 +1,7 @@
 package wooteco.subway.path.domain;
 
 import wooteco.subway.member.domain.LoginMember;
-import wooteco.subway.path.domain.age.FareByAge;
+import wooteco.subway.path.domain.policy.FareByAge;
 
 public class Fare {
     private int fare;

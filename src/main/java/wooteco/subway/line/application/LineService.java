@@ -9,10 +9,10 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import wooteco.subway.exception.DuplicatedLineException;
-import wooteco.subway.exception.NoAnyLineException;
-import wooteco.subway.exception.NoSuchLineException;
-import wooteco.subway.exception.NoSuchSectionException;
+import wooteco.subway.exception.duplicated.DuplicatedLineException;
+import wooteco.subway.exception.nosuch.NoAnyLineException;
+import wooteco.subway.exception.nosuch.NoSuchLineException;
+import wooteco.subway.exception.nosuch.NoSuchSectionException;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;

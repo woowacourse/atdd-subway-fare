@@ -3,10 +3,9 @@ package wooteco.subway.station.application;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
-import wooteco.subway.exception.DuplicatedStationException;
-import wooteco.subway.exception.NoSuchStationException;
-import wooteco.subway.exception.StationAlreadyInLineException;
-import wooteco.subway.line.dao.LineDao;
+import wooteco.subway.exception.duplicated.DuplicatedStationException;
+import wooteco.subway.exception.nosuch.NoSuchStationException;
+import wooteco.subway.exception.exist.StationAlreadyInLineException;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;

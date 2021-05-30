@@ -9,13 +9,12 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import wooteco.subway.exception.ExceptionResponse;
-import wooteco.subway.exception.InvalidAgeException;
-import wooteco.subway.exception.InvalidDistanceException;
-import wooteco.subway.exception.InvalidEmailException;
-import wooteco.subway.exception.InvalidInputException;
-import wooteco.subway.exception.InvalidNameException;
-import wooteco.subway.exception.InvalidPasswordException;
-import wooteco.subway.exception.InvalidTokenException;
+import wooteco.subway.exception.invalid.InvalidAgeException;
+import wooteco.subway.exception.invalid.InvalidDistanceException;
+import wooteco.subway.exception.invalid.InvalidEmailException;
+import wooteco.subway.exception.invalid.InvalidNameException;
+import wooteco.subway.exception.invalid.InvalidPasswordException;
+import wooteco.subway.exception.invalid.InvalidTokenException;
 import wooteco.subway.exception.SubwayException;
 
 @ControllerAdvice

@@ -8,7 +8,7 @@ import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
-import wooteco.subway.exception.DuplicatedEmailException;
+import wooteco.subway.exception.duplicated.DuplicatedEmailException;
 
 @Service
 public class MemberService {

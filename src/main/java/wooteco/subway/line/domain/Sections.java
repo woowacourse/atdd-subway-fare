@@ -1,10 +1,10 @@
 package wooteco.subway.line.domain;
 
-import wooteco.subway.exception.BothStationsAlreadyInLine;
-import wooteco.subway.exception.BothStationsNotInLine;
-import wooteco.subway.exception.ImpossibleDistanceException;
-import wooteco.subway.exception.OnlyOneSectionExistException;
-import wooteco.subway.exception.SameStationsInSectionException;
+import wooteco.subway.exception.exist.BothStationsAlreadyInLine;
+import wooteco.subway.exception.exist.BothStationsNotInLine;
+import wooteco.subway.exception.impossible.ImpossibleDistanceException;
+import wooteco.subway.exception.exist.OnlyOneSectionExistException;
+import wooteco.subway.exception.exist.SameStationsInSectionException;
 import wooteco.subway.station.domain.Station;
 
 import java.util.ArrayList;

@@ -3,7 +3,7 @@ package wooteco.subway.path.domain;
 import java.util.List;
 
 import wooteco.subway.line.domain.Line;
-import wooteco.subway.path.domain.distance.FareByDistance;
+import wooteco.subway.path.domain.policy.FareByDistance;
 import wooteco.subway.station.domain.Station;
 
 public class SubwayPath {
