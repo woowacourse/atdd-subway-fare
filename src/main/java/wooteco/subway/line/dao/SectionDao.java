@@ -53,9 +53,4 @@ public class SectionDao {
 
         simpleJdbcInsert.executeBatch(batchValues.toArray(new Map[sections.size()]));
     }
-
-    public List<Long> findLineIdsContains(Long stationId) {
-        String sql = "select line_id from SECTION where up_station_id = ? or down_station_id = ?";
-        return jdbcTemplate.queryForList(sql, Long.class, stationId, stationId);
-    }
 }
