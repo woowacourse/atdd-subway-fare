@@ -1,0 +1,33 @@
+== 멤버 API
+
+=== 회원 가입
+==== Request
+
+include::{snippets}/members/post/success/http-request.adoc[]
+
+==== Response
+include::{snippets}/members/post/success/http-response.adoc[]
+
+=== 회원 가입 실패 - Email 유효성
+==== Request
+
+include::{snippets}/members/post/fail/email/http-request.adoc[]
+
+==== Response
+include::{snippets}/members/post/fail/email/http-response.adoc[]
+
+=== 회원 가입 실패 - Password 유효성
+==== Request
+
+include::{snippets}/members/post/fail/password/http-request.adoc[]
+
+==== Response
+include::{snippets}/members/post/fail/password/http-response.adoc[]
+
+=== 회원 가입 실패 - 나이 유효성
+==== Request
+
+include::{snippets}/members/post/fail/age/http-request.adoc[]
+
+==== Response
+include::{snippets}/members/post/fail/age/http-response.adoc[]

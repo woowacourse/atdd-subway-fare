@@ -34,7 +34,7 @@ public class AuthService {
 
         String email = jwtTokenProvider.getPayload(credentials);
         try {
-            Member member = memberDao.findByEmail(email).orElseThrow(AuthorizationException::new);
+            Member member = memberDao.findByEmail(email).orElseThrow(TokenNotValidException::new);
             return new LoginMember(member.getId(), member.getEmail(), member.getAge());
         } catch (Exception e) {
             return new LoginMember();

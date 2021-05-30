@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
+import wooteco.subway.line.dto.MapResponse;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.Arrays;
@@ -23,7 +24,7 @@ import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록�
 @DisplayName("지하철 노선 관련 기능")
 public class LineAcceptanceTest extends AcceptanceTest {
     private StationResponse 강남역;
-    private StationResponse downStation;
+    private StationResponse 광교역;
     private LineRequest lineRequest1;
     private LineRequest lineRequest2;
 
@@ -33,10 +34,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // given
         강남역 = 지하철역_등록되어_있음("강남역");
-        downStation = 지하철역_등록되어_있음("광교역");
+        광교역 = 지하철역_등록되어_있음("광교역");
 
-        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 10);
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 15);
+        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
+        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -60,6 +61,40 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_노선_생성_실패됨(response);
+    }
+
+    @DisplayName("노선이름은 2자 이상 10자 이하의 한글 (숫자 포함. 공백 허용 X)")
+    @Test
+    void createErrorNameLine() throws Exception {
+        //given
+        String errorName = "공백 선";
+        LineRequest errorLineRequest = new LineRequest(errorName, "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
+
+        //when
+        ExtractableResponse<Response> extractableResponse = 지하철_노선_생성_요청(errorLineRequest);
+
+        //then
+        지하철_노선_생성_실패됨(extractableResponse);
+
+        //given
+        errorName = "선";
+        errorLineRequest = new LineRequest(errorName, "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
+
+        //when
+        extractableResponse = 지하철_노선_생성_요청(errorLineRequest);
+
+        //then
+        지하철_노선_생성_실패됨(extractableResponse);
+
+        //given
+        errorName = "진짜진짜진짜기다란이상한노션아닌노선";
+        errorLineRequest = new LineRequest(errorName, "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
+
+        //when
+        extractableResponse = 지하철_노선_생성_요청(errorLineRequest);
+
+        //then
+        지하철_노선_생성_실패됨(extractableResponse);
     }
 
     @DisplayName("지하철 노선 목록을 조회한다.")
@@ -129,6 +164,63 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_수정_실패(response);
     }
 
+    @DisplayName("중복된 노선으로 수정한다.")
+    @Test
+    void updateDuplicatedLine() throws Exception {
+        //given
+        LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1);
+
+        //when
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse, lineRequest1);
+
+        //then
+        지하철_노선_수정_실패(response);
+    }
+
+    @DisplayName("지하철 노선 수정 시 이름 유효성을 검사한다. 노선이름은 2자 이상 10자 이하의 한글 (숫자 포함. 공백 허용 X)")
+    @Test
+    void validateNameWhenLineUpdated() throws Exception {
+        //given
+        LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1);
+
+
+        //given
+        String errorName = "공백 선";
+        LineRequest errorLineRequest = new LineRequest(errorName, "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
+
+        //when
+        ExtractableResponse<Response> extractableResponse = 지하철_노선_수정_요청(lineResponse, errorLineRequest);
+
+        //then
+        지하철_노선_수정_실패(extractableResponse);
+
+        //given
+        errorName = "선";
+        errorLineRequest = new LineRequest(errorName, "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
+
+        //when
+        extractableResponse = 지하철_노선_수정_요청(lineResponse, errorLineRequest);
+
+        //then
+        지하철_노선_수정_실패(extractableResponse);
+
+        //given
+        errorName = "진짜진짜진짜기다란이상한노션아닌노선";
+        errorLineRequest = new LineRequest(errorName, "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
+
+        //when
+        extractableResponse = 지하철_노선_생성_요청(errorLineRequest);
+
+        //then
+        지하철_노선_생성_실패됨(extractableResponse);
+        //when
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse, lineRequest1);
+
+        //then
+        지하철_노선_수정_실패(response);
+    }
+
+
     @DisplayName("존재하지 않는 지하철 노선을 삭제한다.")
     @Test
     void deleteNotExistLine() throws Exception {
@@ -140,43 +232,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         //then
         지하철_노선_삭제_실패(response);
-    }
-
-    @DisplayName("노선이름은 2자 이상 10자 이하의 한글 (숫자 포함. 공백 허용 X)")
-    @Test
-    void createErrorNameLine() throws Exception {
-        //given
-        String errorName = "공백 선";
-        LineRequest errorLineRequest = new LineRequest(errorName, "bg-red-600", 강남역.getId(), downStation.getId(), 10);
-
-        //when
-        ExtractableResponse<Response> extractableResponse = 지하철_노선_생성_요청(errorLineRequest);
-
-        //then
-        지하철_노선_생성_실패됨(extractableResponse);
-
-        //given
-        errorName = "선";
-        errorLineRequest = new LineRequest(errorName, "bg-red-600", 강남역.getId(), downStation.getId(), 10);
-
-        //when
-        extractableResponse = 지하철_노선_생성_요청(errorLineRequest);
-
-        //then
-        지하철_노선_생성_실패됨(extractableResponse);
-
-        //then
-        지하철_노선_생성_실패됨(extractableResponse);
-
-        //given
-        errorName = "진짜진짜진짜기다란이상한노션아닌노선";
-        errorLineRequest = new LineRequest(errorName, "bg-red-600", 강남역.getId(), downStation.getId(), 10);
-
-        //when
-        extractableResponse = 지하철_노선_생성_요청(errorLineRequest);
-
-        //then
-        지하철_노선_생성_실패됨(extractableResponse);
     }
 
     public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance, Long extraFare) {
@@ -265,6 +320,23 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         assertThat(resultLineIds).containsAll(expectedLineIds);
     }
+
+    public static void 지하철_전체_노선도_포함됨(ExtractableResponse<Response> response, List<MapResponse> createdResponses) {
+        List<Long> expectedLineIds = createdResponses.stream()
+                .map(it -> it.getId())
+                .collect(Collectors.toList());
+
+        List<Long> resultLineIds = response.jsonPath().getList(".", LineResponse.class).stream()
+                .map(LineResponse::getId)
+                .collect(Collectors.toList());
+
+        assertThat(resultLineIds).containsAll(expectedLineIds);
+    }
+
+    public static void 지하철_전체_노선도_응답됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
 
     public static void 지하철_노선_수정됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());

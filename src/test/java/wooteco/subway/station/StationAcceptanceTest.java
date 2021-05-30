@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
 
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {
@@ -36,28 +38,28 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void createErrorNameStation() throws Exception {
         //given
-        String numberName = "공백포함 역";
+        String errorName = "공백포함 역";
 
         //when
-        ExtractableResponse<Response> response = 지하철역_생성_요청(numberName);
+        ExtractableResponse<Response> response = 지하철역_생성_요청(errorName);
 
         //then
         지하철역_생성되지_않음(response);
 
         //given
-        numberName = "역";
+        errorName = "역";
 
         //when
-        response = 지하철역_생성_요청(numberName);
+        response = 지하철역_생성_요청(errorName);
 
         //then
         지하철역_생성되지_않음(response);
 
         //given
-        numberName = "스무자넘는매우매우매우매우매우매우진짜이상하고정말존재하지않을것같은역";
+        errorName = "스무자넘는매우매우매우매우매우매우진짜이상하고정말존재하지않을것같은역";
 
         //when
-        response = 지하철역_생성_요청(numberName);
+        response = 지하철역_생성_요청(errorName);
 
         //then
         지하철역_생성되지_않음(response);
@@ -104,17 +106,19 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_삭제됨(response);
     }
 
-    @DisplayName("예외 - 중복된 지하철 역을 생성한다.")
+    @DisplayName("지하철 역 삭제 실패한다. - 이미 구간에 등록된 지하쳘 역")
     @Test
-    void createDuplicateStation() {
+    void deleteStation_fail_already_assigned() throws Exception {
         //given
-        StationResponse stationResponse = 지하철역_등록되어_있음(강남역);
+        StationResponse stationResponse1 = 지하철역_등록되어_있음(강남역);
+        StationResponse stationResponse2 = 지하철역_등록되어_있음(역삼역);
+        지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", stationResponse1.getId(), stationResponse2.getId(), 10));
 
         //when
-        ExtractableResponse<Response> response = 지하철역_생성_요청(stationResponse.getName());
+        ExtractableResponse<Response> response = 지하철역_제거_요청(stationResponse1);
 
         //then
-        지하철역_생성되지_않음(response);
+        지하철역_삭제_실패됨(response);
     }
 
     @DisplayName("지하철 역 이름을 수정한다.")
@@ -130,7 +134,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_수정됨(response);
     }
 
-    @DisplayName("지하철 역 이름을 실패한다. - 이름 중복")
+    @DisplayName("지하철 역 이름 수정을 실패한다. - 이름 중복")
     @Test
     void updateStationName_fail_duplicated() throws Exception {
         //given
@@ -138,6 +142,39 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         //when
         ExtractableResponse<Response> response = 지하철역_수정_요청(stationResponse.getId(), "강남역");
+
+        //then
+        지하철역_수정_실패(response);
+    }
+
+    @DisplayName("역 이름 수정시 이름 유효성 검사 한다. - 지하철 역은 2자 이상 20자 이하의 한글 (숫자 포함. 공백 허용 X)")
+    @Test
+    void updateErrorNameStation() throws Exception {
+        //given
+        StationResponse stationResponse = 지하철역_등록되어_있음(강남역);
+
+        String errorName = "공백포함 역";
+
+        //when
+        ExtractableResponse<Response> response = 지하철역_수정_요청(stationResponse.getId(), errorName);
+
+        //then
+        지하철역_수정_실패(response);
+
+        //given
+        errorName = "역";
+
+        //when
+        response = 지하철역_수정_요청(stationResponse.getId(), errorName);
+
+        //then
+        지하철역_수정_실패(response);
+
+        //given
+        errorName = "스무자넘는매우매우매우매우매우매우진짜이상하고정말존재하지않을것같은역";
+
+        //when
+        response = 지하철역_수정_요청(stationResponse.getId(), errorName);
 
         //then
         지하철역_수정_실패(response);
@@ -190,6 +227,9 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철역_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+    public static void 지하철역_삭제_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static void 지하철역_목록_포함됨(ExtractableResponse<Response> response, List<StationResponse> createdResponses) {

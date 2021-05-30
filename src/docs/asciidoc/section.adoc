@@ -1,0 +1,33 @@
+== 지하철 구간 API
+
+=== 구간 생성 성공
+==== Request
+
+include::{snippets}/sections/post/success/http-request.adoc[]
+
+==== Response
+include::{snippets}/sections/post/success/http-response.adoc[]
+
+=== 구간 생성 실패
+==== Request
+
+include::{snippets}/sections/post/fail/any/http-request.adoc[]
+
+==== Response
+include::{snippets}/sections/post/fail/any/http-response.adoc[]
+
+=== 구간 삭제 성공
+==== Request
+
+include::{snippets}/sections/delete/success/http-request.adoc[]
+
+==== Response
+include::{snippets}/sections/delete/success/http-response.adoc[]
+
+=== 구간 삭제 실패
+==== Request
+
+include::{snippets}/sections/delete/fail/http-request.adoc[]
+
+==== Response
+include::{snippets}/sections/delete/fail/http-response.adoc[]

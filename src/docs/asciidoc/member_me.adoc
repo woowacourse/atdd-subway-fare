@@ -1,0 +1,75 @@
+== 내 회원 정보 API
+
+=== 내 회원 정보 조회
+==== Request
+
+include::{snippets}/members/me/get/http-request.adoc[]
+
+==== Response
+include::{snippets}/members/me/get/http-response.adoc[]
+
+=== 내 회원 정보 수정
+==== Request
+
+include::{snippets}/members/me/put/success/http-request.adoc[]
+
+==== Response
+include::{snippets}/members/me/put/success/http-response.adoc[]
+
+=== 내 회원 정보 수정 실패 - Email 유효성
+==== Request
+
+include::{snippets}/members/me/put/fail/email/http-request.adoc[]
+
+==== Response
+include::{snippets}/members/me/put/fail/email/http-response.adoc[]
+
+=== 내 회원 정보 수정 실패 - Password 유효성
+==== Request
+
+include::{snippets}/members/me/put/fail/password/http-request.adoc[]
+
+==== Response
+include::{snippets}/members/me/put/fail/password/http-response.adoc[]
+
+=== 내 회원 정보 수정 실패 - 나이 유효성
+==== Request
+
+include::{snippets}/members/me/put/fail/age/http-request.adoc[]
+
+==== Response
+include::{snippets}/members/me/put/fail/age/http-response.adoc[]
+
+=== 내 회원 정보 삭제
+==== Request
+
+include::{snippets}/members/me/delete/http-request.adoc[]
+
+==== Response
+include::{snippets}/members/me/delete/http-response.adoc[]
+
+=== 이메일 중복 검사 성공
+==== Request
+
+include::{snippets}/members/get/check_validation/success/http-request.adoc[]
+
+==== Response
+include::{snippets}/members/get/check_validation/success/http-response.adoc[]
+
+=== 이메일 중복 검사 실패
+==== Request
+
+include::{snippets}/members/get/check_validation/fail/http-request.adoc[]
+
+==== Response
+include::{snippets}/members/get/check_validation/fail/http-response.adoc[]
+
+=== 유효하지 않은 토큰을 가진 멤버 접근
+
+==== Request
+
+include::{snippets}/members/me/get/wrong_token/http-request.adoc[]
+
+==== Response
+include::{snippets}/members/me/get/wrong_token/http-response.adoc[]
+

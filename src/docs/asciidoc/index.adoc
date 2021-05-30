@@ -1,0 +1,18 @@
+= 수리 와일더의 지하철 API
+ifndef::snippets[]
+:snippets: ../../../build/generated-snippets
+endif::[]
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+
+include::member.adoc[]
+include::member_me.adoc[]
+include::auth.adoc[]
+include::station.adoc[]
+include::line.adoc[]
+include::section.adoc[]
+include::path.adoc[]
+

@@ -1,0 +1,98 @@
+== 지하철 노선 API
+
+=== 모든 노선 조회
+==== Request
+
+include::{snippets}/lines/get/http-request.adoc[]
+
+==== Response
+include::{snippets}/lines/get/http-response.adoc[]
+
+=== 전체 노선도 조회
+==== Request
+
+include::{snippets}/lines/get/map/http-request.adoc[]
+
+==== Response
+include::{snippets}/lines/get/map/http-response.adoc[]
+
+=== 노선 생성 성공
+==== Request
+
+include::{snippets}/lines/post/success/http-request.adoc[]
+
+==== Response
+include::{snippets}/lines/post/success/http-response.adoc[]
+
+=== 노선 생성 실패 - 노선 명 중복
+==== Request
+
+include::{snippets}/lines/post/fail/duplicated/http-request.adoc[]
+
+==== Response
+include::{snippets}/lines/post/fail/duplicated/http-response.adoc[]
+
+=== 노선 생성 실패 - 노선 명 길이 유효성
+==== Request
+
+include::{snippets}/lines/post/fail/name/length/http-request.adoc[]
+
+==== Response
+include::{snippets}/lines/post/fail/name/length/http-response.adoc[]
+
+=== 노선 생성 실패 - 노선 명 공백포함
+==== Request
+
+include::{snippets}/lines/post/fail/name/blank/http-request.adoc[]
+
+==== Response
+include::{snippets}/lines/post/fail/name/blank/http-response.adoc[]
+
+=== 노선 수정 성공
+==== Request
+
+include::{snippets}/lines/put/success/http-request.adoc[]
+
+==== Response
+include::{snippets}/lines/put/success/http-response.adoc[]
+
+=== 노선 수정 실패 - 노선 명 중복
+==== Request
+
+include::{snippets}/lines/put/fail/duplicated/http-request.adoc[]
+
+==== Response
+include::{snippets}/lines/put/fail/duplicated/http-response.adoc[]
+
+=== 노선 수정 실패 - 노선 명 길이 유효성
+==== Request
+
+include::{snippets}/lines/put/fail/name/length/http-request.adoc[]
+
+==== Response
+include::{snippets}/lines/put/fail/name/length/http-response.adoc[]
+
+=== 노선 수정 실패 - 노선 명 공백포함
+==== Request
+
+include::{snippets}/lines/put/fail/name/blank/http-request.adoc[]
+
+==== Response
+include::{snippets}/lines/put/fail/name/blank/http-response.adoc[]
+
+=== 노선 삭제 성공
+==== Request
+
+include::{snippets}/lines/delete/success/http-request.adoc[]
+
+==== Response
+include::{snippets}/lines/delete/success/http-response.adoc[]
+
+=== 노선 삭제 실패
+==== Request
+
+include::{snippets}/lines/delete/fail/http-request.adoc[]
+
+==== Response
+include::{snippets}/lines/delete/fail/http-response.adoc[]
+
