@@ -132,20 +132,34 @@ public class LineService {
 
     public List<LineResponseWithSection> findMap() {
         List<Line> lines = lineDao.findAll();
+        return assemble(lines);
+    }
+
+    private List<LineResponseWithSection> assemble(List<Line> lines) {
         List<LineResponseWithSection> lineResponsesWithSections = new ArrayList<>();
         for (Line line : lines) {
-            List<SectionResponse> sectionResponses = line.getSections().getSections().stream()
-                .map(section -> matchSectionsByLine(line, section))
+            List<Section> sections = line.getSections();
+            List<SectionResponse> sectionResponses = sections.stream()
+                .map(section -> matchSectionsByLine(line, section, section.getUpStation()))
                 .collect(Collectors.toList());
+
+            addLastStation(line, sections, sectionResponses);
+
             lineResponsesWithSections.add(
-                new LineResponseWithSection(line.getId(), line.getName(), line.getColor(), line.getTotalDistance(),
-                    sectionResponses));
+                new LineResponseWithSection(line.getId(), line.getName(), line.getColor(), line.getTotalDistance(), sectionResponses)
+            );
         }
         lineResponsesWithSections.sort(Comparator.comparing(LineResponseWithSection::getName));
         return lineResponsesWithSections;
     }
 
-    private SectionResponse matchSectionsByLine(Line line, Section section) {
+    private void addLastStation(Line line, List<Section> sections, List<SectionResponse> sectionResponses) {
+        Section lastSection = sections.get(sections.size() - 1);
+        sectionResponses.add(matchSectionsByLine(
+            line, lastSection, lastSection.getDownStation()));
+    }
+
+    private SectionResponse matchSectionsByLine(Line line, Section section, Station station) {
         Station upStation = section.getUpStation();
         List<Long> lineIdsByStationId = sectionDao.findLineIdsByStationId(upStation.getId());
         List<Line> linesByStationId = lineIdsByStationId.stream()
@@ -156,6 +170,6 @@ public class LineService {
         List<TransferLineResponse> lineResponses = linesByStationId.stream()
             .map(line1 -> new TransferLineResponse(line1.getId(), line1.getName(), line1.getColor()))
             .collect(Collectors.toList());
-        return new SectionResponse(upStation.getId(), upStation.getName(), section.getDistance(), lineResponses);
+        return new SectionResponse(station.getId(), station.getName(), section.getDistance(), lineResponses);
     }
 }

@@ -1,10 +1,8 @@
 package wooteco.subway.line.domain;
 
-import wooteco.subway.line.dto.SectionResponse;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
-import java.util.Objects;
 
 public class Line {
     private Long id;
@@ -88,8 +86,8 @@ public class Line {
         return color;
     }
 
-    public Sections getSections() {
-        return sections;
+    public List<Section> getSections() {
+        return sections.getSections();
     }
 
     public List<Station> getStations() {
