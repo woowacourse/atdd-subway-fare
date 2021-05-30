@@ -36,12 +36,11 @@ public class AuthService {
 
     public LoginMember findMemberByToken(String credentials) {
         String email = jwtTokenProvider.getPayload(credentials);
-        try {
-            Member member = memberDao.findByEmail(email);
-            return new LoginMember(member.getId(), member.getEmail(), member.getAge(), true);
-        } catch (Exception e) {
-            return new LoginMember();
+        if (memberDao.isExistByEmail(email)) {
+            throw new AuthorizationException("유효하지 않은 토큰입니다.");
         }
+        Member member = memberDao.findByEmail(email);
+        return new LoginMember(member.getId(), member.getEmail(), member.getAge(), true);
     }
 
     public void validateToken(String credentials) {
