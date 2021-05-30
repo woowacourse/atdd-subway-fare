@@ -83,8 +83,10 @@ public class LineController extends SubwayController {
         if (isWrongDistance(sectionRequest)) {
             throw new InvalidDistanceException("잘못된 거리값입니다.");
         }
+
         lineService.addLineStation(lineId, sectionRequest);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.created(URI.create("/api/lines/" + lineId + "/sections"))
+            .body(sectionRequest);
     }
 
     @DeleteMapping("/{lineId}/sections")
