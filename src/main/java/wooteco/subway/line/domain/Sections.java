@@ -6,18 +6,11 @@ import wooteco.subway.line.exception.section.ImpossibleDistanceException;
 import wooteco.subway.line.exception.section.OnlyOneSectionExistsException;
 import wooteco.subway.station.domain.Station;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Sections {
     private List<Section> sections = new ArrayList<>();
-
-    public List<Section> getSections() {
-        return sections;
-    }
 
     public Sections() {
     }
@@ -158,5 +151,18 @@ public class Sections {
     public Station endStation() {
         List<Station> stations = getStations();
         return stations.get(stations.size() - 1);
+    }
+
+
+    public List<Section> getSections() {
+        List<Station> stations = getStations();
+        List<Section> sortedSection = new ArrayList<>();
+        Map<Station, List<Section>> groupedSection = sections.stream()
+                .collect(Collectors.groupingBy(Section::getUpStation));
+        for (int i = 0; i < stations.size() - 1; i++) {
+            List<Section> sections = groupedSection.get(stations.get(i));
+            sortedSection.add(sections.get(0));
+        }
+        return sortedSection;
     }
 }
