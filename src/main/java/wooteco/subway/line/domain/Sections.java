@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import wooteco.subway.line.exception.BothStationNotRegisteredInLineException;
 import wooteco.subway.station.domain.Station;
 
 public class Sections {
@@ -39,7 +40,7 @@ public class Sections {
     private void checkAlreadyExisted(Section section) {
         List<Station> stations = getStations();
         if (!stations.contains(section.getUpStation()) && !stations.contains(section.getDownStation())) {
-            throw new RuntimeException();
+            throw new BothStationNotRegisteredInLineException("해당 노선에 역이 존재하지 않습니다.");
         }
     }
 

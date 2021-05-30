@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import wooteco.subway.auth.exception.InvalidEmailException;
 import wooteco.subway.auth.exception.InvalidPasswordException;
 import wooteco.subway.auth.exception.InvalidTokenException;
+import wooteco.subway.line.exception.BothStationNotRegisteredInLineException;
 import wooteco.subway.line.exception.DuplicatedLineNameException;
 import wooteco.subway.line.exception.NoSuchLineException;
 import wooteco.subway.member.exception.DuplicatedIdException;
@@ -78,6 +79,12 @@ public class controllerAdvice {
     @ExceptionHandler(NoSuchLineException.class)
     public ResponseEntity<ExceptionResponse> invalidPasswordExceptionHandle(
         NoSuchLineException e) {
+        return ResponseEntity.badRequest().body(new ExceptionResponse(e));
+    }
+
+    @ExceptionHandler(BothStationNotRegisteredInLineException.class)
+    public ResponseEntity<ExceptionResponse> invalidPasswordExceptionHandle(
+        BothStationNotRegisteredInLineException e) {
         return ResponseEntity.badRequest().body(new ExceptionResponse(e));
     }
 }
