@@ -1,5 +1,6 @@
 plugins {
 	id 'org.springframework.boot' version '2.4.3'
+	id "org.asciidoctor.convert" version "1.5.9.2"
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
 }
@@ -10,6 +11,15 @@ sourceCompatibility = '1.8'
 
 repositories {
 	mavenCentral()
+}
+
+ext {
+	snippetsDir = file('build/generated-snippets')
+}
+
+asciidoctor {
+	inputs.dir snippetsDir
+	dependsOn test
 }
 
 dependencies {
@@ -46,8 +56,20 @@ dependencies {
 
 	//validation
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	//restDocs
+	asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+	testImplementation 'org.springframework.restdocs:spring-restdocs-restassured'
 }
 
 test {
 	useJUnitPlatform()
+	outputs.dir snippetsDir
+}
+
+bootJar {
+	dependsOn asciidoctor
+	from ("${asciidoctor.outputDir}/html5") {
+		into 'static/docs'
+	}
 }
