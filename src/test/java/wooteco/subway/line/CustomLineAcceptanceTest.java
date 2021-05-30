@@ -15,13 +15,20 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.line.dto.CustomLineResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
+import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.station.dto.StationResponse;
 
 @DisplayName("추가 지하철 노선 관련 기능")
 public class CustomLineAcceptanceTest extends AcceptanceTest {
+
+    private static final String ACCESS_TOKEN = "accessToken";
+    private static final String EMAIL = "email@email.com";
+    private static final String PASSWORD = "password";
+
     private StationResponse 강남역;
     private StationResponse 광교역;
     private StationResponse 상봉역;
@@ -48,11 +55,12 @@ public class CustomLineAcceptanceTest extends AcceptanceTest {
     @Test
     void findLinesWithStationsAndTotalDistance() {
         // given
+        회원_생성을_요청(EMAIL, PASSWORD, 10);
         LineResponse lineResponse1 = 지하철_노선_등록되어_있음(lineRequest1);
         LineResponse lineResponse2 = 지하철_노선_등록되어_있음(lineRequest2);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청();
+        ExtractableResponse<Response> response = 토큰과_함께_지하철_노선_목록_조회_요청();
 
         // then
         지하철_노선_목록_응답됨(response);
@@ -94,23 +102,50 @@ public class CustomLineAcceptanceTest extends AcceptanceTest {
 
 
     public static LineResponse 지하철_노선_등록되어_있음(LineRequest lineRequest) {
-        return 지하철_노선_생성_요청(lineRequest).as(LineResponse.class);
+        return 토큰과_함께_지하철_노선_생성_요청(lineRequest).as(LineResponse.class);
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest params) {
+    public static ExtractableResponse<Response> 토큰과_함께_지하철_노선_생성_요청(LineRequest lineRequest) {
+        String accessToken = 로그인_후_토큰_발급(new TokenRequest(EMAIL, PASSWORD)).jsonPath().get(ACCESS_TOKEN);
+
+        return RestAssured.given()
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .auth().oauth2(accessToken)
+            .body(lineRequest)
+            .when().post("/api/lines")
+            .then().log().all()
+            .extract();
+    }
+
+    public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
+        MemberRequest memberRequest = new MemberRequest(email, password, age);
+
         return RestAssured
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(params)
-            .when().post("/api/lines")
-            .then().log().all().
-                extract();
+            .body(memberRequest)
+            .when().post("/api/members")
+            .then().log().all()
+            .extract();
     }
 
-    private static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {
+    public static ExtractableResponse<Response> 로그인_후_토큰_발급(TokenRequest tokenRequest) {
+        return RestAssured.given()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(tokenRequest)
+            .when()
+            .post("/api/login/token")
+            .then().extract();
+    }
+
+    private static ExtractableResponse<Response> 토큰과_함께_지하철_노선_목록_조회_요청() {
+        String accessToken = 로그인_후_토큰_발급(new TokenRequest(EMAIL, PASSWORD)).jsonPath().get(ACCESS_TOKEN);
+
         return RestAssured
             .given().log().all()
             .accept(MediaType.APPLICATION_JSON_VALUE)
+            .auth().oauth2(accessToken)
             .when().get("/api/lines")
             .then().log().all()
             .extract();
@@ -121,12 +156,14 @@ public class CustomLineAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 지하철_노선_목록_포함됨(ExtractableResponse<Response> response, List<LineResponse> createdResponses) {
-        List<Long> expectedLineIds = createdResponses.stream()
-            .map(it -> it.getId())
+        List<Long> resultLineIds = response.jsonPath()
+            .getList(".", CustomLineResponse.class)
+            .stream()
+            .map(CustomLineResponse::getId)
             .collect(Collectors.toList());
 
-        List<Long> resultLineIds = response.jsonPath().getList(".", CustomLineResponse.class).stream()
-            .map(CustomLineResponse::getId)
+        List<Long> expectedLineIds = createdResponses.stream()
+            .map(LineResponse::getId)
             .collect(Collectors.toList());
 
         assertThat(resultLineIds).containsAll(expectedLineIds);
