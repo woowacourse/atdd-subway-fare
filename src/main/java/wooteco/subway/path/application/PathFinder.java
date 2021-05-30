@@ -7,7 +7,7 @@ import wooteco.subway.line.domain.Line;
 import wooteco.subway.path.domain.SectionEdge;
 import wooteco.subway.path.domain.SubwayGraph;
 import wooteco.subway.path.domain.SubwayPath;
-import wooteco.subway.path.exception.InvalidPathRuntimeException;
+import wooteco.subway.path.exception.InvalidPathException;
 import wooteco.subway.station.domain.Station;
 
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class PathFinder {
     public SubwayPath findPath(List<Line> lines, Station source, Station target) {
         if (source.equals(target)) {
-            throw new InvalidPathRuntimeException();
+            throw new InvalidPathException();
         }
         SubwayGraph graph = new SubwayGraph(SectionEdge.class);
         graph.addVertexWith(lines);
@@ -29,7 +29,7 @@ public class PathFinder {
         DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         GraphPath<Station, SectionEdge> path = dijkstraShortestPath.getPath(source, target);
         if (path == null) {
-            throw new InvalidPathRuntimeException();
+            throw new InvalidPathException();
         }
 
         return convertSubwayPath(path);

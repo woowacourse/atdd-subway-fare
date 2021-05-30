@@ -8,8 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import wooteco.subway.exception.SubwayAuthorizationException;
-import wooteco.subway.exception.SubwayRuntimeException;
+import wooteco.subway.exception.AuthorizationException;
+import wooteco.subway.exception.SubwayException;
 
 import java.util.stream.Collectors;
 
@@ -35,14 +35,14 @@ public class ExceptionAdvice {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessage(message));
     }
 
-    @ExceptionHandler(SubwayRuntimeException.class)
-    public ResponseEntity<ErrorMessage> handleRuntimeException(SubwayRuntimeException e) {
+    @ExceptionHandler(SubwayException.class)
+    public ResponseEntity<ErrorMessage> handleRuntimeException(SubwayException e) {
         logger.error("Runtime Exception occurred, check user's input. message=[{}]", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessage(e.getMessage()));
     }
 
-    @ExceptionHandler(SubwayAuthorizationException.class)
-    public ResponseEntity<ErrorMessage> handleAuthorizationException(SubwayAuthorizationException e) {
+    @ExceptionHandler(AuthorizationException.class)
+    public ResponseEntity<ErrorMessage> handleAuthorizationException(AuthorizationException e) {
         logger.error("Exception occurred regards to authorization. message=[{}]", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorMessage(e.getMessage()));
     }

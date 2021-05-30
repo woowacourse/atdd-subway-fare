@@ -6,7 +6,7 @@ import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
-import wooteco.subway.member.exception.DuplicateEmailRuntimeException;
+import wooteco.subway.member.exception.DuplicateEmailException;
 import wooteco.subway.member.exception.EmailNotFoundRuntimeException;
 
 @Service
@@ -19,7 +19,7 @@ public class MemberService {
 
     public MemberResponse createMember(MemberRequest request) {
         if (memberDao.findByEmail(request.getEmail()).isPresent()) {
-            throw new DuplicateEmailRuntimeException();
+            throw new DuplicateEmailException();
         }
         Member member = memberDao.insert(request.toMember());
         return MemberResponse.of(member);
