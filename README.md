@@ -40,9 +40,9 @@
                 }
             ]
             ```
-    - [ ] 중복된 Email을 검증하는 API 구현
-        - [ ] POST: /members/email-check
-            - [ ] 성공 시 200, 오류 시 409 응답
+    - [x] 중복된 Email을 검증하는 API 구현
+        - [x] POST: /members/email-check
+            - [x] 성공 시 200, 오류 시 409 응답
             ```json
             {
               "email": "test@test.com"
