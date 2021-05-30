@@ -13,3 +13,19 @@ security:
     token:
       secret-key: my_secret_is_secret
       expire-length: 3600000
+logging:
+  level:
+    org.springframework.web : debug
+    sql: error
+    jdbc: off
+    jdbc.sqlonly: debug
+  pattern:
+    console: '%-5level %d{yyyy-MM-dd HH:mm:ss}[%thread] [%F - %M] [%logger{0}:%line] - %msg%n'
+    file: '%-5level %d{yyyy-MM-dd HH:mm:ss}[%thread] [%F - %M] [%logger{0}:%line] - %msg%n'
+
+  file:
+    name: ${user.home}/logs/subway.log
+  logback:
+    rollingpolicy:
+      max-file-size: 100MB
+      max-history: 9999999

@@ -21,6 +21,7 @@ dependencies {
 	// swagger
 	implementation 'io.springfox:springfox-swagger2:2.9.2'
 	implementation 'io.springfox:springfox-swagger-ui:2.9.2'
+	implementation 'org.projectlombok:lombok:1.18.18'
 	compile 'io.springfox:springfox-bean-validators:2.9.2'
 
 	implementation "jakarta.xml.bind:jakarta.xml.bind-api:2.3.2"
@@ -30,7 +31,8 @@ dependencies {
 	implementation 'pl.allegro.tech.boot:handlebars-spring-boot-starter:0.3.0'
 
 	// log
-	implementation 'net.rakugakibox.spring.boot:logback-access-spring-boot-starter:2.7.1'
+//	implementation 'net.rakugakibox.spring.boot:logback-access-spring-boot-starter:2.7.1'
+	implementation 'org.projectlombok:lombok'
 
 	testImplementation 'io.rest-assured:rest-assured:3.3.0'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
