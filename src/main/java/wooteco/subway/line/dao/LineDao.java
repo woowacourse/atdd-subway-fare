@@ -108,7 +108,7 @@ public class LineDao {
                 "left outer join SECTION S on L.id = S.line_id " +
                 "left outer join STATION UST on S.up_station_id = UST.id " +
                 "left outer join STATION DST on S.down_station_id = DST.id " +
-                "where L.name IN (select distinct LINE.NAME " +
+                "where L.name IN (select distinct LINE.name " +
                 "from LINE join SECTION on LINE.id = SECTION.line_id " +
                 "where SECTION.up_station_id = ? or SECTION.down_station_id = ?)";
 
