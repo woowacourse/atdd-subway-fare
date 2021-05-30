@@ -96,9 +96,32 @@ public class LineDao {
                 "left outer join STATION DST on S.down_station_id = DST.id ";
 
         List<Map<String, Object>> result = jdbcTemplate.queryForList(sql);
+        return mapLines(result);
+    }
+
+    public List<Line> findIncludingStation(Long stationId) {
+        String sql = "select L.id as line_id, L.name as line_name, L.color as line_color, L.extra_fare as line_extra_fare, " +
+                "S.id as section_id, S.distance as section_distance, " +
+                "UST.id as up_station_id, UST.name as up_station_name, " +
+                "DST.id as down_station_id, DST.name as down_station_name " +
+                "from LINE L \n" +
+                "left outer join SECTION S on L.id = S.line_id " +
+                "left outer join STATION UST on S.up_station_id = UST.id " +
+                "left outer join STATION DST on S.down_station_id = DST.id " +
+                "where L.name IN (select distinct LINE.NAME " +
+                "from LINE join SECTION on LINE.id = SECTION.line_id " +
+                "where SECTION.up_station_id = ? or SECTION.down_station_id = ?)";
+
+        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, new Object[]{stationId}, new Object[]{stationId});
+        return mapLines(result);
+    }
+
+    private List<Line> mapLines(List<Map<String, Object>> result) {
         Map<Long, List<Map<String, Object>>> resultByLine = result.stream().collect(Collectors.groupingBy(it -> (Long) it.get("line_id")));
-        return resultByLine.entrySet().stream()
-                .map(it -> mapLine(it.getValue()).get())
+        return resultByLine.values().stream()
+                .map(this::mapLine)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .collect(Collectors.toList());
     }
 
