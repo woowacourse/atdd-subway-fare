@@ -1,4 +1,4 @@
-package wooteco.subway.path;
+package wooteco.subway.path.domain;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
@@ -7,7 +7,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import wooteco.subway.member.domain.LoginMember;
-import wooteco.subway.path.domain.Fare;
 
 public class FareTest {
 
