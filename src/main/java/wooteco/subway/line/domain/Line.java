@@ -1,5 +1,6 @@
 package wooteco.subway.line.domain;
 
+import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
@@ -51,6 +52,10 @@ public class Line {
         this.name = name;
         this.color = color;
         this.extraFare = extraFare;
+    }
+
+    public Line(LineRequest request) {
+        this(request.getName(), request.getColor(), request.getExtraFare());
     }
 
     public void update(Line line) {

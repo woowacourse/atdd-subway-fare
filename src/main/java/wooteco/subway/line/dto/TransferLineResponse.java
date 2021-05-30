@@ -1,7 +1,5 @@
 package wooteco.subway.line.dto;
 
-import java.util.Comparator;
-
 public class TransferLineResponse {
     private Long id;
     private String name;

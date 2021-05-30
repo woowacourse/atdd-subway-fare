@@ -1,7 +1,6 @@
 package wooteco.subway.line.dto;
 
-import java.util.List;
-
+import wooteco.subway.line.domain.Line;
 import wooteco.subway.station.domain.Station;
 
 public class LineInfoResponse {
@@ -23,6 +22,11 @@ public class LineInfoResponse {
         this.startStation = startStation;
         this.endStation = endStation;
         this.distance = distance;
+    }
+
+    public LineInfoResponse(Line line) {
+        this(line.getId(), line.getName(), line.getColor(), line.getStartStation(), line.getEndStation(),
+            line.getTotalDistance());
     }
 
     public Long getId() {
