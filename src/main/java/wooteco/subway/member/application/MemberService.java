@@ -5,6 +5,7 @@ import wooteco.subway.auth.application.AuthorizationException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
+import wooteco.subway.member.dto.EmailRequest;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 import wooteco.subway.member.exception.DuplicateEmailException;
@@ -20,12 +21,20 @@ public class MemberService {
     }
 
     public MemberResponse createMember(MemberRequest request) {
-        final Optional<Member> memberByEmail = memberDao.findByEmail(request.getEmail());
+        validatePossibleEmail(request.getEmail());
+        Member member = memberDao.insert(request.toMember());
+        return MemberResponse.of(member);
+    }
+
+    public void checkPossibleEmail(EmailRequest request) {
+        validatePossibleEmail(request.getEmail());
+    }
+
+    private void validatePossibleEmail(String email) {
+        final Optional<Member> memberByEmail = memberDao.findByEmail(email);
         if (memberByEmail.isPresent()) {
             throw new DuplicateEmailException();
         }
-        Member member = memberDao.insert(request.toMember());
-        return MemberResponse.of(member);
     }
 
     public MemberResponse findMember(LoginMember loginMember) {
