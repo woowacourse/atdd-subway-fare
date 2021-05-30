@@ -24,8 +24,7 @@ public class Fare {
     }
 
     public static Fare createDefaultFare(int distance) {
-        FarePolicy distanceFarePolicy = FarePolicy.of(distance);
-        return distanceFarePolicy.calculateFare(distance);
+        return DistanceFarePolicy.calculateFare(distance);
     }
 
     public Fare applyMemberDiscount(LoginMember loginMember) {
