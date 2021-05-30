@@ -56,12 +56,12 @@ public class Line {
         return color;
     }
 
-    public List<Section> sections() {
-        return sections.getSections();
+    public List<Station> stations() {
+        return sections.getStations();
     }
 
-    public Sections getSections() {
-        return sections;
+    public List<Section> sections() {
+        return sections.getSections();
     }
 
     public void update(Line line) {
@@ -72,10 +72,6 @@ public class Line {
     public void addSection(Station upStation, Station downStation, int distance) {
         Section section = new Section(upStation, downStation, distance);
         sections.addSection(section);
-    }
-
-    public Long getExtraFare() {
-        return extraFare;
     }
 
     public void addSection(Section section) {
@@ -89,7 +85,11 @@ public class Line {
         sections.removeStation(station);
     }
 
-    public List<Station> getStations() {
-        return sections.getStations();
+    public Sections getSections() {
+        return sections;
+    }
+
+    public Long getExtraFare() {
+        return extraFare;
     }
 }
