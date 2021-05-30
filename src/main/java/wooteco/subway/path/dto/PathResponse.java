@@ -2,21 +2,21 @@ package wooteco.subway.path.dto;
 
 import java.util.List;
 
-import wooteco.subway.path.domain.Price;
+import wooteco.subway.path.domain.Fare;
 import wooteco.subway.station.dto.StationResponse;
 
 public class PathResponse {
     private List<StationResponse> stations;
     private int distance;
-    private Price price;
+    private Fare fare;
 
     public PathResponse() {
     }
 
-    public PathResponse(List<StationResponse> stations, int distance, Price price) {
+    public PathResponse(List<StationResponse> stations, int distance, Fare fare) {
         this.stations = stations;
         this.distance = distance;
-        this.price = price;
+        this.fare = fare;
     }
 
     public List<StationResponse> getStations() {
@@ -27,7 +27,7 @@ public class PathResponse {
         return distance;
     }
 
-    public int getPrice() {
-        return price.getPrice();
+    public int getFare() {
+        return fare.getFare();
     }
 }

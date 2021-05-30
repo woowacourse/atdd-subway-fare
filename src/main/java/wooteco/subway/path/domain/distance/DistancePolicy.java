@@ -1,4 +1,4 @@
-package wooteco.subway.path.domain;
+package wooteco.subway.path.domain.distance;
 
 public class DistancePolicy {
     private final int unitDistance;
@@ -12,7 +12,7 @@ public class DistancePolicy {
     }
 
     public int calculate(int distance) {
-        return previousFare + (int)((Math.ceil((distance - extraDistance - 1) / unitDistance) +1) * 100);
+        return previousFare + (int)((Math.ceil((distance - extraDistance - 1) / unitDistance) + 1) * 100);
     }
 }
 

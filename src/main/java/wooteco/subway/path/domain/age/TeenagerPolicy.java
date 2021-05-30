@@ -1,6 +1,4 @@
-package wooteco.subway.path.domain;
-
-import wooteco.subway.path.domain.age.AgePolicy;
+package wooteco.subway.path.domain.age;
 
 public class TeenagerPolicy extends AgePolicy {
     private static final double RATE = 0.8;

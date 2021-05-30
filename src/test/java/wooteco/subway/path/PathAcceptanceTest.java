@@ -84,7 +84,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("로그인과 함께 두 역의 최단 거리 경로를 조회한다.")
     @ParameterizedTest
     @CsvSource(value = {"3:0", "6:5450", "13:8720", "20:11250"}, delimiter = ':')
-    void findPathByDistanceWithMember(int age, int price) {
+    void findPathByDistanceWithMember(int age, int fare) {
         // given
         회원_등록되어_있음(age + EMAIL, age + PASSWORD, age);
         TokenResponse tokenResponse = 로그인되어_있음(age + EMAIL, age + PASSWORD);
@@ -95,7 +95,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //then
         적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
         총_거리가_응답됨(response, 5);
-        적절한_요금이_응답됨(response, price);
+        적절한_요금이_응답됨(response, fare);
     }
 
     private ExtractableResponse<Response> 로그인_없이_거리_경로_조회_요청(long source, long target) {
@@ -137,8 +137,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(pathResponse.getDistance()).isEqualTo(totalDistance);
     }
 
-    public static void 적절한_요금이_응답됨(ExtractableResponse<Response> response, int totalPrice) {
+    public static void 적절한_요금이_응답됨(ExtractableResponse<Response> response, int totalFare) {
         PathResponse pathResponse = response.as(PathResponse.class);
-        assertThat(pathResponse.getPrice()).isEqualTo(totalPrice);
+        assertThat(pathResponse.getFare()).isEqualTo(totalFare);
     }
 }

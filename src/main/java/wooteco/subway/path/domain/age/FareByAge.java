@@ -3,7 +3,7 @@ package wooteco.subway.path.domain.age;
 import java.util.Arrays;
 import java.util.function.Predicate;
 
-import wooteco.subway.path.domain.TeenagerPolicy;
+import wooteco.subway.member.domain.LoginMember;
 
 public enum FareByAge {
     BABY(new BabyPolicy(), (age) -> age < 6),
@@ -19,10 +19,10 @@ public enum FareByAge {
         this.match = match;
     }
 
-    public static int calculate(int price, Integer age) {
+    public static int calculate(int fare, LoginMember loginMember) {
         return Arrays.stream(values())
-            .filter(fareByAge -> fareByAge.match.test(age))
-            .map(fareByAge -> fareByAge.agePolicy.calculate(price))
+            .filter(fareByAge -> fareByAge.match.test(loginMember.getAge()))
+            .map(fareByAge -> fareByAge.agePolicy.calculate(fare))
             .findAny()
             .orElseThrow(RuntimeException::new);
     }

@@ -9,7 +9,7 @@ public abstract class AgePolicy {
         this.deductionFare = deductionFare;
     }
 
-    public int calculate(int price) {
-        return (int)((price - deductionFare) * rate);
+    public int calculate(int fare) {
+        return (int)((fare - deductionFare) * rate);
     }
 }

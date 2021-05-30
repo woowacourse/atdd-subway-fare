@@ -1,4 +1,4 @@
-package wooteco.subway.path.domain;
+package wooteco.subway.path.domain.distance;
 
 import java.util.Arrays;
 import java.util.function.Predicate;
@@ -26,5 +26,5 @@ public enum FareByDistance {
 
     private int calculateExtraFare(int distance) {
         return distancePolicy.calculate(distance);
-     }
+    }
 }

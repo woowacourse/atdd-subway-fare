@@ -1,4 +1,4 @@
-package wooteco.subway.path.domain;
+package wooteco.subway.path.domain.distance;
 
 public class FarDistancePolicy extends DistancePolicy {
     private static final int UNIT_DISTANCE = 8;
