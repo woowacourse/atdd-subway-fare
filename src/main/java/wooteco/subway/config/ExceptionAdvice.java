@@ -19,7 +19,7 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorMessage> handleServerErrorException(Exception e) {
-        logger.error("method argument not valid exception occurred. message=[{}]", e.getMessage(), e);
+        logger.error("internal server error has been occurred. message=[{}]", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorMessage("관리자에게 문의해주세요."));
     }
 
@@ -37,13 +37,13 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(SubwayRuntimeException.class)
     public ResponseEntity<ErrorMessage> handleRuntimeException(SubwayRuntimeException e) {
-        logger.error("method argument not valid exception occurred. message=[{}]", e.getMessage(), e);
+        logger.error("Runtime Exception occurred, check user's input. message=[{}]", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessage(e.getMessage()));
     }
 
     @ExceptionHandler(SubwayAuthorizationException.class)
     public ResponseEntity<ErrorMessage> handleAuthorizationException(SubwayAuthorizationException e) {
-        logger.error("method argument not valid exception occurred. message=[{}]", e.getMessage(), e);
+        logger.error("Exception occurred regards to authorization. message=[{}]", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorMessage(e.getMessage()));
     }
 }
