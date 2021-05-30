@@ -1,57 +1,51 @@
 package wooteco.subway.member.domain;
 
-import org.apache.commons.lang3.StringUtils;
-import wooteco.subway.exception.AuthorizationException;
-import wooteco.subway.exception.MismatchIdPasswordException;
-
 public class Member {
 
-    private Long id;
-    private String email;
-    private String password;
-    private Integer age;
+    private Id id;
+    private Email email;
+    private Password password;
+    private Age age;
 
     public Member() {
     }
 
-    public Member(Long id, String email, String password, Integer age) {
-        this.id = id;
-        this.email = email;
-        this.password = password;
-        this.age = age;
-    }
-
     public Member(Long id, String email, Integer age) {
-        this.id = id;
-        this.email = email;
-        this.age = age;
+        this(new Id(id), new Email(email), null, new Age(age));
     }
 
     public Member(String email, String password, Integer age) {
+        this(null, new Email(email), new Password(password), new Age(age));
+    }
+
+    public Member(Long id, String email, String password, Integer age) {
+        this(new Id(id), new Email(email), new Password(password), new Age(age));
+    }
+
+    public Member(Id id, Email email, Password password, Age age) {
+        this.id = id;
         this.email = email;
         this.password = password;
         this.age = age;
     }
 
     public Long getId() {
-        return id;
+        return id.getValue();
     }
 
     public String getEmail() {
-        return email;
+        return email.getValue();
     }
 
     public String getPassword() {
-        return password;
+        return password.getValue();
     }
 
     public Integer getAge() {
-        return age;
+        return age.getValue();
     }
 
     public void checkPassword(String password) {
-        if (!StringUtils.equals(this.password, password)) {
-            throw new MismatchIdPasswordException();
-        }
+        this.password.check(password);
     }
 }
