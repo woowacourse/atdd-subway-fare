@@ -49,7 +49,7 @@ public class Member {
 
     public void checkPassword(String password) {
         if (!StringUtils.equals(this.password, password)) {
-            throw new AuthorizationException("비밀번호를 잘못 기입하셨습니다.");
+            throw new AuthorizationException("잘못된 정보를 기입했습니다.");
         }
     }
 }

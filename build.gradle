@@ -2,6 +2,7 @@ plugins {
 	id 'org.springframework.boot' version '2.4.3'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
+	id "org.asciidoctor.convert" version "1.5.9.2"
 }
 
 group = 'com.example'
@@ -43,8 +44,33 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
+
+	// restdocs
+	asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+	testCompile 'org.springframework.restdocs:spring-restdocs-restassured'
+}
+
+ext {
+	snippetsDir = file('build/generated-snippets')
 }
 
 test {
+	outputs.dir snippetsDir
 	useJUnitPlatform()
+}
+
+asciidoctor {
+	inputs.dir snippetsDir
+	dependsOn test
+}
+
+bootJar {
+	dependsOn asciidoctor
+}
+
+task copyDocument(type: Copy) {
+	dependsOn bootJar
+
+	from file("build/asciidoc/html5/index.html")
+	into file("src/main/resources/static/docs")
 }

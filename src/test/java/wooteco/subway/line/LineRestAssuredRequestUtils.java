@@ -7,6 +7,10 @@ import org.springframework.http.MediaType;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.station.dto.StationResponse;
+import wooteco.utils.DocumentUtils;
+
+import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
+import static wooteco.utils.DocumentUtils.*;
 
 public class LineRestAssuredRequestUtils {
     public static ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest params) {
@@ -19,10 +23,24 @@ public class LineRestAssuredRequestUtils {
                         extract();
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {
+    public static ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest params, String documentIdentifier) {
         return RestAssured
-                .given().log().all()
+                .given(DocumentUtils.getRequestSpecification())
+                .log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .filter(document(documentIdentifier, getRequestPreprocessor(), getResponsePreprocessor()))
+                .when().post("/lines")
+                .then().log().all().
+                        extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청(String documentIdentifier) {
+        return RestAssured
+                .given(DocumentUtils.getRequestSpecification())
+                .log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
+                .filter(document(documentIdentifier, getRequestPreprocessor(), getResponsePreprocessor()))
                 .when().get("/lines")
                 .then().log().all()
                 .extract();
@@ -37,27 +55,44 @@ public class LineRestAssuredRequestUtils {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_수정_요청(LineResponse response, LineRequest params) {
+    public static ExtractableResponse<Response> 지하철_노선_조회_요청(LineResponse response, String documentIdentifier) {
         return RestAssured
-                .given().log().all()
+                .given(DocumentUtils.getRequestSpecification())
+                .log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .filter(document(documentIdentifier, getRequestPreprocessor(), getResponsePreprocessor()))
+                .when().get("/lines/{lineId}", response.getId())
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선_수정_요청(LineResponse response, LineRequest params, String documentIdentifier) {
+        return RestAssured
+                .given(DocumentUtils.getRequestSpecification())
+                .log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
+                .filter(document(documentIdentifier, getRequestPreprocessor(), getResponsePreprocessor()))
                 .when().put("/lines/" + response.getId())
                 .then().log().all()
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_제거_요청(LineResponse lineResponse) {
+    public static ExtractableResponse<Response> 지하철_노선_제거_요청(LineResponse lineResponse, String documentIdentifier) {
         return RestAssured
-                .given().log().all()
+                .given(DocumentUtils.getRequestSpecification())
+                .log().all()
+                .filter(document(documentIdentifier, getRequestPreprocessor(), getResponsePreprocessor()))
                 .when().delete("/lines/" + lineResponse.getId())
                 .then().log().all()
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(LineResponse line, StationResponse station) {
+    public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(LineResponse line, StationResponse station, String documentIdentifier) {
         return RestAssured
-                .given().log().all()
+                .given(DocumentUtils.getRequestSpecification())
+                .log().all()
+                .filter(document(documentIdentifier, getRequestPreprocessor(), getResponsePreprocessor()))
                 .when().delete("/lines/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
                 .then().log().all()
                 .extract();

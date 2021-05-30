@@ -27,7 +27,7 @@ public class AuthService {
         try {
             member = memberDao.findByEmail(request.getEmail());
         } catch (DataAccessException e) {
-            throw new AuthorizationException("존재하지 않는 계정입니다.");
+            throw new AuthorizationException("잘못된 정보를 기입하셨습니다.");
         }
         member.checkPassword(request.getPassword());
 

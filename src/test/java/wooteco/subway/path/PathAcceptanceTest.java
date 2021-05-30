@@ -45,9 +45,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * 남부터미널역 --- *3호선* 2 ---  양재
      */
     @BeforeEach
-    public void setUp() {
-        super.setUp();
-
+    public void setUpFixture() {
         강남역 = 지하철역_등록되어_있음("강남역");
         양재역 = 지하철역_등록되어_있음("양재역");
         교대역 = 지하철역_등록되어_있음("교대역");

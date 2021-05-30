@@ -27,8 +27,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     private LineRequest lineRequest2;
 
     @BeforeEach
-    public void setUp() {
-        super.setUp();
+    public void setUpFixture() {
 
         // given
         강남역 = 지하철역_등록되어_있음("강남역");
@@ -42,7 +41,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void createLine() {
         // when
-        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1);
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1, "line-create");
 
         // then
         지하철_노선_생성됨(response);
@@ -60,7 +59,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_등록되어_있음(lineRequest1);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1);
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1, "line-create-fail-duplicate-name");
 
         // then
         지하철_노선_생성_실패됨(response);
@@ -78,7 +77,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         LineResponse lineResponse2 = 지하철_노선_등록되어_있음(lineRequest2);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청();
+        ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청("lines-read");
 
         // then
         지하철_노선_목록_응답됨(response);
@@ -108,7 +107,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_조회_요청(lineResponse);
+        ExtractableResponse<Response> response = 지하철_노선_조회_요청(lineResponse, "line-read");
 
         // then
         지하철_노선_응답됨(response, lineResponse);
@@ -127,7 +126,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse, lineRequest2);
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse, lineRequest2, "line-update");
 
         // then
         지하철_노선_수정됨(response);
@@ -144,7 +143,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_제거_요청(lineResponse);
+        ExtractableResponse<Response> response = 지하철_노선_제거_요청(lineResponse, "line-delete");
 
         // then
         지하철_노선_삭제됨(response);
