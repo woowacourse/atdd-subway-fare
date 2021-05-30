@@ -1,0 +1,17 @@
+= 포모와 에드의 지하철 API
+ifndef::snippets[]
+:snippets: ../../../build/generated-snippets
+endif::[]
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+
+include::member.adoc[]
+include::auth.adoc[]
+include::station.adoc[]
+include::line.adoc[]
+include::section.adoc[]
+include::path.adoc[]
+

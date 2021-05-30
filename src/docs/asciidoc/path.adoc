@@ -1,0 +1,9 @@
+== 지하철 노선 경로 API
+
+=== 경로 조회
+==== Request
+
+include::{snippets}/path/http-request.adoc[]
+
+==== Response
+include::{snippets}/path/http-response.adoc[]

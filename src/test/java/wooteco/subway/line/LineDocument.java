@@ -1,6 +1,5 @@
 package wooteco.subway.line;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,7 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import wooteco.subway.AcceptanceTest;
+import wooteco.subway.Documentation;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.LinesResponse;
@@ -25,7 +24,7 @@ import static wooteco.subway.line.SectionAcceptanceTest.지하철_구간_생성_
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
 @DisplayName("지하철 노선 관련 기능")
-public class LineAcceptanceTest extends AcceptanceTest {
+public class LineDocument extends Documentation {
     private StationResponse 강남역;
     private StationResponse 광교역;
     private StationResponse 역삼역;
@@ -38,8 +37,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     public void setUp() {
-        super.setUp();
-
         // given
         강남역 = 지하철역_등록되어_있음("강남역");
         광교역 = 지하철역_등록되어_있음("광교역");
@@ -52,7 +49,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void createLine() {
         // when
-        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1);
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청_성공(lineRequest1);
 
         // then
         지하철_노선_생성됨(response);
@@ -69,10 +66,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void cannotCreateExistLine() {
         // given
-        지하철_노선_생성_요청(lineRequest1);
+        지하철_노선_생성_요청_성공(lineRequest1);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1);
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청_실패(lineRequest1);
 
         // then
         지하철_노선_생성_실패됨(response);
@@ -86,7 +83,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_등록되어_있음(lineRequest1);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1);
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청_실패(lineRequest1);
 
         // then
         지하철_노선_생성_실패됨(response);
@@ -128,7 +125,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse, lineRequest2);
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청_성공(lineResponse, lineRequest2);
 
         // then
         지하철_노선_수정됨(response);
@@ -142,7 +139,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         LineResponse lineResponse2 = 지하철_노선_등록되어_있음(lineRequest2);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse, lineRequest2);
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청_실패(lineResponse, lineRequest2);
 
         // then
         지하철_노선_생성_실패됨(response);
@@ -156,7 +153,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_제거_요청(lineResponse);
+        ExtractableResponse<Response> response = 지하철_노선_제거_요청_성공(lineResponse);
 
         // then
         지하철_노선_삭제됨(response);
@@ -169,7 +166,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         LineResponse lineResponse = new LineResponse(11L, "존재하지 않는 지하철역", "color", Collections.emptyList());
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_제거_요청(lineResponse);
+        ExtractableResponse<Response> response = 지하철_노선_제거_요청_실패(lineResponse);
 
         // then
         지하철_노선_생성_실패됨(response);
@@ -218,8 +215,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 지하철_노선_전체_목록_조회_요청() {
-        return RestAssured
-                .given().log().all()
+        return given("line/map")
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/lines/map")
                 .then().log().all()
@@ -236,12 +232,20 @@ public class LineAcceptanceTest extends AcceptanceTest {
     }
 
     public static LineResponse 지하철_노선_등록되어_있음(LineRequest lineRequest) {
-        return 지하철_노선_생성_요청(lineRequest).as(LineResponse.class);
+        return 지하철_노선_생성_요청_성공(lineRequest).as(LineResponse.class);
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest params) {
-        return RestAssured
-                .given().log().all()
+    public static ExtractableResponse<Response> 지하철_노선_생성_요청_성공(LineRequest params) {
+        return given("line/create/success")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/lines")
+                .then().log().all().
+                        extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선_생성_요청_실패(LineRequest params) {
+        return given("line/create/fail")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().post("/lines")
@@ -250,8 +254,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     }
 
     private static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {
-        return RestAssured
-                .given().log().all()
+        return given("line/list")
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/lines")
                 .then().log().all()
@@ -259,17 +262,15 @@ public class LineAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 지하철_노선_조회_요청(LineResponse response) {
-        return RestAssured
-                .given().log().all()
+        return given("line/read")
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/lines/{lineId}", response.getId())
                 .then().log().all()
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_수정_요청(LineResponse response, LineRequest params) {
-        return RestAssured
-                .given().log().all()
+    public static ExtractableResponse<Response> 지하철_노선_수정_요청_성공(LineResponse response, LineRequest params) {
+        return given("line/edit/success")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().put("/lines/" + response.getId())
@@ -277,9 +278,24 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_제거_요청(LineResponse lineResponse) {
-        return RestAssured
-                .given().log().all()
+    public static ExtractableResponse<Response> 지하철_노선_수정_요청_실패(LineResponse response, LineRequest params) {
+        return given("line/edit/fail")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().put("/lines/" + response.getId())
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선_제거_요청_성공(LineResponse lineResponse) {
+        return given("line/delete/success")
+                .when().delete("/lines/" + lineResponse.getId())
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선_제거_요청_실패(LineResponse lineResponse) {
+        return given("line/delete/fail")
                 .when().delete("/lines/" + lineResponse.getId())
                 .then().log().all()
                 .extract();
@@ -323,4 +339,5 @@ public class LineAcceptanceTest extends AcceptanceTest {
     public static void 지하철_노선_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
+
 }
