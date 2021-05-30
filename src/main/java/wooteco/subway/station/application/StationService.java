@@ -1,36 +1,39 @@
 package wooteco.subway.station.application;
 
 import org.springframework.stereotype.Service;
-import wooteco.subway.line.dao.SectionDao;
+import wooteco.subway.line.dao.LineDao;
+import wooteco.subway.line.domain.Line;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
+import wooteco.subway.station.dto.StationWithTransferResponse;
 import wooteco.subway.station.exception.DuplicateStationNameException;
 import wooteco.subway.station.exception.StationInLineException;
 import wooteco.subway.station.exception.StationNotFoundException;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class StationService {
     private StationDao stationDao;
-    private SectionDao sectionDao;
+    private LineDao lineDao;
 
-    public StationService(StationDao stationDao, SectionDao sectionDao) {
+    public StationService(StationDao stationDao, LineDao lineDao) {
         this.stationDao = stationDao;
-        this.sectionDao = sectionDao;
+        this.lineDao = lineDao;
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
-        validateDuplicateStationName(stationRequest.getName());
+        validatePossibleStationName(stationRequest.getName());
         Station station = stationDao.insert(stationRequest.toStation());
         return StationResponse.of(station);
     }
 
-    private void validateDuplicateStationName(String stationName) {
+    private void validatePossibleStationName(String stationName) {
         final Optional<Station> stationByName = stationDao.findByName(stationName);
         if (stationByName.isPresent()) {
             throw new DuplicateStationNameException();
@@ -44,10 +47,17 @@ public class StationService {
 
     public List<StationResponse> findAllStationResponses() {
         List<Station> stations = stationDao.findAll();
+        return StationResponse.listOf(stations);
+    }
 
-        return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+    public List<StationWithTransferResponse> findAllStationWithTransferInfoResponses() {
+        List<Station> stations = stationDao.findAll();
+        final Map<Station, List<Line>> transferInfos = stations.stream()
+                .collect(Collectors.toMap(
+                        station -> station,
+                        station -> lineDao.findIncludingStation(station.getId())
+                ));
+        return StationWithTransferResponse.listOf(transferInfos);
     }
 
     public void deleteStationById(Long id) {
@@ -57,7 +67,7 @@ public class StationService {
     }
 
     private void validateNotInAnyLines(Station station) {
-        List<Long> lineIds = sectionDao.findLineIdsContains(station.getId());
+        List<Line> lineIds = lineDao.findIncludingStation(station.getId());
         if (!lineIds.isEmpty()) {
             throw new StationInLineException();
         }
