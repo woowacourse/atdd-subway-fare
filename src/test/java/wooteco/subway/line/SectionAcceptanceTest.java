@@ -107,14 +107,15 @@ public class SectionAcceptanceTest extends AcceptanceTest {
             uploadedStation2));
     }
 
-    @DisplayName("지하철 노선에 등록된 지하철역이 두개일 때 한 역을 제외한다.")
+    @DisplayName("노선에 역이 두 개 밖에 없을 때에는 구간 삭제 불가능.")
     @Test
     void removeLineSection2() {
         // when
         ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, uploadedStation1);
 
         // then
-        지하철_노선에_지하철역_제외_실패됨(removeResponse);
+        ExceptionCheck.코드_400_응답됨(removeResponse);
+        ExceptionCheck.에러_문구_확인(removeResponse, "ONLY_ONE_SECTION_EXISTS");
     }
 
     @DisplayName("두 역이 같을 경우")
@@ -139,7 +140,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         ExceptionCheck.에러_문구_확인(response, "INVALID_DISTANCE");
     }
 
-    @DisplayName("불가능한 거리가 입력 된")
+    @DisplayName("불가능한 거리가 입력 된 경우")
     @Test
     void impossibleDistance() {
         // when

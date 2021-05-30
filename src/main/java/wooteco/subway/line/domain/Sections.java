@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import wooteco.subway.line.exception.BothStationAlreadyRegisteredInLineException;
 import wooteco.subway.line.exception.BothStationNotRegisteredInLineException;
 import wooteco.subway.line.exception.ImpossibleDistanceException;
+import wooteco.subway.line.exception.OnlyOneSectionExistsException;
 import wooteco.subway.station.domain.Station;
 
 public class Sections {
@@ -122,7 +123,7 @@ public class Sections {
 
     public void removeStation(Station station) {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new OnlyOneSectionExistsException("1개의 구간만 있을 경우 삭제 할 수 없다.");
         }
 
         Optional<Section> upSection = sections.stream()

@@ -15,6 +15,7 @@ import wooteco.subway.line.exception.DuplicatedLineNameException;
 import wooteco.subway.line.exception.ImpossibleDistanceException;
 import wooteco.subway.line.exception.InvalidDistanceException;
 import wooteco.subway.line.exception.NoSuchLineException;
+import wooteco.subway.line.exception.OnlyOneSectionExistsException;
 import wooteco.subway.line.exception.SameStationsInSameSectionException;
 import wooteco.subway.member.exception.DuplicatedIdException;
 import wooteco.subway.station.exception.DuplicatedStationNameException;
@@ -113,6 +114,12 @@ public class controllerAdvice {
     @ExceptionHandler(ImpossibleDistanceException.class)
     public ResponseEntity<ExceptionResponse> invalidPasswordExceptionHandle(
         ImpossibleDistanceException e) {
+        return ResponseEntity.badRequest().body(new ExceptionResponse(e));
+    }
+
+    @ExceptionHandler(OnlyOneSectionExistsException.class)
+    public ResponseEntity<ExceptionResponse> invalidPasswordExceptionHandle(
+        OnlyOneSectionExistsException e) {
         return ResponseEntity.badRequest().body(new ExceptionResponse(e));
     }
 }
