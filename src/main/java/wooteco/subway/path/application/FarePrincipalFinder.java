@@ -1,9 +1,7 @@
 package wooteco.subway.path.application;
 
-import org.springframework.stereotype.Service;
 import wooteco.subway.path.domain.fare.*;
 
-@Service
 public class FarePrincipalFinder {
     public static final int BASIC_FARE = 1250;
     public static final int OVER_FARE = 2050;

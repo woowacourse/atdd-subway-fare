@@ -9,7 +9,6 @@ import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
-import wooteco.subway.validate.LineValidator;
 import wooteco.subway.validate.MemberValidator;
 
 import javax.validation.Valid;
@@ -30,7 +29,7 @@ public class MemberController {
     }
 
     @GetMapping("/members/check-validation")
-    public ResponseEntity findDuplicatedEmail(@RequestParam String email) {
+    public ResponseEntity findDuplicatedEmail(String email) {
         memberService.checkDuplicatedEmail(email);
         return ResponseEntity.ok().build();
     }
