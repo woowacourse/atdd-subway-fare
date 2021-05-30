@@ -24,7 +24,7 @@ public class SubwayPath {
         this.fareStrategy = fareStrategy;
     }
 
-    public int calculateFare(int distance) {
+    public int calculateFare() {
         return fareStrategy.discount(calculateDistance(), findExtraFare());
     }
 
