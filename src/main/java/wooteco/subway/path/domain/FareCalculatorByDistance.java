@@ -3,12 +3,16 @@ package wooteco.subway.path.domain;
 import java.util.Arrays;
 import java.util.function.UnaryOperator;
 
+import static wooteco.subway.path.domain.FareCalculatorByDistance.Constants.*;
+
 public enum FareCalculatorByDistance {
-    BASE_FARE(0, 10, distance -> 1250),
-    FIRST_ADDITIONAL_FARE(10, 50,
-            (distance) -> 1250 + (int) ((Math.ceil((distance - 10 - 1) / 5)) + 1) * 100),
-    SECOND_ADDITIONAL_FARE(50, Integer.MAX_VALUE,
-            (distance) -> 1250 + 800 + (int) ((Math.ceil((distance - 50 - 1) / 8)) + 1) * 100);
+    BASE(0, FIRST_INTERVAL_START, distance -> BASE_FARE),
+    FIRST_INTERVAL(FIRST_INTERVAL_START, SECOND_INTERVAL_START,
+            (distance) -> BASE_FARE +
+                    (int) ((Math.ceil((distance - FIRST_INTERVAL_START - 1) / FIRST_INTERVAL_CHARGE_UNIT)) + 1) * 100),
+    SECOND_INTERVAL(SECOND_INTERVAL_START, Integer.MAX_VALUE,
+            (distance) -> BASE_FARE + 800 +
+                    (int) ((Math.ceil((distance - SECOND_INTERVAL_START - 1) / SECOND_INTERVAL_CHARGE_UNIT)) + 1) * 100);
 
     private final int minExclusive;
     private final int maxInclusive;
@@ -26,5 +30,13 @@ public enum FareCalculatorByDistance {
                 .map(calculator -> calculator.calculator.apply(distance))
                 .findAny()
                 .orElse(0);
+    }
+
+    static class Constants {
+        static final int BASE_FARE = 1250;
+        static final int FIRST_INTERVAL_START = 10;
+        static final int SECOND_INTERVAL_START = 50;
+        static final int FIRST_INTERVAL_CHARGE_UNIT = 5;
+        static final int SECOND_INTERVAL_CHARGE_UNIT = 8;
     }
 }
