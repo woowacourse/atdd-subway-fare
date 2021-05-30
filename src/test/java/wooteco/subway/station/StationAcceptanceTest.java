@@ -9,16 +9,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.ErrorResponse;
+import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
+import wooteco.subway.station.dto.StationWithTransferResponse;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
+import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_생성_요청;
 
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {
@@ -71,6 +75,40 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_생성_실패됨(response2);
         지하철역_생성_실패됨(response3);
         지하철역_생성_실패됨(response4);
+    }
+
+    @DisplayName("환승 정보가 담긴 지하철역 목록을 조회한다.")
+    @Test
+    void getStationsWithTransferInfo() {
+        // given
+        StationResponse 일호선역과이호선역 = 지하철역_등록되어_있음("일호선역과이호선역");
+        StationResponse 일호션역 = 지하철역_등록되어_있음("일호선역");
+        StationResponse 이호선역 = 지하철역_등록되어_있음("이호선역");
+        StationResponse 노선에등록안됨역 = 지하철역_등록되어_있음("노선에등록안됨역");
+
+        LineRequest 일호선 = new LineRequest("1호선", "bg-red-600", 일호선역과이호선역.getId(), 일호션역.getId(), 10);
+        지하철_노선_생성_요청(일호선);
+
+        LineRequest 이호선 = new LineRequest("2호선", "bg-blue-600", 일호선역과이호선역.getId(), 이호선역.getId(), 10);
+        지하철_노선_생성_요청(이호선);
+
+        StationWithTransferResponse 일호선역과이호선역환승정보 =
+                new StationWithTransferResponse(일호선역과이호선역.getId(), 일호선역과이호선역.getName(), Arrays.asList("1호선", "2호선"));
+
+        StationWithTransferResponse 일호선역환승정보 =
+                new StationWithTransferResponse(일호션역.getId(), 일호션역.getName(), Arrays.asList("1호선"));
+
+        StationWithTransferResponse 이호선역환승정보 =
+                new StationWithTransferResponse(이호선역.getId(), 이호선역.getName(), Arrays.asList("2호선"));
+
+        // when
+        ExtractableResponse<Response> response = 지하철역_환승정보와_함께_목록_조회_요청();
+        
+        
+        // then
+        지하철역_목록_응답됨(response);
+        지하철역_목록_환승_정보_포함됨(response, Arrays.asList(일호선역과이호선역환승정보, 일호선역환승정보, 이호선역환승정보));
+        지하철역_노선_등록_안된역은_환승_정보_포함_안됨(response, 노선에등록안됨역);
     }
 
     @DisplayName("지하철역을 조회한다.")
@@ -150,6 +188,14 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 지하철역_환승정보와_함께_목록_조회_요청() {
+        return RestAssured
+                .given().log().all()
+                .when().get("/stations/transfer")
+                .then().log().all()
+                .extract();
+    }
+
     public static ExtractableResponse<Response> 지하철역_제거_요청(StationResponse stationResponse) {
         return RestAssured
                 .given().log().all()
@@ -215,5 +261,41 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 .collect(Collectors.toList());
 
         assertThat(resultLineIds).containsAll(expectedLineIds);
+    }
+
+    public static void 지하철역_목록_환승_정보_포함됨(ExtractableResponse<Response> response, List<StationWithTransferResponse> createdResponses) {
+        List<StationWithTransferResponse> transferInfoResponses =
+                new ArrayList<>(response.jsonPath().getList(".", StationWithTransferResponse.class));
+
+        final List<String> responseStationNames = transferInfoResponses.stream()
+                .map(StationWithTransferResponse::getName)
+                .collect(Collectors.toList());
+
+        final List<String> expectedStationNames = createdResponses.stream()
+                .map(StationWithTransferResponse::getName)
+                .collect(Collectors.toList());
+
+        assertThat(responseStationNames).containsAll(expectedStationNames);
+
+        final List<List<String>> responseStationTransfer = transferInfoResponses.stream()
+                .map(StationWithTransferResponse::getTransfer)
+                .collect(Collectors.toList());
+
+        final List<List<String>> expectedStationTransfer = createdResponses.stream()
+                .map(StationWithTransferResponse::getTransfer)
+                .collect(Collectors.toList());
+
+        assertThat(responseStationTransfer).containsAll(expectedStationTransfer);
+    }
+
+    private static void 지하철역_노선_등록_안된역은_환승_정보_포함_안됨(ExtractableResponse<Response> response, StationResponse stationResponse) {
+        List<StationWithTransferResponse> transferInfoResponses =
+                new ArrayList<>(response.jsonPath().getList(".", StationWithTransferResponse.class));
+
+        final List<String> responseStationNames = transferInfoResponses.stream()
+                .map(StationWithTransferResponse::getName)
+                .collect(Collectors.toList());
+
+        assertThat(responseStationNames).doesNotContain(stationResponse.getName());
     }
 }
