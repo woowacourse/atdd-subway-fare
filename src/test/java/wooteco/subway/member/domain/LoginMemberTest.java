@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import wooteco.subway.path.domain.Fare;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.member.domain.Role.LOGIN;
 
 class LoginMemberTest {
 
@@ -14,7 +15,7 @@ class LoginMemberTest {
         LoginMember 청소년 = new LoginMember(1L, "yjksw@github.com", 13);
         LoginMember 어린이 = new LoginMember(2L, "fjzjqhdl@gmail.com", 6);
         LoginMember 일반인 = new LoginMember(3L, "nabom@gmail.com", 30);
-        LoginMember 게스트 = new LoginMember();
+        LoginMember 게스트 = LoginMember.createGuestMember();
 
         Fare baseFare = new Fare(1250);
 
