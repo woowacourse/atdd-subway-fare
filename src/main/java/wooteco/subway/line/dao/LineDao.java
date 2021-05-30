@@ -4,7 +4,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import wooteco.subway.exception.nosuch.NoSuchLineException;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.domain.Sections;
@@ -13,11 +12,9 @@ import wooteco.subway.station.domain.Station;
 import javax.sql.DataSource;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
@@ -43,7 +40,7 @@ public class LineDao {
         return new Line(lineId, line.getName(), line.getColor(), line.getExtraFare());
     }
 
-    public Optional<Line> findById(Long id) {
+    public Line findById(Long id) {
         String sql = "select L.id as line_id, L.name as line_name, L.color as line_color, L.extra_fare as line_extra_fare," +
                 "S.id as section_id, S.distance as section_distance, " +
                 "UST.id as up_station_id, UST.name as up_station_name, " +
@@ -91,18 +88,18 @@ public class LineDao {
         Map<Long, List<Map<String, Object>>> resultByLine = result.stream()
             .collect(Collectors.groupingBy(it -> (Long) it.get("line_id")));
         return resultByLine.values().stream()
-                .map(maps -> mapLine(maps).orElseThrow(NoSuchLineException::new))
+                .map(this::mapLine)
                 .collect(Collectors.toList());
     }
 
-    private Optional<Line> mapLine(List<Map<String, Object>> result) {
+    private Line mapLine(List<Map<String, Object>> result) {
         List<Section> sections = extractSections(result);
-        return Optional.of(new Line(
+        return new Line(
                 (Long) result.get(0).get("LINE_ID"),
                 (String) result.get(0).get("LINE_NAME"),
                 (String) result.get(0).get("LINE_COLOR"),
                 new Sections(sections),
-            (Integer) result.get(0).get("LINE_EXTRA_FARE")));
+            (Integer) result.get(0).get("LINE_EXTRA_FARE"));
     }
 
     private List<Section> extractSections(List<Map<String, Object>> result) {

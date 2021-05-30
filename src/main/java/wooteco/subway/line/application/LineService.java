@@ -75,7 +75,11 @@ public class LineService {
 
     @Transactional(readOnly = true)
     public Line findLineById(Long id) {
-        return lineDao.findById(id).orElseThrow(NoSuchLineException::new);
+        try {
+            return lineDao.findById(id);
+        }catch (Exception e) {
+            throw new NoSuchLineException();
+        }
     }
 
     @Transactional
