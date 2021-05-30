@@ -84,17 +84,19 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        List<Line> lines = lineDao.findAll();
+        validateIfUpdatable(id, lineUpdateRequest, lineDao.findAll());
+        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+    }
 
-        Optional<Line> findWithNameLine = findOptionalLineByName(lineUpdateRequest, lines);
-        if (findWithNameLine.isPresent() && !findWithNameLine.get().isSameId(id)) {
+    private void validateIfUpdatable(Long id, LineRequest lineUpdateRequest, List<Line> lines) {
+        Optional<Line> findLineByName = findOptionalLineByName(lineUpdateRequest, lines);
+        if (findLineByName.isPresent() && !findLineByName.get().isSameId(id)) {
             throw new ExistLineNameException();
         }
-        Optional<Line> findWithColorLine = findOptionalLineByColor(lineUpdateRequest, lines);
-        if (findWithColorLine.isPresent() && !findWithColorLine.get().isSameId(id)) {
+        Optional<Line> findLineByColor = findOptionalLineByColor(lineUpdateRequest, lines);
+        if (findLineByColor.isPresent() && !findLineByColor.get().isSameId(id)) {
             throw new ExistLineColorException();
         }
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
     public void deleteLineById(Long id) {
