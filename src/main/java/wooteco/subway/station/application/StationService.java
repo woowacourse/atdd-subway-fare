@@ -67,8 +67,8 @@ public class StationService {
     }
 
     private void validateNotInAnyLines(Station station) {
-        List<Line> lineIds = lineDao.findIncludingStation(station.getId());
-        if (!lineIds.isEmpty()) {
+        List<Line> lines = lineDao.findIncludingStation(station.getId());
+        if (!lines.isEmpty()) {
             throw new StationInLineException();
         }
     }
