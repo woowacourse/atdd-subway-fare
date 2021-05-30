@@ -1,10 +1,10 @@
 package wooteco.subway.path.domain.strategy;
 
-public abstract class DistanceFarePolicy {
+public abstract class DistanceAdditionPolicy {
     private final int distance;
     private final int defaultFare;
 
-    protected DistanceFarePolicy(int distance, int defaultFare) {
+    protected DistanceAdditionPolicy(int distance, int defaultFare) {
         this.distance = distance;
         this.defaultFare = defaultFare;
     }

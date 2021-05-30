@@ -59,7 +59,7 @@ public class SubwayPath {
         return fare;
     }
 
-    private int findMaximumExtraFare() {
+    public int findMaximumExtraFare() {
         return sectionEdges.stream()
                 .mapToInt(sectionEdge -> sectionEdge.getLine().getExtraFare())
                 .max()

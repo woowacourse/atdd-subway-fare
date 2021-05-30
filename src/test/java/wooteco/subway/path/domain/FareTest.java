@@ -4,7 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import wooteco.subway.path.domain.strategy.DistanceFarePolicy;
+import wooteco.subway.path.domain.strategy.DistanceAdditionPolicy;
 
 import java.util.stream.Stream;
 
@@ -28,9 +28,9 @@ class FareTest {
     @MethodSource
     void calculateByDistance(int distance, int extraFare, int result) {
         //given
-        DistanceFarePolicy distanceFarePolicy = DistanceFareFactory.create(distance, DEFAULT_FARE);
+        DistanceAdditionPolicy distanceAdditionPolicy = DistanceAdditionFactory.create(distance, DEFAULT_FARE);
         //when
-        Fare fare = new Fare(distanceFarePolicy, extraFare);
+        Fare fare = new Fare(distanceAdditionPolicy, extraFare);
         int calculateFare = fare.calculateFare();
 
         //then

@@ -1,10 +1,10 @@
 package wooteco.subway.path.domain.strategy;
 
-public class OverFiftyFare extends DistanceFarePolicy {
+public class OverFiftyAddition extends DistanceAdditionPolicy {
     public static final int DISTANCE_PIVOT = 50;
     public static final int CONDITION_PIVOT = 8;
 
-    public OverFiftyFare(int distance, int defaultFare) {
+    public OverFiftyAddition(int distance, int defaultFare) {
         super(distance, defaultFare);
     }
 
@@ -15,7 +15,7 @@ public class OverFiftyFare extends DistanceFarePolicy {
     }
 
     private int underFiftyFare(int defaultFare, int distance) {
-        return new TenToFiftyFare(
+        return new TenToFiftyAddition(
                 distance - ((distance % (DISTANCE_PIVOT * (distance / DISTANCE_PIVOT)))),
                 defaultFare
         ).calculateAdditionalFare();
