@@ -1,26 +1,30 @@
 package wooteco.subway.path.strategy;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class FareStrategyFactory {
-    private static final int PRESCHOOL_AGE = 6;
-    private static final int CHILD_AGE = 13;
-    private static final int TEENAGER_AGE = 19;
+    private static final List<FareStrategy> fareStrategies = initStrategy();
 
     private FareStrategyFactory() {
     }
 
+    private static List<FareStrategy> initStrategy() {
+        List<FareStrategy> fareStrategies = new ArrayList<>();
+
+        fareStrategies.add(new AdultFareStrategy());
+        fareStrategies.add(new ChildFareStrategy());
+        fareStrategies.add(new PreSchoolFareStrategy());
+        fareStrategies.add(new TeenagerFareStrategy());
+
+        return fareStrategies;
+    }
+
     public static FareStrategy findStrategy(int age) {
-        if (age < PRESCHOOL_AGE) {
-            return new PreSchoolFareStrategy();
-        }
+        return fareStrategies.stream()
+                .filter(strategy -> strategy.isAppropriate(age))
+                .findFirst()
+                .get();
 
-        if (age < CHILD_AGE) {
-            return new ChildFareStrategy();
-        }
-
-        if (age < TEENAGER_AGE) {
-            return new TeenagerFareStrategy();
-        }
-
-        return new AdultFareStrategy();
     }
 }
