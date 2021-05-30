@@ -13,6 +13,9 @@ import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
 
@@ -90,7 +93,38 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 회원_생성을_요청(duplicateEmail, "password", 10);
         회원_가입_이메일_중복(response);
     }
-    
+
+    @DisplayName("이미 등록된 이메일에 대해 유효성 검사를 하는 기능을 구현한다.")
+    @Test
+    void checkMemberWithDuplicateEmail() {
+        final String duplicateEmail = "hello@hello.com";
+
+        Map<String, String> duplicateInfo = new HashMap<>();
+        duplicateInfo.put("email", duplicateEmail);
+
+        ExtractableResponse<Response> properResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(duplicateInfo)
+                .when().post("/members/email-check")
+                .then().log().all()
+                .extract();
+
+        assertThat(properResponse.statusCode()).isEqualTo(200);
+
+        회원_생성을_요청(duplicateEmail, "password", 10);
+
+        ExtractableResponse<Response> inproperResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(duplicateInfo)
+                .when().post("/members/email-check")
+                .then().log().all()
+                .extract();
+
+        assertThat(inproperResponse.statusCode()).isEqualTo(409);
+    }
+
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
