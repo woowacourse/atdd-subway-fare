@@ -449,7 +449,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_내_회원_정보_조회">내 회원 정보 조회</a></li>
 <li><a href="#_내_회원_정보_수정">내 회원 정보 수정</a></li>
-<li><a href="#_내_회원_정보_수정_실패_email_유효성_검증">내 회원 정보 수정 실패 - Email 유효성 검증</a></li>
+<li><a href="#_내_회원_정보_수정_실패_email_유효성">내 회원 정보 수정 실패 - Email 유효성</a></li>
 <li><a href="#_내_회원_정보_수정_실패_password_유효성">내 회원 정보 수정 실패 - Password 유효성</a></li>
 <li><a href="#_내_회원_정보_수정_실패_나이_유효성">내 회원 정보 수정 실패 - 나이 유효성</a></li>
 <li><a href="#_내_회원_정보_삭제">내 회원 정보 삭제</a></li>
@@ -523,7 +523,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /members HTTP/1.1
 Content-Type: application/json; charset=UTF-8
-Host: localhost:57579
+Host: localhost:58317
 Content-Length: 74
 
 {
@@ -543,7 +543,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Location: /members/1
-Date: Sun, 30 May 2021 16:49:03 GMT
+Date: Sun, 30 May 2021 16:52:18 GMT
 Keep-Alive: timeout=60
 Connection: keep-alive</code></pre>
 </div>
@@ -558,7 +558,7 @@ Connection: keep-alive</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /members HTTP/1.1
 Content-Type: application/json; charset=UTF-8
-Host: localhost:57586
+Host: localhost:58324
 Content-Length: 129
 
 {
@@ -579,12 +579,12 @@ Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
 Transfer-Encoding: chunked
-Date: Sun, 30 May 2021 16:49:04 GMT
+Date: Sun, 30 May 2021 16:52:19 GMT
 Connection: close
 Content-Length: 204
 
 {
-  "timestamp" : "2021-05-30T16:49:04.516+00:00",
+  "timestamp" : "2021-05-30T16:52:19.176+00:00",
   "status" : 400,
   "error" : "Bad Request",
   "message" : "이메일 전체 글자 수는 30글자를 넘을 수 없습니다.",
@@ -602,7 +602,7 @@ Content-Length: 204
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /members HTTP/1.1
 Content-Type: application/json; charset=UTF-8
-Host: localhost:57563
+Host: localhost:58301
 Content-Length: 123
 
 {
@@ -623,12 +623,12 @@ Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
 Transfer-Encoding: chunked
-Date: Sun, 30 May 2021 16:49:01 GMT
+Date: Sun, 30 May 2021 16:52:15 GMT
 Connection: close
 Content-Length: 203
 
 {
-  "timestamp" : "2021-05-30T16:49:01.347+00:00",
+  "timestamp" : "2021-05-30T16:52:15.945+00:00",
   "status" : 400,
   "error" : "Bad Request",
   "message" : "비밀번호는 4글자 이상 20글자 이하이어야 합니다.",
@@ -646,7 +646,7 @@ Content-Length: 203
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /members HTTP/1.1
 Content-Type: application/json; charset=UTF-8
-Host: localhost:57571
+Host: localhost:58309
 Content-Length: 75
 
 {
@@ -667,12 +667,12 @@ Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
 Transfer-Encoding: chunked
-Date: Sun, 30 May 2021 16:49:02 GMT
+Date: Sun, 30 May 2021 16:52:16 GMT
 Connection: close
 Content-Length: 205
 
 {
-  "timestamp" : "2021-05-30T16:49:02.468+00:00",
+  "timestamp" : "2021-05-30T16:52:17.061+00:00",
   "status" : 400,
   "error" : "Bad Request",
   "message" : "나이는 음수일 수 없으며 200살을 넘을 수 없습니다.",
@@ -695,7 +695,7 @@ Content-Length: 205
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /members/me HTTP/1.1
 Accept: application/json
-Host: localhost:57579</code></pre>
+Host: localhost:58317</code></pre>
 </div>
 </div>
 </div>
@@ -709,7 +709,7 @@ Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
 Transfer-Encoding: chunked
-Date: Sun, 30 May 2021 16:49:03 GMT
+Date: Sun, 30 May 2021 16:52:18 GMT
 Keep-Alive: timeout=60
 Connection: keep-alive
 Content-Length: 59
@@ -731,7 +731,7 @@ Content-Length: 59
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /members/me HTTP/1.1
 Content-Type: application/json; charset=UTF-8
-Host: localhost:57579
+Host: localhost:58317
 Content-Length: 78
 
 {
@@ -750,7 +750,7 @@ Content-Length: 78
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Date: Sun, 30 May 2021 16:49:03 GMT
+Date: Sun, 30 May 2021 16:52:18 GMT
 Keep-Alive: timeout=60
 Connection: keep-alive</code></pre>
 </div>
@@ -758,14 +758,14 @@ Connection: keep-alive</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_내_회원_정보_수정_실패_email_유효성_검증">내 회원 정보 수정 실패 - Email 유효성 검증</h3>
+<h3 id="_내_회원_정보_수정_실패_email_유효성">내 회원 정보 수정 실패 - Email 유효성</h3>
 <div class="sect3">
 <h4 id="_request_7">Request</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /members/me HTTP/1.1
 Content-Type: application/json; charset=UTF-8
-Host: localhost:57586
+Host: localhost:58324
 Content-Length: 129
 
 {
@@ -786,12 +786,12 @@ Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
 Transfer-Encoding: chunked
-Date: Sun, 30 May 2021 16:49:04 GMT
+Date: Sun, 30 May 2021 16:52:19 GMT
 Connection: close
 Content-Length: 207
 
 {
-  "timestamp" : "2021-05-30T16:49:04.694+00:00",
+  "timestamp" : "2021-05-30T16:52:19.272+00:00",
   "status" : 400,
   "error" : "Bad Request",
   "message" : "이메일 전체 글자 수는 30글자를 넘을 수 없습니다.",
@@ -809,7 +809,7 @@ Content-Length: 207
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /members/me HTTP/1.1
 Content-Type: application/json; charset=UTF-8
-Host: localhost:57563
+Host: localhost:58301
 Content-Length: 123
 
 {
@@ -830,12 +830,12 @@ Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
 Transfer-Encoding: chunked
-Date: Sun, 30 May 2021 16:49:01 GMT
+Date: Sun, 30 May 2021 16:52:15 GMT
 Connection: close
 Content-Length: 206
 
 {
-  "timestamp" : "2021-05-30T16:49:01.373+00:00",
+  "timestamp" : "2021-05-30T16:52:15.971+00:00",
   "status" : 400,
   "error" : "Bad Request",
   "message" : "비밀번호는 4글자 이상 20글자 이하이어야 합니다.",
@@ -853,7 +853,7 @@ Content-Length: 206
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /members/me HTTP/1.1
 Content-Type: application/json; charset=UTF-8
-Host: localhost:57571
+Host: localhost:58309
 Content-Length: 75
 
 {
@@ -874,12 +874,12 @@ Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
 Transfer-Encoding: chunked
-Date: Sun, 30 May 2021 16:49:02 GMT
+Date: Sun, 30 May 2021 16:52:16 GMT
 Connection: close
 Content-Length: 208
 
 {
-  "timestamp" : "2021-05-30T16:49:02.488+00:00",
+  "timestamp" : "2021-05-30T16:52:17.084+00:00",
   "status" : 400,
   "error" : "Bad Request",
   "message" : "나이는 음수일 수 없으며 200살을 넘을 수 없습니다.",
@@ -896,7 +896,7 @@ Content-Length: 208
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /members/me HTTP/1.1
-Host: localhost:57579</code></pre>
+Host: localhost:58317</code></pre>
 </div>
 </div>
 </div>
@@ -908,7 +908,7 @@ Host: localhost:57579</code></pre>
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Date: Sun, 30 May 2021 16:49:03 GMT
+Date: Sun, 30 May 2021 16:52:18 GMT
 Keep-Alive: timeout=60
 Connection: keep-alive</code></pre>
 </div>
@@ -922,7 +922,7 @@ Connection: keep-alive</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /members/check-validation/?email=Other_login%2540email.com HTTP/1.1
-Host: localhost:57296</code></pre>
+Host: localhost:58030</code></pre>
 </div>
 </div>
 </div>
@@ -934,7 +934,7 @@ Host: localhost:57296</code></pre>
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Date: Sun, 30 May 2021 16:48:34 GMT
+Date: Sun, 30 May 2021 16:51:49 GMT
 Keep-Alive: timeout=60
 Connection: keep-alive</code></pre>
 </div>
@@ -948,7 +948,7 @@ Connection: keep-alive</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /members/check-validation/?email=email%40email.com HTTP/1.1
-Host: localhost:57287</code></pre>
+Host: localhost:58021</code></pre>
 </div>
 </div>
 </div>
@@ -962,13 +962,13 @@ Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
 Transfer-Encoding: chunked
-Date: Sun, 30 May 2021 16:48:32 GMT
+Date: Sun, 30 May 2021 16:51:47 GMT
 Keep-Alive: timeout=60
 Connection: keep-alive
 Content-Length: 199
 
 {
-  "timestamp" : "2021-05-30T16:48:32.654+00:00",
+  "timestamp" : "2021-05-30T16:51:47.089+00:00",
   "status" : 422,
   "error" : "Unprocessable Entity",
   "message" : "이메일이 중복되었습니다.",
@@ -986,7 +986,7 @@ Content-Length: 199
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /members/me HTTP/1.1
 Accept: application/json
-Host: localhost:57299</code></pre>
+Host: localhost:58033</code></pre>
 </div>
 </div>
 </div>
@@ -1000,13 +1000,13 @@ Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
 Transfer-Encoding: chunked
-Date: Sun, 30 May 2021 16:48:35 GMT
+Date: Sun, 30 May 2021 16:51:49 GMT
 Keep-Alive: timeout=60
 Connection: keep-alive
 Content-Length: 177
 
 {
-  "timestamp" : "2021-05-30T16:48:35.840+00:00",
+  "timestamp" : "2021-05-30T16:51:50.309+00:00",
   "status" : 401,
   "error" : "Unauthorized",
   "message" : "토큰이 유효하지 않습니다.",
@@ -1029,7 +1029,7 @@ Content-Length: 177
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /login/token HTTP/1.1
 Content-Type: application/json; charset=UTF-8
-Host: localhost:57291
+Host: localhost:58025
 Content-Length: 60
 
 {
@@ -1049,13 +1049,13 @@ Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
 Transfer-Encoding: chunked
-Date: Sun, 30 May 2021 16:48:33 GMT
+Date: Sun, 30 May 2021 16:51:48 GMT
 Keep-Alive: timeout=60
 Connection: keep-alive
 Content-Length: 168
 
 {
-  "accessToken" : "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJpYXQiOjE2MjIzOTMzMTMsImV4cCI6MTYyMjM5NjkxM30.1OTevfdtqG8PfgxEz8-VaRIEACwUglU8Idi-9RTv8Fo"
+  "accessToken" : "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJpYXQiOjE2MjIzOTM1MDgsImV4cCI6MTYyMjM5NzEwOH0.CEpLsf6L90s_w9hSdy_cXFwMEs2EHckyBjH2cv80KHY"
 }</code></pre>
 </div>
 </div>
@@ -1069,7 +1069,7 @@ Content-Length: 168
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /login/token HTTP/1.1
 Content-Type: application/json; charset=UTF-8
-Host: localhost:57283
+Host: localhost:58017
 Content-Length: 65
 
 {
@@ -1089,13 +1089,13 @@ Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
 Transfer-Encoding: chunked
-Date: Sun, 30 May 2021 16:48:31 GMT
+Date: Sun, 30 May 2021 16:51:45 GMT
 Keep-Alive: timeout=60
 Connection: keep-alive
 Content-Length: 190
 
 {
-  "timestamp" : "2021-05-30T16:48:31.571+00:00",
+  "timestamp" : "2021-05-30T16:51:45.969+00:00",
   "status" : 401,
   "error" : "Unauthorized",
   "message" : "이메일과 비밀번호를 확인해주세요.",
@@ -1117,7 +1117,7 @@ Content-Length: 190
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /stations HTTP/1.1
-Host: localhost:57919</code></pre>
+Host: localhost:58659</code></pre>
 </div>
 </div>
 </div>
@@ -1131,7 +1131,7 @@ Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
 Transfer-Encoding: chunked
-Date: Sun, 30 May 2021 16:49:52 GMT
+Date: Sun, 30 May 2021 16:53:06 GMT
 Keep-Alive: timeout=60
 Connection: keep-alive
 Content-Length: 82
@@ -1155,7 +1155,7 @@ Content-Length: 82
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /stations HTTP/1.1
 Content-Type: application/json; charset=UTF-8
-Host: localhost:57933
+Host: localhost:58673
 Content-Length: 26
 
 {
@@ -1173,7 +1173,7 @@ Content-Length: 26
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /stations HTTP/1.1
 Content-Type: application/json; charset=UTF-8
-Host: localhost:57940
+Host: localhost:58680
 Content-Length: 26
 
 {
@@ -1192,12 +1192,12 @@ Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
 Transfer-Encoding: chunked
-Date: Sun, 30 May 2021 16:49:57 GMT
+Date: Sun, 30 May 2021 16:53:09 GMT
 Connection: close
 Content-Length: 181
 
 {
-  "timestamp" : "2021-05-30T16:49:57.056+00:00",
+  "timestamp" : "2021-05-30T16:53:10.410+00:00",
   "status" : 400,
   "error" : "Bad Request",
   "message" : "이미 존재하는 지하철 역입니다.",
@@ -1217,7 +1217,7 @@ Vary: Access-Control-Request-Headers
 Location: /stations/1
 Content-Type: application/json
 Transfer-Encoding: chunked
-Date: Sun, 30 May 2021 16:49:55 GMT
+Date: Sun, 30 May 2021 16:53:08 GMT
 Keep-Alive: timeout=60
 Connection: keep-alive
 Content-Length: 38
@@ -1238,7 +1238,7 @@ Content-Length: 38
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /stations HTTP/1.1
 Content-Type: application/json; charset=UTF-8
-Host: localhost:57928
+Host: localhost:58668
 Content-Length: 33
 
 {
@@ -1257,12 +1257,12 @@ Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
 Transfer-Encoding: chunked
-Date: Sun, 30 May 2021 16:49:54 GMT
+Date: Sun, 30 May 2021 16:53:08 GMT
 Connection: close
 Content-Length: 216
 
 {
-  "timestamp" : "2021-05-30T16:49:54.791+00:00",
+  "timestamp" : "2021-05-30T16:53:08.245+00:00",
   "status" : 400,
   "error" : "Bad Request",
   "message" : "지원되지 않는 언어, 공백, 특수문자는 입력 불가능합니다.",
@@ -1280,7 +1280,7 @@ Content-Length: 216
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /stations HTTP/1.1
 Content-Type: application/json; charset=UTF-8
-Host: localhost:57928
+Host: localhost:58668
 Content-Length: 122
 
 {
@@ -1299,12 +1299,12 @@ Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
 Transfer-Encoding: chunked
-Date: Sun, 30 May 2021 16:49:54 GMT
+Date: Sun, 30 May 2021 16:53:08 GMT
 Connection: close
 Content-Length: 207
 
 {
-  "timestamp" : "2021-05-30T16:49:54.829+00:00",
+  "timestamp" : "2021-05-30T16:53:08.282+00:00",
   "status" : 400,
   "error" : "Bad Request",
   "message" : "역의 전체 글자 수는 2자 이상 20자 이하여야 합니다.",
@@ -1322,7 +1322,7 @@ Content-Length: 207
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /stations/1 HTTP/1.1
 Content-Type: application/json; charset=UTF-8
-Host: localhost:57924
+Host: localhost:58664
 Content-Length: 32
 
 {
@@ -1339,7 +1339,7 @@ Content-Length: 32
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Date: Sun, 30 May 2021 16:49:54 GMT
+Date: Sun, 30 May 2021 16:53:06 GMT
 Keep-Alive: timeout=60
 Connection: keep-alive</code></pre>
 </div>
@@ -1354,7 +1354,7 @@ Connection: keep-alive</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /stations/1 HTTP/1.1
 Content-Type: application/json; charset=UTF-8
-Host: localhost:57936
+Host: localhost:58676
 Content-Length: 26
 
 {
@@ -1373,12 +1373,12 @@ Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
 Transfer-Encoding: chunked
-Date: Sun, 30 May 2021 16:49:55 GMT
+Date: Sun, 30 May 2021 16:53:09 GMT
 Connection: close
 Content-Length: 183
 
 {
-  "timestamp" : "2021-05-30T16:49:56.328+00:00",
+  "timestamp" : "2021-05-30T16:53:09.706+00:00",
   "status" : 400,
   "error" : "Bad Request",
   "message" : "이미 존재하는 지하철 역입니다.",
@@ -1396,7 +1396,7 @@ Content-Length: 183
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /stations/1 HTTP/1.1
 Content-Type: application/json; charset=UTF-8
-Host: localhost:57907
+Host: localhost:58647
 Content-Length: 33
 
 {
@@ -1415,12 +1415,12 @@ Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
 Transfer-Encoding: chunked
-Date: Sun, 30 May 2021 16:49:51 GMT
+Date: Sun, 30 May 2021 16:53:05 GMT
 Connection: close
 Content-Length: 218
 
 {
-  "timestamp" : "2021-05-30T16:49:51.430+00:00",
+  "timestamp" : "2021-05-30T16:53:05.362+00:00",
   "status" : 400,
   "error" : "Bad Request",
   "message" : "지원되지 않는 언어, 공백, 특수문자는 입력 불가능합니다.",
@@ -1438,7 +1438,7 @@ Content-Length: 218
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /stations/1 HTTP/1.1
 Content-Type: application/json; charset=UTF-8
-Host: localhost:57907
+Host: localhost:58647
 Content-Length: 122
 
 {
@@ -1457,12 +1457,12 @@ Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
 Transfer-Encoding: chunked
-Date: Sun, 30 May 2021 16:49:51 GMT
+Date: Sun, 30 May 2021 16:53:05 GMT
 Connection: close
 Content-Length: 209
 
 {
-  "timestamp" : "2021-05-30T16:49:51.478+00:00",
+  "timestamp" : "2021-05-30T16:53:05.403+00:00",
   "status" : 400,
   "error" : "Bad Request",
   "message" : "역의 전체 글자 수는 2자 이상 20자 이하여야 합니다.",
@@ -1479,7 +1479,7 @@ Content-Length: 209
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /stations/1 HTTP/1.1
-Host: localhost:57903</code></pre>
+Host: localhost:58643</code></pre>
 </div>
 </div>
 </div>
@@ -1491,7 +1491,7 @@ Host: localhost:57903</code></pre>
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Date: Sun, 30 May 2021 16:49:49 GMT
+Date: Sun, 30 May 2021 16:53:03 GMT
 Keep-Alive: timeout=60
 Connection: keep-alive</code></pre>
 </div>
@@ -1505,7 +1505,7 @@ Connection: keep-alive</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /stations/1 HTTP/1.1
-Host: localhost:57913</code></pre>
+Host: localhost:58653</code></pre>
 </div>
 </div>
 </div>
@@ -1519,12 +1519,12 @@ Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
 Transfer-Encoding: chunked
-Date: Sun, 30 May 2021 16:49:52 GMT
+Date: Sun, 30 May 2021 16:53:05 GMT
 Connection: close
 Content-Length: 204
 
 {
-  "timestamp" : "2021-05-30T16:49:52.490+00:00",
+  "timestamp" : "2021-05-30T16:53:06.149+00:00",
   "status" : 400,
   "error" : "Bad Request",
   "message" : "구간에 존재하는 지하 역을 삭제할 수 없습니다.",
@@ -1547,7 +1547,7 @@ Content-Length: 204
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /lines HTTP/1.1
 Accept: application/json
-Host: localhost:57751</code></pre>
+Host: localhost:58490</code></pre>
 </div>
 </div>
 </div>
@@ -1561,7 +1561,7 @@ Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
 Transfer-Encoding: chunked
-Date: Sun, 30 May 2021 16:49:30 GMT
+Date: Sun, 30 May 2021 16:52:43 GMT
 Keep-Alive: timeout=60
 Connection: keep-alive
 Content-Length: 779
@@ -1625,7 +1625,7 @@ Content-Length: 779
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /lines/map HTTP/1.1
 Accept: application/json
-Host: localhost:57722</code></pre>
+Host: localhost:58460</code></pre>
 </div>
 </div>
 </div>
@@ -1639,7 +1639,7 @@ Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
 Transfer-Encoding: chunked
-Date: Sun, 30 May 2021 16:49:25 GMT
+Date: Sun, 30 May 2021 16:52:38 GMT
 Keep-Alive: timeout=60
 Connection: keep-alive
 Content-Length: 557
@@ -1689,7 +1689,7 @@ Content-Length: 557
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /lines HTTP/1.1
 Content-Type: application/json; charset=UTF-8
-Host: localhost:57735
+Host: localhost:58474
 Content-Length: 137
 
 {
@@ -1714,7 +1714,7 @@ Vary: Access-Control-Request-Headers
 Location: /lines/1
 Content-Type: application/json
 Transfer-Encoding: chunked
-Date: Sun, 30 May 2021 16:49:27 GMT
+Date: Sun, 30 May 2021 16:52:40 GMT
 Keep-Alive: timeout=60
 Connection: keep-alive
 Content-Length: 385
@@ -1755,7 +1755,7 @@ Content-Length: 385
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /lines HTTP/1.1
 Content-Type: application/json; charset=UTF-8
-Host: localhost:57729
+Host: localhost:58467
 Content-Length: 137
 
 {
@@ -1779,12 +1779,12 @@ Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
 Transfer-Encoding: chunked
-Date: Sun, 30 May 2021 16:49:27 GMT
+Date: Sun, 30 May 2021 16:52:40 GMT
 Connection: close
 Content-Length: 170
 
 {
-  "timestamp" : "2021-05-30T16:49:27.139+00:00",
+  "timestamp" : "2021-05-30T16:52:40.237+00:00",
   "status" : 400,
   "error" : "Bad Request",
   "message" : "중복된 지하철 노선입니다",
@@ -1802,7 +1802,7 @@ Content-Length: 170
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /lines HTTP/1.1
 Content-Type: application/json; charset=UTF-8
-Host: localhost:57695
+Host: localhost:58433
 Content-Length: 179
 
 {
@@ -1826,12 +1826,12 @@ Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
 Transfer-Encoding: chunked
-Date: Sun, 30 May 2021 16:49:22 GMT
+Date: Sun, 30 May 2021 16:52:35 GMT
 Connection: close
 Content-Length: 207
 
 {
-  "timestamp" : "2021-05-30T16:49:22.316+00:00",
+  "timestamp" : "2021-05-30T16:52:35.921+00:00",
   "status" : 400,
   "error" : "Bad Request",
   "message" : "노선의 전체 글자 수는 2자 이상 10자 이하여야 합니다.",
@@ -1849,7 +1849,7 @@ Content-Length: 207
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /lines HTTP/1.1
 Content-Type: application/json; charset=UTF-8
-Host: localhost:57695
+Host: localhost:58433
 Content-Length: 135
 
 {
@@ -1873,12 +1873,12 @@ Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
 Transfer-Encoding: chunked
-Date: Sun, 30 May 2021 16:49:22 GMT
+Date: Sun, 30 May 2021 16:52:35 GMT
 Connection: close
 Content-Length: 213
 
 {
-  "timestamp" : "2021-05-30T16:49:22.267+00:00",
+  "timestamp" : "2021-05-30T16:52:35.858+00:00",
   "status" : 400,
   "error" : "Bad Request",
   "message" : "지원되지 않는 언어, 공백, 특수문자는 입력 불가능합니다.",
@@ -1896,7 +1896,7 @@ Content-Length: 213
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /lines/1 HTTP/1.1
 Content-Type: application/json; charset=UTF-8
-Host: localhost:57710
+Host: localhost:58448
 Content-Length: 140
 
 {
@@ -1918,7 +1918,7 @@ Content-Length: 140
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Date: Sun, 30 May 2021 16:49:23 GMT
+Date: Sun, 30 May 2021 16:52:36 GMT
 Keep-Alive: timeout=60
 Connection: keep-alive</code></pre>
 </div>
@@ -1933,7 +1933,7 @@ Connection: keep-alive</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /lines/1 HTTP/1.1
 Content-Type: application/json; charset=UTF-8
-Host: localhost:57689
+Host: localhost:58427
 Content-Length: 137
 
 {
@@ -1957,12 +1957,12 @@ Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
 Transfer-Encoding: chunked
-Date: Sun, 30 May 2021 16:49:20 GMT
+Date: Sun, 30 May 2021 16:52:34 GMT
 Connection: close
 Content-Length: 172
 
 {
-  "timestamp" : "2021-05-30T16:49:21.457+00:00",
+  "timestamp" : "2021-05-30T16:52:35.057+00:00",
   "status" : 400,
   "error" : "Bad Request",
   "message" : "중복된 지하철 노선입니다",
@@ -1980,7 +1980,7 @@ Content-Length: 172
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /lines/1 HTTP/1.1
 Content-Type: application/json; charset=UTF-8
-Host: localhost:57702
+Host: localhost:58440
 Content-Length: 179
 
 {
@@ -2004,12 +2004,12 @@ Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
 Transfer-Encoding: chunked
-Date: Sun, 30 May 2021 16:49:22 GMT
+Date: Sun, 30 May 2021 16:52:36 GMT
 Connection: close
 Content-Length: 209
 
 {
-  "timestamp" : "2021-05-30T16:49:23.230+00:00",
+  "timestamp" : "2021-05-30T16:52:36.818+00:00",
   "status" : 400,
   "error" : "Bad Request",
   "message" : "노선의 전체 글자 수는 2자 이상 10자 이하여야 합니다.",
@@ -2027,7 +2027,7 @@ Content-Length: 209
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /lines/1 HTTP/1.1
 Content-Type: application/json; charset=UTF-8
-Host: localhost:57702
+Host: localhost:58440
 Content-Length: 135
 
 {
@@ -2051,12 +2051,12 @@ Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
 Transfer-Encoding: chunked
-Date: Sun, 30 May 2021 16:49:22 GMT
+Date: Sun, 30 May 2021 16:52:35 GMT
 Connection: close
 Content-Length: 215
 
 {
-  "timestamp" : "2021-05-30T16:49:23.183+00:00",
+  "timestamp" : "2021-05-30T16:52:36.751+00:00",
   "status" : 400,
   "error" : "Bad Request",
   "message" : "지원되지 않는 언어, 공백, 특수문자는 입력 불가능합니다.",
@@ -2073,7 +2073,7 @@ Content-Length: 215
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /lines/1 HTTP/1.1
-Host: localhost:57745</code></pre>
+Host: localhost:58484</code></pre>
 </div>
 </div>
 </div>
@@ -2085,7 +2085,7 @@ Host: localhost:57745</code></pre>
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Date: Sun, 30 May 2021 16:49:28 GMT
+Date: Sun, 30 May 2021 16:52:43 GMT
 Keep-Alive: timeout=60
 Connection: keep-alive</code></pre>
 </div>
@@ -2099,7 +2099,7 @@ Connection: keep-alive</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /lines/9223372036854775807 HTTP/1.1
-Host: localhost:57740</code></pre>
+Host: localhost:58479</code></pre>
 </div>
 </div>
 </div>
@@ -2113,12 +2113,12 @@ Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
 Transfer-Encoding: chunked
-Date: Sun, 30 May 2021 16:49:28 GMT
+Date: Sun, 30 May 2021 16:52:41 GMT
 Connection: close
 Content-Length: 192
 
 {
-  "timestamp" : "2021-05-30T16:49:28.743+00:00",
+  "timestamp" : "2021-05-30T16:52:41.812+00:00",
   "status" : 400,
   "error" : "Bad Request",
   "message" : "존재하지 않는 노선 입니다.",
@@ -2141,7 +2141,7 @@ Content-Length: 192
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /lines/1/sections HTTP/1.1
 Content-Type: application/json; charset=UTF-8
-Host: localhost:57853
+Host: localhost:58591
 Content-Length: 64
 
 {
@@ -2162,7 +2162,7 @@ Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
 Transfer-Encoding: chunked
-Date: Sun, 30 May 2021 16:49:42 GMT
+Date: Sun, 30 May 2021 16:52:55 GMT
 Keep-Alive: timeout=60
 Connection: keep-alive
 Content-Length: 146
@@ -2190,7 +2190,7 @@ Content-Length: 146
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /lines/1/sections HTTP/1.1
 Content-Type: application/json; charset=UTF-8
-Host: localhost:57817
+Host: localhost:58556
 Content-Length: 64
 
 {
@@ -2211,12 +2211,12 @@ Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
 Transfer-Encoding: chunked
-Date: Sun, 30 May 2021 16:49:38 GMT
+Date: Sun, 30 May 2021 16:52:52 GMT
 Connection: close
 Content-Length: 186
 
 {
-  "timestamp" : "2021-05-30T16:49:39.021+00:00",
+  "timestamp" : "2021-05-30T16:52:52.699+00:00",
   "status" : 400,
   "error" : "Bad Request",
   "message" : "구간 입력이 잘못 되었습니다.",
@@ -2233,7 +2233,7 @@ Content-Length: 186
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /lines/1/sections?stationId=2 HTTP/1.1
-Host: localhost:57833</code></pre>
+Host: localhost:58572</code></pre>
 </div>
 </div>
 </div>
@@ -2245,7 +2245,7 @@ Host: localhost:57833</code></pre>
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Date: Sun, 30 May 2021 16:49:40 GMT
+Date: Sun, 30 May 2021 16:52:54 GMT
 Keep-Alive: timeout=60
 Connection: keep-alive</code></pre>
 </div>
@@ -2259,7 +2259,7 @@ Connection: keep-alive</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /lines/1/sections?stationId=1 HTTP/1.1
-Host: localhost:57844</code></pre>
+Host: localhost:58583</code></pre>
 </div>
 </div>
 </div>
@@ -2273,12 +2273,12 @@ Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
 Transfer-Encoding: chunked
-Date: Sun, 30 May 2021 16:49:40 GMT
+Date: Sun, 30 May 2021 16:52:55 GMT
 Connection: close
 Content-Length: 184
 
 {
-  "timestamp" : "2021-05-30T16:49:41.441+00:00",
+  "timestamp" : "2021-05-30T16:52:55.555+00:00",
   "status" : 400,
   "error" : "Bad Request",
   "message" : "구간을 제거 할 수 없습니다.",
@@ -2301,7 +2301,7 @@ Content-Length: 184
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /paths?source=1&amp;target=6 HTTP/1.1
 Accept: application/json
-Host: localhost:57530</code></pre>
+Host: localhost:58268</code></pre>
 </div>
 </div>
 </div>
@@ -2315,7 +2315,7 @@ Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
 Transfer-Encoding: chunked
-Date: Sun, 30 May 2021 16:48:57 GMT
+Date: Sun, 30 May 2021 16:52:12 GMT
 Keep-Alive: timeout=60
 Connection: keep-alive
 Content-Length: 243
