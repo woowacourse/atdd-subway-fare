@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class SectionResponse {
-    StationResponse upStation;
-    StationResponse downStation;
-    int distance;
+    private StationResponse upStation;
+    private StationResponse downStation;
+    private int distance;
 
     public SectionResponse() {
 
