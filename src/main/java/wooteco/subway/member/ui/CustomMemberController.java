@@ -2,7 +2,6 @@ package wooteco.subway.member.ui;
 
 import java.net.URI;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +17,6 @@ import wooteco.subway.member.dto.MemberResponse;
 
 @RestController
 @RequestMapping("/api/members")
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class CustomMemberController {
     private MemberService memberService;
 
