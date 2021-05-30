@@ -24,9 +24,9 @@ public class MemberDao {
             );
 
 
-    public MemberDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public MemberDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
+        this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("MEMBER")
                 .usingGeneratedKeyColumns("id");
     }
