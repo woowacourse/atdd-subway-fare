@@ -33,7 +33,7 @@ public class PathService {
             Station arrivalStation = stationService.findStationById(arrival);
             SubwayPath subwayPath = pathFinder.findPath(lines, departureStation, arrivalStation);
 
-            return PathResponseAssembler.assemble(subwayPath, loginMember);
+            return PathResponseAssembler.assemble(subwayPath, loginMember.getAge());
         } catch (Exception e) {
             throw new InvalidPathException(e.getMessage());
         }

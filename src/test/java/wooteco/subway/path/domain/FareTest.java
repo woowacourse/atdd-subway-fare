@@ -17,6 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("요금 계산 도메인")
 class FareTest {
     private static final int DEFAULT_FARE = 1250;
+    private static final int DEFAULT_DISCOUNT_FARE = 350;
 
     private static Stream<Arguments> calculateByDistance() {
         return Stream.of(
@@ -34,7 +35,7 @@ class FareTest {
         //given
         DistanceAdditionPolicy distanceAdditionPolicy = DistanceAdditionFactory.create(distance, DEFAULT_FARE);
         //when
-        Fare fare = new Fare(distanceAdditionPolicy, new NoDiscount(), extraFare);
+        Fare fare = new Fare(distanceAdditionPolicy, new NoDiscount(DEFAULT_DISCOUNT_FARE), extraFare);
         int calculateFare = fare.calculateFare();
 
         //then
@@ -44,8 +45,8 @@ class FareTest {
     private static Stream<Arguments> calculateByDistanceWithAge() {
         return Stream.of(
                 Arguments.of(9, 0, 5, 0),
-                Arguments.of(11, 0, 12, (int) ((DEFAULT_FARE + 100) * 0.5)),
-                Arguments.of(51, 0, 18, (int) ((DEFAULT_FARE + 900) * 0.8)),
+                Arguments.of(11, 0, 12, (int) ((DEFAULT_FARE + 100 - 350) * 0.5)),
+                Arguments.of(51, 0, 18, (int) ((DEFAULT_FARE + 900 - 350) * 0.8)),
                 Arguments.of(61, 300, 60, DEFAULT_FARE + 1000 + 300)
         );
     }
@@ -59,7 +60,7 @@ class FareTest {
     void calculateByDistanceWithAge(int distance, int extraFare, int age, int result) {
         //given
         DistanceAdditionPolicy distanceAdditionPolicy = DistanceAdditionFactory.create(distance, DEFAULT_FARE);
-        AgeDiscountPolicy ageDiscountPolicy = AgeDiscountFactory.create(age);
+        AgeDiscountPolicy ageDiscountPolicy = AgeDiscountFactory.create(age, DEFAULT_DISCOUNT_FARE);
         //when
         Fare fare = new Fare(distanceAdditionPolicy, ageDiscountPolicy, extraFare);
         int calculateFare = fare.calculateFare();

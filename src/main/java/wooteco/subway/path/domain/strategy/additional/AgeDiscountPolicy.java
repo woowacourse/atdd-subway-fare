@@ -1,9 +1,15 @@
 package wooteco.subway.path.domain.strategy.additional;
 
 public abstract class AgeDiscountPolicy {
-    public final int calculateFare(int fare) {
-        return (int) (fare * discountRate());
+    private final int discountFare;
+
+    protected AgeDiscountPolicy(int discountFare) {
+        this.discountFare = discountFare;
     }
 
-    protected abstract double discountRate();
+    public int discountFare() {
+        return discountFare;
+    }
+
+    public abstract int calculateFare(int fare);
 }
