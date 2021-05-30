@@ -1,9 +1,11 @@
 package wooteco.subway.member.domain;
 
 import org.apache.commons.lang3.StringUtils;
-import wooteco.subway.auth.application.AuthorizationException;
+import wooteco.subway.exception.AuthorizationException;
+import wooteco.subway.exception.MismatchIdPasswordException;
 
 public class Member {
+
     private Long id;
     private String email;
     private String password;
@@ -49,7 +51,7 @@ public class Member {
 
     public void checkPassword(String password) {
         if (!StringUtils.equals(this.password, password)) {
-            throw new AuthorizationException();
+            throw new MismatchIdPasswordException();
         }
     }
 }

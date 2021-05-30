@@ -1,4 +1,4 @@
-package wooteco.subway.auth.ui;
+package wooteco.subway.auth;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -12,7 +12,9 @@ import wooteco.subway.auth.dto.TokenResponse;
 
 import java.util.HashMap;
 import java.util.Map;
+import wooteco.subway.member.dto.MemberRequest;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static wooteco.subway.member.MemberAcceptanceTest.회원_정보_조회됨;
 
@@ -21,7 +23,7 @@ public class CustomAuthAcceptanceTest extends AcceptanceTest {
     private static final String PASSWORD = "password";
     private static final Integer AGE = 20;
 
-    @DisplayName("Bearer Auth")
+    @DisplayName("Bearer Auth 로그인 성공")
     @Test
     void myInfoWithBearerAuth() {
         // given
@@ -35,7 +37,27 @@ public class CustomAuthAcceptanceTest extends AcceptanceTest {
         회원_정보_조회됨(response, EMAIL, AGE);
     }
 
-    @DisplayName("Bearer Auth 로그인 실패")
+    @DisplayName("Bearer Auth 이메일은 일치하지만 비밀번호가 틀린 경우 로그인 실패")
+    @Test
+    void wrongPasswordBearerAuth() {
+        // given
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("email", EMAIL);
+        params.put("password", PASSWORD + "OTHER");
+
+        RestAssured
+            .given().log().all().
+            contentType(MediaType.APPLICATION_JSON_VALUE).
+            body(params).
+            when().
+            post("/api/login/token").
+            then().log().all().
+            statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("Bearer Auth 존재하지 않은 이메일로 로그인 실패")
     @Test
     void myInfoWithBadBearerAuth() {
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
@@ -50,7 +72,7 @@ public class CustomAuthAcceptanceTest extends AcceptanceTest {
             .body(params)
             .when().post("/api/login/token")
             .then().log().all()
-            .statusCode(HttpStatus.UNAUTHORIZED.value());
+            .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
@@ -68,7 +90,15 @@ public class CustomAuthAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 회원_등록되어_있음(String email, String password, Integer age) {
-        return 회원_생성을_요청(email, password, age);
+        MemberRequest memberRequest = new MemberRequest(email, password, age);
+
+        return RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(memberRequest)
+            .when().post("/api/members")
+            .then().log().all()
+            .extract();
     }
 
     public static TokenResponse 로그인되어_있음(String email, String password) {
