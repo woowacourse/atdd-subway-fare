@@ -80,6 +80,7 @@ public class LineService {
         Line saved = findLineById(id);
         sectionDao.deleteByLineId(saved.getId());
         lineDao.deleteById(saved.getId());
+        sectionDao.deleteByLineId(saved.getId());
     }
 
     public SectionResponse addLineStation(Long lineId, SectionRequest request) {
