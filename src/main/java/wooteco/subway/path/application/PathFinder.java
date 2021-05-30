@@ -11,6 +11,7 @@ import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.path.strategy.FareStrategyFactory;
 import wooteco.subway.station.domain.Station;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -36,8 +37,8 @@ public class PathFinder {
         return convertSubwayPath(path, loginMember.getAge());
     }
 
-    private SubwayPath convertSubwayPath(GraphPath graphPath, int age) {
-        List<SectionEdge> edges = (List<SectionEdge>) graphPath.getEdgeList().stream().collect(Collectors.toList());
+    private SubwayPath convertSubwayPath(GraphPath<Station, SectionEdge> graphPath, int age) {
+        List<SectionEdge> edges = new ArrayList<>(graphPath.getEdgeList());
         List<Station> stations = graphPath.getVertexList();
         Set<Line> line = edges.stream()
                 .map(SectionEdge::getLine)
