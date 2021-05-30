@@ -11,7 +11,6 @@ import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
 
 @Service
-@Transactional
 public class AuthService {
     private final MemberDao memberDao;
     private final JwtTokenProvider jwtTokenProvider;
@@ -21,6 +20,7 @@ public class AuthService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+    @Transactional(readOnly = true)
     public TokenResponse login(TokenRequest request) {
         try {
             Member member = memberDao.findByEmail(request.getEmail());
@@ -32,6 +32,7 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
+    @Transactional(readOnly = true)
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
             return new LoginMember();

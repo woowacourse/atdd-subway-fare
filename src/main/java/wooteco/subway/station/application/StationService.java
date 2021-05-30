@@ -2,6 +2,7 @@ package wooteco.subway.station.application;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.DuplicateException;
 import wooteco.subway.exception.InvalidInputException;
 import wooteco.subway.station.dao.StationDao;
@@ -21,6 +22,7 @@ public class StationService {
         this.stationDao = stationDao;
     }
 
+    @Transactional
     public StationResponse saveStation(StationRequest stationRequest) {
         validateDuplicateName(stationRequest.getName());
         Station station = stationDao.insert(stationRequest.toStation());
@@ -33,10 +35,12 @@ public class StationService {
         }
     }
 
+    @Transactional(readOnly = true)
     public Station findStationById(Long id) {
         return stationDao.findById(id);
     }
 
+    @Transactional(readOnly = true)
     public List<StationResponse> findAllStationResponses() {
         List<Station> stations = stationDao.findAll();
 
@@ -45,6 +49,7 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void deleteStationById(Long id) {
         try {
             stationDao.deleteById(id);
