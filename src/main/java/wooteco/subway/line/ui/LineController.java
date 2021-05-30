@@ -20,6 +20,7 @@ import wooteco.subway.line.dto.LineDetailResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.line.exception.InvalidDistanceException;
 import wooteco.subway.line.exception.SameStationsInSameSectionException;
 import wooteco.subway.map.dto.MapDetailResponse;
 import wooteco.subway.station.application.StationService;
@@ -78,12 +79,12 @@ public class LineController extends SubwayController {
         if (isSameBothStation(sectionRequest)) {
             throw new SameStationsInSameSectionException("같은 역 두 개가 올 수 없습니다.");
         }
+
+        if (isWrongDistance(sectionRequest)) {
+            throw new InvalidDistanceException("잘못된 거리값입니다.");
+        }
         lineService.addLineStation(lineId, sectionRequest);
         return ResponseEntity.ok().build();
-    }
-
-    private boolean isSameBothStation(SectionRequest sectionRequest) {
-        return sectionRequest.getUpStationId().equals(sectionRequest.getDownStationId());
     }
 
     @DeleteMapping("/{lineId}/sections")
@@ -96,5 +97,13 @@ public class LineController extends SubwayController {
     @ExceptionHandler(SQLException.class)
     public ResponseEntity handleSQLException() {
         return ResponseEntity.badRequest().build();
+    }
+
+    private boolean isSameBothStation(SectionRequest sectionRequest) {
+        return sectionRequest.getUpStationId().equals(sectionRequest.getDownStationId());
+    }
+
+    private boolean isWrongDistance(SectionRequest sectionRequest) {
+        return sectionRequest.getDistance() <= 0;
     }
 }

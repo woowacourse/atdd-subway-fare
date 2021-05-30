@@ -27,8 +27,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
     private LineResponse 신분당선;
     private StationResponse uploadedStation1;
-    private StationResponse 양재역;
-    private StationResponse 정자역;
+    private StationResponse waitingStation1;
+    private StationResponse waitingStation2;
     private StationResponse uploadedStation2;
 
     @BeforeEach
@@ -36,8 +36,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         super.setUp();
 
         uploadedStation1 = 지하철역_등록되어_있음("강남역");
-        양재역 = 지하철역_등록되어_있음("양재역");
-        정자역 = 지하철역_등록되어_있음("정자역");
+        waitingStation1 = 지하철역_등록되어_있음("양재역");
+        waitingStation2 = 지하철역_등록되어_있음("정자역");
         uploadedStation2 = 지하철역_등록되어_있음("광교역");
 
         신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", uploadedStation1, uploadedStation2, 10);
@@ -47,21 +47,25 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void addLineSection() {
         // when
-        ExtractableResponse<Response> response = 지하철_구간_생성_요청(신분당선, uploadedStation1, 양재역, 3);
+        ExtractableResponse<Response> response = 지하철_구간_생성_요청(신분당선, uploadedStation1,
+            waitingStation1, 3);
 
         // then
-        지하철_구간_생성됨(response, 신분당선, Arrays.asList(uploadedStation1, 양재역, uploadedStation2));
+        지하철_구간_생성됨(response, 신분당선,
+            Arrays.asList(uploadedStation1, waitingStation1, uploadedStation2));
     }
 
     @DisplayName("지하철 노선에 여러개의 역을 순서 상관 없이 등록한다.")
     @Test
     void addLineSection2() {
         // when
-        지하철_구간_생성_요청(신분당선, uploadedStation1, 양재역, 2);
-        ExtractableResponse<Response> response = 지하철_구간_생성_요청(신분당선, 정자역, uploadedStation1, 5);
+        지하철_구간_생성_요청(신분당선, uploadedStation1, waitingStation1, 2);
+        ExtractableResponse<Response> response = 지하철_구간_생성_요청(신분당선, waitingStation2,
+            uploadedStation1, 5);
 
         // then
-        지하철_구간_생성됨(response, 신분당선, Arrays.asList(정자역, uploadedStation1, 양재역, uploadedStation2));
+        지하철_구간_생성됨(response, 신분당선,
+            Arrays.asList(waitingStation2, uploadedStation1, waitingStation1, uploadedStation2));
     }
 
     @DisplayName("지하철 노선에 이미 등록되어있는 역을 등록한다.")
@@ -80,7 +84,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void addLineSectionWithNoStation() {
         // when
-        ExtractableResponse<Response> response = 지하철_구간_생성_요청(신분당선, 정자역, 양재역, 3);
+        ExtractableResponse<Response> response = 지하철_구간_생성_요청(신분당선, waitingStation2,
+            waitingStation1, 3);
 
         // then
         ExceptionCheck.코드_400_응답됨(response);
@@ -91,14 +96,14 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void removeLineSection1() {
         // given
-        지하철_구간_생성_요청(신분당선, uploadedStation1, 양재역, 2);
-        지하철_구간_생성_요청(신분당선, 양재역, 정자역, 2);
+        지하철_구간_생성_요청(신분당선, uploadedStation1, waitingStation1, 2);
+        지하철_구간_생성_요청(신분당선, waitingStation1, waitingStation2, 2);
 
         // when
-        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
+        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, waitingStation1);
 
         // then
-        지하철_노선에_지하철역_제외됨(removeResponse, 신분당선, Arrays.asList(uploadedStation1, 정자역,
+        지하철_노선에_지하철역_제외됨(removeResponse, 신분당선, Arrays.asList(uploadedStation1, waitingStation2,
             uploadedStation2));
     }
 
@@ -121,6 +126,28 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         // then
         ExceptionCheck.코드_400_응답됨(response);
         ExceptionCheck.에러_문구_확인(response, "SAME_STATIONS_IN_SAME_SECTION");
+    }
+
+    @DisplayName("유효하지 않은 거리가 온 경우")
+    @Test
+    void wrongDistance() {
+        // when
+        ExtractableResponse<Response> response = 지하철_구간_생성_요청(신분당선, uploadedStation1,
+            waitingStation1, 0);
+        // then
+        ExceptionCheck.코드_400_응답됨(response);
+        ExceptionCheck.에러_문구_확인(response, "INVALID_DISTANCE");
+    }
+
+    @DisplayName("불가능한 거리가 입력 된")
+    @Test
+    void impossibleDistance() {
+        // when
+        ExtractableResponse<Response> response = 지하철_구간_생성_요청(신분당선, uploadedStation1,
+            waitingStation1, 20);
+        // then
+        ExceptionCheck.코드_400_응답됨(response);
+        ExceptionCheck.에러_문구_확인(response, "IMPOSSIBLE_DISTANCE");
     }
 
     private void 지하철_구간_생성됨(ExtractableResponse<Response> result, LineResponse lineResponse,

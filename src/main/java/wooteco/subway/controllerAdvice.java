@@ -12,6 +12,8 @@ import wooteco.subway.auth.exception.InvalidTokenException;
 import wooteco.subway.line.exception.BothStationAlreadyRegisteredInLineException;
 import wooteco.subway.line.exception.BothStationNotRegisteredInLineException;
 import wooteco.subway.line.exception.DuplicatedLineNameException;
+import wooteco.subway.line.exception.ImpossibleDistanceException;
+import wooteco.subway.line.exception.InvalidDistanceException;
 import wooteco.subway.line.exception.NoSuchLineException;
 import wooteco.subway.line.exception.SameStationsInSameSectionException;
 import wooteco.subway.member.exception.DuplicatedIdException;
@@ -102,4 +104,15 @@ public class controllerAdvice {
         return ResponseEntity.badRequest().body(new ExceptionResponse(e));
     }
 
+    @ExceptionHandler(InvalidDistanceException.class)
+    public ResponseEntity<ExceptionResponse> invalidPasswordExceptionHandle(
+        InvalidDistanceException e) {
+        return ResponseEntity.badRequest().body(new ExceptionResponse(e));
+    }
+
+    @ExceptionHandler(ImpossibleDistanceException.class)
+    public ResponseEntity<ExceptionResponse> invalidPasswordExceptionHandle(
+        ImpossibleDistanceException e) {
+        return ResponseEntity.badRequest().body(new ExceptionResponse(e));
+    }
 }

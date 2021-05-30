@@ -294,5 +294,4 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExceptionCheck.코드_400_응답됨(response);
         ExceptionCheck.에러_문구_확인(response, "NO_SUCH_LINE");
     }
-
 }

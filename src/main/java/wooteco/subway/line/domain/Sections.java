@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import wooteco.subway.line.exception.BothStationAlreadyRegisteredInLineException;
 import wooteco.subway.line.exception.BothStationNotRegisteredInLineException;
+import wooteco.subway.line.exception.ImpossibleDistanceException;
 import wooteco.subway.station.domain.Station;
 
 public class Sections {
@@ -77,7 +78,7 @@ public class Sections {
 
     private void replaceSectionWithDownStation(Section newSection, Section existSection) {
         if (existSection.getDistance() <= newSection.getDistance()) {
-            throw new RuntimeException();
+            throw new ImpossibleDistanceException("삽입이 불가능한 거리입니다.");
         }
         this.sections.add(new Section(newSection.getDownStation(), existSection.getDownStation(), existSection.getDistance() - newSection.getDistance()));
         this.sections.remove(existSection);
