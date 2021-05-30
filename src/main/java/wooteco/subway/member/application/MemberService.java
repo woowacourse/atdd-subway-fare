@@ -1,6 +1,8 @@
 package wooteco.subway.member.application;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import wooteco.subway.exception.DuplicateEmailException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
@@ -9,7 +11,8 @@ import wooteco.subway.member.dto.MemberResponse;
 
 @Service
 public class MemberService {
-    private MemberDao memberDao;
+
+    private final MemberDao memberDao;
 
     public MemberService(MemberDao memberDao) {
         this.memberDao = memberDao;
@@ -23,6 +26,15 @@ public class MemberService {
     public MemberResponse findMember(LoginMember loginMember) {
         Member member = memberDao.findByEmail(loginMember.getEmail());
         return MemberResponse.of(member);
+    }
+
+    public void validateDuplicateEmail(String email) {
+        try {
+            memberDao.findByEmail(email);
+            throw new DuplicateEmailException();
+        } catch (EmptyResultDataAccessException e) {
+            return;
+        }
     }
 
     public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {

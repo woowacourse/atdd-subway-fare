@@ -63,6 +63,26 @@ public class CustomMemberAcceptanceTest extends AcceptanceTest {
         assertThat(회원_생성을_요청(EMAIL, PASSWORD, -1).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
+    @DisplayName("회원 가입 시도시 중복된 이메일이 이미 존재하는지 확인")
+    @Test
+    void validateDuplicateEmail() {
+        assertThat(회원_생성을_요청(EMAIL, PASSWORD, AGE).statusCode()).isEqualTo(HttpStatus.CREATED.value());
+
+        RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/api/members/check-validation?email=" + "dododo@naver.com")
+            .then().log().all()
+            .statusCode(HttpStatus.OK.value());
+
+        RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/api/members/check-validation?email=" + EMAIL)
+            .then().log().all()
+            .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
