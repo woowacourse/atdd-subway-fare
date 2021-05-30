@@ -8,8 +8,8 @@ import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
-import wooteco.subway.line.exception.ExistLineColorException;
-import wooteco.subway.line.exception.ExistLineNameException;
+import wooteco.subway.line.exception.LineColorDuplicationException;
+import wooteco.subway.line.exception.LineNameDuplicationException;
 import wooteco.subway.line.exception.LineNotExistRuntimeException;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
@@ -20,9 +20,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class LineService {
-    private LineDao lineDao;
-    private SectionDao sectionDao;
-    private StationService stationService;
+    private final LineDao lineDao;
+    private final SectionDao sectionDao;
+    private final StationService stationService;
 
     public LineService(LineDao lineDao, SectionDao sectionDao, StationService stationService) {
         this.lineDao = lineDao;
@@ -32,8 +32,12 @@ public class LineService {
 
     public LineResponse saveLine(LineRequest request) {
         List<Line> lines = lineDao.findAll();
-        findOptionalLineByName(request, lines).ifPresent(exception -> new ExistLineNameException());
-        findOptionalLineByColor(request, lines).ifPresent(exception -> new ExistLineColorException());
+        findOptionalLineByName(request, lines).ifPresent(exception -> {
+            throw new LineNameDuplicationException();
+        });
+        findOptionalLineByColor(request, lines).ifPresent(exception -> {
+            throw new LineColorDuplicationException();
+        });
 
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
         persistLine.addSection(addInitSection(persistLine, request));
@@ -90,13 +94,16 @@ public class LineService {
 
     private void validateIfUpdatable(Long id, LineRequest lineUpdateRequest, List<Line> lines) {
         Optional<Line> findLineByName = findOptionalLineByName(lineUpdateRequest, lines);
-        if (findLineByName.isPresent() && !findLineByName.get().isSameId(id)) {
-            throw new ExistLineNameException();
-        }
+        findLineByName.filter(line -> !line.isSameId(id))
+                .ifPresent(exception -> {
+                    throw new LineNameDuplicationException();
+                });
+
         Optional<Line> findLineByColor = findOptionalLineByColor(lineUpdateRequest, lines);
-        if (findLineByColor.isPresent() && !findLineByColor.get().isSameId(id)) {
-            throw new ExistLineColorException();
-        }
+        findLineByColor.filter(line -> !line.isSameId(id))
+                .ifPresent(exception -> {
+                    throw new LineColorDuplicationException();
+                });
     }
 
     public void deleteLineById(Long id) {
