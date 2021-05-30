@@ -110,9 +110,9 @@ public class LineDao {
                 "left outer join STATION DST on S.down_station_id = DST.id " +
                 "where L.name IN (select distinct LINE.name " +
                 "from LINE join SECTION on LINE.id = SECTION.line_id " +
-                "where SECTION.up_station_id = ? or SECTION.down_station_id = ?)";
+                "where SECTION.up_station_id = (?) or SECTION.down_station_id = (?))";
 
-        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, new Object[]{stationId}, new Object[]{stationId});
+        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, stationId ,stationId);
         return mapLines(result);
     }
 
