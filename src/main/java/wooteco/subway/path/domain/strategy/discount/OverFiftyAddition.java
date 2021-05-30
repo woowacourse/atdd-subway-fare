@@ -1,4 +1,4 @@
-package wooteco.subway.path.domain.strategy;
+package wooteco.subway.path.domain.strategy.discount;
 
 public class OverFiftyAddition extends DistanceAdditionPolicy {
     public static final int DISTANCE_PIVOT = 50;

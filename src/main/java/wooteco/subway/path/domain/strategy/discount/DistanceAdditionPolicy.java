@@ -1,4 +1,4 @@
-package wooteco.subway.path.domain.strategy;
+package wooteco.subway.path.domain.strategy.discount;
 
 public abstract class DistanceAdditionPolicy {
     private final int distance;

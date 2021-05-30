@@ -1,9 +1,4 @@
-package wooteco.subway.path.domain;
-
-import wooteco.subway.path.domain.strategy.DistanceAdditionPolicy;
-import wooteco.subway.path.domain.strategy.OverFiftyAddition;
-import wooteco.subway.path.domain.strategy.TenToFiftyAddition;
-import wooteco.subway.path.domain.strategy.UnderTenAddition;
+package wooteco.subway.path.domain.strategy.discount;
 
 public class DistanceAdditionFactory {
     private static final int BASIC_DISTANCE = 10;

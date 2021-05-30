@@ -1,7 +1,7 @@
 package wooteco.subway.path.domain;
 
-import wooteco.subway.path.domain.strategy.DistanceAdditionPolicy;
 import wooteco.subway.path.domain.strategy.additional.AgeDiscountPolicy;
+import wooteco.subway.path.domain.strategy.discount.DistanceAdditionPolicy;
 
 public class Fare {
     private final DistanceAdditionPolicy distanceAdditionPolicy;

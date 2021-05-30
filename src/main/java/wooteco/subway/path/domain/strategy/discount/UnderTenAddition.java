@@ -1,4 +1,4 @@
-package wooteco.subway.path.domain.strategy;
+package wooteco.subway.path.domain.strategy.discount;
 
 public class UnderTenAddition extends DistanceAdditionPolicy {
     public UnderTenAddition(int distance, int defaultFare) {
