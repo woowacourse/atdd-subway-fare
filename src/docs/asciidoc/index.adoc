@@ -1,36 +1,40 @@
 = Subway Application API Document
-Version 0.0.1-SNAPSHOT
+:toc: left
 
-== 회원
+== 회원 (/members)
 
 === 가입
 
 ==== Request
 
-include::{snippets}/members-post/http-request.adoc[]
+include::{snippets}/members/post/http-request.adoc[]
+include::{snippets}/members/post/request-fields.adoc[]
 
 ==== Response
 
-include::{snippets}/members-post/http-response.adoc[]
-
-==== Request Fields
-
-include::{snippets}/members-post/request-fields.adoc[]
+include::{snippets}/members/post/http-response.adoc[]
 
 === 로그인
 
 ==== Request
 
-include::{snippets}/login/http-request.adoc[]
+include::{snippets}/login/token/post/http-request.adoc[]
+include::{snippets}/login/token/post/request-fields.adoc[]
 
 ==== Response
 
-include::{snippets}/login/http-response.adoc[]
+include::{snippets}/login/token/post/http-response.adoc[]
 
-==== Request Fields
+=== 내 정보 조회
 
-include::{snippets}/login/request-fields.adoc[]
+==== Request
 
-==== Response Fields
+include::{snippets}/members/me/get/http-request.adoc[]
 
-include::{snippets}/login/response-fields.adoc[]
+include::{snippets}/members/me/get/request-headers.adoc[]
+
+==== Response
+
+include::{snippets}/members/me/get/http-response.adoc[]
+
+include::{snippets}/members/me/get/response-fields.adoc[]
