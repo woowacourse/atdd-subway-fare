@@ -12,7 +12,6 @@ public class SubwayPath {
     public static final int LONG_CONDITION_PIVOT = 8;
     public static final int ADDITIONAL_FARE = 100;
 
-
     private final List<SectionEdge> sectionEdges;
     private final List<Station> stations;
 
