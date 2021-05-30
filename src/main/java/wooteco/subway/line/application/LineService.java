@@ -1,6 +1,5 @@
 package wooteco.subway.line.application;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,7 +22,7 @@ import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.LineResponseWithSection;
 import wooteco.subway.line.dto.SectionRequest;
 import wooteco.subway.line.dto.SectionResponse;
-import wooteco.subway.line.dto.TransferLineResponse;
+import wooteco.subway.line.dto.SectionResponseAssembler;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
@@ -132,44 +131,22 @@ public class LineService {
 
     public List<LineResponseWithSection> findMap() {
         List<Line> lines = lineDao.findAll();
-        return assemble(lines);
+        return assembleLineResponseWithSections(lines);
     }
 
-    private List<LineResponseWithSection> assemble(List<Line> lines) {
-        List<LineResponseWithSection> lineResponsesWithSections = new ArrayList<>();
-        for (Line line : lines) {
-            List<Section> sections = line.getSections();
-            List<SectionResponse> sectionResponses = sections.stream()
-                .map(section -> matchSectionsByLine(line, section, section.getUpStation()))
-                .collect(Collectors.toList());
-
-            addLastStation(line, sections, sectionResponses);
-
-            lineResponsesWithSections.add(
-                new LineResponseWithSection(line.getId(), line.getName(), line.getColor(), line.getTotalDistance(), sectionResponses)
-            );
-        }
-        lineResponsesWithSections.sort(Comparator.comparing(LineResponseWithSection::getName));
-        return lineResponsesWithSections;
+    private List<LineResponseWithSection> assembleLineResponseWithSections(List<Line> lines) {
+        return lines.stream()
+            .map(line -> new LineResponseWithSection(line, assembleSectionResponses(line.getSections())))
+            .sorted(Comparator.comparing(LineResponseWithSection::getName))
+            .collect(Collectors.toList());
     }
 
-    private void addLastStation(Line line, List<Section> sections, List<SectionResponse> sectionResponses) {
+    public List<SectionResponse> assembleSectionResponses(List<Section> sections) {
+        List<SectionResponse> sectionResponses = sections.stream()
+            .map(section -> SectionResponseAssembler.assemble(section, section.getUpStation(), lineDao.findByStationId(section.getUpStation())))
+            .collect(Collectors.toList());
         Section lastSection = sections.get(sections.size() - 1);
-        sectionResponses.add(matchSectionsByLine(
-            line, lastSection, lastSection.getDownStation()));
-    }
-
-    private SectionResponse matchSectionsByLine(Line line, Section section, Station station) {
-        Station upStation = section.getUpStation();
-        List<Long> lineIdsByStationId = sectionDao.findLineIdsByStationId(upStation.getId());
-        List<Line> linesByStationId = lineIdsByStationId.stream()
-            .distinct()
-            .filter(id -> !line.getId().equals(id))
-            .map(id -> lineDao.findById(id))
-            .collect(Collectors.toList());
-        List<TransferLineResponse> lineResponses = linesByStationId.stream()
-            .map(line1 -> new TransferLineResponse(line1.getId(), line1.getName(), line1.getColor()))
-            .collect(Collectors.toList());
-        return new SectionResponse(station.getId(), station.getName(), section.getDistance(), lineResponses);
+        sectionResponses.add(SectionResponseAssembler.assemble(lastSection, lastSection.getDownStation(), lineDao.findByStationId(lastSection.getDownStation())));
+        return sectionResponses;
     }
 }

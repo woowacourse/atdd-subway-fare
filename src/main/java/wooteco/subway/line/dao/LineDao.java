@@ -55,6 +55,20 @@ public class LineDao {
         return mapLine(result);
     }
 
+    public List<Line> findByStationId(Station station) {
+        String sql = "select distinct L.id as line_id, L.name as line_name, L.color as line_color \n"
+            + "from LINE L \n"
+            + "left outer join SECTION S on L.id = S.line_id \n"
+            + "left outer join STATION on S.up_station_id = ? \n"
+            + "left outer join STATION on S.down_station_id = ?";
+
+        long stationId = station.getId();
+        return jdbcTemplate.query(sql, (rs,rowNum) ->
+            new Line(rs.getLong("line_id"),
+                rs.getString("line_name"),
+                rs.getString("line_color")), stationId, stationId);
+    }
+
     public int update(Line newLine) {
         String sql = "update LINE set name = ?, color = ? where id = ?";
         return jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});

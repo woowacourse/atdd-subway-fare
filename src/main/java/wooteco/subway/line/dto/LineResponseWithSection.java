@@ -2,6 +2,8 @@ package wooteco.subway.line.dto;
 
 import java.util.List;
 
+import wooteco.subway.line.domain.Line;
+
 public class LineResponseWithSection {
     private Long id;
     private String name;
@@ -18,6 +20,10 @@ public class LineResponseWithSection {
         this.color = color;
         this.distance = distance;
         this.sections = sections;
+    }
+
+    public LineResponseWithSection(Line line, List<SectionResponse> sectionResponses) {
+        this(line.getId(), line.getName(), line.getColor(), line.getTotalDistance(), sectionResponses);
     }
 
     public Long getId() {
