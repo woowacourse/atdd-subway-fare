@@ -6,8 +6,8 @@ import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
-import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.domain.Member;
 
 @Service
 @Transactional(readOnly = true)
