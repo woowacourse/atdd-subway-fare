@@ -18,8 +18,8 @@ import wooteco.subway.line.dto.SectionResponse;
 
 @Repository
 public class SectionDao {
-    private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcInsert simpleJdbcInsert;
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert simpleJdbcInsert;
 
     public SectionDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
@@ -61,10 +61,5 @@ public class SectionDao {
     public Integer findSectionByStationId(Long id) {
         String sql = "select count(*) from SECTION where up_station_id = ? or down_station_id = ?";
         return jdbcTemplate.queryForObject(sql, Integer.class, id, id);
-    }
-
-    public List<Long> findLineIdsByStationId(Long id) {
-        String sql = "select line_id from SECTION where up_station_id = ? or down_station_id = ?";
-        return jdbcTemplate.queryForList(sql, Long.class, id, id);
     }
 }

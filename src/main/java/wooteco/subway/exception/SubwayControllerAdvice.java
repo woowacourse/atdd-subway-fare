@@ -1,5 +1,6 @@
-package wooteco.subway;
+package wooteco.subway.exception;
 
+import java.sql.SQLException;
 import java.util.Objects;
 
 import org.springframework.http.HttpStatus;
@@ -54,5 +55,10 @@ public class SubwayControllerAdvice {
         }
         ExceptionResponse exceptionResponse = new ExceptionResponse(new InvalidNameException(message));
         return ResponseEntity.badRequest().body(exceptionResponse);
+    }
+
+    @ExceptionHandler(SQLException.class)
+    public ResponseEntity<Void> handleSQLException() {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 }

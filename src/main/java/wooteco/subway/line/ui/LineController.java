@@ -69,11 +69,6 @@ public class LineController {
 
     @GetMapping("/map")
     public ResponseEntity<List<LineResponseWithSection>> getMap() {
-        return ResponseEntity.ok(lineService.findMap());
-    }
-
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException() {
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok().body(lineService.findMap());
     }
 }

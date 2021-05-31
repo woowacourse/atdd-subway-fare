@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -77,7 +78,7 @@ public class LineService {
     public Line findLineById(Long id) {
         try {
             return lineDao.findById(id);
-        }catch (Exception e) {
+        } catch (EmptyResultDataAccessException e) {
             throw new NoSuchLineException();
         }
     }
