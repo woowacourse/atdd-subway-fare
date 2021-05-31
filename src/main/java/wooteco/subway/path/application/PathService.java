@@ -22,18 +22,15 @@ import wooteco.subway.station.domain.Station;
 public class PathService {
     private final LineService lineService;
     private final StationService stationService;
-    private final AuthService authService;
     private final PathFinder pathFinder;
 
-    public PathService(LineService lineService, StationService stationService,
-        AuthService authService, PathFinder pathFinder) {
+    public PathService(LineService lineService, StationService stationService, PathFinder pathFinder) {
         this.lineService = lineService;
         this.stationService = stationService;
-        this.authService = authService;
         this.pathFinder = pathFinder;
     }
 
-    public PathResponse findPath(Long source, Long target, String accessToken) {
+    public PathResponse findPath(Long source, Long target, LoginMember loginMember) {
         try {
             List<Line> lines = lineService.findLines();
             Station sourceStation = stationService.findStationById(source);
@@ -41,7 +38,6 @@ public class PathService {
 
             SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
 
-            LoginMember loginMember = authService.findMemberByToken(accessToken);
             Fare fare = new Fare(subwayPath.calculateFareByDistance());
             fare.calculateFareByAge(loginMember);
 
