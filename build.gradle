@@ -13,15 +13,24 @@ repositories {
 	mavenCentral()
 }
 
+ext {
+	snippetsDir = file('build/generated-snippets')
+}
+
 asciidoctor {
+	inputs.dir snippetsDir
 	dependsOn test
 }
 
-bootJar {
+task createDocument(type: Copy) {
 	dependsOn asciidoctor
-	from ("${asciidoctor.outputDir}/html5") {
-		into 'static/docs'
-	}
+
+	from file("build/asciidoc/html5/index.html")
+	into file("src/main/resources/static/docs")
+}
+
+build {
+	dependsOn createDocument
 }
 
 dependencies {
@@ -43,6 +52,7 @@ dependencies {
 
 	testImplementation 'io.rest-assured:rest-assured:3.3.0'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor'
 	testImplementation('org.springframework.restdocs:spring-restdocs-mockmvc')
 
 	runtimeOnly 'com.h2database:h2'
