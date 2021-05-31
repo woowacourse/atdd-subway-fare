@@ -13,7 +13,7 @@ public class Line {
     private Long id;
     private String name;
     private String color;
-    private int extraFare;
+    private Integer extraFare;
     private Sections sections;
 
     public Line() {
@@ -119,7 +119,7 @@ public class Line {
         return color;
     }
 
-    public int getExtraFare() {
+    public Integer getExtraFare() {
         return extraFare;
     }
 
