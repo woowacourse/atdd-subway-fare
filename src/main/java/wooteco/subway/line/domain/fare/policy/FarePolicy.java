@@ -1,4 +1,4 @@
-package wooteco.subway.path.ui.farepolicy;
+package wooteco.subway.line.domain.fare.policy;
 
 public interface FarePolicy {
     int deductible = 350;

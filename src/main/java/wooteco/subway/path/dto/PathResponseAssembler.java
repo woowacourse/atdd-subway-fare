@@ -1,7 +1,7 @@
 package wooteco.subway.path.dto;
 
 import wooteco.subway.path.domain.SubwayPath;
-import wooteco.subway.path.ui.farepolicy.FarePolicy;
+import wooteco.subway.line.domain.fare.policy.FarePolicy;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.List;

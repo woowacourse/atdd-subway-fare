@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.auth.domain.AuthenticationAgePrincipal;
 import wooteco.subway.path.application.PathService;
 import wooteco.subway.path.dto.PathResponse;
-import wooteco.subway.path.ui.farepolicy.FarePolicy;
+import wooteco.subway.line.domain.fare.policy.FarePolicy;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")

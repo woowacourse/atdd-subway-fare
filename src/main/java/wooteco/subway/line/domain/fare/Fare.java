@@ -1,6 +1,6 @@
-package wooteco.subway.path.domain;
+package wooteco.subway.line.domain.fare;
 
-import wooteco.subway.path.ui.farepolicy.FarePolicy;
+import wooteco.subway.line.domain.fare.policy.FarePolicy;
 
 public class Fare {
     public static final int DEFAULT_FARE_TEN_KM = 1250;

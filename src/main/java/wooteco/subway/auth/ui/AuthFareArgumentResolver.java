@@ -8,8 +8,9 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.domain.AuthenticationAgePrincipal;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
+import wooteco.subway.line.domain.fare.policy.FarePolicy;
+import wooteco.subway.line.domain.fare.FarePolicyFactory;
 import wooteco.subway.member.domain.LoginMember;
-import wooteco.subway.path.ui.farepolicy.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -32,19 +33,10 @@ public class AuthFareArgumentResolver implements HandlerMethodArgumentResolver {
         return findProperFarePolicy(member);
     }
 
-    private FarePolicy findProperFarePolicy(LoginMember member) { // TODO : 수정
-        if (member.getId() == null || member.isAdult()) {
-            return new AdultFarePolicy();
+    private FarePolicy findProperFarePolicy(LoginMember member) {
+        if (member.getId() == null) {
+            return FarePolicyFactory.defaultPolicy();
         }
-
-        if (member.isTeenager()) {
-            return new TeenagerFarePolicy();
-        }
-
-        if (member.isChild()) {
-            return new ChildFarePolicy();
-        }
-
-        return new InfantFarePolicy();
+        return FarePolicyFactory.findPolicy(member);
     }
 }

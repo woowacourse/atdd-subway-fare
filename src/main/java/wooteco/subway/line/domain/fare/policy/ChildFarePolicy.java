@@ -1,4 +1,4 @@
-package wooteco.subway.path.ui.farepolicy;
+package wooteco.subway.line.domain.fare.policy;
 
 public class ChildFarePolicy implements FarePolicy {
     private static final double discountRate = 0.5;

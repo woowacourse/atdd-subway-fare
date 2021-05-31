@@ -1,6 +1,7 @@
 package wooteco.subway.path.domain;
 
-import wooteco.subway.path.ui.farepolicy.FarePolicy;
+import wooteco.subway.line.domain.fare.Fare;
+import wooteco.subway.line.domain.fare.policy.FarePolicy;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
