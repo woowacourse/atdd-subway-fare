@@ -13,6 +13,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.station.dto.StationRequest;
@@ -154,6 +158,12 @@ public class StationAcceptanceTest extends AcceptanceTest {
         ExceptionCheck.에러_문구_확인(response, "DUPLICATED_STATION_NAME");
     }
 
+    public static ExtractableResponse<Response> 지하철역_목록_조회_요청() {
+        return RestAssured
+            .given().log().all()
+            .when().get("/stations")
+            .then().log().all()
+            .extract();
     @DisplayName("이름 유효성 검증")
     @Test
     void validStationName() {
@@ -164,6 +174,12 @@ public class StationAcceptanceTest extends AcceptanceTest {
         ExceptionCheck.에러_문구_확인(response, "INVALID_NAME");
     }
 
+    public static ExtractableResponse<Response> 지하철역_제거_요청(StationResponse stationResponse) {
+        return RestAssured
+            .given().log().all()
+            .when().delete("/stations/" + stationResponse.getId())
+            .then().log().all()
+            .extract();
     @DisplayName("없는 역 삭제")
     @Test
     void deleteGhostStation() {
@@ -176,6 +192,33 @@ public class StationAcceptanceTest extends AcceptanceTest {
         ExceptionCheck.에러_문구_확인(response, "NO_SUCH_STATION");
     }
 
+    public static void 지하철역_생성됨(ExtractableResponse response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.header("Location")).isNotBlank();
+    }
+
+    public static void 지하철역_생성_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    public static void 지하철역_목록_응답됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 지하철역_삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static void 지하철역_목록_포함됨(ExtractableResponse<Response> response, List<StationResponse> createdResponses) {
+        List<Long> expectedLineIds = createdResponses.stream()
+            .map(it -> it.getId())
+            .collect(Collectors.toList());
+
+        List<Long> resultLineIds = response.jsonPath().getList(".", StationResponse.class).stream()
+            .map(StationResponse::getId)
+            .collect(Collectors.toList());
+
+        assertThat(resultLineIds).containsAll(expectedLineIds);
     @DisplayName("노선에 등록된 역 삭제는 불가능")
     @Test
     void deleteRegisteredStation() {

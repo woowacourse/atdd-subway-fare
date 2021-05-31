@@ -16,6 +16,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
@@ -40,7 +44,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         waitingStation2 = 지하철역_등록되어_있음("정자역");
         uploadedStation2 = 지하철역_등록되어_있음("광교역");
 
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", uploadedStation1, uploadedStation2, 10);
+        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 광교역, 10, 1000);
     }
 
     @DisplayName("지하철 구간을 등록한다.")
