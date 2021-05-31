@@ -1,18 +1,20 @@
 package wooteco.subway.member.domain;
 
-public class LoginMember {
+public abstract class User {
     private Long id;
     private String email;
     private Integer age;
 
-    public LoginMember() {
+    public User() {
     }
 
-    public LoginMember(Long id, String email, Integer age) {
+    public User(Long id, String email, Integer age) {
         this.id = id;
         this.email = email;
         this.age = age;
     }
+
+    public abstract boolean isLogin();
 
     public Long getId() {
         return id;

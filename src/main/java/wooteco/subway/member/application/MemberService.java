@@ -1,39 +1,63 @@
 package wooteco.subway.member.application;
 
-import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.exception.DuplicatedException;
+import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.member.dao.MemberDao;
-import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.domain.LoginUser;
 import wooteco.subway.member.domain.Member;
+import wooteco.subway.member.domain.User;
+import wooteco.subway.member.dto.EmailRequest;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
 @Service
 public class MemberService {
-    private MemberDao memberDao;
+
+    private final MemberDao memberDao;
 
     public MemberService(MemberDao memberDao) {
         this.memberDao = memberDao;
     }
 
     public MemberResponse createMember(MemberRequest request) {
-        Member member = memberDao.insert(request.toMember());
+        final String email = request.getEmail();
+        if (memberDao.existsByEmail(email)) {
+            throw new DuplicatedException(String.format("이미 존재하는 이메일입니다. (입력한 값: %s)", email));
+        }
+        final Member member = memberDao.insert(request.toMember());
         return MemberResponse.of(member);
     }
 
-    public MemberResponse findMember(LoginMember loginMember) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
+    private void validateDuplicatedMemberEmail(final String email) {
+        if (!memberDao.existsByEmail(email)) {
+            throw new NotFoundException(String.format("해당하는 유저를 찾을 수 없습니다. (입력한 값: %s)", email));
+        }
+    }
+
+    public void checkDuplicatedMemberEmail(final EmailRequest emailRequest) {
+        final String email = emailRequest.getEmail();
+        if (memberDao.existsByEmail(email)) {
+            throw new DuplicatedException(String.format("이미 존재하는 이메일입니다. (입력한 값: %s)", email));
+        }
+    }
+
+    public MemberResponse findMember(User user) {
+        validateDuplicatedMemberEmail(user.getEmail());
+        final Member member = memberDao.findByEmail(user.getEmail());
         return MemberResponse.of(member);
     }
 
-    public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
-        memberDao.update(new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
+    public void updateMember(User user, MemberRequest memberRequest) {
+        validateDuplicatedMemberEmail(user.getEmail());
+        final Member member = memberDao.findByEmail(user.getEmail());
+        memberDao.update(
+            new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
     }
 
-    public void deleteMember(LoginMember loginMember) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
+    public void deleteMember(User user) {
+        validateDuplicatedMemberEmail(user.getEmail());
+        final Member member = memberDao.findByEmail(user.getEmail());
         memberDao.deleteById(member.getId());
     }
 }
