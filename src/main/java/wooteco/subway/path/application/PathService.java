@@ -1,7 +1,6 @@
 package wooteco.subway.path.application;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.member.domain.MemberType;
 import wooteco.subway.path.domain.FarePolicy;
@@ -14,7 +13,6 @@ import wooteco.subway.station.dto.StationResponse;
 import java.util.List;
 
 @Service
-@Transactional
 public class PathService {
     private LineService lineService;
     private StationService stationService;

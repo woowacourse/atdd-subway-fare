@@ -12,8 +12,8 @@ import wooteco.subway.member.domain.MemberType;
 
 import java.util.Optional;
 
+@Transactional(readOnly = true)
 @Service
-@Transactional
 public class AuthService {
     private MemberDao memberDao;
     private JwtTokenProvider jwtTokenProvider;
