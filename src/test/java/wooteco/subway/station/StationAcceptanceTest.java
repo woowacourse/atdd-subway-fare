@@ -9,9 +9,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
+import wooteco.subway.line.dto.LineRequest;
+import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
+import wooteco.subway.station.dto.TransferResponse;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -123,6 +126,30 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_삭제됨(response);
     }
 
+    @DisplayName("역에서 환승 가능한 노선들을 조회한다.")
+    @Test
+    void findTransferableLines() {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        StationResponse stationResponse = 지하철역_등록되어_있음(강남역);
+        StationResponse stationResponse2 = 지하철역_등록되어_있음(역삼역);
+        StationResponse stationResponse3 = 지하철역_등록되어_있음("원인재역");
+
+        LineRequest lineRequest1 = new LineRequest("2호선", "bg-red-600", stationResponse.getId(), stationResponse2.getId(), 10, 900);
+        LineRequest lineRequest2 = new LineRequest("인천1호선", "black", stationResponse2.getId(), stationResponse3.getId(), 15, 1200);
+
+        지하철_노선_등록되어_있음(lineRequest1);
+        지하철_노선_등록되어_있음(lineRequest2);
+
+        ExtractableResponse<Response> transferResponse = RestAssured
+                .given().log().all()
+                .when().get("/stations/transfer")
+                .then().log().all()
+                .extract();
+
+        List<TransferResponse> responses = transferResponse.jsonPath().getList(".", TransferResponse.class);
+        assertThat(responses.get(1).getTransfer()).containsExactly("2호선", "인천1호선");
+    }
+
     private StationResponse 지하철역_등록되어_있음(String name) {
         return 지하철역_생성_요청(name).as(StationResponse.class);
     }
@@ -228,5 +255,22 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 log().all().
                 statusCode(HttpStatus.OK.value()).
                 extract();
+    }
+
+    private LineResponse 지하철_노선_등록되어_있음(LineRequest lineRequest) {
+        return 지하철_노선_생성_요청(lineRequest).as(LineResponse.class);
+    }
+
+    private ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest params) {
+        TokenResponse tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
+
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/lines")
+                .then().log().all().
+                        extract();
     }
 }

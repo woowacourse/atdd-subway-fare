@@ -1,11 +1,11 @@
 package wooteco.subway.station.ui;
 
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
+import wooteco.subway.station.dto.TransferResponse;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -27,7 +27,7 @@ public class StationController {
         return ResponseEntity.created(URI.create("/stations/" + station.getId())).body(station);
     }
 
-    @GetMapping(value = "/stations", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/stations")
     public ResponseEntity<List<StationResponse>> showStations() {
         return ResponseEntity.ok().body(stationService.findAllStationResponses());
     }
@@ -36,6 +36,11 @@ public class StationController {
     public ResponseEntity deleteStation(@PathVariable Long id) {
         stationService.deleteStationById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping(value = "/stations/transfer")
+    public ResponseEntity<List<TransferResponse>> showStationsWithTransferableLines() {
+        return ResponseEntity.ok().body(stationService.findAllStationResponsesWithTransferable());
     }
 
     @ExceptionHandler(SQLException.class)
