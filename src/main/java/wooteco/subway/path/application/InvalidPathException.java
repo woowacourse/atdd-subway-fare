@@ -1,14 +1,11 @@
 package wooteco.subway.path.application;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import wooteco.subway.exception.SubwayException;
 
-@ResponseStatus(HttpStatus.BAD_REQUEST)
-public class InvalidPathException extends RuntimeException {
+public class InvalidPathException extends SubwayException {
+    private static final String MESSAGE = "유효하지 않은 경로입니다.";
+
     public InvalidPathException() {
-    }
-
-    public InvalidPathException(String message) {
-        super(message);
+        super(MESSAGE);
     }
 }

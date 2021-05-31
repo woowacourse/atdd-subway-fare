@@ -1,0 +1,31 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/subway?serverTimezone=UTC&characterEncoding=UTF-8
+    username: root
+    password:
+    initialization-mode: always
+handlebars:
+  suffix: .html
+  enabled: true
+security:
+  jwt:
+    token:
+      secret-key: my_secret_is_secret
+      expire-length: 3600000
+logging:
+  level:
+    org.springframework.web : debug
+    sql: error
+    jdbc: off
+    jdbc.sqlonly: debug
+  pattern:
+    console: '%-5level %d{yyyy-MM-dd HH:mm:ss}[%thread] [%F - %M] [%logger{0}:%line] - %msg%n'
+    file: '%-5level %d{yyyy-MM-dd HH:mm:ss}[%thread] [%F - %M] [%logger{0}:%line] - %msg%n'
+
+  file:
+    name: ${user.home}/logs/subway.log
+  logback:
+    rollingpolicy:
+      max-file-size: 100MB
+      max-history: 9999999

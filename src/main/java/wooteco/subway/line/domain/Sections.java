@@ -1,5 +1,7 @@
 package wooteco.subway.line.domain;
 
+import wooteco.subway.path.domain.Distance;
+import wooteco.subway.station.application.NoSuchStationException;
 import wooteco.subway.station.domain.Station;
 
 import java.util.ArrayList;
@@ -9,17 +11,30 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Sections {
+    public static final int DISTANCE_FOR_DOWN_END_STATION = -1;
     private List<Section> sections = new ArrayList<>();
-
-    public List<Section> getSections() {
-        return sections;
-    }
 
     public Sections() {
     }
 
     public Sections(List<Section> sections) {
         this.sections = sections;
+    }
+
+    public List<Section> getSections() {
+        List<Section> sortedSections = new ArrayList<>();
+
+        if (sections.isEmpty()) {
+            return sortedSections;
+        }
+
+        Section currentSection = findUpEndSection();
+        while (currentSection != null) {
+            sortedSections.add(currentSection);
+            currentSection = findSectionByNextUpStation(currentSection.getDownStation());
+        }
+
+        return sortedSections;
     }
 
     public void addSection(Section section) {
@@ -40,7 +55,7 @@ public class Sections {
     private void checkAlreadyExisted(Section section) {
         List<Station> stations = getStations();
         if (!stations.contains(section.getUpStation()) && !stations.contains(section.getDownStation())) {
-            throw new RuntimeException();
+            throw new BothStationsNotExistException();
         }
     }
 
@@ -48,7 +63,7 @@ public class Sections {
         List<Station> stations = getStations();
         List<Station> stationsOfNewSection = Arrays.asList(section.getUpStation(), section.getDownStation());
         if (stations.containsAll(stationsOfNewSection)) {
-            throw new RuntimeException();
+            throw new BothStationsAlreadyExistException();
         }
     }
 
@@ -67,18 +82,18 @@ public class Sections {
     }
 
     private void replaceSectionWithUpStation(Section newSection, Section existSection) {
-        if (existSection.getDistance() <= newSection.getDistance()) {
+        if (existSection.isShorterOrEqualTo(newSection)) {
             throw new RuntimeException();
         }
-        this.sections.add(new Section(existSection.getUpStation(), newSection.getUpStation(), existSection.getDistance() - newSection.getDistance()));
+        this.sections.add(new Section(existSection.getUpStation(), newSection.getUpStation(), existSection.getSubtractedDistance(newSection)));
         this.sections.remove(existSection);
     }
 
     private void replaceSectionWithDownStation(Section newSection, Section existSection) {
-        if (existSection.getDistance() <= newSection.getDistance()) {
+        if (existSection.isShorterOrEqualTo(newSection)) {
             throw new RuntimeException();
         }
-        this.sections.add(new Section(newSection.getDownStation(), existSection.getDownStation(), existSection.getDistance() - newSection.getDistance()));
+        this.sections.add(new Section(newSection.getDownStation(), existSection.getDownStation(), existSection.getSubtractedDistance(newSection)));
         this.sections.remove(existSection);
     }
 
@@ -120,7 +135,7 @@ public class Sections {
 
     public void removeStation(Station station) {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new UnableToRemoveSectionException();
         }
 
         Optional<Section> upSection = sections.stream()
@@ -133,11 +148,27 @@ public class Sections {
         if (upSection.isPresent() && downSection.isPresent()) {
             Station newUpStation = downSection.get().getUpStation();
             Station newDownStation = upSection.get().getDownStation();
-            int newDistance = upSection.get().getDistance() + downSection.get().getDistance();
+            Distance newDistance = upSection.get().getDistance().add(downSection.get().getDistance());
             sections.add(new Section(newUpStation, newDownStation, newDistance));
         }
 
         upSection.ifPresent(it -> sections.remove(it));
         downSection.ifPresent(it -> sections.remove(it));
+    }
+
+    public Distance getDistanceToNextStation(final Station station) {
+        try {
+            Section section = sections.stream()
+                    .filter(it -> it.hasUpStation(station))
+                    .findAny()
+                    .orElseThrow(NoSuchStationException::new);
+            return section.getDistance();
+        } catch (NoSuchStationException e) {
+            return new Distance(DISTANCE_FOR_DOWN_END_STATION);
+        }
+    }
+
+    public boolean contains(final Station station) {
+        return sections.stream().anyMatch(it -> it.contains(station));
     }
 }

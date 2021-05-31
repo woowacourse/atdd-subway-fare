@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
 
 @Repository
 public class SectionDao {
-    private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcInsert simpleJdbcInsert;
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert simpleJdbcInsert;
 
     public SectionDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
@@ -29,7 +29,7 @@ public class SectionDao {
         params.put("line_id", line.getId());
         params.put("up_station_id", section.getUpStation().getId());
         params.put("down_station_id", section.getDownStation().getId());
-        params.put("distance", section.getDistance());
+        params.put("distance", section.getDistanceASInt());
         Long sectionId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
         return new Section(sectionId, section.getUpStation(), section.getDownStation(), section.getDistance());
     }
@@ -46,11 +46,21 @@ public class SectionDao {
                     params.put("line_id", line.getId());
                     params.put("up_station_id", section.getUpStation().getId());
                     params.put("down_station_id", section.getDownStation().getId());
-                    params.put("distance", section.getDistance());
+                    params.put("distance", section.getDistanceASInt());
                     return params;
                 })
                 .collect(Collectors.toList());
 
         simpleJdbcInsert.executeBatch(batchValues.toArray(new Map[sections.size()]));
+    }
+
+    public void updateDistance(final long lineId, final long upStationId, final long downStationId, final Integer distance) {
+        String query = "UPDATE SECTION SET distance = ? WHERE id = ? AND up_station_id = ? AND down_station_id = ?";
+        jdbcTemplate.update(query, distance, lineId, upStationId, downStationId);
+    }
+
+    public boolean doesSectionNotExists(final long lineId, final long upStationId, final long downStationId) {
+        String query = "SELECT NOT EXISTS (SELECT * FROM SECTION WHERE (id = ? AND up_station_id = ? AND down_station_id = ?))";
+        return jdbcTemplate.queryForObject(query, Boolean.class, lineId, upStationId, downStationId);
     }
 }
