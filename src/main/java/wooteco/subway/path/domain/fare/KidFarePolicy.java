@@ -1,6 +1,6 @@
 package wooteco.subway.path.domain.fare;
 
-import static wooteco.subway.path.application.FarePrincipalFinder.*;
+import static wooteco.subway.path.application.FarePolicyFinder.*;
 
 public class KidFarePolicy implements FarePolicy {
     private static int DEDUCTED_AMOUNT = 350;

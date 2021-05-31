@@ -19,10 +19,10 @@ public class PathService {
     private LineService lineService;
     private StationService stationService;
     private PathFinder pathFinder;
-    private FarePrincipalFinder farePrincipalFinder;
+    private FarePolicyFinder farePrincipalFinder;
 
     public PathService(LineService lineService, StationService stationService, PathFinder pathFinder,
-                       FarePrincipalFinder farePrincipalFinder) {
+                       FarePolicyFinder farePrincipalFinder) {
 
         this.lineService = lineService;
         this.stationService = stationService;
