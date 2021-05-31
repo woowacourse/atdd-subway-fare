@@ -27,6 +27,56 @@ public class LineAcceptanceRestDocs extends RestDocs {
     private LineRequest lineRequest1;
     private LineRequest lineRequest2;
 
+    public static ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest params, String identifier) {
+        return given(identifier)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/lines")
+                .then().log().all().
+                        extract();
+    }
+
+    private static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {
+        return given(LINES_GET)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/lines")
+                .then().log().all()
+                .extract();
+    }
+
+    private static ExtractableResponse<Response> 지하철_전체_노선도_조회_요청() {
+        return given(LINES_GET_MAP)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/lines/map")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선_조회_요청(LineResponse response) {
+        return given(LINES_GET_BY_ID)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/lines/{lineId}", response.getId())
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선_수정_요청(LineResponse response, LineRequest params, String identifier) {
+
+        return given(identifier)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().put("/lines/" + response.getId())
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선_제거_요청(LineResponse lineResponse, String identifier) {
+        return given(identifier)
+                .when().delete("/lines/" + lineResponse.getId())
+                .then().log().all()
+                .extract();
+    }
+
     @BeforeEach
     public void setUp(RestDocumentationContextProvider restDocumentation) {
         super.setUp(restDocumentation);
@@ -245,55 +295,5 @@ public class LineAcceptanceRestDocs extends RestDocs {
 
         //then
         지하철_노선_삭제_실패(response);
-    }
-
-    public static ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest params, String identifier) {
-        return given(identifier)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/lines")
-                .then().log().all().
-                        extract();
-    }
-
-    private static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {
-        return given(LINES_GET)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines")
-                .then().log().all()
-                .extract();
-    }
-
-    private static ExtractableResponse<Response> 지하철_전체_노선도_조회_요청() {
-        return given(LINES_GET_MAP)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines/map")
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 지하철_노선_조회_요청(LineResponse response) {
-        return given(LINES_GET_BY_ID)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines/{lineId}", response.getId())
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 지하철_노선_수정_요청(LineResponse response, LineRequest params, String identifier) {
-
-        return given(identifier)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().put("/lines/" + response.getId())
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 지하철_노선_제거_요청(LineResponse lineResponse, String identifier) {
-        return given(identifier)
-                .when().delete("/lines/" + lineResponse.getId())
-                .then().log().all()
-                .extract();
     }
 }

@@ -5,11 +5,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
+import wooteco.subway.infrastructure.validate.MemberValidator;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
-import wooteco.subway.infrastructure.validate.MemberValidator;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -17,7 +17,7 @@ import java.net.URI;
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class MemberController {
-    private MemberService memberService;
+    private final MemberService memberService;
 
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
@@ -25,7 +25,7 @@ public class MemberController {
 
     @InitBinder("memberRequest")
     private void initBind(WebDataBinder webDataBinder) {
-        webDataBinder .addValidators(new MemberValidator());
+        webDataBinder.addValidators(new MemberValidator());
     }
 
     @GetMapping("/members/check-validation")

@@ -3,8 +3,8 @@ package wooteco.subway.path.domain.fare;
 import static wooteco.subway.path.domain.fare.FarePolicyFinder.*;
 
 public class KidFarePolicy implements FarePolicy {
-    private static int DEDUCTED_AMOUNT = 350;
-    private static double DISCOUNT_RATE = 0.5;
+    private static final int DEDUCTED_AMOUNT = 350;
+    private static final double DISCOUNT_RATE = 0.5;
 
 
     @Override
@@ -13,7 +13,7 @@ public class KidFarePolicy implements FarePolicy {
         double fare = baseFare;
 
         if (distance <= SECOND_OVER_FARE_DISTANCE) {
-            fare =  calculateOverFare(baseFare, distance - FIRST_OVER_FARE_DISTANCE, 5);
+            fare = calculateOverFare(baseFare, distance - FIRST_OVER_FARE_DISTANCE, 5);
         }
 
         if (distance > SECOND_OVER_FARE_DISTANCE) {

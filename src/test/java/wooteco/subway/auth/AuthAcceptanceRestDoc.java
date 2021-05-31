@@ -21,6 +21,39 @@ public class AuthAcceptanceRestDoc extends RestDocs {
     private static final String PASSWORD = "password";
     private static final Integer AGE = 20;
 
+    public static TokenResponse 로그인되어_있음(String email, String password) {
+        ExtractableResponse<Response> response = 로그인_요청(email, password);
+        return response.as(TokenResponse.class);
+    }
+
+    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+
+        return given(AUTH_LOGIN_SUCCESS).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                body(params).
+                when().
+                post("/login/token").
+                then().
+                log().all().
+                statusCode(HttpStatus.OK.value()).
+                extract();
+    }
+
+    public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {
+        return given(MEMBERS_ME_GET).
+                auth().oauth2(tokenResponse.getAccessToken()).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                get("/members/me").
+                then().
+                log().all().
+                statusCode(HttpStatus.OK.value()).
+                extract();
+    }
+
     @DisplayName("Bearer Auth")
     @Test
     void myInfoWithBearerAuth() {
@@ -81,38 +114,5 @@ public class AuthAcceptanceRestDoc extends RestDocs {
                 .when().get("/members/check-validation/?email=" + EMAIL)
                 .then().log().all()
                 .statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value());
-    }
-
-    public static TokenResponse 로그인되어_있음(String email, String password) {
-        ExtractableResponse<Response> response = 로그인_요청(email, password);
-        return response.as(TokenResponse.class);
-    }
-
-    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
-
-        return given(AUTH_LOGIN_SUCCESS).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                body(params).
-                when().
-                post("/login/token").
-                then().
-                log().all().
-                statusCode(HttpStatus.OK.value()).
-                extract();
-    }
-
-    public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {
-        return given(MEMBERS_ME_GET).
-                auth().oauth2(tokenResponse.getAccessToken()).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                get("/members/me").
-                then().
-                log().all().
-                statusCode(HttpStatus.OK.value()).
-                extract();
     }
 }

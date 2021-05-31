@@ -2,8 +2,6 @@ package wooteco.subway.member.dto;
 
 import wooteco.subway.member.domain.Member;
 
-import javax.validation.constraints.Email;
-
 public class MemberResponse {
     private Long id;
     private String email;

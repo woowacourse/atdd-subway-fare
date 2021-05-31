@@ -4,10 +4,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import wooteco.subway.infrastructure.validate.LineValidator;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.dto.*;
-import wooteco.subway.infrastructure.validate.LineValidator;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -17,7 +17,7 @@ import java.util.List;
 @RequestMapping("/lines")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class LineController {
-    private LineService lineService;
+    private final LineService lineService;
 
     public LineController(LineService lineService) {
         this.lineService = lineService;
@@ -25,7 +25,7 @@ public class LineController {
 
     @InitBinder("lineRequest")
     private void initBind(WebDataBinder webDataBinder) {
-        webDataBinder .addValidators(new LineValidator());
+        webDataBinder.addValidators(new LineValidator());
     }
 
     @PostMapping

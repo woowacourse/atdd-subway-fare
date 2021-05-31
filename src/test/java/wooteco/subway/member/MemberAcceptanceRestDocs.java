@@ -22,6 +22,47 @@ public class MemberAcceptanceRestDocs extends RestDocs {
     public static final String NEW_PASSWORD = "new_password";
     public static final int NEW_AGE = 30;
 
+    public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age, String identifier) {
+        MemberRequest memberRequest = new MemberRequest(email, password, age);
+
+        return given(identifier)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(memberRequest)
+                .when().post("/members")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {
+        return given(MEMBERS_ME_GET)
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 내_회원_정보_수정_요청(TokenResponse tokenResponse, String email, String password, Integer age, String identifier) {
+        MemberRequest memberRequest = new MemberRequest(email, password, age);
+
+        return given(identifier)
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(memberRequest)
+                .when().put("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 내_회원_삭제_요청(TokenResponse tokenResponse) {
+        return given(MEMBERS_ME_DELETE)
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .when().delete("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
     @DisplayName("회원 정보를 관리한다.")
     @Test
     void manageMember() {
@@ -67,7 +108,7 @@ public class MemberAcceptanceRestDocs extends RestDocs {
 
     @DisplayName("비밀번호는 4글자 이상 20글자 이하이어야 한다.")
     @Test
-    void createMemberWhenErrorPassword () throws Exception {
+    void createMemberWhenErrorPassword() throws Exception {
         //given
         String shortPassword = "abc";
         String longPassword = "abcdefghijklnmopqrstuvwsadsfkasdfdsafjdfsljdsflkasdfjlxyz";
@@ -103,7 +144,7 @@ public class MemberAcceptanceRestDocs extends RestDocs {
 
     @DisplayName("나이는 음수일 수 없으며 200살을 넘을 수 없다.")
     @Test
-    void createMemberErrorAge () throws Exception {
+    void createMemberErrorAge() throws Exception {
         //given
         int negativeAge = -1;
         int exceedAge = 201;
@@ -137,46 +178,5 @@ public class MemberAcceptanceRestDocs extends RestDocs {
         //then
         회원_수정되지않음(createFailResponse);
 
-    }
-
-    public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age, String identifier) {
-        MemberRequest memberRequest = new MemberRequest(email, password, age);
-
-        return given(identifier)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(memberRequest)
-                .when().post("/members")
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {
-        return given(MEMBERS_ME_GET)
-                .auth().oauth2(tokenResponse.getAccessToken())
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/me")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 내_회원_정보_수정_요청(TokenResponse tokenResponse, String email, String password, Integer age, String identifier) {
-        MemberRequest memberRequest = new MemberRequest(email, password, age);
-
-        return given(identifier)
-                .auth().oauth2(tokenResponse.getAccessToken())
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(memberRequest)
-                .when().put("/members/me")
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 내_회원_삭제_요청(TokenResponse tokenResponse) {
-        return given(MEMBERS_ME_DELETE)
-                .auth().oauth2(tokenResponse.getAccessToken())
-                .when().delete("/members/me")
-                .then().log().all()
-                .extract();
     }
 }

@@ -12,7 +12,6 @@ import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
@@ -23,18 +22,9 @@ import static org.springframework.restdocs.restassured3.RestAssuredRestDocumenta
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 @ActiveProfiles("test")
 public class RestDocs {
+    private static RequestSpecification spec;
     @LocalServerPort
     private int port;
-
-    private static RequestSpecification spec;
-
-    @BeforeEach
-    public void setUp(RestDocumentationContextProvider restDocumentation) {
-        RestAssured.port = port;
-        spec = new RequestSpecBuilder()
-                .addFilter(documentationConfiguration(restDocumentation))
-                .build();
-    }
 
     public static RequestSpecification given(String identifier) {
         return RestAssured
@@ -42,5 +32,13 @@ public class RestDocs {
                 .filter(document(identifier,
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint())));
+    }
+
+    @BeforeEach
+    public void setUp(RestDocumentationContextProvider restDocumentation) {
+        RestAssured.port = port;
+        spec = new RequestSpecBuilder()
+                .addFilter(documentationConfiguration(restDocumentation))
+                .build();
     }
 }

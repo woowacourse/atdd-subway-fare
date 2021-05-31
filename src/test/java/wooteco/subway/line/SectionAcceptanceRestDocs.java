@@ -27,6 +27,24 @@ public class SectionAcceptanceRestDocs extends RestDocs {
     private StationResponse 정자역;
     private StationResponse 광교역;
 
+    public static ExtractableResponse<Response> 지하철_구간_생성_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance, String identifier) {
+        SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
+
+        return given(identifier)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(sectionRequest)
+                .when().post("/lines/{lineId}/sections", line.getId())
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(LineResponse line, StationResponse station, String identifier) {
+        return given(identifier)
+                .when().delete("/lines/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
+                .then().log().all()
+                .extract();
+    }
+
     @BeforeEach
     public void setUp(RestDocumentationContextProvider restDocumentation) {
         super.setUp(restDocumentation);
@@ -91,23 +109,5 @@ public class SectionAcceptanceRestDocs extends RestDocs {
 
         // then
         지하철_노선에_지하철역_제외_실패됨(removeResponse);
-    }
-
-    public static ExtractableResponse<Response> 지하철_구간_생성_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance, String identifier) {
-        SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
-
-        return  given(identifier)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(sectionRequest)
-                .when().post("/lines/{lineId}/sections", line.getId())
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(LineResponse line, StationResponse station, String identifier) {
-        return  given(identifier)
-                .when().delete("/lines/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
-                .then().log().all()
-                .extract();
     }
 }

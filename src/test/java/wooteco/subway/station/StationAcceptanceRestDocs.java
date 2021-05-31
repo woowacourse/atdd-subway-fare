@@ -13,7 +13,6 @@ import wooteco.subway.station.dto.StationResponse;
 
 import java.util.Arrays;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.DocsIdentifier.*;
 import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static wooteco.subway.station.StationAcceptanceTest.*;
@@ -22,6 +21,41 @@ import static wooteco.subway.station.StationAcceptanceTest.*;
 public class StationAcceptanceRestDocs extends RestDocs {
     private static final String 강남역 = "강남역";
     private static final String 역삼역 = "역삼역";
+
+    public static ExtractableResponse<Response> 지하철역_생성_요청(String name, String identifier) {
+        StationRequest stationRequest = new StationRequest(name);
+
+        return given(identifier)
+                .body(stationRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/stations")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철역_목록_조회_요청() {
+        return given(STATIONS_GET)
+                .when().get("/stations")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철역_제거_요청(StationResponse stationResponse, String identifier) {
+        return given(identifier)
+                .when().delete("/stations/" + stationResponse.getId())
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철역_수정_요청(Long id, String name, String identifier) {
+        StationRequest stationRequest = new StationRequest(name);
+        return given(identifier)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(stationRequest)
+                .when().put("/stations/" + id)
+                .then().log().all()
+                .extract();
+    }
 
     @DisplayName("지하철역을 생성한다.")
     @Test
@@ -127,7 +161,7 @@ public class StationAcceptanceRestDocs extends RestDocs {
         String errorName = "공백포함 역";
 
         //when
-        ExtractableResponse<Response> response = 지하철역_수정_요청(stationResponse.getId(), errorName,STATIONS_PUT_FAIL_NAME_BLANK);
+        ExtractableResponse<Response> response = 지하철역_수정_요청(stationResponse.getId(), errorName, STATIONS_PUT_FAIL_NAME_BLANK);
 
         //then
         지하철역_수정_실패(response);
@@ -176,40 +210,5 @@ public class StationAcceptanceRestDocs extends RestDocs {
         ExtractableResponse<Response> response = 지하철역_제거_요청(stationResponse1, STATIONS_DELETE_FAIL);
         //then
         지하철역_삭제_실패됨(response);
-    }
-
-    public static ExtractableResponse<Response> 지하철역_생성_요청(String name, String identifier) {
-        StationRequest stationRequest = new StationRequest(name);
-
-        return  given(identifier)
-                .body(stationRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/stations")
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 지하철역_목록_조회_요청() {
-        return  given(STATIONS_GET)
-                .when().get("/stations")
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 지하철역_제거_요청(StationResponse stationResponse, String identifier) {
-        return  given(identifier)
-                .when().delete("/stations/" + stationResponse.getId())
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 지하철역_수정_요청(Long id, String name, String identifier) {
-        StationRequest stationRequest = new StationRequest(name);
-        return  given(identifier)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(stationRequest)
-                .when().put("/stations/" + id)
-                .then().log().all()
-                .extract();
     }
 }

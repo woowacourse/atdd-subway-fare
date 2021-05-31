@@ -68,6 +68,4 @@ public class DocsIdentifier {
     public static String STATIONS_DELETE_FAIL = "stations/delete/fail";
 
 
-
-
 }

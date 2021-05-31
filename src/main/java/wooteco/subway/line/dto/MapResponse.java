@@ -6,11 +6,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class MapResponse {
-    private Long id;
-    private String name;
-    private String color;
-    private Long extraFare;
-    private List<SectionResponse> sections;
+    private final Long id;
+    private final String name;
+    private final String color;
+    private final Long extraFare;
+    private final List<SectionResponse> sections;
 
     public MapResponse(Long id, String name, String color, Long extraFare, List<SectionResponse> sections) {
         this.id = id;

@@ -1,8 +1,6 @@
 package wooteco.subway.path.domain.fare;
 
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import wooteco.subway.path.domain.fare.*;
 
 @Component
 public class FarePolicyFinder {

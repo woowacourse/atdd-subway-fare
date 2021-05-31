@@ -11,14 +11,8 @@ import org.springframework.restdocs.RestDocumentationContextProvider;
 import wooteco.subway.RestDocs;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.line.dto.LineResponse;
-import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.dto.StationResponse;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.DocsIdentifier.PATHS_GET;
 import static wooteco.subway.DocsIdentifier.PATHS_GET_TOKEN;
 import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
@@ -39,6 +33,23 @@ public class PathAcceptanceRestDocs extends RestDocs {
     private StationResponse 남부터미널역;
     private StationResponse 잠실역;
     private StationResponse 석촌역;
+
+    public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
+        return given(PATHS_GET)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/paths?source={sourceId}&target={targetId}", source, target)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target, TokenResponse tokenResponse) {
+        return given(PATHS_GET_TOKEN)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .when().get("/paths?source={sourceId}&target={targetId}", source, target)
+                .then().log().all()
+                .extract();
+    }
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -76,23 +87,6 @@ public class PathAcceptanceRestDocs extends RestDocs {
         //then
         적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
         총_거리가_응답됨(response, 5);
-    }
-
-    public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
-        return given(PATHS_GET)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/paths?source={sourceId}&target={targetId}", source, target)
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target, TokenResponse tokenResponse) {
-        return given(PATHS_GET_TOKEN)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .auth().oauth2(tokenResponse.getAccessToken())
-                .when().get("/paths?source={sourceId}&target={targetId}", source, target)
-                .then().log().all()
-                .extract();
     }
 
     @Test
