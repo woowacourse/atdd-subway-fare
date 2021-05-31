@@ -1,10 +1,8 @@
 package wooteco.subway.path.application;
 
 import java.util.List;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
@@ -18,10 +16,11 @@ import wooteco.subway.station.domain.Station;
 @Service
 @Transactional
 public class PathService {
-    private LineService lineService;
-    private StationService stationService;
-    private AuthService authService;
-    private PathFinder pathFinder;
+
+    private final LineService lineService;
+    private final StationService stationService;
+    private final AuthService authService;
+    private final PathFinder pathFinder;
 
     public PathService(LineService lineService, StationService stationService,
         AuthService authService, PathFinder pathFinder) {

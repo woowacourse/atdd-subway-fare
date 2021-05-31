@@ -16,7 +16,7 @@ import wooteco.subway.auth.dto.TokenResponse;
 
 public class ExceptionCheck {
 
-    private static TokenResponse tokenResponse;
+    private static final TokenResponse tokenResponse;
 
     static {
         ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);

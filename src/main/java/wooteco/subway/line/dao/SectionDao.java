@@ -4,18 +4,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import javax.sql.DataSource;
-
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 
 @Repository
 public class SectionDao {
+
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert simpleJdbcInsert;
 
@@ -33,7 +31,8 @@ public class SectionDao {
         params.put("down_station_id", section.getDownStation().getId());
         params.put("distance", section.getDistance());
         Long sectionId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
-        return new Section(sectionId, section.getUpStation(), section.getDownStation(), section.getDistance());
+        return new Section(sectionId, section.getUpStation(), section.getDownStation(),
+            section.getDistance());
     }
 
     public void deleteByLineId(Long lineId) {

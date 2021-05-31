@@ -13,10 +13,10 @@ import wooteco.subway.station.domain.Station;
 @Repository
 public class StationDao {
 
-    private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcInsert insertAction;
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<Station> rowMapper = (rs, rowNum) ->
+    private final RowMapper<Station> rowMapper = (rs, rowNum) ->
         new Station(
             rs.getLong("id"),
             rs.getString("name")

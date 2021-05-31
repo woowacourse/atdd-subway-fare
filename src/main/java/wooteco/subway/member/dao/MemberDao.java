@@ -7,11 +7,11 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-
 import wooteco.subway.member.domain.Member;
 
 @Repository
 public class MemberDao {
+
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert simpleJdbcInsert;
 
@@ -27,7 +27,7 @@ public class MemberDao {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
             .withTableName("MEMBER")
-                .usingGeneratedKeyColumns("id");
+            .usingGeneratedKeyColumns("id");
     }
 
     public Member insert(Member member) {
@@ -39,7 +39,7 @@ public class MemberDao {
     public void update(Member member) {
         String sql = "update MEMBER set email = ?, password = ?, age = ? where id = ?";
         jdbcTemplate.update(sql,
-            new Object[] {member.getEmail(), member.getPassword(), member.getAge(), member.getId()});
+            new Object[]{member.getEmail(), member.getPassword(), member.getAge(), member.getId()});
     }
 
     public void deleteById(Long id) {

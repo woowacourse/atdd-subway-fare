@@ -11,9 +11,8 @@ import wooteco.subway.line.exception.ImpossibleDistanceException;
 import wooteco.subway.line.exception.OnlyOneSectionExistsException;
 import wooteco.subway.station.domain.Station;
 
-import wooteco.subway.station.domain.Station;
-
 public class Sections {
+
     private List<Section> sections = new ArrayList<>();
 
     public Sections() {
@@ -44,14 +43,16 @@ public class Sections {
 
     private void checkAlreadyExisted(Section section) {
         List<Station> stations = getStations();
-        if (!stations.contains(section.getUpStation()) && !stations.contains(section.getDownStation())) {
+        if (!stations.contains(section.getUpStation()) && !stations
+            .contains(section.getDownStation())) {
             throw new BothStationNotRegisteredInLineException("해당 노선에 역이 존재하지 않습니다.");
         }
     }
 
     private void checkExistedAny(Section section) {
         List<Station> stations = getStations();
-        List<Station> stationsOfNewSection = Arrays.asList(section.getUpStation(), section.getDownStation());
+        List<Station> stationsOfNewSection = Arrays
+            .asList(section.getUpStation(), section.getDownStation());
         if (stations.containsAll(stationsOfNewSection)) {
             throw new BothStationAlreadyRegisteredInLineException("이미 노선에 존재한느 역입니다.");
         }

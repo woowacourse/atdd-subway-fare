@@ -3,6 +3,7 @@ package wooteco.subway.path.domain;
 import wooteco.subway.member.domain.LoginMember;
 
 public class Price {
+
     private static final int DEFAULT_DISTANCE = 10;
     private static final int DEFAULT_PRICE = 1250;
     private static final int EXTRA_DISTANCE = 50;
@@ -32,11 +33,13 @@ public class Price {
             return;
         }
         if (distance <= EXTRA_DISTANCE) {
-            this.price = (int)(DEFAULT_PRICE + calculateExtraPrice(distance, DEFAULT_DISTANCE, MINIMUM_UNIT_DISTANCE));
+            this.price = (int) (DEFAULT_PRICE + calculateExtraPrice(distance, DEFAULT_DISTANCE,
+                MINIMUM_UNIT_DISTANCE));
             return;
         }
         if (distance > EXTRA_DISTANCE) {
-            this.price = (int)(EXTRA_PRICE + calculateExtraPrice(distance, EXTRA_DISTANCE, MAXIMUM_UNIT_DISTANCE));
+            this.price = (int) (EXTRA_PRICE + calculateExtraPrice(distance, EXTRA_DISTANCE,
+                MAXIMUM_UNIT_DISTANCE));
         }
     }
 
@@ -58,12 +61,12 @@ public class Price {
         }
         if (loginMember.getAge() < DISCOUNT_SECOND_BOUNDARY_FROM_AGE) {
             this.price -= DEDUCTION_PRICE;
-            this.price -= (int)(this.price * DISCOUNT_RATE_50);
+            this.price -= (int) (this.price * DISCOUNT_RATE_50);
             return;
         }
         if (loginMember.getAge() < DISCOUNT_THIRD_BOUNDARY_FROM_AGE) {
             this.price -= DEDUCTION_PRICE;
-            this.price -= (int)(this.price * DISCOUNT_RATE_20);
+            this.price -= (int) (this.price * DISCOUNT_RATE_20);
         }
     }
 

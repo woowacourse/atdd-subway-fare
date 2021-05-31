@@ -10,22 +10,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import static org.assertj.core.api.Assertions.*;
-import static wooteco.subway.station.StationAcceptanceTest.*;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.line.dto.LineDetailResponse;
 import wooteco.subway.line.dto.LineRequest;
@@ -42,6 +31,14 @@ public class LineAcceptanceTest extends AcceptanceTest {
     private LineRequest lineRequest2;
     private LineResponse ghostResponse;
 
+
+    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation,
+        StationResponse downStation, int distance, int extraFare) {
+        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(),
+            downStation.getId(), distance,
+            extraFare);
+        return 지하철_노선_등록되어_있음(lineRequest);
+    }
 
     public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation,
         StationResponse downStation, int distance) {
@@ -247,7 +244,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1);
-        ;
         // then
         ExceptionCheck.코드_400_응답됨(response);
         ExceptionCheck.에러_문구_확인(response, "DUPLICATED_LINE_NAME");
