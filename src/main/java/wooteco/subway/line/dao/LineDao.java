@@ -2,8 +2,12 @@ package wooteco.subway.line.dao;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import wooteco.subway.exception.notfound.LineNotFoundException;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.domain.Sections;
@@ -18,13 +22,23 @@ import java.util.stream.Collectors;
 @Repository
 public class LineDao {
     private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
+        this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
         this.insertAction = new SimpleJdbcInsert(dataSource)
                 .withTableName("line")
                 .usingGeneratedKeyColumns("id");
+    }
+
+    private SqlParameterSource parameterSource(Line line) {
+        return new MapSqlParameterSource()
+                .addValue("id", line.getId())
+                .addValue("name", line.getName())
+                .addValue("color", line.getColor())
+                .addValue("extraFare", line.moneyValue());
     }
 
     public Line insert(Line line) {
@@ -48,9 +62,9 @@ public class LineDao {
                     "left outer join SECTION S on L.id = S.line_id " +
                     "left outer join STATION UST on S.up_station_id = UST.id " +
                     "left outer join STATION DST on S.down_station_id = DST.id " +
-                    "WHERE L.id = ?";
-
-            List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, new Object[]{id});
+                    "WHERE L.id = :id";
+            Map<String, Long> param = Collections.singletonMap("id", id);
+            List<Map<String, Object>> result = namedParameterJdbcTemplate.queryForList(sql, param);
             return Optional.of(mapLine(result));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
@@ -58,8 +72,11 @@ public class LineDao {
     }
 
     public void update(Line newLine) {
-        String sql = "update LINE set name = ?, color = ?, extra_fare = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getExtraFare().money(), newLine.getId()});
+        String sql = "update LINE set name = :name, color = :color, extra_fare = :extraFare where id = :id";
+        int count = namedParameterJdbcTemplate.update(sql, parameterSource(newLine));
+        if (count < 1) {
+            throw new LineNotFoundException();
+        }
     }
 
     public List<Line> findAll() {
@@ -71,11 +88,10 @@ public class LineDao {
                 "left outer join SECTION S on L.id = S.line_id " +
                 "left outer join STATION UST on S.up_station_id = UST.id " +
                 "left outer join STATION DST on S.down_station_id = DST.id ";
-
         List<Map<String, Object>> result = jdbcTemplate.queryForList(sql);
         Map<Long, List<Map<String, Object>>> resultByLine = result.stream().collect(Collectors.groupingBy(it -> (Long) it.get("line_id")));
-        return resultByLine.entrySet().stream()
-                .map(it -> mapLine(it.getValue()))
+        return resultByLine.values().stream()
+                .map(this::mapLine)
                 .collect(Collectors.toList());
     }
 
@@ -112,18 +128,22 @@ public class LineDao {
     }
 
     public void deleteById(Long id) {
-        jdbcTemplate.update("delete from Line where id = ?", id);
+        String sql = "delete from Line where id = :id";
+        Map<String, Long> param = Collections.singletonMap("id", id);
+        namedParameterJdbcTemplate.update(sql, param);
     }
 
     public boolean existLineName(String name) {
-        String sql = "select count(*) from line where name = ? limit 1";
-        Long count = jdbcTemplate.queryForObject(sql, Long.class, name);
+        String sql = "select count(*) from line where name = :name limit 1";
+        Map<String, String> param = Collections.singletonMap("name", name);
+        int count = namedParameterJdbcTemplate.queryForObject(sql, param, Integer.class);
         return count > 0;
     }
 
     public boolean existLineColor(String color) {
-        String sql = "select count(*) from line where color = ? limit 1";
-        Long count = jdbcTemplate.queryForObject(sql, Long.class, color);
+        String sql = "select count(*) from line where color = :color limit 1";
+        Map<String, String> param = Collections.singletonMap("color", color);
+        int count = namedParameterJdbcTemplate.queryForObject(sql, param, Integer.class);
         return count > 0;
     }
 }
