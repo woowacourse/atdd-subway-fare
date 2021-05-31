@@ -26,7 +26,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         }
         String credentials = AuthorizationExtractor.extract(request);
         if (Objects.isNull(credentials)) {
-            return checkIfAnonymousPermissible(request);
+            throw new AuthorizationException(AuthorizationExceptionStatus.LOGIN_REQUIRED);
         }
         authService.validate(credentials);
         return true;
@@ -34,12 +34,5 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     private boolean isPreflightRequest(HttpServletRequest request) {
         return HttpMethod.OPTIONS.matches(request.getMethod());
-    }
-
-    private boolean checkIfAnonymousPermissible(HttpServletRequest request) {
-        if ("/paths".equals(request.getRequestURI())) {
-            return true;
-        }
-        throw new AuthorizationException(AuthorizationExceptionStatus.LOGIN_REQUIRED);
     }
 }
