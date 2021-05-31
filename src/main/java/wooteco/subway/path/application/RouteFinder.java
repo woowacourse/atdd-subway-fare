@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class RouteFinder {
     public SubwayRoute find(List<Line> lines, Station source, Station target) {
         if (source.equals(target)) {
-            throw new InvalidPathException("적절하지 않은 구간의 경로 탐색입니다.");
+            throw new PathException("적절하지 않은 구간의 경로 탐색입니다.");
         }
         SubwayGraph graph = new SubwayGraph(SectionEdge.class);
         graph.addVertexWith(lines);
@@ -25,7 +25,7 @@ public class RouteFinder {
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
         GraphPath<Station, SectionEdge> path = dijkstraShortestPath.getPath(source, target);
         if (path == null) {
-            throw new InvalidPathException("적절하지 않은 구간의 경로 탐색입니다.");
+            throw new PathException("적절하지 않은 구간의 경로 탐색입니다.");
         }
 
         return convertSubwayPath(path);

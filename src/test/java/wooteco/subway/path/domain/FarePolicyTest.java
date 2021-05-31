@@ -3,13 +3,10 @@ package wooteco.subway.path.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.member.domain.MemberType;
-import wooteco.subway.path.application.FareService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class FareServiceTest {
-
-    final FareService fareService = new FareService();
+class FarePolicyTest {
 
     @DisplayName("거리가 7일 때 기본 요금 반환")
     @Test
@@ -61,6 +58,6 @@ class FareServiceTest {
     }
 
     private void assertFare(int distance, int extraFare, MemberType memberType, int expectedFare) {
-        assertThat(fareService.calculate(distance, extraFare, memberType)).isEqualTo(expectedFare);
+        assertThat(FarePolicy.calculate(distance, extraFare, memberType)).isEqualTo(expectedFare);
     }
 }

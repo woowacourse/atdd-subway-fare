@@ -1,13 +1,8 @@
-package wooteco.subway.path.application;
+package wooteco.subway.path.domain;
 
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.member.domain.MemberType;
-import wooteco.subway.path.domain.FareType;
 
-@Transactional
-@Service
-public class FareService {
+public class FarePolicy {
 
     private static final int DEFAULT_FARE = 1250;
     private static final int FARE_PER_UNIT_DISTANCE = 100;
@@ -18,17 +13,17 @@ public class FareService {
     private static final int FIRST_ADDITIONAL_FARE_UNIT_DISTANCE = 5;
     private static final int SECOND_ADDITIONAL_FARE_UNIT_DISTANCE = 8;
 
-    public int calculate(int distance, int extraFare, MemberType memberType) {
+    public static int calculate(int distance, int extraFare, MemberType memberType) {
         int fareByPath = fareByDistance(distance) + extraFare;
         return FareType.of(memberType)
                 .price(fareByPath);
     }
 
-    private int fareByDistance(int distance) {
+    private static int fareByDistance(int distance) {
         return DEFAULT_FARE + fareInFirstSection(distance) + fareInSecondSection(distance);
     }
 
-    private int fareInFirstSection(int distance) {
+    private static int fareInFirstSection(int distance) {
         if (distance < FIRST_ADDITIONAL_FARE_SECTION) {
             return 0;
         }
@@ -37,7 +32,7 @@ public class FareService {
         return calculateAdditionalFare(firstSectionDistance, FIRST_ADDITIONAL_FARE_UNIT_DISTANCE);
     }
 
-    private int fareInSecondSection(int distance) {
+    private static int fareInSecondSection(int distance) {
         if (distance < SECOND_ADDITIONAL_FARE_SECTION) {
             return 0;
         }
@@ -46,7 +41,7 @@ public class FareService {
         return calculateAdditionalFare(secondSectionDistance, SECOND_ADDITIONAL_FARE_UNIT_DISTANCE);
     }
 
-    private int calculateAdditionalFare(int additionalDistance, int unitDistance) {
+    private static int calculateAdditionalFare(int additionalDistance, int unitDistance) {
         return (int) ((Math.ceil((additionalDistance - 1) / unitDistance) + 1) * FARE_PER_UNIT_DISTANCE);
     }
 }

@@ -2,10 +2,9 @@ package wooteco.subway.path.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.line.application.LineException;
 import wooteco.subway.line.application.LineService;
-import wooteco.subway.line.domain.Line;
 import wooteco.subway.member.domain.MemberType;
+import wooteco.subway.path.domain.FarePolicy;
 import wooteco.subway.path.domain.SubwayRoute;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.application.StationService;
@@ -20,31 +19,33 @@ public class PathService {
     private LineService lineService;
     private StationService stationService;
     private RouteFinder routeFinder;
-    private FareService fareService;
 
-    public PathService(LineService lineService, StationService stationService, RouteFinder routeFinder, FareService fareService) {
+    public PathService(LineService lineService, StationService stationService, RouteFinder routeFinder) {
         this.lineService = lineService;
         this.stationService = stationService;
         this.routeFinder = routeFinder;
-        this.fareService = fareService;
     }
 
-    public PathResponse findPath(Long source, Long target, MemberType memberType) {
-        SubwayRoute route = findRoute(source, target);
+    public PathResponse findPath(Long sourceId, Long targetId, MemberType memberType) {
+        SubwayRoute route = findRoute(sourceId, targetId);
 
+        return getPathResponse(route, memberType);
+    }
+
+    private SubwayRoute findRoute(Long sourceId, Long targetId) {
+        try {
+            Station source = stationService.findStationById(sourceId);
+            Station target = stationService.findStationById(targetId);
+            return routeFinder.find(lineService.findLines(), source, target);
+        } catch (Exception e) {
+            throw new PathException("적절하지 않은 구간의 경로 탐색입니다.");
+        }
+    }
+
+    private PathResponse getPathResponse(SubwayRoute route, MemberType memberType) {
+        int fare = FarePolicy.calculate(route.distance(), route.extraFare(), memberType);
         List<StationResponse> stationResponses = stationService.stationResponses(route.stations());
-        int fare = fareService.calculate(route.distance(), route.extraFare(), memberType);
 
         return new PathResponse(stationResponses, route.distance(), fare);
-    }
-
-    private SubwayRoute findRoute(Long source, Long target) {
-        try {
-            Station sourceStation = stationService.findStationById(source);
-            Station targetStation = stationService.findStationById(target);
-            return routeFinder.find(lineService.findLines(), sourceStation, targetStation);
-        } catch (Exception e) {
-            throw new LineException("검색된 경로가 없습니다.");
-        }
     }
 }

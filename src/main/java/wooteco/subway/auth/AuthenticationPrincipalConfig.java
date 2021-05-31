@@ -2,8 +2,8 @@ package wooteco.subway.auth;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import wooteco.subway.auth.ui.AuthenticationPrincipalArgumentResolver;
 import wooteco.subway.auth.ui.AuthenticMemberTypeArgumentResolver;
+import wooteco.subway.auth.ui.AuthenticationPrincipalArgumentResolver;
 
 import java.util.List;
 
