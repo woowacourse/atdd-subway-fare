@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-class PriceTest {
+class FareTest {
 
     @DisplayName("요금 객체를 생성한다")
     @Test
@@ -18,7 +18,7 @@ class PriceTest {
         int value = 10_000;
 
         // when // then
-        assertThatCode(() -> new Price(value))
+        assertThatCode(() -> new Fare(value))
                 .doesNotThrowAnyException();
     }
 
@@ -29,7 +29,7 @@ class PriceTest {
         int minusValue = -1_000;
 
         // when // then
-        assertThatThrownBy(() -> new Price(minusValue))
+        assertThatThrownBy(() -> new Fare(minusValue))
                 .isExactlyInstanceOf(IllegalArgumentException.class);
     }
 
@@ -41,26 +41,26 @@ class PriceTest {
         int additionValue = 100;
 
         // when
-        Price basicPrice = Price.BASIC;
-        Price additionPrice = Price.ADDITION;
+        Fare basicFare = Fare.BASIC;
+        Fare additionFare = Fare.ADDITION;
 
         // then
-        assertThat(basicPrice).isEqualTo(new Price(basicValue));
-        assertThat(additionPrice).isEqualTo(new Price(additionValue));
+        assertThat(basicFare).isEqualTo(new Fare(basicValue));
+        assertThat(additionFare).isEqualTo(new Fare(additionValue));
     }
 
     @DisplayName("가격을 더한다")
     @Test
     void testAdd() {
         // given
-        Price first = new Price(1_000);
-        Price second = new Price(500);
+        Fare first = new Fare(1_000);
+        Fare second = new Fare(500);
 
         // when
-        Price result = first.add(second);
+        Fare result = first.add(second);
 
         // then
-        assertThat(result).isEqualTo(new Price(1_500));
+        assertThat(result).isEqualTo(new Fare(1_500));
     }
 
     @DisplayName("거리에 따른 요금을 계산한다")
@@ -71,9 +71,9 @@ class PriceTest {
     }, delimiter = ':')
     void testCalculateRate(int distance, int expected) {
         // when
-        Price actual = Price.calculateRate(distance);
+        Fare actual = Fare.calculateRate(distance, 0);
 
         // then
-        assertThat(actual).isEqualTo(new Price(expected));
+        assertThat(actual).isEqualTo(new Fare(expected));
     }
 }

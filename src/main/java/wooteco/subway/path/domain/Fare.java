@@ -2,16 +2,16 @@ package wooteco.subway.path.domain;
 
 import java.util.Objects;
 
-public class Price {
+public class Fare {
 
-    private static final Price ZERO = new Price(0);
-    public static final Price BASIC = new Price(1_250);
-    private static final Price DEDUCTION = new Price(350);
-    public static final Price ADDITION = new Price(100);
+    private static final Fare ZERO = new Fare(0);
+    public static final Fare BASIC = new Fare(1_250);
+    private static final Fare DEDUCTION = new Fare(350);
+    public static final Fare ADDITION = new Fare(100);
 
     private final int value;
 
-    public Price(int value) {
+    public Fare(int value) {
         validateNotNegative(value);
         this.value = value;
     }
@@ -22,24 +22,29 @@ public class Price {
         }
     }
 
-    public static Price calculateRate(int distance) {
+    public static Fare calculateRate(int distance, int maxExtraFare) {
+        Fare fareOfDistanceRule = calculateRateByDistance(distance);
+        return fareOfDistanceRule.add(new Fare(maxExtraFare));
+    }
+
+    public static Fare calculateRateByDistance(int distance) {
         validatePositiveDistance(distance);
-        Price currentPrice = Price.ZERO;
+        Fare currentFare = Fare.ZERO;
         int currentDistance = distance;
         if (currentDistance > 50) {
             int longDistance = currentDistance - 50;
             int additionalPrice = calculateLongDistancePrice(longDistance);
-            currentPrice = currentPrice.add(new Price(additionalPrice));
+            currentFare = currentFare.add(new Fare(additionalPrice));
             currentDistance = 50;
         }
 
         if (currentDistance > 10) {
             int middleDistance = currentDistance - 10;
             int additionalPrice = calculateMiddleDistancePrice(middleDistance);
-            currentPrice = currentPrice.add(new Price(additionalPrice));
+            currentFare = currentFare.add(new Fare(additionalPrice));
         }
 
-        return currentPrice.add(Price.BASIC);
+        return currentFare.add(Fare.BASIC);
     }
 
 
@@ -57,12 +62,12 @@ public class Price {
         return (int) ((Math.ceil((longDistance - 1) / 8) + 1) * 100);
     }
 
-    public Price add(Price other) {
-        return new Price(this.value + other.value);
+    public Fare add(Fare other) {
+        return new Fare(this.value + other.value);
     }
 
-    public Price subtract(Price other) {
-        return new Price(this.value - other.value);
+    public Fare subtract(Fare other) {
+        return new Fare(this.value - other.value);
     }
 
     private int multiply(double multiplier) {
@@ -73,18 +78,18 @@ public class Price {
         return value;
     }
 
-    public Price discountByAge(int age) {
+    public Fare discountByAge(int age) {
         if (age >= 20) {
             return ZERO;
         }
 
-        Price basicPrice = this.subtract(DEDUCTION);
+        Fare basicFare = this.subtract(DEDUCTION);
         if (age >= 13) {
-            return new Price(basicPrice.multiply(0.2));
+            return new Fare(basicFare.multiply(0.2));
         }
 
         if (age >= 6) {
-            return new Price(basicPrice.multiply(0.5));
+            return new Fare(basicFare.multiply(0.5));
         }
 
         return this;
@@ -98,8 +103,8 @@ public class Price {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Price price = (Price) o;
-        return Objects.equals(value, price.value);
+        Fare fare = (Fare) o;
+        return Objects.equals(value, fare.value);
     }
 
     @Override

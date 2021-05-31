@@ -2,6 +2,7 @@ package wooteco.subway.path.domain;
 
 import java.util.List;
 import wooteco.subway.line.domain.Line;
+import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.station.domain.Station;
 
 public class SubwayPath {
@@ -13,27 +14,33 @@ public class SubwayPath {
         this.stations = stations;
     }
 
-    public List<SectionEdge> getSectionEdges() {
-        return sectionEdges;
-    }
-
-    public List<Station> getStations() {
-        return stations;
-    }
-
     public int calculateDistance() {
         return sectionEdges.stream().mapToInt(it -> it.getSection().getDistance()).sum();
     }
 
-    public Price calculatePrice() {
+    public Fare calculatePrice() {
         int distance = calculateDistance();
-        // 노선 추가요금 로직 필요
+
         int maxExtraFare = sectionEdges.stream()
                 .map(SectionEdge::getLine)
                 .mapToInt(Line::getExtraFare)
                 .max()
                 .getAsInt();
 
-        return Price.calculateRate(distance).add(new Price(maxExtraFare));
+        return Fare.calculateRate(distance, maxExtraFare);
+    }
+
+    public Fare fareOf(LoginMember loginMember) {
+        Fare fare = calculatePrice();
+        Fare discountFare = fare.discountByAge(loginMember.getAge());
+        return fare.subtract(discountFare);
+    }
+
+    public List<SectionEdge> getSectionEdges() {
+        return sectionEdges;
+    }
+
+    public List<Station> getStations() {
+        return stations;
     }
 }
