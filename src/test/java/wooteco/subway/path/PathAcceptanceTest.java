@@ -10,8 +10,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
+import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
+import wooteco.subway.line.dto.SectionRequest;
 import wooteco.subway.path.dto.PathResponse;
+import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.ArrayList;
@@ -21,12 +24,13 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
 import static wooteco.subway.auth.AuthAcceptanceTest.회원_등록되어_있음;
-import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
-import static wooteco.subway.line.SectionAcceptanceTest.지하철_구간_등록되어_있음;
-import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
+    private static final String EMAIL = "fafi@fafi.com";
+    private static final String PASSWORD = "1234";
+    private static final int AGE = 27;
+
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
@@ -51,6 +55,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
         강남역 = 지하철역_등록되어_있음("강남역");
         양재역 = 지하철역_등록되어_있음("양재역");
         교대역 = 지하철역_등록되어_있음("교대역");
@@ -93,7 +98,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
         총_거리가_응답됨(response3, 46);
         총_요금이_응답됨(response3, 2050 + 1200);
     }
-
 
     @DisplayName("청소년 사용자의 신분으로, 두 역의 최단 거리 경로를 조회한다.")
     @Test
@@ -149,7 +153,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         총_요금이_응답됨(response3, 1800);
     }
 
-    public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
+    private static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
         return RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -158,7 +162,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 토큰을_포함한_거리_경로_조회_요청(long source, long target, TokenResponse tokenResponse) {
+    private static ExtractableResponse<Response> 토큰을_포함한_거리_경로_조회_요청(long source, long target, TokenResponse tokenResponse) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
@@ -168,7 +172,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static void 적절한_경로_응답됨(ExtractableResponse<Response> response, ArrayList<StationResponse> expectedPath) {
+    private static void 적절한_경로_응답됨(ExtractableResponse<Response> response, ArrayList<StationResponse> expectedPath) {
         PathResponse pathResponse = response.as(PathResponse.class);
 
         List<Long> stationIds = pathResponse.getStations().stream()
@@ -182,13 +186,76 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(stationIds).containsExactlyElementsOf(expectedPathIds);
     }
 
-    public static void 총_거리가_응답됨(ExtractableResponse<Response> response, int totalDistance) {
+    private static void 총_거리가_응답됨(ExtractableResponse<Response> response, int totalDistance) {
         PathResponse pathResponse = response.as(PathResponse.class);
         assertThat(pathResponse.getDistance()).isEqualTo(totalDistance);
     }
 
-    public static void 총_요금이_응답됨(ExtractableResponse<Response> response, int totalFare) {
+    private static void 총_요금이_응답됨(ExtractableResponse<Response> response, int totalFare) {
         PathResponse pathResponse = response.as(PathResponse.class);
         assertThat(pathResponse.getFare()).isEqualTo(totalFare);
+    }
+
+    private static StationResponse 지하철역_등록되어_있음(String name) {
+        return 지하철역_생성_요청(name).as(StationResponse.class);
+    }
+
+    private static ExtractableResponse<Response> 지하철역_생성_요청(String name) {
+        TokenResponse tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
+        StationRequest stationRequest = new StationRequest(name);
+
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .body(stationRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/stations")
+                .then().log().all()
+                .extract();
+    }
+
+    private static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
+        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance);
+        return 지하철_노선_등록되어_있음(lineRequest);
+    }
+
+    private static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance, int extraFare) {
+        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance, extraFare);
+        return 지하철_노선_등록되어_있음(lineRequest);
+    }
+
+    private static LineResponse 지하철_노선_등록되어_있음(LineRequest lineRequest) {
+        return 지하철_노선_생성_요청(lineRequest).as(LineResponse.class);
+    }
+
+    private static ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest params) {
+        TokenResponse tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
+
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/lines")
+                .then().log().all().
+                        extract();
+    }
+
+    private static void 지하철_구간_등록되어_있음(LineResponse lineResponse, StationResponse upStation, StationResponse downStation, int distance) {
+        지하철_구간_생성_요청(lineResponse, upStation, downStation, distance);
+    }
+
+    private static ExtractableResponse<Response> 지하철_구간_생성_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
+        SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
+        TokenResponse tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
+
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(sectionRequest)
+                .when().post("/lines/{lineId}/sections", line.getId())
+                .then().log().all()
+                .extract();
     }
 }

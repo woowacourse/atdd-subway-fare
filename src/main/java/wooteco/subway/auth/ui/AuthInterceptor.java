@@ -17,7 +17,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        if ("OPTIONS".equals(request.getMethod())) {
+        if ("OPTIONS".equals(request.getMethod()) || "GET".equals(request.getMethod())) {
             return true;
         }
 
