@@ -76,19 +76,13 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        checkIfLineExists(id);
-        return lineDao.findById(id);
-    }
-
-    private void checkIfLineExists(Long id) {
-        if (lineDao.countLineById(id) == 0) {
-            throw new LineNotFoundException();
-        }
+        return lineDao.findById(id)
+                .orElseThrow(LineNotFoundException::new);
     }
 
     @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        checkIfLineExists(id);
+        findLineById(id);
         validateNameDuplication(lineUpdateRequest.getName());
         validateColorDuplication(lineUpdateRequest.getColor());
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
@@ -96,7 +90,7 @@ public class LineService {
 
     @Transactional
     public void deleteLineById(Long id) {
-        checkIfLineExists(id);
+        findLineById(id);
         lineDao.deleteById(id);
         sectionDao.deleteByLineId(id);
     }
