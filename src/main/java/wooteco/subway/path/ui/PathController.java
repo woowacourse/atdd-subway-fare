@@ -22,7 +22,8 @@ public class PathController {
     }
 
     @GetMapping("/api/paths")
-    public ResponseEntity<PathResponse> findPath(HttpServletRequest request, @RequestParam Long source, @RequestParam Long target) {
+    public ResponseEntity<PathResponse> findPath(HttpServletRequest request, @RequestParam Long source,
+        @RequestParam Long target) {
         String accessToken = AuthorizationExtractor.extract(request);
         return ResponseEntity.ok(pathService.findPath(source, target, accessToken));
     }

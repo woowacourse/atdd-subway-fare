@@ -2,7 +2,6 @@ package wooteco.subway.path.dto;
 
 import java.util.List;
 
-import wooteco.subway.path.domain.Fare;
 import wooteco.subway.station.dto.StationResponse;
 
 public class PathResponse {

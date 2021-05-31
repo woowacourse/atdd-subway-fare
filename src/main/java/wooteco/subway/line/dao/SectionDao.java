@@ -13,8 +13,6 @@ import org.springframework.stereotype.Repository;
 
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
-import wooteco.subway.line.dto.LineResponse;
-import wooteco.subway.line.dto.SectionResponse;
 
 @Repository
 public class SectionDao {

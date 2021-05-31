@@ -1,6 +1,6 @@
 package wooteco.subway.exception;
 
-public class SubwayException extends IllegalArgumentException{
+public class SubwayException extends IllegalArgumentException {
     private final String error;
     private final String message;
 
