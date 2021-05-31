@@ -58,9 +58,11 @@ public class StationService {
     @Transactional
     public StationResponse updateStation(Long id, StationRequest updateStationRequest) {
         String updateName = updateStationRequest.getName();
-        if (stationDao.findByName(updateName).isPresent()) {
-            throw new DuplicateStationNameException();
-        }
+        stationDao.findByName(updateName).ifPresent(
+                station -> {
+                    throw new DuplicateStationNameException();
+                }
+        );
         stationDao.update(id, updateName);
         return new StationResponse(id, updateName);
     }
