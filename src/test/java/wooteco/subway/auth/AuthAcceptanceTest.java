@@ -66,10 +66,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> getMemberByToken(TokenResponse tokenResponse) {
         return RestAssured.given().log().all()
-                .auth().oauth2(tokenResponse.getAccessToken()).
-                accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().
-                get("/members/me")
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .get("/members/me")
                 .then()
                 .log().all()
                 .statusCode(HttpStatus.OK.value())

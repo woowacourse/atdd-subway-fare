@@ -6,7 +6,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class DistanceTest {
     @DisplayName("10km 초과 ∼ 50km 까지면 true, 아니면 false")
@@ -54,15 +53,12 @@ class DistanceTest {
     }
 
     @DisplayName("비교하고자 하는 거리보다 짧거나 같으면 true, 아니면 false")
-    @Test
-    void isShorterOrEqualTo() {
-        Distance distance1 = new Distance(2);
-        Distance distance2 = new Distance(1);
-        Distance distance3 = new Distance(2);
-        Distance distance4 = new Distance(3);
+    @ParameterizedTest
+    @CsvSource({"1,false", "2,true", "3,true"})
+    void isShorterOrEqualTo(int distance, boolean result) {
+        Distance thisDistance = new Distance(2);
+        Distance thatDistance = new Distance(distance);
 
-        assertThat(distance1.isShorterOrEqualTo(distance2)).isEqualTo(false);
-        assertThat(distance1.isShorterOrEqualTo(distance3)).isEqualTo(true);
-        assertThat(distance1.isShorterOrEqualTo(distance4)).isEqualTo(true);
+        assertThat(thisDistance.isShorterOrEqualTo(thatDistance)).isEqualTo(result);
     }
 }

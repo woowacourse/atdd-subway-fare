@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import wooteco.subway.member.domain.Age;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class DiscountTest {
     @DisplayName("나이 조건에 부합하는 Discount를 반환한다")
@@ -26,8 +25,8 @@ class DiscountTest {
     void calculateDiscountAmount() {
         int totalFare = 3500;
 
-        assertThat(Discount.CHILDREN.calculateDiscountAmount(totalFare)).isEqualTo((int) ((totalFare -350) * 0.5));
-        assertThat(Discount.TEENAGER.calculateDiscountAmount(totalFare)).isEqualTo((int) ((totalFare -350) * 0.2));
+        assertThat(Discount.CHILDREN.calculateDiscountAmount(totalFare)).isEqualTo((int) ((totalFare - 350) * 0.5));
+        assertThat(Discount.TEENAGER.calculateDiscountAmount(totalFare)).isEqualTo((int) ((totalFare - 350) * 0.2));
         assertThat(Discount.NONE.calculateDiscountAmount(totalFare)).isEqualTo(0);
     }
 }

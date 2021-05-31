@@ -3,10 +3,10 @@ package wooteco.subway.line;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.h2.value.Transfer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.line.domain.Section;
@@ -19,6 +19,7 @@ import wooteco.subway.station.dto.StationTransferResponse;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -142,27 +143,15 @@ public class LineAcceptanceTest extends AcceptanceTest {
                         강남역.getId(),
                         강남역.getName(),
                         Arrays.asList(
-                                new TransferLineResponse(
-                                        2L,
-                                        lineRequest2.getName(),
-                                        lineRequest2.getColor()
-                                ),
-                                new TransferLineResponse(
-                                        3L,
-                                        lineRequest3.getName(),
-                                        lineRequest3.getColor()
-                                )
+                                new TransferLineResponse(2L, lineRequest2.getName(), lineRequest2.getColor()),
+                                new TransferLineResponse(3L, lineRequest3.getName(), lineRequest3.getColor())
                         )
                 ),
                 new StationTransferResponse(
                         downStation.getId(),
                         downStation.getName(),
                         Arrays.asList(
-                                new TransferLineResponse(
-                                        2L,
-                                        lineRequest2.getName(),
-                                        lineRequest2.getColor()
-                                )
+                                new TransferLineResponse(2L, lineRequest2.getName(), lineRequest2.getColor())
                         )
                 )
         );
