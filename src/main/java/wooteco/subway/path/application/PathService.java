@@ -32,7 +32,7 @@ public class PathService {
     public PathResponse findPath(Long source, Long target, MemberType memberType) {
         SubwayRoute route = findRoute(source, target);
 
-        List<StationResponse> stationResponses = stationService.stationResponses(route.stations());
+        List<StationResponse> stationResponses = stationService.toStationResponses(route.stations());
         int fare = fareService.calculate(route.distance(), route.extraFare(), memberType);
 
         return new PathResponse(stationResponses, route.distance(), fare);

@@ -35,13 +35,6 @@ public class StationService {
                 .orElseThrow(() -> new StationException("존재하지 않는 역입니다."));
     }
 
-    public List<StationResponse> findAllStationResponses() {
-        List<Station> stations = stationDao.findAll();
-        stations.sort(Comparator.comparing(Station::getId));
-
-        return stationResponses(stations);
-    }
-
     public void deleteStationById(Long id) {
         stationDao.findById(id)
                 .orElseThrow(() -> new StationException("존재하지 않는 역입니다."));
@@ -49,7 +42,21 @@ public class StationService {
         stationDao.deleteById(id);
     }
 
-    public List<StationResponse> stationResponses(List<Station> stations) {
+    public void updateStationById(Long id, StationRequest stationRequest) {
+        stationDao.findById(id)
+                .orElseThrow(() -> new StationException("존재하지 않는 역입니다."));
+
+        stationDao.updateById(id, stationRequest.getName());
+    }
+
+    public List<StationResponse> findAllStationResponses() {
+        List<Station> stations = stationDao.findAll();
+        stations.sort(Comparator.comparing(Station::getId));
+
+        return toStationResponses(stations);
+    }
+
+    public List<StationResponse> toStationResponses(List<Station> stations) {
         return stations.stream()
                 .map(this::toStationResponse)
                 .collect(Collectors.toList());
@@ -57,9 +64,5 @@ public class StationService {
 
     public StationResponse toStationResponse(Station station) {
         return StationResponse.of(station, SimpleLineResponse.listOf(stationDao.findLinesPassing(station)));
-    }
-
-    public void updateStationById(Long id, StationRequest stationRequest) {
-        stationDao.updateById(id, stationRequest.getName());
     }
 }
