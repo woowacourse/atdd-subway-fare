@@ -2,7 +2,6 @@ package wooteco.subway.member.dto;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
@@ -30,6 +29,10 @@ public class MemberRequest {
         this.age = age;
     }
 
+    public Member toMember() {
+        return new Member(email, password, age);
+    }
+
     public String getEmail() {
         return email;
     }
@@ -40,9 +43,5 @@ public class MemberRequest {
 
     public Integer getAge() {
         return age;
-    }
-
-    public Member toMember() {
-        return new Member(email, password, age);
     }
 }

@@ -78,7 +78,7 @@ public class LineService {
     public Line findLineById(Long id) {
         try {
             return lineDao.findById(id);
-        } catch (EmptyResultDataAccessException e) {
+        } catch (Exception e) {
             throw new NoSuchLineException();
         }
     }

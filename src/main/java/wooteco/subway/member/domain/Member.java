@@ -3,6 +3,7 @@ package wooteco.subway.member.domain;
 import org.apache.commons.lang3.StringUtils;
 
 import wooteco.subway.exception.impossible.AuthorizationException;
+import wooteco.subway.member.dto.MemberRequest;
 
 public class Member {
     private Long id;
@@ -32,6 +33,16 @@ public class Member {
         this.age = age;
     }
 
+    public Member(Long id, MemberRequest memberRequest) {
+        this(id, memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge());
+    }
+
+    public void checkPassword(String password) {
+        if (!StringUtils.equals(this.password, password)) {
+            throw new AuthorizationException("올바르지 않은 비밀번호입니다.");
+        }
+    }
+
     public Long getId() {
         return id;
     }
@@ -46,11 +57,5 @@ public class Member {
 
     public Integer getAge() {
         return age;
-    }
-
-    public void checkPassword(String password) {
-        if (!StringUtils.equals(this.password, password)) {
-            throw new AuthorizationException("올바르지 않은 비밀번호입니다.");
-        }
     }
 }

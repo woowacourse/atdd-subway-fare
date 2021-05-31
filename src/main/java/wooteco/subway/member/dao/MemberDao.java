@@ -13,10 +13,10 @@ import wooteco.subway.member.domain.Member;
 
 @Repository
 public class MemberDao {
-    private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcInsert simpleJdbcInsert;
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert simpleJdbcInsert;
 
-    private RowMapper<Member> rowMapper = (rs, rowNum) ->
+    private final RowMapper<Member> rowMapper = (rs, rowNum) ->
         new Member(
             rs.getLong("id"),
             rs.getString("email"),
@@ -46,11 +46,6 @@ public class MemberDao {
     public void deleteById(Long id) {
         String sql = "delete from MEMBER where id = ?";
         jdbcTemplate.update(sql, id);
-    }
-
-    public Member findById(Long id) {
-        String sql = "select * from MEMBER where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
     public Member findByEmail(String email) {
