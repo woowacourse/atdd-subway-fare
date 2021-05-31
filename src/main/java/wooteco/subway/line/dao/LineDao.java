@@ -138,10 +138,10 @@ public class LineDao {
                 "and id != ?";
 
         return jdbcTemplate.query(sql,
-                                    (rs, rowNum) -> new Line(
-                                            rs.getLong("id"),
-                                            rs.getString("name"),
-                                            rs.getString("color")),
-                                    stationId, stationId, lineId);
+                (rs, rowNum) -> new Line(
+                        rs.getLong("id"),
+                        rs.getString("name"),
+                        rs.getString("color")),
+                stationId, stationId, lineId);
     }
 }

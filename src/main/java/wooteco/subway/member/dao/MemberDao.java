@@ -74,7 +74,7 @@ public class MemberDao {
         try {
             return jdbcTemplate.queryForObject(sql, rowMapper, email);
         } catch (EmptyResultDataAccessException e) {
-            throw new MismatchIdPasswordException ();
+            throw new MismatchIdPasswordException();
         }
     }
 

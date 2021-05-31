@@ -13,6 +13,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
 
+    public static ExtractableResponse<Response> loginRequest(TokenRequest tokenRequest) {
+        return RestAssured.given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(tokenRequest)
+                .when()
+                .post("/api/login/token")
+                .then().extract();
+    }
+
     @Test
     @DisplayName("ID가 Email 형식이 아닐 경우의 로그인 요청")
     public void loginWhenInvalidEmail() {
@@ -46,14 +55,5 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         TokenRequest tokenRequest = new TokenRequest("email@email.com", "password");
         ExtractableResponse<Response> response = loginRequest(tokenRequest);
         assertThat(response.statusCode()).isEqualTo(200);
-    }
-
-    public static ExtractableResponse<Response> loginRequest(TokenRequest tokenRequest) {
-        return RestAssured.given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(tokenRequest)
-                .when()
-                .post("/api/login/token")
-                .then().extract();
     }
 }

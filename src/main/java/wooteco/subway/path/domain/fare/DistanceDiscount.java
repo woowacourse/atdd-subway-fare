@@ -9,13 +9,12 @@ public enum DistanceDiscount {
     MIDDLE_DISTANCE(distance -> distance > 10 && distance <= 50, distance -> 1250 + (int) (Math.ceil((double) (distance - 10) / 5)) * 100),
     LONG_DISTANCE(distance -> distance > 50, distance -> 2050 + ((int) (Math.ceil((double) (distance - 50) / 8)) * 100));
 
+    Predicate<Integer> figureOutDiscount;
+    UnaryOperator<Integer> discountPolicy;
     DistanceDiscount(Predicate<Integer> figureOutDiscount, UnaryOperator<Integer> discountPolicy) {
         this.figureOutDiscount = figureOutDiscount;
         this.discountPolicy = discountPolicy;
     }
-
-    Predicate<Integer> figureOutDiscount;
-    UnaryOperator<Integer> discountPolicy;
 
     public static int calculateFareAfterDiscount(int distance) {
         DistanceDiscount findDistance = Arrays.stream(DistanceDiscount.values())

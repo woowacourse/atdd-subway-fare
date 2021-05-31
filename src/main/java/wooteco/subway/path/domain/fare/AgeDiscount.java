@@ -9,13 +9,12 @@ public enum AgeDiscount {
     KID(age -> age >= 6 && age < 13, fare -> fare - (int) Math.ceil((fare - 350) * 0.5)),
     NOT_APPLICABLE(age -> false, fare -> fare);
 
+    Predicate<Integer> figureOutDiscount;
+    UnaryOperator<Integer> discountPolicy;
     AgeDiscount(Predicate<Integer> figureOutDiscount, UnaryOperator<Integer> discountPolicy) {
         this.figureOutDiscount = figureOutDiscount;
         this.discountPolicy = discountPolicy;
     }
-
-    Predicate<Integer> figureOutDiscount;
-    UnaryOperator<Integer> discountPolicy;
 
     public static int calculateFareAfterDiscount(int fare, int age) {
         AgeDiscount findAge = Arrays.stream(AgeDiscount.values())

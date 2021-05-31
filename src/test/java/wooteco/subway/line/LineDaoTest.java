@@ -26,13 +26,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @ActiveProfiles("test")
 public class LineDaoTest {
 
+    private static final String NAME = "name";
+    private static final String COLOR = "color";
     @Autowired
     JdbcTemplate jdbcTemplate;
     @Autowired
     LineDao lineDao;
-
-    private static final String NAME = "name";
-    private static final String COLOR = "color";
 
     @Test
     @DisplayName("중복된 라인 삽입")

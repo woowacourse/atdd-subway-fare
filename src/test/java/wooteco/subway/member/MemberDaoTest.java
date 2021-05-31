@@ -24,14 +24,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @ActiveProfiles("test")
 public class MemberDaoTest {
 
+    private static final String EMAIL = "kang@kang.com";
+    private static final String PASSWORD = "password";
+    private static final int AGE = 20;
     @Autowired
     JdbcTemplate jdbcTemplate;
     @Autowired
     MemberDao memberDao;
-
-    private static final String EMAIL = "kang@kang.com";
-    private static final String PASSWORD = "password";
-    private static final int AGE = 20;
 
     @Test
     @DisplayName("중복된 멤버 삽입")
