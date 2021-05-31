@@ -25,7 +25,7 @@ public enum FareAdjusterByAge {
                 .filter(ageRange -> ageRange.minInclusive <= age && age < ageRange.maxExclusive)
                 .map(calculator -> calculator.adjuster.apply(fare, lineFare))
                 .findAny()
-                .orElse(fare + lineFare);
+                .orElseGet(() -> fare + lineFare);
     }
 
     static class Constants {

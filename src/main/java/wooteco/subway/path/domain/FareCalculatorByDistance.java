@@ -29,7 +29,7 @@ public enum FareCalculatorByDistance {
                 .filter(range -> range.minExclusive < distance && distance <= range.maxInclusive)
                 .map(calculator -> calculator.calculator.apply(distance))
                 .findAny()
-                .orElse(0);
+                .orElseGet(() -> 0);
     }
 
     static class Constants {
