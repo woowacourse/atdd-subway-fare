@@ -1,12 +1,11 @@
 package wooteco.subway.exception.auth;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import wooteco.subway.exception.BusinessException;
+import wooteco.subway.exception.ExceptionStatus;
 
-@ResponseStatus(HttpStatus.UNAUTHORIZED)
-public class AuthorizationException extends RuntimeException {
+public class AuthorizationException extends BusinessException {
 
-    public AuthorizationException(String message) {
-        super(message);
+    public AuthorizationException(ExceptionStatus exceptionStatus) {
+        super(exceptionStatus);
     }
 }

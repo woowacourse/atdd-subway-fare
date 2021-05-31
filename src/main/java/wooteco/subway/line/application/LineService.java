@@ -2,9 +2,10 @@ package wooteco.subway.line.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.exception.badrequest.duplication.LineColorDuplicatedException;
-import wooteco.subway.exception.badrequest.duplication.LineNameDuplicatedException;
-import wooteco.subway.exception.notfound.LineNotFoundException;
+import wooteco.subway.exception.notfound.EntityExceptionStatus;
+import wooteco.subway.exception.notfound.EntityNotFoundException;
+import wooteco.subway.exception.value.InvalidValueException;
+import wooteco.subway.exception.value.InvalidValueExceptionStatus;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
@@ -42,13 +43,13 @@ public class LineService {
 
     private void validateNameDuplication(String name) {
         if (lineDao.countLineByName(name) != 0) {
-            throw new LineNameDuplicatedException();
+            throw new InvalidValueException(InvalidValueExceptionStatus.DUPLICATED_LINE_NAME);
         }
     }
 
     private void validateColorDuplication(String color) {
         if (lineDao.countLineByColor(color) != 0) {
-            throw new LineColorDuplicatedException();
+            throw new InvalidValueException(InvalidValueExceptionStatus.DUPLICATED_LINE_COLOR);
         }
     }
 
@@ -77,7 +78,7 @@ public class LineService {
 
     public Line findLineById(Long id) {
         return lineDao.findById(id)
-                .orElseThrow(LineNotFoundException::new);
+                .orElseThrow(() -> new EntityNotFoundException(EntityExceptionStatus.LINE_NOT_FOUND));
     }
 
     @Transactional

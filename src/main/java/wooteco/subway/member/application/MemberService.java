@@ -2,8 +2,10 @@ package wooteco.subway.member.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.exception.auth.WrongEmailException;
-import wooteco.subway.exception.badrequest.duplication.EmailDuplicatedException;
+import wooteco.subway.exception.auth.AuthorizationException;
+import wooteco.subway.exception.auth.AuthorizationExceptionStatus;
+import wooteco.subway.exception.value.InvalidValueException;
+import wooteco.subway.exception.value.InvalidValueExceptionStatus;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
@@ -30,7 +32,7 @@ public class MemberService {
     private void validateEmailDuplication(String email) {
         memberDao.findByEmail(email)
                 .ifPresent(member -> {
-                    throw new EmailDuplicatedException();
+                    throw new InvalidValueException(InvalidValueExceptionStatus.DUPLICATED_EMAIL);
                 });
     }
 
@@ -41,7 +43,7 @@ public class MemberService {
 
     public Member findMemberByEmail(String email) {
         return memberDao.findByEmail(email)
-                .orElseThrow(WrongEmailException::new);
+                .orElseThrow(() -> new AuthorizationException(AuthorizationExceptionStatus.WRONG_EMAIL));
     }
 
     @Transactional

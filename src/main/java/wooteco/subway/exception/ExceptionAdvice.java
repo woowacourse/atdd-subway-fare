@@ -6,9 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import wooteco.subway.exception.auth.AuthorizationException;
-import wooteco.subway.exception.badrequest.BadRequestException;
-import wooteco.subway.exception.notfound.NotFoundException;
 
 import java.sql.SQLException;
 import java.util.stream.Collectors;
@@ -27,22 +24,10 @@ public class ExceptionAdvice {
                 .body(message);
     }
 
-    @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<String> handleBadRequest(BadRequestException badRequestException) {
-        return ResponseEntity.badRequest()
-                .body(badRequestException.getMessage());
-    }
-
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<String> handleNotFound(RuntimeException runtimeException) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(runtimeException.getMessage());
-    }
-
-    @ExceptionHandler(AuthorizationException.class)
-    public ResponseEntity<String> handleUnauthorized(RuntimeException runtimeException) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(runtimeException.getMessage());
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<String> handleBusinessException(BusinessException businessException) {
+        return ResponseEntity.status(businessException.getStatus())
+                .body(businessException.getMessage());
     }
 
     @ExceptionHandler(SQLException.class)

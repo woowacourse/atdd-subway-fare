@@ -1,6 +1,7 @@
 package wooteco.subway.fare.domain;
 
-import wooteco.subway.exception.badrequest.fare.InvalidFareArgumentException;
+import wooteco.subway.exception.value.InvalidValueException;
+import wooteco.subway.exception.value.InvalidValueExceptionStatus;
 
 import java.util.Arrays;
 import java.util.function.Predicate;
@@ -28,7 +29,7 @@ public enum AgeDiscountStrategy implements DiscountStrategy {
         return Arrays.stream(AgeDiscountStrategy.values())
                 .filter(ageDiscountStrategy -> ageDiscountStrategy.policy.test(age))
                 .findFirst()
-                .orElseThrow(InvalidFareArgumentException::new);
+                .orElseThrow(() -> new InvalidValueException(InvalidValueExceptionStatus.INVALID_FARE));
     }
 
     @Override

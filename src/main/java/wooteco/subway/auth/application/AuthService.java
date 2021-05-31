@@ -5,7 +5,8 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
-import wooteco.subway.exception.auth.InvalidTokenException;
+import wooteco.subway.exception.auth.AuthorizationException;
+import wooteco.subway.exception.auth.AuthorizationExceptionStatus;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
@@ -38,7 +39,7 @@ public class AuthService {
     public void validate(String credentials) {
         boolean isValidToken = jwtTokenProvider.validateToken(credentials);
         if (!isValidToken) {
-            throw new InvalidTokenException();
+            throw new AuthorizationException(AuthorizationExceptionStatus.INVALID_TOKEN);
         }
     }
 }

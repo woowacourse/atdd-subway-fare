@@ -1,6 +1,7 @@
 package wooteco.subway.path.domain;
 
-import wooteco.subway.exception.badrequest.path.InvalidPathException;
+import wooteco.subway.exception.value.InvalidValueException;
+import wooteco.subway.exception.value.InvalidValueExceptionStatus;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.station.domain.Station;
 
@@ -33,6 +34,6 @@ public class SubwayPath {
                 .distinct()
                 .mapToInt(Line::getExtraFare)
                 .max()
-                .orElseThrow(InvalidPathException::new);
+                .orElseThrow(() -> new InvalidValueException(InvalidValueExceptionStatus.INVALID_PATH));
     }
 }
