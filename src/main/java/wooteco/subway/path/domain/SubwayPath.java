@@ -33,6 +33,6 @@ public class SubwayPath {
         return lines.stream()
                 .mapToInt(Line::getExtraFare)
                 .max()
-                .orElse(0);
+                .orElseGet(() -> 0);
     }
 }

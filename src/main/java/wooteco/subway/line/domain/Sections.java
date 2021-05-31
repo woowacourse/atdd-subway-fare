@@ -6,10 +6,7 @@ import wooteco.subway.line.exception.RedundantUpAndDownStationException;
 import wooteco.subway.line.exception.SectionDistanceInvalidException;
 import wooteco.subway.station.domain.Station;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Sections {
@@ -88,7 +85,7 @@ public class Sections {
 
     public List<Station> getStations() {
         if (sections.isEmpty()) {
-            return Arrays.asList();
+            return Collections.emptyList();
         }
 
         List<Station> stations = new ArrayList<>();
@@ -119,7 +116,7 @@ public class Sections {
         return this.sections.stream()
                 .filter(it -> it.getUpStation().equals(station))
                 .findFirst()
-                .orElse(null);
+                .orElseGet(() -> null);
     }
 
     public void removeStation(Station station) {
