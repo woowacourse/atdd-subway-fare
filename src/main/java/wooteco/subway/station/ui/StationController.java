@@ -1,5 +1,6 @@
 package wooteco.subway.station.ui;
 
+import io.swagger.annotations.Api;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
+@Api(tags = "역 관련 기능")
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class StationController {

@@ -1,5 +1,6 @@
 package wooteco.subway.line.ui;
 
+import io.swagger.annotations.Api;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.line.application.LineService;
@@ -11,6 +12,8 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
+
+@Api(tags = "노선 관련 기능")
 @RestController
 @RequestMapping("/lines")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
