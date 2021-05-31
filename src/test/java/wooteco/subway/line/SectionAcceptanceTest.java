@@ -7,24 +7,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
 import wooteco.subway.station.dto.StationResponse;
-import wooteco.subway.util.TestUtil;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.subway.line.LineAcceptanceTest.createLine;
-import static wooteco.subway.line.LineAcceptanceTest.findOneLine;
-import static wooteco.subway.station.StationAcceptanceTest.createStation;
-import static wooteco.subway.util.TestUtil.assertResponseMessage;
-import static wooteco.subway.util.TestUtil.assertResponseStatus;
 
 public class SectionAcceptanceTest extends AcceptanceTest {
 
@@ -34,16 +27,6 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     private StationResponse station3;
     private StationResponse station4;
     private String loginToken;
-
-    public static ExtractableResponse<Response> addSection(Long id, SectionRequest sectionRequest, String loginToken) {
-        return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(sectionRequest)
-                .auth().oauth2(loginToken)
-                .when().post("/lines/{lineId}/sections", id)
-                .then().log().all()
-                .extract();
-    }
 
     private ExtractableResponse<Response> deleteSection(long lineId, long stationId) {
         return RestAssured.given().log().all()
@@ -69,8 +52,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        TestUtil.registerMember("kevin@naver.com", "123", 123);
-        loginToken = TestUtil.login("kevin@naver.com", "123").getAccessToken();
+        registerMember("kevin@naver.com", "123", 123);
+        loginToken = login("kevin@naver.com", "123").getAccessToken();
 
         station1 = createStation("강남역", loginToken).as(StationResponse.class);
         station2 = createStation("양재역", loginToken).as(StationResponse.class);

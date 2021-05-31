@@ -17,16 +17,12 @@ import wooteco.subway.AcceptanceTest;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.station.dto.StationResponse;
-import wooteco.subway.util.TestUtil;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.subway.station.StationAcceptanceTest.createStation;
-import static wooteco.subway.util.TestUtil.assertResponseMessage;
-import static wooteco.subway.util.TestUtil.assertResponseStatus;
 
 public class LineAcceptanceTest extends AcceptanceTest {
 
@@ -36,25 +32,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
     private LineRequest firstLineRequest;
     private LineRequest secondLineRequest;
     private String loginToken;
-
-    public static ExtractableResponse<Response> createLine(LineRequest params, String token) {
-        return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .auth().oauth2(token)
-                .body(params)
-                .when().post("/lines")
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> findOneLine(long id, String token) {
-        return RestAssured.given().log().all()
-                .auth().oauth2(token)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines/" + id)
-                .then().log().all()
-                .extract();
-    }
 
     private void assertThatLinesIncluded(ExtractableResponse<Response> response, List<LineResponse> createdResponses) {
         List<Long> expectedLineIds = createdResponses.stream()
@@ -98,8 +75,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        TestUtil.registerMember("kevin@naver.com", "123", 123);
-        loginToken = TestUtil.login("kevin@naver.com", "123").getAccessToken();
+        registerMember("kevin@naver.com", "123", 123);
+        loginToken = login("kevin@naver.com", "123").getAccessToken();
 
         firstStation = createStation("강남역", loginToken).as(StationResponse.class);
         secondStation = createStation("광교역", loginToken).as(StationResponse.class);

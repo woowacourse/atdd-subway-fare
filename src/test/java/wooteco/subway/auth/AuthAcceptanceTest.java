@@ -16,9 +16,6 @@ import wooteco.subway.member.dto.MemberResponse;
 import java.util.HashMap;
 import java.util.Map;
 
-import static wooteco.subway.member.MemberAcceptanceTest.getMyMemberInfo;
-import static wooteco.subway.util.TestUtil.*;
-
 public class AuthAcceptanceTest extends AcceptanceTest {
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";

@@ -21,11 +21,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.subway.line.LineAcceptanceTest.createLine;
-import static wooteco.subway.line.SectionAcceptanceTest.addSection;
-import static wooteco.subway.station.StationAcceptanceTest.createStation;
-import static wooteco.subway.util.TestUtil.login;
-import static wooteco.subway.util.TestUtil.registerMember;
 
 public class PathAcceptanceTest extends AcceptanceTest {
 
@@ -38,7 +33,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 남부터미널역;
     private String loginToken;
 
-    public static ExtractableResponse<Response> findPath(long source, long target, String token) {
+    private ExtractableResponse<Response> findPath(long source, long target, String token) {
         return RestAssured.given().log().all()
                 .auth().oauth2(token)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -47,7 +42,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static void assertPathContains(ExtractableResponse<Response> response, ArrayList<StationResponse> expectedPath) {
+    private void assertPathContains(ExtractableResponse<Response> response, ArrayList<StationResponse> expectedPath) {
         PathResponse pathResponse = response.as(PathResponse.class);
 
         List<Long> stationIds = pathResponse.getStations().stream()
@@ -61,12 +56,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(stationIds).containsExactlyElementsOf(expectedPathIds);
     }
 
-    public static void assertPathDistance(ExtractableResponse<Response> response, int totalDistance) {
+    private void assertPathDistance(ExtractableResponse<Response> response, int totalDistance) {
         PathResponse pathResponse = response.as(PathResponse.class);
         assertThat(pathResponse.getDistance()).isEqualTo(totalDistance);
     }
 
-    public static void assertPathFare(ExtractableResponse<Response> response, int fare) {
+    private void assertPathFare(ExtractableResponse<Response> response, int fare) {
         PathResponse pathResponse = response.as(PathResponse.class);
         assertThat(pathResponse.getFare()).isEqualTo(fare);
     }

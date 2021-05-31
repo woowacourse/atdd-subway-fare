@@ -11,23 +11,12 @@ import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
-import wooteco.subway.util.TestUtil;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.subway.util.TestUtil.*;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
 
     private String loginToken;
-
-    public static ExtractableResponse<Response> getMyMemberInfo(String token) {
-        return RestAssured.given().log().all()
-                .auth().oauth2(token)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/me")
-                .then().log().all()
-                .extract();
-    }
 
     private ExtractableResponse<Response> editMemberInfo(MemberRequest memberRequest) {
         return RestAssured.given().log().all()
@@ -57,7 +46,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
         registerMember("kevin@naver.com", "123", 123);
-        loginToken = TestUtil.login("kevin@naver.com", "123").getAccessToken();
+        loginToken = login("kevin@naver.com", "123").getAccessToken();
     }
 
     @DisplayName("회원 생성시 중복된 이메일로 생성할 수 없다.")

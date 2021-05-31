@@ -17,33 +17,17 @@ import wooteco.subway.AcceptanceTest;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
-import wooteco.subway.util.TestUtil;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.subway.line.LineAcceptanceTest.createLine;
-import static wooteco.subway.util.TestUtil.assertResponseMessage;
-import static wooteco.subway.util.TestUtil.assertResponseStatus;
 
 public class StationAcceptanceTest extends AcceptanceTest {
 
     private String loginToken;
     private ObjectMapper objectMapper = new ObjectMapper();
-
-    public static ExtractableResponse<Response> createStation(String name, String token) {
-        StationRequest stationRequest = new StationRequest(name);
-        return RestAssured
-                .given().log().all()
-                .body(stationRequest)
-                .auth().oauth2(token)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/stations")
-                .then().log().all()
-                .extract();
-    }
 
     private ExtractableResponse<Response> findStationRequest() {
         return RestAssured.given().log().all()
@@ -87,8 +71,8 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        TestUtil.registerMember("kevin@naver.com", "123", 123);
-        loginToken = TestUtil.login("kevin@naver.com", "123").getAccessToken();
+        registerMember("kevin@naver.com", "123", 123);
+        loginToken = login("kevin@naver.com", "123").getAccessToken();
     }
 
     @DisplayName("지하철 역을 생성한다.")
