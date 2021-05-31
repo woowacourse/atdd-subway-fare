@@ -1,9 +1,9 @@
-package wooteco.subway.validate;
+package wooteco.subway.infrastructure.validate;
 
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-import wooteco.subway.exception.LineInvalidBoundaryException;
-import wooteco.subway.exception.UnsupportedSubwayCharacterException;
+import wooteco.subway.infrastructure.exception.LineInvalidBoundaryException;
+import wooteco.subway.infrastructure.exception.UnsupportedSubwayCharacterException;
 import wooteco.subway.line.dto.LineRequest;
 
 public class LineValidator implements Validator {

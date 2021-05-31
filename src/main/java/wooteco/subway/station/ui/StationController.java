@@ -8,8 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
-import wooteco.subway.validate.LineValidator;
-import wooteco.subway.validate.StationValidator;
+import wooteco.subway.infrastructure.validate.StationValidator;
 
 import javax.validation.Valid;
 import java.net.URI;

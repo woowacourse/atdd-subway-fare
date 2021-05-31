@@ -9,8 +9,7 @@ import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
-import wooteco.subway.validate.LineValidator;
-import wooteco.subway.validate.MemberValidator;
+import wooteco.subway.infrastructure.validate.MemberValidator;
 
 import javax.validation.Valid;
 import java.net.URI;

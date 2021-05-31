@@ -1,4 +1,4 @@
-package wooteco.subway.exception.not_found;
+package wooteco.subway.infrastructure.exception.not_found;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

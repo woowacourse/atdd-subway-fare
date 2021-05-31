@@ -1,4 +1,4 @@
-package wooteco.subway.exception.dto;
+package wooteco.subway.infrastructure.exception.dto;
 
 public class ErrorResponse {
     private String message;

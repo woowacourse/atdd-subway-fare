@@ -1,11 +1,11 @@
-package wooteco.subway.validate;
+package wooteco.subway.infrastructure.validate;
 
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-import wooteco.subway.exception.AgeInvalidBoundaryException;
-import wooteco.subway.exception.EmailInvalidBoundaryException;
-import wooteco.subway.exception.PasswordInvalidBoundaryException;
-import wooteco.subway.exception.UnsupportedCharacterException;
+import wooteco.subway.infrastructure.exception.AgeInvalidBoundaryException;
+import wooteco.subway.infrastructure.exception.EmailInvalidBoundaryException;
+import wooteco.subway.infrastructure.exception.PasswordInvalidBoundaryException;
+import wooteco.subway.infrastructure.exception.UnsupportedCharacterException;
 import wooteco.subway.member.dto.MemberRequest;
 
 import java.util.regex.Pattern;

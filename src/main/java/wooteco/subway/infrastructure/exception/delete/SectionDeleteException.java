@@ -1,4 +1,4 @@
-package wooteco.subway.exception.delete;
+package wooteco.subway.infrastructure.exception.delete;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

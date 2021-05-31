@@ -27,6 +27,7 @@ public class FarePrincipalFinder {
         if (age < 19) {
             return new TeenagerFarePrincipal();
         }
+
         return new AdultFarePrincipal();
     }
 }

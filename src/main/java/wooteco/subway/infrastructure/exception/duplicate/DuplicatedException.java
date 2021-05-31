@@ -1,4 +1,4 @@
-package wooteco.subway.exception.duplicate;
+package wooteco.subway.infrastructure.exception.duplicate;
 
 public class DuplicatedException extends RuntimeException {
     public DuplicatedException(String message) {

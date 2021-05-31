@@ -1,7 +1,7 @@
 package wooteco.subway.line.application;
 
 import org.springframework.stereotype.Service;
-import wooteco.subway.exception.duplicate.LineDuplicatedException;
+import wooteco.subway.infrastructure.exception.duplicate.LineDuplicatedException;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;

@@ -3,7 +3,9 @@ package wooteco.subway.path.domain.fare;
 import static wooteco.subway.path.application.FarePrincipalFinder.*;
 
 public class KidFarePrincipal implements FarePrincipal {
-    private double discountRate = 0.5;
+    private static int DEDUCTED_AMOUNT = 350;
+    private static double DISCOUNT_RATE = 0.5;
+
 
     @Override
     public double calculateFare(final int distance, final long extraFare) {
@@ -19,6 +21,6 @@ public class KidFarePrincipal implements FarePrincipal {
             fare = calculateOverFare(baseFare, distance - SECOND_OVER_FARE_DISTANCE, 8);
         }
 
-        return fare - ((fare - DEDUCTED_AMOUNT) * discountRate);
+        return fare - ((fare - DEDUCTED_AMOUNT) * DISCOUNT_RATE);
     }
 }

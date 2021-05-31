@@ -1,4 +1,4 @@
-package wooteco.subway.advice;
+package wooteco.subway.infrastructure.advice;
 
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpStatus;
@@ -7,8 +7,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import wooteco.subway.exception.EmailInvalidBoundaryException;
-import wooteco.subway.exception.dto.ErrorResponse;
+import wooteco.subway.infrastructure.exception.dto.ErrorResponse;
 
 @RestControllerAdvice
 public class SubwayAdvice {
