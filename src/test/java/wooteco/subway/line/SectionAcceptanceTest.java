@@ -12,7 +12,7 @@ import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.exception.ExceptionResponse;
 import wooteco.subway.line.dto.LineResponse;
-import wooteco.subway.line.dto.LineWithTransferLinesAndStationsResponse;
+import wooteco.subway.line.dto.LineWithStationsResponse;
 import wooteco.subway.line.dto.SectionRequest;
 import wooteco.subway.line.dto.SectionResponse;
 import wooteco.subway.station.dto.StationResponse;
@@ -199,7 +199,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 지하철_노선에_지하철역_순서_정렬됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
-        LineWithTransferLinesAndStationsResponse line = response.as(LineWithTransferLinesAndStationsResponse.class);
+        LineWithStationsResponse line = response.as(LineWithStationsResponse.class);
         List<Long> stationIds = line.getStations().stream()
                 .map(it -> it.getId())
                 .collect(Collectors.toList());

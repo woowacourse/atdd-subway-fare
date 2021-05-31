@@ -329,7 +329,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철_노선_응답됨(ExtractableResponse<Response> response, LineResponse lineResponse) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        LineWithTransferLinesAndStationsResponse resultResponse = response.as(LineWithTransferLinesAndStationsResponse.class);
+        LineWithStationsResponse resultResponse = response.as(LineWithStationsResponse.class);
 
         assertThat(resultResponse.getId()).isEqualTo(lineResponse.getId());
         assertThat(resultResponse.getName()).isEqualTo("신분당선");
@@ -341,10 +341,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 지하철_노선_목록_포함됨(ExtractableResponse<Response> response, List<LineResponse> createdResponses) {
-        List<LineWithTransferLinesAndStationsResponse> resultLines = response.jsonPath().getList(".", LineWithTransferLinesAndStationsResponse.class);
+        List<LineWithStationsResponse> resultLines = response.jsonPath().getList(".", LineWithStationsResponse.class);
 
         List<Long> resultLineIds = resultLines.stream()
-                .map(LineWithTransferLinesAndStationsResponse::getId)
+                .map(LineWithStationsResponse::getId)
                 .collect(Collectors.toList());
 
         List<Long> createdIds = createdResponses.stream().map(LineResponse::getId).collect(Collectors.toList());
