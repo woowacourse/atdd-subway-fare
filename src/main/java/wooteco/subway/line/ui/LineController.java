@@ -1,6 +1,7 @@
 package wooteco.subway.line.ui;
 
 import javax.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.line.application.LineService;
@@ -42,7 +43,7 @@ public class LineController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateLine(@PathVariable Long id,
-        @Valid @RequestBody LineRequest lineUpdateRequest) {
+                                           @Valid @RequestBody LineRequest lineUpdateRequest) {
         lineService.updateLine(id, lineUpdateRequest);
         return ResponseEntity.ok().build();
     }
@@ -60,29 +61,29 @@ public class LineController {
 
     @PostMapping("/{lineId}/sections")
     public ResponseEntity<Void> addLineStation(@PathVariable Long lineId,
-        @RequestBody SectionRequest sectionRequest) {
+                                               @RequestBody SectionRequest sectionRequest) {
         lineService.addLineStation(lineId, sectionRequest);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{lineId}/sections")
     public ResponseEntity<Void> removeLineStation(@PathVariable Long lineId,
-        @RequestParam Long stationId) {
+                                                  @RequestParam Long stationId) {
         lineService.removeLineStation(lineId, stationId);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{lineId}/sections")
     public ResponseEntity<Void> updateSection(@PathVariable Long lineId,
-        @RequestBody SectionDistanceRequest sectionDistanceRequest,
-        Long upStationId,
-        Long downStationId) {
+                                              @RequestBody SectionDistanceRequest sectionDistanceRequest,
+                                              Long upStationId,
+                                              Long downStationId) {
 
         lineService.updateSectionDistance(
-            lineId,
-            upStationId,
-            downStationId,
-            sectionDistanceRequest.getDistance()
+                lineId,
+                upStationId,
+                downStationId,
+                sectionDistanceRequest.getDistance()
         );
 
         return ResponseEntity.ok().build();

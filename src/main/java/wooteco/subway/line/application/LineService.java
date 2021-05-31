@@ -236,9 +236,9 @@ public class LineService {
     }
 
     private Integer getDistance(SectionsOfLineResponse sectionsResponseOfLine,
-        StationOfLineResponse w) {
+        StationOfLineResponse stationOfLineResponse) {
         return sectionsResponseOfLine.getSections().stream()
-            .filter(section -> section.getUpStation().getId().equals(w.getId()))
+            .filter(section -> section.getUpStation().getId().equals(stationOfLineResponse.getId()))
             .map(SectionResponse::getDistance)
             .findAny()
             .orElse(-1);

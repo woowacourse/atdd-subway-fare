@@ -2,6 +2,7 @@ package wooteco.subway.path.ui;
 
 import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -27,14 +28,14 @@ public class ClassifyingMemberPrincipalArgumentResolver implements HandlerMethod
 
     @Override
     public Object resolveArgument(MethodParameter parameter,
-        ModelAndViewContainer mavContainer,
-        NativeWebRequest webRequest,
-        WebDataBinderFactory binderFactory) {
+                                  ModelAndViewContainer mavContainer,
+                                  NativeWebRequest webRequest,
+                                  WebDataBinderFactory binderFactory) {
 
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
         Objects.requireNonNull(request);
 
-        if(!AuthorizationExtractor.isExtractable(request)) {
+        if (!AuthorizationExtractor.isExtractable(request)) {
             return LoginMember.empty();
         }
 
