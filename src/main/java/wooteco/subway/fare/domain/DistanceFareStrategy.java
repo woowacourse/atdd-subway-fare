@@ -9,21 +9,25 @@ public enum DistanceFareStrategy implements FareStrategy {
     BASIC(distance -> distance <= 10) {
         @Override
         public int calculateFare(int distance) {
-            return 1250;
+            return DistanceFareStrategy.DEFAULT_FARE;
         }
     },
     EXTRA_UNDER_FIFTY(distance -> 10 < distance && distance <= 50) {
         @Override
         public int calculateFare(int distance) {
-            return BASIC.calculateFare(distance) + DistanceFareStrategy.calculateExtraFare(distance - 10, 5);
+            return BASIC.calculateFare(distance) + DistanceFareStrategy.calculateExtraFare(distance - 10, DistanceFareStrategy.UNIT_DISTANCE_UNDER_FIFTY);
         }
     },
     EXTRA_OVER_FIFTY(distance -> distance > 50) {
         @Override
         public int calculateFare(int distance) {
-            return EXTRA_UNDER_FIFTY.calculateFare(50) + DistanceFareStrategy.calculateExtraFare(distance - 50, 8);
+            return EXTRA_UNDER_FIFTY.calculateFare(50) + DistanceFareStrategy.calculateExtraFare(distance - 50, DistanceFareStrategy.UNIT_DISTANCE_OVER_FIFTY);
         }
     };
+
+    private static final int DEFAULT_FARE = 1250;
+    private static final int UNIT_DISTANCE_UNDER_FIFTY = 5;
+    private static final int UNIT_DISTANCE_OVER_FIFTY = 8;
 
     private final Predicate<Integer> policy;
 
