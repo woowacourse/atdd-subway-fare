@@ -8,8 +8,8 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.domain.AuthenticationAgePrincipal;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
-import wooteco.subway.line.domain.fare.policy.FarePolicy;
 import wooteco.subway.line.domain.fare.FarePolicyFactory;
+import wooteco.subway.line.domain.fare.policy.FarePolicy;
 import wooteco.subway.member.domain.LoginMember;
 
 import javax.servlet.http.HttpServletRequest;

@@ -1,6 +1,5 @@
 package wooteco.subway.line.domain;
 
-import wooteco.subway.line.domain.fare.Fare;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;

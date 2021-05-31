@@ -169,7 +169,7 @@ public class LineDocument extends Documentation {
         ExtractableResponse<Response> response = 지하철_노선_제거_요청_실패(lineResponse);
 
         // then
-        지하철_노선_생성_실패됨(response);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
         assertThat((String) response.jsonPath().get("message")).isEqualTo("존재하지 않는 노선입니다.");
     }
 

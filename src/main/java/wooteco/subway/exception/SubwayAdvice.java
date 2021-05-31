@@ -10,6 +10,7 @@ import wooteco.subway.exception.dto.ErrorResponse;
 
 @RestControllerAdvice
 public class SubwayAdvice {
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleApplicationException(Exception e) throws Exception {
         if (AnnotationUtils.findAnnotation(e.getClass(), ResponseStatus.class) != null) {
@@ -17,5 +18,11 @@ public class SubwayAdvice {
         }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ErrorResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(SubwayException.class)
+    public ResponseEntity<ErrorResponse> handleSubwayException(SubwayException e) {
+        return ResponseEntity.status(e.getHttpStatus())
+                .body(e.getErrorResponse());
     }
 }

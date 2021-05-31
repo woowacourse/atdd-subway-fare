@@ -82,7 +82,7 @@ public class StationDocument extends Documentation {
         ExtractableResponse<Response> response = 지하철역_제거_요청_실패(new StationResponse(2L, 역삼역));
 
         // then
-        지하철역_삭제되지_않음(response);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
         assertThat((String) response.body().jsonPath().get("message")).isEqualTo("존재하지 않는 지하철 역입니다.");
     }
 
@@ -109,7 +109,7 @@ public class StationDocument extends Documentation {
         ExtractableResponse<Response> response = 지하철역_수정_요청_실패(2L, new StationRequest(역삼역));
 
         // then
-        지하철역_수정되지_않음(response);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
         assertThat((String) response.body().jsonPath().get("message")).isEqualTo("존재하지 않는 지하철 역입니다.");
     }
 

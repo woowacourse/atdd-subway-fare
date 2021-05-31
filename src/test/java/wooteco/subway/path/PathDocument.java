@@ -83,7 +83,7 @@ public class PathDocument extends Documentation {
         ExtractableResponse<Response> response = 거리_경로_조회_요청(1L, 6L, null);
 
         //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
         assertThat((String) response.body().jsonPath().get("message")).isEqualTo("해당되는 최단 경로를 찾을 수 없습니다.");
     }
 
