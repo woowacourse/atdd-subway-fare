@@ -45,6 +45,8 @@ public class CustomMemberAcceptanceTest extends AcceptanceTest {
     @Test
     void validateJoinMemberEmail() {
         assertThat(회원_생성을_요청(null, PASSWORD, AGE).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(회원_생성을_요청("", PASSWORD, AGE).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(회원_생성을_요청(" ", PASSWORD,  AGE).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat(회원_생성을_요청("mail.com", PASSWORD, AGE).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 

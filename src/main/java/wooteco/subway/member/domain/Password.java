@@ -14,7 +14,7 @@ public class Password {
     public Password(String value) {
         this.value = value;
         validateNull(this.value);
-        validateBlank(this.value);
+        validateEmptyOrBlank(this.value);
     }
 
     private void validateNull(String value) {
@@ -23,8 +23,8 @@ public class Password {
         }
     }
 
-    private void validateBlank(String value) {
-        if (value.contains(BLANK)) {
+    private void validateEmptyOrBlank(String value) {
+        if (value.isEmpty() || value.contains(BLANK)) {
             throw new InvalidPasswordException();
         }
     }
