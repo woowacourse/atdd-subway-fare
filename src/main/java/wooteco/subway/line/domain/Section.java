@@ -9,9 +9,6 @@ public class Section {
     private Station downStation;
     private int distance;
 
-    public Section() {
-    }
-
     public Section(Long id, Station upStation, Station downStation, int distance) {
         if (distance <= 0) {
             throw new InvalidDistanceException();

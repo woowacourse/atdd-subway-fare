@@ -96,7 +96,7 @@ class SubwayPathTest {
                 Section section1 = new Section(1L, 강남역, 잠실역, 10);
                 Section section2 = new Section(2L, 잠실역, 송파역, 5);
                 Sections sections = new Sections(Arrays.asList(section1, section2));
-                Line line = new Line(1L, "2호선", "black", sections);
+                Line line = new Line(1L, "2호선", "black", 0, sections);
 
                 SubwayPath path = pathFinder.findPath(Arrays.asList(line), 강남역, 송파역);
                 int distance = path.calculateDistance();
@@ -112,7 +112,7 @@ class SubwayPathTest {
                 Section section1 = new Section(1L, 강남역, 잠실역, 10);
                 Section section2 = new Section(2L, 잠실역, 송파역, 7);
                 Sections sections = new Sections(Arrays.asList(section1, section2));
-                Line line = new Line(1L, "2호선", "black", sections);
+                Line line = new Line(1L, "2호선", "black", 0, sections);
 
                 SubwayPath path = pathFinder.findPath(Arrays.asList(line), 강남역, 송파역);
                 int distance = path.calculateDistance();
@@ -133,7 +133,7 @@ class SubwayPathTest {
                 Section section1 = new Section(1L, 강남역, 잠실역, 10);
                 Section section2 = new Section(2L, 잠실역, 송파역, 41);
                 Sections sections = new Sections(Arrays.asList(section1, section2));
-                Line 이호선 = new Line(1L, "2호선", "black", sections);
+                Line 이호선 = new Line(1L, "2호선", "black", 0, sections);
 
                 SubwayPath subwayPath = pathFinder.findPath(Arrays.asList(이호선), 강남역, 송파역);
                 int distance = subwayPath.calculateDistance();
