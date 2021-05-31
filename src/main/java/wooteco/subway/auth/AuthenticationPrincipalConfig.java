@@ -36,7 +36,8 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LoginInterceptor(jwtTokenProvider))
-            .addPathPatterns("/**")
+            .addPathPatterns("/api/**")
+            .excludePathPatterns("/v2/api-docs", "/swagger-resources/**", "/swagger-ui.html", "/webjars/**")
             .excludePathPatterns("/api/login/token")
             .excludePathPatterns("/api/members/**")
             .excludePathPatterns("/api/paths/**")
