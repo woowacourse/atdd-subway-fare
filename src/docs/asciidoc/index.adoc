@@ -7,6 +7,13 @@ endif::[]
 :toc: left
 :toclevels: 4
 
+== Error(에러)
+=== 일반적인 에러
+include::{snippets}/exception-normal/http-response.adoc[]
+
+=== 유효성 검증 에러
+include::{snippets}/exception-validation/http-response.adoc[]
+
 == Stations (역)
 
 === 역 생성
@@ -26,12 +33,6 @@ include::{snippets}/station-find/http-response.adoc[]
 include::{snippets}/station-update/http-request.adoc[]
 ==== Response
 include::{snippets}/station-update/http-response.adoc[]
-
-=== 역 수정 (실패) - 존재하는 이름으로 변경 시
-==== Request
-include::{snippets}/station-update-duplicate/http-request.adoc[]
-==== Response
-include::{snippets}/station-update-duplicate/http-response.adoc[]
 
 === 역 삭제
 ==== Request
