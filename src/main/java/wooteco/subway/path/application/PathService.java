@@ -42,7 +42,8 @@ public class PathService {
             SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
 
             LoginMember loginMember = authService.findMemberByToken(accessToken);
-            Fare fare = new Fare(subwayPath.calculateFareByDistance(), loginMember);
+            Fare fare = new Fare(subwayPath.calculateFareByDistance());
+            fare.calculateFareByAge(loginMember);
 
             return PathResponseAssembler.assemble(subwayPath, fare);
         } catch (Exception e) {

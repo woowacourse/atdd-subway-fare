@@ -13,8 +13,8 @@ public class Fare {
         this.fare = fare;
     }
 
-    public Fare(int fareByDistanceAndLine, LoginMember loginMember) {
-        this.fare = FareByAge.calculate(fareByDistanceAndLine, loginMember);
+    public void calculateFareByAge(LoginMember loginMember) {
+        this.fare = FareByAge.calculate(fare, loginMember);
     }
 
     public int getFare() {

@@ -15,7 +15,8 @@ public class FareTest {
     @ValueSource(ints = {0, 5})
     void BabyFareTest(int age) {
         LoginMember loginMember = new LoginMember(age);
-        Fare fare = new Fare(1250, loginMember);
+        Fare fare = new Fare(1250);
+        fare.calculateFareByAge(loginMember);
         assertThat(fare.getFare()).isEqualTo(0);
     }
 
@@ -24,7 +25,8 @@ public class FareTest {
     @ValueSource(ints = {6, 12})
     void ChildrenFareTest(int age) {
         LoginMember loginMember = new LoginMember(age);
-        Fare fare = new Fare(1250, loginMember);
+        Fare fare = new Fare(1250);
+        fare.calculateFareByAge(loginMember);
         assertThat(fare.getFare()).isEqualTo(450);
     }
 
@@ -33,16 +35,18 @@ public class FareTest {
     @ValueSource(ints = {13, 18})
     void TeenagerFareTest(int age) {
         LoginMember loginMember = new LoginMember(age);
-        Fare fare = new Fare(1250, loginMember);
+        Fare fare = new Fare(1250);
+        fare.calculateFareByAge(loginMember);
         assertThat(fare.getFare()).isEqualTo(720);
     }
 
     @DisplayName("19세 이상의 일반 요금을 계산한다.")
     @ParameterizedTest
     @ValueSource(ints = {19, 100})
-    void FareTest(int age) {
+    void AdultFareTest(int age) {
         LoginMember loginMember = new LoginMember(age);
-        Fare fare = new Fare(1250, loginMember);
+        Fare fare = new Fare(1250);
+        fare.calculateFareByAge(loginMember);
         assertThat(fare.getFare()).isEqualTo(1250);
     }
 }

@@ -20,9 +20,9 @@ class SubwayPathTest {
     private SubwayPath subwayPath;
 
     private Line line = new Line("2호선", "black");
-    private Station station1 = new Station("강남역");
-    private Station station2 = new Station("잠실역");
-    private Station station3 = new Station("교대역");
+    private final Station station1 = new Station("강남역");
+    private final Station station2 = new Station("잠실역");
+    private final Station station3 = new Station("교대역");
 
     @DisplayName("기본 운임인 경우")
     @Test
@@ -33,6 +33,8 @@ class SubwayPathTest {
         subwayPath = new SubwayPath(Arrays.asList(sectionEdge1, sectionEdge2),
             Arrays.asList(station1, station2, station3), 0);
         assertThat(subwayPath.calculateFareByDistance()).isEqualTo(1250);
+        assertThat(subwayPath.getDistance()).isEqualTo(10);
+        assertThat(subwayPath.getStations()).isEqualTo(Arrays.asList(station1, station2, station3));
     }
 
     @DisplayName("50키로 이하인 경우")
@@ -44,6 +46,8 @@ class SubwayPathTest {
         subwayPath = new SubwayPath(Arrays.asList(sectionEdge1, sectionEdge2),
             Arrays.asList(station1, station2, station3), 0);
         assertThat(subwayPath.calculateFareByDistance()).isEqualTo(2050);
+        assertThat(subwayPath.getDistance()).isEqualTo(50);
+        assertThat(subwayPath.getStations()).isEqualTo(Arrays.asList(station1, station2, station3));
     }
 
     @DisplayName("50키로 초과인 경우")
@@ -55,6 +59,8 @@ class SubwayPathTest {
         subwayPath = new SubwayPath(Arrays.asList(sectionEdge1, sectionEdge2),
             Arrays.asList(station1, station2, station3), 0);
         assertThat(subwayPath.calculateFareByDistance()).isEqualTo(2450);
+        assertThat(subwayPath.getDistance()).isEqualTo(60);
+        assertThat(subwayPath.getStations()).isEqualTo(Arrays.asList(station1, station2, station3));
     }
 
     @DisplayName("환승이 없는 경우에 요금이 추가되는 경우")
@@ -88,5 +94,7 @@ class SubwayPathTest {
         subwayPath = new SubwayPath(Arrays.asList(sectionEdge1, sectionEdge2),
             Arrays.asList(station1, station2, station3), 0);
         assertThat(subwayPath.calculateFareByDistance()).isEqualTo(3450);
+        assertThat(subwayPath.getDistance()).isEqualTo(60);
+        assertThat(subwayPath.getStations()).isEqualTo(Arrays.asList(station1, station2, station3));
     }
 }
