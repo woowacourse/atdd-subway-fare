@@ -2,6 +2,7 @@ package wooteco.subway.member.application;
 
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import wooteco.subway.auth.exception.AuthException;
 import wooteco.subway.exception.SubwayCustomException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
@@ -9,6 +10,8 @@ import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 import wooteco.subway.member.exception.MemberException;
+
+import java.util.Objects;
 
 @Service
 public class MemberService {
@@ -28,12 +31,14 @@ public class MemberService {
     }
 
     public MemberResponse findMember(LoginMember loginMember) {
+        validateMember(loginMember);
         Member member = memberDao.findByEmail(loginMember.getEmail())
                 .orElseThrow(() -> new SubwayCustomException(MemberException.NOT_FOUND_MEMBER_EXCEPTION));
         return MemberResponse.of(member);
     }
 
     public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
+        validateMember(loginMember);
         Member member = memberDao.findByEmail(loginMember.getEmail())
                 .orElseThrow(() -> new SubwayCustomException(MemberException.NOT_FOUND_MEMBER_EXCEPTION));
 
@@ -45,8 +50,15 @@ public class MemberService {
     }
 
     public void deleteMember(LoginMember loginMember) {
+        validateMember(loginMember);
         Member member = memberDao.findByEmail(loginMember.getEmail())
                 .orElseThrow(() -> new SubwayCustomException(MemberException.NOT_FOUND_MEMBER_EXCEPTION));
         memberDao.deleteById(member.getId());
+    }
+
+    private void validateMember(LoginMember member) {
+        if(Objects.isNull(member.getId())) {
+            throw new SubwayCustomException(AuthException.NOT_EXIST_EMAIL_EXCEPTION);
+        }
     }
 }

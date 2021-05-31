@@ -16,24 +16,30 @@ public class Line {
     private Long id;
     private String name;
     private String color;
+    private int fare;
     private Sections sections = new Sections();
 
     public Line() {
     }
 
     public Line(String name, String color) {
-        this(0L, name, color, new Sections());
+        this(0L, name, color, 0, new Sections());
+    }
+
+    public Line(String name, String color, int fare) {
+        this(0L, name, color, fare, new Sections());
     }
 
     public Line(Long id, String name, String color) {
-        this(id, name, color, new Sections());
+        this(id, name, color, 0, new Sections());
     }
 
-    public Line(Long id, String name, String color, Sections sections) {
+    public Line(Long id, String name, String color, int fare, Sections sections) {
         validate(name, color);
         this.id = id;
         this.name = name;
         this.color = color;
+        this.fare = fare;
         this.sections = sections;
     }
 
@@ -73,6 +79,10 @@ public class Line {
 
     public String getColor() {
         return color;
+    }
+
+    public int getFare() {
+        return fare;
     }
 
     public Sections getSections() {

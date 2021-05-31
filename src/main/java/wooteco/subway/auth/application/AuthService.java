@@ -17,6 +17,7 @@ import wooteco.subway.member.exception.MemberException;
 public class AuthService {
     private MemberDao memberDao;
     private JwtTokenProvider jwtTokenProvider;
+    private static final int ADULT_AGE = 20;
 
     public AuthService(MemberDao memberDao, JwtTokenProvider jwtTokenProvider) {
         this.memberDao = memberDao;
@@ -33,16 +34,17 @@ public class AuthService {
 
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
+            return new LoginMember(ADULT_AGE);
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
         try {
             Member member = memberDao.findByEmail(email)
                     .orElseThrow(() -> new SubwayCustomException(MemberException.NOT_FOUND_MEMBER_EXCEPTION));
-            return new LoginMember(member.getId(), member.getEmail(), member.getAge());
+            LoginMember m = new LoginMember(member.getId(), member.getEmail(), member.getAge());
+            return m;
         } catch (Exception e) {
-            return new LoginMember();
+            return new LoginMember(ADULT_AGE);
         }
     }
 }

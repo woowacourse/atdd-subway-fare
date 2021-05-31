@@ -21,6 +21,10 @@ public class SectionEdge extends DefaultWeightedEdge {
         return line;
     }
 
+    public int getFare() {
+        return line.getFare();
+    }
+
     @Override
     protected Object getSource() {
         return this.section.getUpStation();
