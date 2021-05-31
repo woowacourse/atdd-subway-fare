@@ -2,7 +2,7 @@ package wooteco.subway.path.domain.fare;
 
 import static wooteco.subway.path.application.FarePrincipalFinder.*;
 
-public class TeenagerFarePrincipal implements FarePrincipal {
+public class TeenagerFarePolicy implements FarePolicy {
     private static int DEDUCTED_AMOUNT = 350;
     private static double DISCOUNT_RATE = 0.2;
 

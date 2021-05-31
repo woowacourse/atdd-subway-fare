@@ -2,8 +2,7 @@ package wooteco.subway.path.domain.fare;
 
 import static wooteco.subway.path.application.FarePrincipalFinder.*;
 
-public class AdultFarePrincipal implements FarePrincipal {
-
+public class NoneLoginFarePolicy implements FarePolicy {
     @Override
     public double calculateFare(final int distance, final long extraFare) {
         double baseFare = BASIC_FARE + extraFare;

@@ -1,6 +1,6 @@
 package wooteco.subway.path.domain;
 
-import wooteco.subway.path.domain.fare.FarePrincipal;
+import wooteco.subway.path.domain.fare.FarePolicy;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
@@ -14,7 +14,7 @@ public class SubwayPath {
         this.stations = stations;
     }
 
-    public double calculateFare(FarePrincipal farePrincipal) {
+    public double calculateFare(FarePolicy farePrincipal) {
         return farePrincipal.calculateFare(calculateDistance(), findExtraFare());
     }
 
