@@ -12,7 +12,7 @@ import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 @Component
 public class AuthenticationInterceptor implements HandlerInterceptor {
 
-    private static final String ORIGIN = "ORIGIN";
+    private static final String ORIGIN = "Origin";
 
     private final JwtTokenProvider jwtTokenProvider;
 
