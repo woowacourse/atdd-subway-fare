@@ -22,16 +22,16 @@ public class StationService {
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
-        if (stationDao.findByName(stationRequest.getName()).isPresent()) {
+        stationDao.findByName(stationRequest.getName()).ifPresent((exception) -> {
             throw new StationNameDuplicationException();
-        }
+        });
         Station station = stationDao.insert(stationRequest.toStation());
         return StationResponse.from(station);
     }
 
     public Station findStationById(Long id) {
         return stationDao.findById(id)
-                .orElseThrow(() -> new StationNotExistException());
+                .orElseThrow(StationNotExistException::new);
     }
 
     public List<StationResponse> findAllStationResponses() {
