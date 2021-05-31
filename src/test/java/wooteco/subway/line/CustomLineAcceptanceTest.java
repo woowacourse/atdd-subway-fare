@@ -37,70 +37,6 @@ public class CustomLineAcceptanceTest extends AcceptanceTest {
     private LineRequest lineRequest1;
     private LineRequest lineRequest2;
 
-    @BeforeEach
-    public void setUp() {
-        super.setUp();
-
-        // given
-        강남역 = 지하철역_등록되어_있음("강남역");
-        광교역 = 지하철역_등록되어_있음("광교역");
-        상봉역 = 지하철역_등록되어_있음("상봉역");
-        면목역 = 지하철역_등록되어_있음("면목역");
-
-        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
-        lineRequest2 = new LineRequest("7호선", "bg-green-600", 상봉역.getId(), 면목역.getId(), 15);
-    }
-
-    @DisplayName("지하철 노선 목록을 상,하행종점역과 총거리와 함께 조회한다.")
-    @Test
-    void findLinesWithStationsAndTotalDistance() {
-        // given
-        회원_생성을_요청(EMAIL, PASSWORD, 10);
-        LineResponse lineResponse1 = 지하철_노선_등록되어_있음(lineRequest1);
-        LineResponse lineResponse2 = 지하철_노선_등록되어_있음(lineRequest2);
-
-        // when
-        ExtractableResponse<Response> response = 토큰과_함께_지하철_노선_목록_조회_요청();
-
-        // then
-        지하철_노선_목록_응답됨(response);
-        지하철_노선_목록_포함됨(response, Arrays.asList(lineResponse1, lineResponse2));
-        지하철_노선_목록_상하행종점역_일치함(response, Arrays.asList(lineResponse1, lineResponse2));
-        지하철_노선_총_거리_일치함(response, Arrays.asList(lineRequest1, lineRequest2));
-    }
-
-    private void 지하철_노선_총_거리_일치함(ExtractableResponse<Response> response, List<LineRequest> lineRequests) {
-        List<CustomLineResponse> customLineResponses = response.jsonPath().getList(".", CustomLineResponse.class);
-        for (int i = 0; i < lineRequests.size(); i++) {
-            CustomLineResponse customLineResponse = customLineResponses.get(i);
-            LineRequest lineRequest = lineRequests.get(i);
-
-            assertThat(customLineResponse.getDistance()).isEqualTo(lineRequest.getDistance());
-        }
-    }
-
-    private void 지하철_노선_목록_상하행종점역_일치함(ExtractableResponse<Response> response, List<LineResponse> lineResponses) {
-        List<CustomLineResponse> customLineResponses = response.jsonPath().getList(".", CustomLineResponse.class);
-        for (int i = 0; i < lineResponses.size(); i++) {
-            CustomLineResponse customLineResponse = customLineResponses.get(i);
-            LineResponse lineResponse = lineResponses.get(i);
-            int size = lineResponse.getStations().size();
-
-            지하철_노선_상하행종점역_일치함(customLineResponse, lineResponse, size);
-        }
-    }
-
-    private void 지하철_노선_상하행종점역_일치함(CustomLineResponse customLineResponse, LineResponse lineResponse, int size) {
-        assertThat(customLineResponse.getStartStation())
-            .usingRecursiveComparison()
-            .isEqualTo(lineResponse.getStations().get(0));
-
-        assertThat(customLineResponse.getEndStation())
-            .usingRecursiveComparison()
-            .isEqualTo(lineResponse.getStations().get(size - 1));
-    }
-
-
     public static LineResponse 지하철_노선_등록되어_있음(LineRequest lineRequest) {
         return 토큰과_함께_지하철_노선_생성_요청(lineRequest).as(LineResponse.class);
     }
@@ -167,5 +103,68 @@ public class CustomLineAcceptanceTest extends AcceptanceTest {
             .collect(Collectors.toList());
 
         assertThat(resultLineIds).containsAll(expectedLineIds);
+    }
+
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+
+        // given
+        강남역 = 지하철역_등록되어_있음("강남역");
+        광교역 = 지하철역_등록되어_있음("광교역");
+        상봉역 = 지하철역_등록되어_있음("상봉역");
+        면목역 = 지하철역_등록되어_있음("면목역");
+
+        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
+        lineRequest2 = new LineRequest("7호선", "bg-green-600", 상봉역.getId(), 면목역.getId(), 15);
+    }
+
+    @DisplayName("지하철 노선 목록을 상,하행종점역과 총거리와 함께 조회한다.")
+    @Test
+    void findLinesWithStationsAndTotalDistance() {
+        // given
+        회원_생성을_요청(EMAIL, PASSWORD, 10);
+        LineResponse lineResponse1 = 지하철_노선_등록되어_있음(lineRequest1);
+        LineResponse lineResponse2 = 지하철_노선_등록되어_있음(lineRequest2);
+
+        // when
+        ExtractableResponse<Response> response = 토큰과_함께_지하철_노선_목록_조회_요청();
+
+        // then
+        지하철_노선_목록_응답됨(response);
+        지하철_노선_목록_포함됨(response, Arrays.asList(lineResponse1, lineResponse2));
+        지하철_노선_목록_상하행종점역_일치함(response, Arrays.asList(lineResponse1, lineResponse2));
+        지하철_노선_총_거리_일치함(response, Arrays.asList(lineRequest1, lineRequest2));
+    }
+
+    private void 지하철_노선_총_거리_일치함(ExtractableResponse<Response> response, List<LineRequest> lineRequests) {
+        List<CustomLineResponse> customLineResponses = response.jsonPath().getList(".", CustomLineResponse.class);
+        for (int i = 0; i < lineRequests.size(); i++) {
+            CustomLineResponse customLineResponse = customLineResponses.get(i);
+            LineRequest lineRequest = lineRequests.get(i);
+
+            assertThat(customLineResponse.getDistance()).isEqualTo(lineRequest.getDistance());
+        }
+    }
+
+    private void 지하철_노선_목록_상하행종점역_일치함(ExtractableResponse<Response> response, List<LineResponse> lineResponses) {
+        List<CustomLineResponse> customLineResponses = response.jsonPath().getList(".", CustomLineResponse.class);
+        for (int i = 0; i < lineResponses.size(); i++) {
+            CustomLineResponse customLineResponse = customLineResponses.get(i);
+            LineResponse lineResponse = lineResponses.get(i);
+            int size = lineResponse.getStations().size();
+
+            지하철_노선_상하행종점역_일치함(customLineResponse, lineResponse, size);
+        }
+    }
+
+    private void 지하철_노선_상하행종점역_일치함(CustomLineResponse customLineResponse, LineResponse lineResponse, int size) {
+        assertThat(customLineResponse.getStartStation())
+            .usingRecursiveComparison()
+            .isEqualTo(lineResponse.getStations().get(0));
+
+        assertThat(customLineResponse.getEndStation())
+            .usingRecursiveComparison()
+            .isEqualTo(lineResponse.getStations().get(size - 1));
     }
 }

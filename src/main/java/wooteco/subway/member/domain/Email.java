@@ -15,18 +15,18 @@ public class Email {
         validateForm(this.value);
     }
 
+    private void validateNull(String value) {
+        if (Objects.isNull(value)) {
+            throw new InvalidEmailException();
+        }
+    }
+
     private void validateForm(String value) {
         if (value.matches(PATTERN)) {
             return;
         }
 
         throw new InvalidEmailException();
-    }
-
-    private void validateNull(String value) {
-        if (Objects.isNull(value)) {
-            throw new InvalidEmailException();
-        }
     }
 
     public String getValue() {
