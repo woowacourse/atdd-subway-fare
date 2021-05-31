@@ -21,7 +21,7 @@ public class PathController {
     }
 
     @GetMapping("/paths")
-    @ApiOperation(value="경로 조회", notes="경로를 조회한다.")
+    @ApiOperation(value = "경로 조회", notes = "경로를 조회한다.")
     public ResponseEntity<PathResponse> findPath(@AuthorizationMemberPrincipal LoginMember loginMember,
                                                  @RequestParam Long source, @RequestParam Long target) {
 

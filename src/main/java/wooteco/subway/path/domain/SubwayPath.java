@@ -24,6 +24,7 @@ public class SubwayPath {
                 .max()
                 .orElse(0);
     }
+
     public List<SectionEdge> getSectionEdges() {
         return sectionEdges;
     }

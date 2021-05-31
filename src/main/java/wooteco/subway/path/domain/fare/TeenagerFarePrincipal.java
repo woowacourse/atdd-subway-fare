@@ -11,7 +11,7 @@ public class TeenagerFarePrincipal implements FarePrincipal {
         double fare = baseFare;
 
         if (distance <= SECOND_OVER_FARE_DISTANCE) {
-            fare =  calculateOverFare(baseFare, distance - FIRST_OVER_FARE_DISTANCE, 5);
+            fare = calculateOverFare(baseFare, distance - FIRST_OVER_FARE_DISTANCE, 5);
         }
 
         if (distance > SECOND_OVER_FARE_DISTANCE) {

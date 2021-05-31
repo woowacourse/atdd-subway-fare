@@ -12,10 +12,10 @@ import wooteco.subway.exception.dto.ErrorResponse;
 @RestControllerAdvice
 public class SubwayAdvice {
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleApplicationException(Exception e) throws Exception{
+    public ResponseEntity<ErrorResponse> handleApplicationException(Exception e) throws Exception {
 
         if (AnnotationUtils.findAnnotation(e.getClass(), ResponseStatus.class) != null) {
-            throw  e;
+            throw e;
         }
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -23,7 +23,7 @@ public class SubwayAdvice {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<String> handleMethodArgumentNotValidException(MethodArgumentNotValidException e)  {
+    public ResponseEntity<String> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         return ResponseEntity.badRequest().body(e.getAllErrors().get(0).getDefaultMessage());
     }
 }

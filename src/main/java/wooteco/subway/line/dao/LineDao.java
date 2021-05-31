@@ -119,8 +119,7 @@ public class LineDao {
                 String lineColor = rs.getString("color");
                 return new Line(id, lineName, lineColor);
             }, name));
-        }
-        catch (EmptyResultDataAccessException e) {
+        } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
     }

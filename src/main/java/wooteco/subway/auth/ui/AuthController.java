@@ -20,7 +20,7 @@ public class AuthController {
     }
 
     @PostMapping("/login/token")
-    @ApiOperation(value="로그인 시도", notes="로그인 토큰을 생성한다.")
+    @ApiOperation(value = "로그인 시도", notes = "로그인 토큰을 생성한다.")
     public ResponseEntity<TokenResponse> login(@RequestBody TokenRequest request) {
         TokenResponse token = authService.login(request);
         return ResponseEntity.ok().body(token);
