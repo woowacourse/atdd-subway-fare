@@ -32,14 +32,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth")
     @Test
     void myInfoWithBearerAuth() {
-        // given
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
         TokenResponse tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
 
-        // when
         ExtractableResponse<Response> response = 내_회원_정보_조회_요청(tokenResponse);
 
-        // then
         회원_정보_조회됨(response, EMAIL, AGE);
     }
 
@@ -86,7 +83,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
         Map<String, String> params = new HashMap<>();
         params.put("email", EMAIL);
-        params.put("password", PASSWORD+ "other");
+        params.put("password", PASSWORD + "other");
 
         RestAssured
                 .given().log().all()

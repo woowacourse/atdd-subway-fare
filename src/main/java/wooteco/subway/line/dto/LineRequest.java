@@ -2,7 +2,6 @@ package wooteco.subway.line.dto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 
 public class LineRequest {
 
@@ -61,17 +60,5 @@ public class LineRequest {
 
     public int getExtraFare() {
         return extraFare;
-    }
-
-    @Override
-    public String toString() {
-        return "LineRequest{" +
-                "name='" + name + '\'' +
-                ", color='" + color + '\'' +
-                ", upStationId=" + upStationId +
-                ", downStationId=" + downStationId +
-                ", distance=" + distance +
-                ", extraFare=" + extraFare +
-                '}';
     }
 }

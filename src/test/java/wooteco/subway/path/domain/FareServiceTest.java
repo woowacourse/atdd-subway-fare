@@ -48,7 +48,7 @@ class FareServiceTest {
     @Test
     public void calculateTest5() {
         int distance = 7;
-        int expectedFare = (int)(1250 * 0.5);
+        int expectedFare = (int) (1250 * 0.5);
         assertFare(distance, 0, MemberType.CHILD, expectedFare);
     }
 
@@ -56,7 +56,7 @@ class FareServiceTest {
     @Test
     public void calculateTest6() {
         int distance = 7;
-        int expectedFare = (int)(1250 * 0.8);
+        int expectedFare = (int) (1250 * 0.8);
         assertFare(distance, 0, MemberType.ADOLESCENT, expectedFare);
     }
 

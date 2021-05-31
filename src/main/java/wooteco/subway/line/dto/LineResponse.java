@@ -25,6 +25,9 @@ public class LineResponse {
         return new LineResponse(line.getId(), line.getName(), line.getColor(), line.getExtraFare(), stations);
     }
 
+    public LineResponse() {
+    }
+
     public LineResponse(Long id, String name, String color, int extraFare, List<StationResponse> stations) {
         this.id = id;
         this.name = name;

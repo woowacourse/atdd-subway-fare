@@ -3,7 +3,6 @@ package wooteco.subway.member.domain;
 import com.google.common.base.Predicate;
 
 import java.util.Arrays;
-import java.util.Optional;
 
 public enum MemberType {
     BABY((age) -> age < 6),
@@ -12,7 +11,7 @@ public enum MemberType {
     ADULT((age) -> age >= 19),
     NONE;
 
-    Predicate<Integer> predicate = (i) -> false;
+    private Predicate<Integer> predicate = (i) -> false;
 
     MemberType() {
     }
@@ -21,13 +20,8 @@ public enum MemberType {
         this.predicate = predicate;
     }
 
-    public static MemberType of(Optional<LoginMember> member) {
-        if (!member.isPresent()) {
-            return NONE;
-        }
-
-        int age = member.get()
-                .getAge();
+    public static MemberType of(Member member) {
+        int age = member.getAge();
         return Arrays.stream(values())
                 .filter(memberType -> memberType.is(age))
                 .findFirst()

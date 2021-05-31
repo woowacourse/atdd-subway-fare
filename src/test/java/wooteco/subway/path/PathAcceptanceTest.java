@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
-import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_조회_요청;
 import static wooteco.subway.line.SectionAcceptanceTest.지하철_구간_등록되어_있음;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
@@ -73,14 +72,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
         총_거리가_응답됨(response, 5, 1250 + expectedExtraFare);
     }
 
-    @DisplayName("도달 할 수 없는 두 역의 최단 거리 경로를 조회한다.")
+    @DisplayName("도달 할 수 없는 두 역의 최단 거리 경로를 조회한다. :: 역은 존재하지만 경로가 없음")
     @Test
     void findNonExistPath1() {
         ExtractableResponse<Response> response = 거리_경로_조회_요청(다른노선위의역1.getId(), 강남역.getId());
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    @DisplayName("도달 할 수 없는 두 역의 최단 거리 경로를 조회한다. :: 존재하지않는역 id")
+    @DisplayName("도달 할 수 없는 두 역의 최단 거리 경로를 조회한다. :: 존재하지 않는 역 id")
     @Test
     void findNonExistPath2() {
         ExtractableResponse<Response> response = 거리_경로_조회_요청(Long.MAX_VALUE, 강남역.getId());

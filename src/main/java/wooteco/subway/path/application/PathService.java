@@ -40,10 +40,9 @@ public class PathService {
 
     private SubwayRoute findRoute(Long source, Long target) {
         try {
-            List<Line> lines = lineService.findLines();
             Station sourceStation = stationService.findStationById(source);
             Station targetStation = stationService.findStationById(target);
-            return routeFinder.find(lines, sourceStation, targetStation);
+            return routeFinder.find(lineService.findLines(), sourceStation, targetStation);
         } catch (Exception e) {
             throw new LineException("검색된 경로가 없습니다.");
         }
