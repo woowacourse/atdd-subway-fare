@@ -29,10 +29,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
+    private LineResponse 사호선;
+    private LineResponse 오호선;
     private StationResponse 강남역;
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
+    private StationResponse 신림역;
+    private StationResponse 봉천역;
+    private StationResponse 서울대역;
     private TokenResponse tokenResponse;
 
     /**
@@ -48,10 +53,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
         양재역 = 지하철역_등록되어_있음("양재역", tokenResponse);
         교대역 = 지하철역_등록되어_있음("교대역", tokenResponse);
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역", tokenResponse);
+        신림역 = 지하철역_등록되어_있음("신림역", tokenResponse);
+        봉천역 = 지하철역_등록되어_있음("봉천역", tokenResponse);
+        서울대역 = 지하철역_등록되어_있음("서울대역", tokenResponse);
 
         신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10, tokenResponse);
         이호선 = 지하철_노선_등록되어_있음("이호선", "bg-green-600", 교대역, 강남역, 10, tokenResponse);
         삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-yellow-600", 교대역, 양재역, 5, tokenResponse);
+        사호선 = 지하철_노선_등록되어_있음("사호선", "blue", 신림역, 봉천역, 40, tokenResponse);
+        오호선 = 지하철_노선_등록되어_있음("오호선", "white", 봉천역, 서울대역, 19, tokenResponse);
 
         지하철_구간_등록되어_있음(삼호선, 교대역, 남부터미널역, 3, tokenResponse);
     }
@@ -65,6 +75,31 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //then
         적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
         총_거리가_응답됨(response, 5);
+        총_가격이_응답됨(response, 1250);
+    }
+
+    @DisplayName("최단거리가 40km 일 때")
+    @Test
+    void findPathByDistanceByForty() {
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(5L, 6L, tokenResponse);
+
+        //then
+        적절한_경로_응답됨(response, Lists.newArrayList(신림역, 봉천역));
+        총_거리가_응답됨(response, 40);
+        총_가격이_응답됨(response, 1850);
+    }
+
+    @DisplayName("최단거리가 59km 일때")
+    @Test
+    void findPathByDistanceByOverFifty() {
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(5L, 7L, tokenResponse);
+
+        //then
+        적절한_경로_응답됨(response, Lists.newArrayList(신림역, 봉천역, 서울대역));
+        총_거리가_응답됨(response, 59);
+        총_가격이_응답됨(response, 2250);
     }
 
     private ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target,
@@ -96,5 +131,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private void 총_거리가_응답됨(ExtractableResponse<Response> response, int totalDistance) {
         PathResponse pathResponse = response.as(PathResponse.class);
         assertThat(pathResponse.getDistance()).isEqualTo(totalDistance);
+    }
+
+    private void 총_가격이_응답됨(ExtractableResponse<Response> response, int fare) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getFare()).isEqualTo(fare);
     }
 }

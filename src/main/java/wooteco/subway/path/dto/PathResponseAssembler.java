@@ -9,10 +9,11 @@ public class PathResponseAssembler {
 
     public static PathResponse assemble(SubwayPath subwayPath) {
         List<StationResponse> stationResponses = subwayPath.getStations().stream()
-            .map(it -> StationResponse.of(it))
+            .map(StationResponse::of)
             .collect(Collectors.toList());
 
         int distance = subwayPath.calculateDistance();
-        return new PathResponse(stationResponses, distance);
+        int fare = subwayPath.calculateOverFare(distance);
+        return new PathResponse(stationResponses, distance, fare);
     }
 }
