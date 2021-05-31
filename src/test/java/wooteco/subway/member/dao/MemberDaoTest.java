@@ -6,20 +6,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestConstructor;
-import org.springframework.test.context.TestPropertySource;
 import wooteco.subway.exception.notfound.MemberNotFoundException;
 import wooteco.subway.member.domain.Member;
 
 import javax.sql.DataSource;
-
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataJdbcTest
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
