@@ -63,7 +63,7 @@ public class Line {
 
     public int moneyValue() {
         return extraFare.money();
-    };
+    }
 
     public List<Station> getStations() {
         return sections.getStations();
