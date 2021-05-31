@@ -93,7 +93,7 @@ public class Sections {
         stations.add(upEndSection.getUpStation());
 
         Section nextSection = upEndSection;
-        while (nextSection != null) {
+        while (!nextSection.isEmpty()) {
             stations.add(nextSection.getDownStation());
             nextSection = findSectionByNextUpStation(nextSection.getDownStation());
         }
@@ -116,7 +116,7 @@ public class Sections {
         return this.sections.stream()
                 .filter(it -> it.getUpStation().equals(station))
                 .findFirst()
-                .orElseGet(() -> null);
+                .orElseGet(Section::new);
     }
 
     public void removeStation(Station station) {
