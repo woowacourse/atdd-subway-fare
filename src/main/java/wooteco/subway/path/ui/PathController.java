@@ -25,9 +25,4 @@ public class PathController {
         final PathResponse pathResponse = pathService.findPath(loginMember, source, target);
         return ResponseEntity.ok(pathResponse);
     }
-
-    @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<Void> handleIllegalFareStateException() {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-    }
 }
