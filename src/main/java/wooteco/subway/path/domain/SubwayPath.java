@@ -52,7 +52,8 @@ public class SubwayPath {
         if (distance <= 0) {
             return 0;
         }
-        return (int) ((Math.ceil((distance - 1) / TEN_TO_FIFTY_EXTRA_CHARGE_DISTANCE) + 1) * EXTRA_CHARGE);
+        return (int) ((Math.ceil((distance - 1) / TEN_TO_FIFTY_EXTRA_CHARGE_DISTANCE) + 1)
+            * EXTRA_CHARGE);
     }
 
     private int distanceMoreThanFifty(int distance) {
@@ -60,7 +61,8 @@ public class SubwayPath {
         if (distance <= 0) {
             return 0;
         }
-        return (int) ((Math.ceil((distance - 1) / OVER_FIFTY_EXTRA_CHARGE_DISTANCE) + 1) * EXTRA_CHARGE);
+        return (int) ((Math.ceil((distance - 1) / OVER_FIFTY_EXTRA_CHARGE_DISTANCE) + 1)
+            * EXTRA_CHARGE);
     }
 
     private int getExpensiveLineExtraFare() {

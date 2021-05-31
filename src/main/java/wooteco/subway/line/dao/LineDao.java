@@ -59,7 +59,8 @@ public class LineDao {
     public int update(Line newLine) {
         String sql = "update LINE set name = ?, color = ?, extra_fare = ? where id = ?";
         return jdbcTemplate
-            .update(sql, newLine.getName(), newLine.getColor(), newLine.getExtraFare() ,newLine.getId());
+            .update(sql, newLine.getName(), newLine.getColor(), newLine.getExtraFare(),
+                newLine.getId());
     }
 
     public List<Line> findAll() {

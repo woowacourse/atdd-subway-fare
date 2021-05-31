@@ -9,14 +9,14 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 @DisplayName("경로 관련 기능")
 class SubwayPathTest {
-    
+
     @DisplayName("성인일때 거리에 따른 비용")
     @ParameterizedTest
     @CsvSource(value = {"9:1250", "12:1350", "16:1450", "51:2150"}, delimiter = ':')
     void calculateOverFareWithAdult(String distance, String targetFare) {
         //given
         SubwayPath subwayPath = new SubwayPath(new ArrayList<>(), new ArrayList<>());
-        
+
         //when
         int fare = subwayPath.calculateFare(Integer.parseInt(distance), 20);
 

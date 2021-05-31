@@ -22,7 +22,8 @@ public class SimpleLineResponse {
 
     public static List<SimpleLineResponse> listOf(List<Line> simpleLines) {
         return simpleLines.stream()
-            .map(line -> new SimpleLineResponse(line.getId(), line.getName(), line.getColor(), StationResponse.listOf(line.getStations()))
+            .map(line -> new SimpleLineResponse(line.getId(), line.getName(), line.getColor(),
+                StationResponse.listOf(line.getStations()))
             )
             .sorted(Comparator.comparing(SimpleLineResponse::getId))
             .collect(Collectors.toList());
