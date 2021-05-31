@@ -8,7 +8,6 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
-import wooteco.subway.exception.AuthorizationException;
 import wooteco.subway.member.domain.Member;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,9 +32,6 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
             return Member.guest();
         }
         Member member = authService.findMemberByToken(credentials);
-        if (member.getId() == null) {
-            throw new AuthorizationException("이메일 혹은 비밀번호를 다시 확인해주세요");
-        }
         return Member.loginMember(member.getId(), member.getEmail(), member.getAge());
     }
 }
