@@ -2,6 +2,8 @@ package wooteco.auth.domain;
 
 public class LoginMember {
 
+    private static final LoginMember anonymous = new LoginMember(null, Role.ANONYMOUS);
+
     private Long id;
     private Role role;
 
@@ -14,7 +16,7 @@ public class LoginMember {
     }
 
     public static LoginMember anonymous() {
-        return new LoginMember(null, Role.ANONYMOUS);
+        return anonymous;
     }
 
     public Long getId() {

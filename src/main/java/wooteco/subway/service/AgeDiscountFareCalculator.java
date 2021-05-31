@@ -1,10 +1,12 @@
 package wooteco.subway.service;
 
 import java.util.Arrays;
-import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 public class AgeDiscountFareCalculator implements FareCalculator {
+
+    private static final int DEFAULT_EXEMPTION_FARE = 350;
 
     private final FareCalculator fareCalculator;
     private final int age;
@@ -21,21 +23,29 @@ public class AgeDiscountFareCalculator implements FareCalculator {
     }
 
     private enum FarePolicyByAge {
-        BABY(age -> age < 6,
+        BABY(age -> AgeUtils.checkAge(age).isBetween(0, 5),
             fare -> 0),
-        CHILDREN(age -> age >= 6 && age < 13,
-            fare -> (int) ((fare - 350) * 0.5)),
-        TEENAGER(age -> age >= 13 && age < 19,
-            fare -> (int) ((fare - 350) * 0.8)),
-        ADULT(age -> age >= 19,
+        CHILDREN(age -> AgeUtils.checkAge(age).isBetween(6, 12),
+            fare ->
+                FareUtils.originalFare(fare - DEFAULT_EXEMPTION_FARE)
+                    .discountPercentage(0.5)
+                    .calculate()
+        ),
+        TEENAGER(age -> AgeUtils.checkAge(age).isBetween(13, 18),
+            fare ->
+                FareUtils.originalFare(fare - DEFAULT_EXEMPTION_FARE)
+                    .discountPercentage(0.2)
+                    .calculate()
+        ),
+        ADULT(age -> AgeUtils.checkAge(age).isGreaterThan(18),
             fare -> fare);
 
         private final Predicate<Integer> predicate;
-        private final Function<Integer, Integer> function;
+        private final UnaryOperator<Integer> operator;
 
-        FarePolicyByAge(Predicate<Integer> predicate, Function<Integer, Integer> function) {
+        FarePolicyByAge(Predicate<Integer> predicate, UnaryOperator<Integer> operator) {
             this.predicate = predicate;
-            this.function = function;
+            this.operator = operator;
         }
 
         private static FarePolicyByAge decidePolicy(int age) {
@@ -46,7 +56,48 @@ public class AgeDiscountFareCalculator implements FareCalculator {
         }
 
         private int calculate(int fare) {
-            return function.apply(fare);
+            return operator.apply(fare);
+        }
+    }
+
+    private static class AgeUtils {
+        private final int age;
+
+        private AgeUtils(int age) {
+            this.age = age;
+        }
+
+        private static AgeUtils checkAge(int age) {
+            return new AgeUtils(age);
+        }
+
+        private boolean isBetween(int min, int max) {
+            return age >= min && age <= max;
+        }
+
+        private boolean isGreaterThan(int number) {
+            return age > number;
+        }
+    }
+
+    private static class FareUtils {
+
+        private final int fare;
+
+        private FareUtils(int fare) {
+            this.fare = fare;
+        }
+
+        private static FareUtils originalFare(int originalFare) {
+            return new FareUtils(originalFare);
+        }
+
+        private FareUtils discountPercentage(double percentage) {
+            return new FareUtils(fare - (int) (fare * percentage));
+        }
+
+        private int calculate() {
+            return fare;
         }
     }
 }

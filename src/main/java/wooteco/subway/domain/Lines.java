@@ -1,7 +1,7 @@
 package wooteco.subway.domain;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Lines {
 
@@ -12,12 +12,8 @@ public class Lines {
     }
 
     public List<Line> getLinesContainStation(Station station) {
-        final ArrayList<Line> lines = new ArrayList<>();
-        for (Line line : this.lines) {
-            if (line.getStations().contains(station)) {
-                lines.add(line);
-            }
-        }
-        return lines;
+        return lines.stream()
+            .filter(line -> line.containsStation(station))
+            .collect(Collectors.toList());
     }
 }

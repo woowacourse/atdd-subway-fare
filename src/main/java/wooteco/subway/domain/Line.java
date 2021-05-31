@@ -94,4 +94,8 @@ public class Line {
     public List<Section> sortedSections() {
         return sections.sortedSections();
     }
+
+    public boolean containsStation(Station station) {
+        return sections.containsStation(station);
+    }
 }

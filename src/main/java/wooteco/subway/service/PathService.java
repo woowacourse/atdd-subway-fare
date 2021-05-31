@@ -39,7 +39,7 @@ public class PathService {
             Station sourceStation = stationService.findStationById(source);
             Station targetStation = stationService.findStationById(target);
             SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
-            FareCalculator fareCalculator = checkMemberAge(loginMember);
+            FareCalculator fareCalculator = selectFareCalculatorByUser(loginMember);
 
             final int fare = fareCalculator.calculateFare(
                 subwayPath.calculateDistance(),
@@ -51,7 +51,7 @@ public class PathService {
         }
     }
 
-    private FareCalculator checkMemberAge(LoginMember loginMember) {
+    private FareCalculator selectFareCalculatorByUser(LoginMember loginMember) {
         if (loginMember.isAnonymous()) {
             return fareCalculator;
         }

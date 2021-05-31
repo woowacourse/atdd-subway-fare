@@ -35,6 +35,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 새로운역;
+    private StationResponse 먼역;
     private StationResponse 남부터미널역;
 
     public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
@@ -94,6 +95,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         양재역 = 지하철역_등록되어_있음("양재역");
         교대역 = 지하철역_등록되어_있음("교대역");
         새로운역 = 지하철역_등록되어_있음("새로운역");
+        먼역 = 지하철역_등록되어_있음("먼역");
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역");
 
         신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-pink-600", 강남역, 양재역, 10);
@@ -101,6 +103,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-yellow-600", 교대역, 양재역, 5);
         추가요금선 = 지하철_노선_등록되어_있음(
             new LineRequest("추가요금선", "bg-add-500", 남부터미널역.getId(), 새로운역.getId(), 4, 300));
+
+        지하철_구간_등록되어_있음(추가요금선, 새로운역, 먼역, 55);
 
         지하철_구간_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
     }
@@ -147,5 +151,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
         final ExtractableResponse<Response> response6 = 거리_경로_조회_요청(남부터미널역.getId(), 새로운역.getId(),
             token4);
         요금_비교(response6, 1550);
+
+        // 거리가 55키로 일 시 (거리 추가요금)
+        final ExtractableResponse<Response> response7 = 거리_경로_조회_요청(새로운역.getId(), 먼역.getId(),
+            token4);
+        요금_비교(response7, 2550);
     }
 }

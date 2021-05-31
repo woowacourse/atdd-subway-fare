@@ -18,13 +18,17 @@ public class LineResponseAssembler {
             final Station upStation = section.getUpStation();
             stationResponses.add(new StationWithDistanceResponse(upStation.getId(),
                 upStation.getName(), section.getDistance()));
-
-            if (i == sections.size() - 1) {
-                final Station downStation = section.getDownStation();
-                stationResponses.add(new StationWithDistanceResponse(downStation.getId(),
-                    downStation.getName()));
-            }
+            addLastStation(stationResponses, sections, i, section);
         }
         return new LineResponse(line.getId(), line.getName(), line.getColor(), stationResponses);
+    }
+
+    private static void addLastStation(ArrayList<StationWithDistanceResponse> stationResponses,
+        List<Section> sections, int index, Section section) {
+        if (index == sections.size() - 1) {
+            final Station downStation = section.getDownStation();
+            stationResponses.add(new StationWithDistanceResponse(downStation.getId(),
+                downStation.getName()));
+        }
     }
 }
