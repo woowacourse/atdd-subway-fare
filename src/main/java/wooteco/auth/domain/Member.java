@@ -2,8 +2,9 @@ package wooteco.auth.domain;
 
 import org.apache.commons.lang3.StringUtils;
 import wooteco.common.exception.forbidden.AuthorizationException;
+import wooteco.subway.domain.fareCalculator.AgeDiscountFareCalculator;
 
-public class Member {
+public class Member implements User{
 
     private Long id;
     private String email;
@@ -54,5 +55,9 @@ public class Member {
         }
     }
 
-
+    @Override
+    public int calculateFee(int distance, int extraFare) {
+        return new AgeDiscountFareCalculator(defaultCalculator, age)
+            .calculateFare(distance, extraFare);
+    }
 }

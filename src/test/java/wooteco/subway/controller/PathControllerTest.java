@@ -27,7 +27,7 @@ import wooteco.subway.TestDataLoader;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
-import wooteco.subway.service.DefaultFareCalculator;
+import wooteco.subway.domain.fareCalculator.DefaultFareCalculator;
 import wooteco.subway.service.PathService;
 import wooteco.subway.web.api.PathController;
 import wooteco.subway.web.dto.response.PathResponse;

@@ -3,8 +3,10 @@ package wooteco.auth.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.auth.dao.MemberDao;
+import wooteco.auth.domain.AnonymousUser;
 import wooteco.auth.domain.LoginMember;
 import wooteco.auth.domain.Member;
+import wooteco.auth.domain.User;
 import wooteco.auth.web.dto.request.MemberRequest;
 import wooteco.auth.web.dto.response.MemberResponse;
 import wooteco.common.exception.notfound.MemberNotFoundException;
@@ -29,6 +31,14 @@ public class MemberService {
         Member member = memberDao.findById(loginMember.getId())
             .orElseThrow(MemberNotFoundException::new);
         return MemberResponse.of(member);
+    }
+
+    public User selectMemberOrAnonymous(LoginMember loginMember) {
+        if (loginMember.isAnonymous()) {
+            return new AnonymousUser();
+        }
+        return memberDao.findById(loginMember.getId())
+            .orElseThrow(MemberNotFoundException::new);
     }
 
     @Transactional

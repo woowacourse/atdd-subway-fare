@@ -1,4 +1,4 @@
-package wooteco.subway.service;
+package wooteco.subway.domain.fareCalculator;
 
 public interface FareCalculator {
 
