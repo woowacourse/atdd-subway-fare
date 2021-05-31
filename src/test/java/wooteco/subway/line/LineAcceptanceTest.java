@@ -131,7 +131,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse, lineRequest2);
 
         // then
-        지하철_노선_수정됨(response);
+        지하철_노선_수정됨(response, lineRequest2);
     }
 
     @DisplayName("이미 존재하는 노선의 이름으로 수정할 경우 예외 처리한다.")
@@ -316,8 +316,12 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(resultLineIds).containsAll(expectedLineIds);
     }
 
-    public static void 지하철_노선_수정됨(ExtractableResponse<Response> response) {
+    public static void 지하철_노선_수정됨(ExtractableResponse<Response> response, LineRequest lineRequest) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        LineResponse resultResponse = response.as(LineResponse.class);
+        assertThat(resultResponse.getName()).isEqualTo(lineRequest.getName());
+        assertThat(resultResponse.getColor()).isEqualTo(lineRequest.getColor());
+        assertThat(resultResponse.getExtraFare()).usingRecursiveComparison().isEqualTo(lineRequest.getExtraFare());
     }
 
     public static void 지하철_노선_삭제됨(ExtractableResponse<Response> response) {

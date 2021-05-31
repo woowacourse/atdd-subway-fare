@@ -58,12 +58,12 @@ public class LineService {
         return lineDao.findAll();
     }
 
-    public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
+    public LineResponse findById(Long id) {
+        Line persistLine = findValidLineById(id);
         return LineResponse.of(persistLine);
     }
 
-    public Line findLineById(Long id) {
+    private Line findValidLineById(Long id) {
         validateExistLine(id);
         return lineDao.findById(id);
     }
@@ -91,7 +91,7 @@ public class LineService {
     }
 
     public SectionResponse addLineStation(Long lineId, SectionRequest request) {
-        Line line = findLineById(lineId);
+        Line line = findValidLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
         Section section = new Section(upStation, downStation, request.getDistance());
@@ -104,7 +104,7 @@ public class LineService {
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
-        Line line = findLineById(lineId);
+        Line line = findValidLineById(lineId);
         Station station = stationService.findStationById(stationId);
         line.removeSection(station);
 
