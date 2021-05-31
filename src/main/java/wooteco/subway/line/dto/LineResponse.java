@@ -31,7 +31,8 @@ public class LineResponse {
         List<StationResponse> stations = line.getStations().stream()
                 .map(it -> StationResponse.of(it))
                 .collect(Collectors.toList());
-        List<SectionResponse> sections = line.getSections().getSections().stream()
+
+        List<SectionResponse> sections = line.getEachSection().stream()
                 .map(section -> SectionResponse.of(section))
                 .collect(Collectors.toList());
 
