@@ -1,16 +1,14 @@
 package wooteco.subway.path.dto;
 
-import java.math.BigDecimal;
+import java.util.List;
 import wooteco.subway.path.domain.Price;
 import wooteco.subway.station.dto.StationResponse;
-
-import java.util.List;
 
 public class PathResponse {
 
     private List<StationResponse> stations;
     private int distance;
-    private BigDecimal price;
+    private int price;
 
     public PathResponse() {
 
@@ -30,7 +28,7 @@ public class PathResponse {
         return distance;
     }
 
-    public BigDecimal getPrice() {
+    public int getPrice() {
         return price;
     }
 }

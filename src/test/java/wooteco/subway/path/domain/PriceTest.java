@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.math.BigDecimal;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -16,7 +15,7 @@ class PriceTest {
     @Test
     void testInitPrice() {
         // given
-        BigDecimal value = BigDecimal.valueOf(10_000);
+        int value = 10_000;
 
         // when // then
         assertThatCode(() -> new Price(value))
@@ -27,7 +26,7 @@ class PriceTest {
     @Test
     void testInitPriceIfValueIsMinus() {
         // given
-        BigDecimal minusValue = BigDecimal.valueOf(-1_000);
+        int minusValue = -1_000;
 
         // when // then
         assertThatThrownBy(() -> new Price(minusValue))
@@ -38,8 +37,8 @@ class PriceTest {
     @Test
     void testCachedPrice() {
         // given
-        BigDecimal basicValue = BigDecimal.valueOf(1_250);
-        BigDecimal additionValue = BigDecimal.valueOf(100);
+        int basicValue = 1_250;
+        int additionValue = 100;
 
         // when
         Price basicPrice = Price.BASIC;
@@ -70,7 +69,7 @@ class PriceTest {
             "5:1250", "10:1250", "11:1350", "24:1550", "50:2050", "51:2150", "55:2150", "56:2150", "58:2150",
             "59:2250"
     }, delimiter = ':')
-    void testCalculateRate(int distance, BigDecimal expected) {
+    void testCalculateRate(int distance, int expected) {
         // when
         Price actual = Price.calculateRate(distance);
 

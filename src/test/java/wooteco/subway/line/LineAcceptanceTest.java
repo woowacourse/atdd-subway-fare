@@ -241,13 +241,17 @@ public class LineAcceptanceTest extends AcceptanceTest {
         인증_실패됨(response);
     }
 
-    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation,
-            StationResponse downStation, int distance,
-            TokenResponse tokenResponse) {
-        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(),
-                downStation.getId(), distance);
+    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance, TokenResponse tokenResponse) {
+        return 지하철_노선_등록되어_있음(name, color, upStation, downStation, 0, distance, tokenResponse);
+//        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance);
+//        return 지하철_노선_등록되어_있음(lineRequest, tokenResponse);
+    }
+
+    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int extraFare, int distance, TokenResponse tokenResponse) {
+        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), extraFare, distance);
         return 지하철_노선_등록되어_있음(lineRequest, tokenResponse);
     }
+
 
     public static LineResponse 지하철_노선_등록되어_있음(LineRequest lineRequest,
             TokenResponse tokenResponse) {

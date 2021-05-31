@@ -36,7 +36,8 @@ public class PathService {
             SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
 
             Price price = subwayPath.calculatePrice();
-            Price totalPrice = price.discountByAge(loginMember.getAge());
+            Price discountPrice = price.discountByAge(loginMember.getAge());
+            Price totalPrice = price.subtract(discountPrice);
 
             List<StationResponse> stationResponses = subwayPath.getStations().stream()
                     .map(StationResponse::of)

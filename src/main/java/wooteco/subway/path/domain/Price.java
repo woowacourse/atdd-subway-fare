@@ -1,6 +1,5 @@
 package wooteco.subway.path.domain;
 
-import java.math.BigDecimal;
 import java.util.Objects;
 
 public class Price {
@@ -10,19 +9,15 @@ public class Price {
     private static final Price DEDUCTION = new Price(350);
     public static final Price ADDITION = new Price(100);
 
-    private final BigDecimal value;
+    private final int value;
 
     public Price(int value) {
-        this(BigDecimal.valueOf(value));
-    }
-
-    public Price(BigDecimal value) {
         validateNotNegative(value);
         this.value = value;
     }
 
-    private void validateNotNegative(BigDecimal value) {
-        if (value.compareTo(BigDecimal.ZERO) == -1) {
+    private void validateNotNegative(int value) {
+        if (value < 0) {
             throw new IllegalArgumentException("가격은 음수가 될 수 없습니다.");
         }
     }
@@ -63,36 +58,36 @@ public class Price {
     }
 
     public Price add(Price other) {
-        return new Price(this.value.add(other.value));
+        return new Price(this.value + other.value);
     }
 
     public Price subtract(Price other) {
-        return new Price(this.value.subtract(other.value));
+        return new Price(this.value - other.value);
     }
 
     private int multiply(double multiplier) {
-        return this.value.multiply(BigDecimal.valueOf(multiplier)).intValue();
+        return (int) (this.value * multiplier);
     }
 
-    public BigDecimal getValue() {
+    public int getValue() {
         return value;
     }
 
     public Price discountByAge(int age) {
-        if(age >= 20) {
-            return this;
+        if (age >= 20) {
+            return ZERO;
         }
 
         Price basicPrice = this.subtract(DEDUCTION);
-        if(age >= 13) {
-            return new Price(basicPrice.multiply(0.8));
+        if (age >= 13) {
+            return new Price(basicPrice.multiply(0.2));
         }
 
         if (age >= 6) {
             return new Price(basicPrice.multiply(0.5));
         }
 
-        return ZERO;
+        return this;
     }
 
     @Override
