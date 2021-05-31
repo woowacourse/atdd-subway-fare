@@ -103,8 +103,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response = 지하철역_환승정보와_함께_목록_조회_요청();
-        
-        
+
         // then
         지하철역_목록_응답됨(response);
         지하철역_목록_환승_정보_포함됨(response, Arrays.asList(일호선역과이호선역환승정보, 일호선역환승정보, 이호선역환승정보));

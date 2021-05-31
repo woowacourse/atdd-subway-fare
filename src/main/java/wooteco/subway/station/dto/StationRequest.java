@@ -1,8 +1,8 @@
 package wooteco.subway.station.dto;
 
 import org.hibernate.validator.constraints.Length;
-import wooteco.subway.station.exception.InvalidStationNameException;
 import wooteco.subway.station.domain.Station;
+import wooteco.subway.station.exception.InvalidStationNameException;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;

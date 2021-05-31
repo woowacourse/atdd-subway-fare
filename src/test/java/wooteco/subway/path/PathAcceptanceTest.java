@@ -193,8 +193,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findPathWhenPathIsNotConnected() {
         //when
-        StationResponse 서빙고역 = 지하철역_등록되어_있음("서빙고역");;
-        StationResponse 한남역 = 지하철역_등록되어_있음("한남역");;
+        StationResponse 서빙고역 = 지하철역_등록되어_있음("서빙고역");
+        StationResponse 한남역 = 지하철역_등록되어_있음("한남역");
         LineResponse 사호선 = 지하철_노선_등록되어_있음("사호선", "bg-blue-600", 서빙고역, 한남역, 10);
         ExtractableResponse<Response> response = 거리_경로_조회_요청(강남역.getId(), 서빙고역.getId());
 
@@ -216,8 +216,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findPathOver10000Kilometers() {
         //when
-        StationResponse 서빙고역 = 지하철역_등록되어_있음("서빙고역");;
-        StationResponse 한남역 = 지하철역_등록되어_있음("한남역");;
+        StationResponse 서빙고역 = 지하철역_등록되어_있음("서빙고역");
+        StationResponse 한남역 = 지하철역_등록되어_있음("한남역");
         LineResponse 사호선 = 지하철_노선_등록되어_있음("사호선", "bg-blue-600", 서빙고역, 한남역, 1000000000);
         ExtractableResponse<Response> response = 거리_경로_조회_요청(서빙고역.getId(), 한남역.getId());
 
@@ -285,7 +285,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ErrorResponse errorResponse = response.jsonPath().getObject(".", ErrorResponse.class);
         assertThat(errorResponse.getErrorMessage()).isEqualTo("역이 등록되어 있지 않습니다.");
     }
-    
+
     public static void 경로가_10000KM_이상이라_조회에_실패함(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
         ErrorResponse errorResponse = response.jsonPath().getObject(".", ErrorResponse.class);

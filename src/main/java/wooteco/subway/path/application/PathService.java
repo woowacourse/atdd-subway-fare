@@ -17,10 +17,10 @@ import java.util.Optional;
 @Service
 @Transactional
 public class PathService {
-    private LineService lineService;
-    private StationService stationService;
-    private PathFinder pathFinder;
-    private FareCalculator fareCalculator;
+    private final LineService lineService;
+    private final StationService stationService;
+    private final PathFinder pathFinder;
+    private final FareCalculator fareCalculator;
 
     public PathService(LineService lineService, StationService stationService, PathFinder pathFinder, FareCalculator fareCalculator) {
         this.lineService = lineService;

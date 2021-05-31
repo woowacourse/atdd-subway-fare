@@ -19,8 +19,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class StationService {
-    private StationDao stationDao;
-    private LineDao lineDao;
+    private final StationDao stationDao;
+    private final LineDao lineDao;
 
     public StationService(StationDao stationDao, LineDao lineDao) {
         this.stationDao = stationDao;

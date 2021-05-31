@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wooteco.subway.ErrorResponse;
 import wooteco.subway.station.exception.DuplicateStationNameException;
+import wooteco.subway.station.exception.InvalidStationNameException;
 import wooteco.subway.station.exception.StationInLineException;
 import wooteco.subway.station.exception.StationNotFoundException;
-import wooteco.subway.station.exception.InvalidStationNameException;
 
 import java.util.Objects;
 

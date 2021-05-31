@@ -1,19 +1,18 @@
 package wooteco.subway.line.dto;
 
 import wooteco.subway.line.domain.Line;
-import wooteco.subway.line.exception.SectionRegisterException;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class LineResponse {
-    private Long id;
-    private String name;
-    private String color;
-    private int extraFare;
-    private List<StationResponse> stations;
-    private List<SectionResponse> sections;
+    private final Long id;
+    private final String name;
+    private final String color;
+    private final int extraFare;
+    private final List<StationResponse> stations;
+    private final List<SectionResponse> sections;
 
     public LineResponse(Long id, String name, String color, int extraFare, List<StationResponse> stations, List<SectionResponse> sections) {
         this.id = id;

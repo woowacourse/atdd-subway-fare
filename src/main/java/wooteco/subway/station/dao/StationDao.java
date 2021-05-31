@@ -14,10 +14,10 @@ import java.util.Optional;
 
 @Repository
 public class StationDao {
-    private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcInsert insertAction;
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<Station> rowMapper = (rs, rowNum) ->
+    private final RowMapper<Station> rowMapper = (rs, rowNum) ->
             new Station(
                     rs.getLong("id"),
                     rs.getString("name")
@@ -56,5 +56,6 @@ public class StationDao {
     public Optional<Station> findByName(String name) {
         String sql = "select * from STATION where name = ?";
         final List<Station> result = jdbcTemplate.query(sql, rowMapper, name);
-        return result.stream().findAny();    }
+        return result.stream().findAny();
+    }
 }
