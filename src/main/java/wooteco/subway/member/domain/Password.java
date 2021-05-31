@@ -17,14 +17,14 @@ public class Password {
         validateBlank(this.value);
     }
 
-    private void validateBlank(String value) {
-        if (value.contains(BLANK)) {
+    private void validateNull(String value) {
+        if (Objects.isNull(value)) {
             throw new InvalidPasswordException();
         }
     }
 
-    private void validateNull(String value) {
-        if (Objects.isNull(value)) {
+    private void validateBlank(String value) {
+        if (value.contains(BLANK)) {
             throw new InvalidPasswordException();
         }
     }

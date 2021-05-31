@@ -1,12 +1,10 @@
 package wooteco.subway.member.dto;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
 public class ValidateEmailRequest {
 
-    @NotNull(message = "INVALID_EMAIL")
-    @Email(message = "INVALID_EMAIL")
+    @NotNull(message = "INVALID_INPUT")
     private String email;
 
     public ValidateEmailRequest() {
