@@ -271,7 +271,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(lineMapResponses).usingRecursiveComparison().isEqualTo(expectedLineMapResponses);
     }
 
-    private static ExtractableResponse<Response> 지하철_지도를_위한_전체_노선_조회() {
+    private ExtractableResponse<Response> 지하철_지도를_위한_전체_노선_조회() {
         return RestAssured
                 .given().log().all()
                 .when().get("/map")
@@ -279,7 +279,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private static ExtractableResponse<Response> 구간_정보_조회(long lineId) {
+    private ExtractableResponse<Response> 구간_정보_조회(long lineId) {
         return RestAssured
                 .given().log().all()
                 .when().get("/lines/" + lineId + "/sections")
@@ -287,31 +287,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
-        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance);
-        return 지하철_노선_등록되어_있음(lineRequest);
-    }
-
-    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, Integer extraFare, StationResponse upStation, StationResponse downStation, int distance) {
-        LineRequest lineRequest = new LineRequest(name, color, extraFare, upStation.getId(), downStation.getId(), distance);
-        return 지하철_노선_등록되어_있음(lineRequest);
-    }
-
-    public static LineResponse 지하철_노선_등록되어_있음(LineRequest lineRequest) {
-        return 지하철_노선_생성_요청(lineRequest).as(LineResponse.class);
-    }
-
-    public static ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest params) {
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/lines")
-                .then().log().all().
-                        extract();
-    }
-
-    private static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {
+    private ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {
         return RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -320,16 +296,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_조회_요청(LineResponse response) {
-        return RestAssured
-                .given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines/{lineId}", response.getId())
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 지하철_노선_수정_요청(LineResponse response, LineRequest params) {
+    private ExtractableResponse<Response> 지하철_노선_수정_요청(LineResponse response, LineRequest params) {
 
         return RestAssured
                 .given().log().all()
@@ -340,7 +307,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_제거_요청(LineResponse lineResponse) {
+    private ExtractableResponse<Response> 지하철_노선_제거_요청(LineResponse lineResponse) {
         return RestAssured
                 .given().log().all()
                 .when().delete("/lines/" + lineResponse.getId())
@@ -348,35 +315,27 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static void 지하철_노선_생성됨(ExtractableResponse response) {
+    private void 지하철_노선_생성됨(ExtractableResponse response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
     }
 
-    public static void 지하철_노선_생성_실패됨(ExtractableResponse<Response> response) {
+    private void 지하철_노선_생성_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    public static void 지하철_노선_목록_응답됨(ExtractableResponse<Response> response) {
+    private void 지하철_노선_목록_응답됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static void 지하철_노선_응답됨(ExtractableResponse<Response> response, LineResponse lineResponse) {
+    private void 지하철_노선_응답됨(ExtractableResponse<Response> response, LineResponse lineResponse) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         LineResponse resultResponse = response.as(LineResponse.class);
-        System.out.println(resultResponse.getId());
-        System.out.println(resultResponse.getName());
-        System.out.println(resultResponse.getColor());
-        System.out.println(resultResponse.getExtraFare());
-        for (StationResponse stationResponse : resultResponse.getStations()) {
-            System.out.println(stationResponse.getId());
-            System.out.println(stationResponse.getName());
-        }
 
         assertThat(resultResponse.getId()).isEqualTo(lineResponse.getId());
     }
 
-    public static void 지하철_노선_목록_포함됨(ExtractableResponse<Response> response, List<LineResponse> createdResponses) {
+    private void 지하철_노선_목록_포함됨(ExtractableResponse<Response> response, List<LineResponse> createdResponses) {
         List<Long> expectedLineIds = createdResponses.stream()
                 .map(it -> it.getId())
                 .collect(Collectors.toList());
@@ -388,11 +347,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(resultLineIds).containsAll(expectedLineIds);
     }
 
-    public static void 지하철_노선_수정됨(ExtractableResponse<Response> response) {
+    private void 지하철_노선_수정됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static void 지하철_노선_삭제됨(ExtractableResponse<Response> response) {
+    private void 지하철_노선_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }
