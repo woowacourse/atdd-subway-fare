@@ -33,39 +33,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 남부터미널역;
     private String loginToken;
 
-    private ExtractableResponse<Response> findPath(long source, long target, String token) {
-        return RestAssured.given().log().all()
-                .auth().oauth2(token)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/paths?source={sourceId}&target={targetId}", source, target)
-                .then().log().all()
-                .extract();
-    }
-
-    private void assertPathContains(ExtractableResponse<Response> response, ArrayList<StationResponse> expectedPath) {
-        PathResponse pathResponse = response.as(PathResponse.class);
-
-        List<Long> stationIds = pathResponse.getStations().stream()
-                .map(StationResponse::getId)
-                .collect(Collectors.toList());
-
-        List<Long> expectedPathIds = expectedPath.stream()
-                .map(StationResponse::getId)
-                .collect(Collectors.toList());
-
-        assertThat(stationIds).containsExactlyElementsOf(expectedPathIds);
-    }
-
-    private void assertPathDistance(ExtractableResponse<Response> response, int totalDistance) {
-        PathResponse pathResponse = response.as(PathResponse.class);
-        assertThat(pathResponse.getDistance()).isEqualTo(totalDistance);
-    }
-
-    private void assertPathFare(ExtractableResponse<Response> response, int fare) {
-        PathResponse pathResponse = response.as(PathResponse.class);
-        assertThat(pathResponse.getFare()).isEqualTo(fare);
-    }
-
     /**
      * 교대역    --- *2호선* ---   강남역
      * |                        |
@@ -139,5 +106,38 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertPathContains(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
         assertPathDistance(response, 5);
         assertPathFare(response, 1250);
+    }
+
+    private ExtractableResponse<Response> findPath(long source, long target, String token) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(token)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/paths?source={sourceId}&target={targetId}", source, target)
+                .then().log().all()
+                .extract();
+    }
+
+    private void assertPathContains(ExtractableResponse<Response> response, ArrayList<StationResponse> expectedPath) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+
+        List<Long> stationIds = pathResponse.getStations().stream()
+                .map(StationResponse::getId)
+                .collect(Collectors.toList());
+
+        List<Long> expectedPathIds = expectedPath.stream()
+                .map(StationResponse::getId)
+                .collect(Collectors.toList());
+
+        assertThat(stationIds).containsExactlyElementsOf(expectedPathIds);
+    }
+
+    private void assertPathDistance(ExtractableResponse<Response> response, int totalDistance) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getDistance()).isEqualTo(totalDistance);
+    }
+
+    private void assertPathFare(ExtractableResponse<Response> response, int fare) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getFare()).isEqualTo(fare);
     }
 }

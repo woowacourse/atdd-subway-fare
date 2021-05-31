@@ -29,45 +29,6 @@ public class StationAcceptanceTest extends AcceptanceTest {
     private String loginToken;
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    private ExtractableResponse<Response> findStationRequest() {
-        return RestAssured.given().log().all()
-                .auth().oauth2(loginToken)
-                .when().get("/stations")
-                .then().log().all()
-                .extract();
-    }
-
-    private ExtractableResponse<Response> editStation(long id, StationRequest stationRequest) {
-        return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(stationRequest)
-                .auth().oauth2(loginToken)
-                .when().put("/stations/" + id)
-                .then().log().all()
-                .extract();
-    }
-
-    private ExtractableResponse<Response> deleteStation(long id) {
-        return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .auth().oauth2(loginToken)
-                .when().delete("/stations/" + id)
-                .then().log().all()
-                .extract();
-    }
-
-    private void assertThatStationsIncluded(ExtractableResponse<Response> response, List<StationResponse> stations) {
-        List<Long> expectedLineIds = stations.stream()
-                .map(StationResponse::getId)
-                .collect(Collectors.toList());
-
-        List<Long> resultLineIds = response.jsonPath().getList(".", StationResponse.class).stream()
-                .map(StationResponse::getId)
-                .collect(Collectors.toList());
-
-        assertThat(resultLineIds).containsAll(expectedLineIds);
-    }
-
     @BeforeEach
     public void setUp() {
         super.setUp();
@@ -184,5 +145,44 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         assertResponseStatus(response, HttpStatus.BAD_REQUEST);
         assertResponseMessage(response, "이미 노선에 등록된 역은 삭제할 수 없습니다.");
+    }
+
+    private ExtractableResponse<Response> findStationRequest() {
+        return RestAssured.given().log().all()
+                .auth().oauth2(loginToken)
+                .when().get("/stations")
+                .then().log().all()
+                .extract();
+    }
+
+    private ExtractableResponse<Response> editStation(long id, StationRequest stationRequest) {
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(stationRequest)
+                .auth().oauth2(loginToken)
+                .when().put("/stations/" + id)
+                .then().log().all()
+                .extract();
+    }
+
+    private ExtractableResponse<Response> deleteStation(long id) {
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(loginToken)
+                .when().delete("/stations/" + id)
+                .then().log().all()
+                .extract();
+    }
+
+    private void assertThatStationsIncluded(ExtractableResponse<Response> response, List<StationResponse> stations) {
+        List<Long> expectedLineIds = stations.stream()
+                .map(StationResponse::getId)
+                .collect(Collectors.toList());
+
+        List<Long> resultLineIds = response.jsonPath().getList(".", StationResponse.class).stream()
+                .map(StationResponse::getId)
+                .collect(Collectors.toList());
+
+        assertThat(resultLineIds).containsAll(expectedLineIds);
     }
 }

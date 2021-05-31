@@ -28,27 +28,6 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     private StationResponse station4;
     private String loginToken;
 
-    private ExtractableResponse<Response> deleteSection(long lineId, long stationId) {
-        return RestAssured.given().log().all()
-                .auth().oauth2(loginToken)
-                .when().delete("/lines/{lineId}/sections?stationId={stationId}", lineId, stationId)
-                .then().log().all()
-                .extract();
-
-    }
-
-    private void assertOrderedStations(long id, List<StationResponse> stationResponses) {
-        LineResponse lineResponse = findOneLine(id, loginToken)
-                .as(LineResponse.class);
-        List<Long> stationIds = lineResponse.getStations().stream()
-                .map(StationResponse::getId)
-                .collect(Collectors.toList());
-        List<Long> expectedStationIds = stationResponses.stream()
-                .map(StationResponse::getId)
-                .collect(Collectors.toList());
-        assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
-    }
-
     @BeforeEach
     public void setUp() {
         super.setUp();
@@ -132,5 +111,27 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         assertResponseStatus(response, HttpStatus.BAD_REQUEST);
         assertResponseMessage(response, "노선에는 최소한 하나의 구간은 존재해야합니다.");
+    }
+
+
+    private ExtractableResponse<Response> deleteSection(long lineId, long stationId) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(loginToken)
+                .when().delete("/lines/{lineId}/sections?stationId={stationId}", lineId, stationId)
+                .then().log().all()
+                .extract();
+
+    }
+
+    private void assertOrderedStations(long id, List<StationResponse> stationResponses) {
+        LineResponse lineResponse = findOneLine(id, loginToken)
+                .as(LineResponse.class);
+        List<Long> stationIds = lineResponse.getStations().stream()
+                .map(StationResponse::getId)
+                .collect(Collectors.toList());
+        List<Long> expectedStationIds = stationResponses.stream()
+                .map(StationResponse::getId)
+                .collect(Collectors.toList());
+        assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
     }
 }

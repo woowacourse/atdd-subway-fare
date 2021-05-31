@@ -18,30 +18,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     private String loginToken;
 
-    private ExtractableResponse<Response> editMemberInfo(MemberRequest memberRequest) {
-        return RestAssured.given().log().all()
-                .auth().oauth2(loginToken)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(memberRequest)
-                .when().put("/members/me")
-                .then().log().all()
-                .extract();
-    }
-
-    private ExtractableResponse<Response> deleteMemberRequest() {
-        return RestAssured.given().log().all()
-                .auth().oauth2(loginToken)
-                .when().delete("/members/me")
-                .then().log().all()
-                .extract();
-    }
-
-    private void assertUserInformation(ExtractableResponse<Response> response, String email, int age) {
-        MemberResponse member = response.as(MemberResponse.class);
-        assertThat(member.getEmail()).isEqualTo(email);
-        assertThat(member.getAge()).isEqualTo(age);
-    }
-
     @BeforeEach
     public void setUp() {
         super.setUp();
@@ -104,5 +80,29 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         assertResponseStatus(response, HttpStatus.BAD_REQUEST);
         assertResponseMessage(response, "잘못된 나이입니다.");
+    }
+
+    private ExtractableResponse<Response> editMemberInfo(MemberRequest memberRequest) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(loginToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(memberRequest)
+                .when().put("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    private ExtractableResponse<Response> deleteMemberRequest() {
+        return RestAssured.given().log().all()
+                .auth().oauth2(loginToken)
+                .when().delete("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    private void assertUserInformation(ExtractableResponse<Response> response, String email, int age) {
+        MemberResponse member = response.as(MemberResponse.class);
+        assertThat(member.getEmail()).isEqualTo(email);
+        assertThat(member.getAge()).isEqualTo(age);
     }
 }

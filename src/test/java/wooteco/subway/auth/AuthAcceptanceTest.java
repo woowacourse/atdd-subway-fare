@@ -23,18 +23,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    private ExtractableResponse<Response> requestLogin(String email, String password) {
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
-        return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/login/token")
-                .then().log().all()
-                .extract();
-    }
-
     @DisplayName("Bearer Auth 정상적으로 로그인한다.")
     @Test
     void myInfoWithBearerAuth() throws JsonProcessingException {
@@ -68,5 +56,17 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
         assertResponseStatus(response, HttpStatus.UNAUTHORIZED);
         assertResponseMessage(response, "유효하지 않은 토큰입니다.");
+    }
+
+    private ExtractableResponse<Response> requestLogin(String email, String password) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/login/token")
+                .then().log().all()
+                .extract();
     }
 }

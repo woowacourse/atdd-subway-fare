@@ -33,45 +33,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
     private LineRequest secondLineRequest;
     private String loginToken;
 
-    private void assertThatLinesIncluded(ExtractableResponse<Response> response, List<LineResponse> createdResponses) {
-        List<Long> expectedLineIds = createdResponses.stream()
-                .map(LineResponse::getId)
-                .collect(Collectors.toList());
-
-        List<Long> resultLineIds = response.jsonPath().getList(".", LineResponse.class).stream()
-                .map(LineResponse::getId)
-                .collect(Collectors.toList());
-
-        assertThat(resultLineIds).containsAll(expectedLineIds);
-    }
-
-    private ExtractableResponse<Response> findLineListRequest() {
-        return RestAssured.given().log().all()
-                .auth().oauth2(loginToken)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines")
-                .then().log().all()
-                .extract();
-    }
-
-    private ExtractableResponse<Response> editLine(long id, LineRequest lineRequest) {
-        return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest)
-                .auth().oauth2(loginToken)
-                .when().put("/lines/" + id)
-                .then().log().all()
-                .extract();
-    }
-
-    private ExtractableResponse<Response> deleteLine(long id) {
-        return RestAssured.given().log().all()
-                .auth().oauth2(loginToken)
-                .when().delete("/lines/" + id)
-                .then().log().all()
-                .extract();
-    }
-
     @BeforeEach
     public void setUp() {
         super.setUp();
@@ -237,5 +198,44 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = deleteLine(lineResponse.getId());
 
         assertResponseStatus(response, HttpStatus.NO_CONTENT);
+    }
+
+    private void assertThatLinesIncluded(ExtractableResponse<Response> response, List<LineResponse> createdResponses) {
+        List<Long> expectedLineIds = createdResponses.stream()
+                .map(LineResponse::getId)
+                .collect(Collectors.toList());
+
+        List<Long> resultLineIds = response.jsonPath().getList(".", LineResponse.class).stream()
+                .map(LineResponse::getId)
+                .collect(Collectors.toList());
+
+        assertThat(resultLineIds).containsAll(expectedLineIds);
+    }
+
+    private ExtractableResponse<Response> findLineListRequest() {
+        return RestAssured.given().log().all()
+                .auth().oauth2(loginToken)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/lines")
+                .then().log().all()
+                .extract();
+    }
+
+    private ExtractableResponse<Response> editLine(long id, LineRequest lineRequest) {
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(lineRequest)
+                .auth().oauth2(loginToken)
+                .when().put("/lines/" + id)
+                .then().log().all()
+                .extract();
+    }
+
+    private ExtractableResponse<Response> deleteLine(long id) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(loginToken)
+                .when().delete("/lines/" + id)
+                .then().log().all()
+                .extract();
     }
 }
