@@ -1,5 +1,7 @@
 package wooteco.subway.line.dao;
 
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -16,6 +18,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Repository
+@CacheConfig(cacheNames = {"cache::shortestPath"})
 public class LineDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
@@ -27,6 +30,7 @@ public class LineDao {
                 .usingGeneratedKeyColumns("id");
     }
 
+    @CacheEvict(allEntries = true)
     public Line insert(Line line) {
         Map<String, Object> params = new HashMap<>();
         params.put("id", line.getId());
@@ -53,6 +57,7 @@ public class LineDao {
         return mapLine(result);
     }
 
+    @CacheEvict(allEntries = true)
     public void update(Line newLine) {
         String sql = "update LINE set name = ?, color = ? where id = ?";
         jdbcTemplate.update(sql, newLine.getName(), newLine.getColor(), newLine.getId());
@@ -108,6 +113,7 @@ public class LineDao {
                 .collect(Collectors.toList());
     }
 
+    @CacheEvict(allEntries = true)
     public void deleteById(Long id) {
         jdbcTemplate.update("delete from Line where id = ?", id);
     }

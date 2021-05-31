@@ -1,5 +1,7 @@
 package wooteco.subway.line.dao;
 
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -13,6 +15,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Repository
+@CacheConfig(cacheNames = {"cache::shortestPath"})
 public class SectionDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
@@ -24,6 +27,7 @@ public class SectionDao {
                 .usingGeneratedKeyColumns("id");
     }
 
+    @CacheEvict(allEntries = true)
     public Section insert(Line line, Section section) {
         Map<String, Object> params = new HashMap();
         params.put("line_id", line.getId());
@@ -34,10 +38,12 @@ public class SectionDao {
         return new Section(sectionId, section.getUpStation(), section.getDownStation(), section.getDistance());
     }
 
+    @CacheEvict(allEntries = true)
     public void deleteByLineId(Long lineId) {
         jdbcTemplate.update("delete from SECTION where line_id = ?", lineId);
     }
 
+    @CacheEvict(allEntries = true)
     public void insertSections(Line line) {
         List<Section> sections = line.getSections().getSections();
         List<Map<String, Object>> batchValues = sections.stream()
