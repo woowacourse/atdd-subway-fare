@@ -38,6 +38,7 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
             .excludePathPatterns("/api/login/token")
             .excludePathPatterns("/api/members/**")
             .excludePathPatterns("/api/paths/**")
-            .excludePathPatterns("/api/map");
+            .excludePathPatterns("/api/map")
+            .excludePathPatterns("/paths/**");
     }
 }
