@@ -16,7 +16,6 @@ import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
-import wooteco.subway.line.dto.SimpleLineResponse;
 import wooteco.subway.station.dto.StationResponse;
 import wooteco.subway.util.TestUtil;
 
@@ -62,8 +61,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .map(LineResponse::getId)
                 .collect(Collectors.toList());
 
-        List<Long> resultLineIds = response.jsonPath().getList(".", SimpleLineResponse.class).stream()
-                .map(SimpleLineResponse::getId)
+        List<Long> resultLineIds = response.jsonPath().getList(".", LineResponse.class).stream()
+                .map(LineResponse::getId)
                 .collect(Collectors.toList());
 
         assertThat(resultLineIds).containsAll(expectedLineIds);
@@ -195,7 +194,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertResponseMessage(response, "존재하지 않는 노선입니다.");
     }
 
-    @DisplayName("간단한 노선 목록을 조회한다.")
+    @DisplayName("노선 목록을 조회한다.")
     @Test
     void findLineList() {
         LineResponse firstLineResponse = createLine(firstLineRequest, loginToken).as(LineResponse.class);

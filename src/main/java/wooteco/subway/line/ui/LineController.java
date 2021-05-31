@@ -6,7 +6,6 @@ import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
-import wooteco.subway.line.dto.SimpleLineResponse;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -32,9 +31,9 @@ public class LineController {
     }
 
     @GetMapping
-    public ResponseEntity<List<SimpleLineResponse>> findAllLines() {
-        List<SimpleLineResponse> simpleLineResponses = lineService.findSimpleLineResponses();
-        return ResponseEntity.ok(simpleLineResponses);
+    public ResponseEntity<List<LineResponse>> findAllLines() {
+        List<LineResponse> lineResponses = lineService.findLineResponses();
+        return ResponseEntity.ok(lineResponses);
     }
 
     @GetMapping("/{id}")
