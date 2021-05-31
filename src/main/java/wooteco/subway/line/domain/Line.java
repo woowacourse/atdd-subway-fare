@@ -14,6 +14,7 @@ public class Line {
     private Long id;
     private String name;
     private String color;
+    private int extraFare;
     private Sections sections;
 
     public Line() {
@@ -23,15 +24,28 @@ public class Line {
         this(null, name, color);
     }
 
+    public Line(String name, String color, int extraFare) {
+        this(null, name, color, extraFare, null);
+    }
+
     public Line(Long id, String name, String color) {
         this(id, name, color, new Sections());
     }
 
+    public Line(Long id, String name, String color, int extraFare) {
+        this(id, name, color, extraFare, new Sections());
+    }
+
     public Line(Long id, String name, String color, Sections sections) {
+        this(id, name, color, 0, sections);
+    }
+
+    public Line(Long id, String name, String color, int extraFare, Sections sections) {
         validate(name);
         this.id = id;
         this.name = name.trim();
         this.color = color;
+        this.extraFare = extraFare;
         this.sections = sections;
     }
 
@@ -80,6 +94,10 @@ public class Line {
 
     public String getColor() {
         return color;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 
     public List<Section> getSections() {

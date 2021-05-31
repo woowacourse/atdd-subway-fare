@@ -32,10 +32,6 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String credentials = AuthorizationExtractor.extract(
             Objects.requireNonNull(webRequest.getNativeRequest(HttpServletRequest.class)));
-        LoginMember member = authService.findMemberByToken(credentials);
-        if (member.getId() == null) {
-            throw new SubwayCustomException(SubwayAuthException.NOT_EXIST_MEMBER_EXCEPTION);
-        }
-        return member;
+        return authService.findMemberByToken(credentials);
     }
 }

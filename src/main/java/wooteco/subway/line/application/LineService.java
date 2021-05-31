@@ -35,7 +35,7 @@ public class LineService {
     public LineResponse saveLine(LineRequest request) {
         try {
             checkDuplicateLineColor(request);
-            Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
+            Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
             persistLine.addSection(addInitSection(persistLine, request));
             return LineResponse.of(persistLine);
         } catch (DuplicateKeyException exception) {

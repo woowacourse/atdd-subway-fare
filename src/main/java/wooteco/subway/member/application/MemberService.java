@@ -1,7 +1,9 @@
 package wooteco.subway.member.application;
 
+import java.util.Objects;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import wooteco.subway.auth.exception.SubwayAuthException;
 import wooteco.subway.exception.SubwayCustomException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
@@ -29,11 +31,19 @@ public class MemberService {
     }
 
     public MemberResponse findMember(LoginMember loginMember) {
+        validateMember(loginMember);
         Member member = memberDao.findByEmail(loginMember.getEmail());
         return MemberResponse.of(member);
     }
 
+    private void validateMember(LoginMember loginMember) {
+        if (Objects.isNull(loginMember.getId())) {
+            throw new SubwayCustomException(SubwayAuthException.NOT_EXIST_MEMBER_EXCEPTION);
+        }
+    }
+
     public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
+        validateMember(loginMember);
         Member member = memberDao.findByEmail(loginMember.getEmail());
         try {
             memberDao.update(
@@ -45,6 +55,7 @@ public class MemberService {
     }
 
     public void deleteMember(LoginMember loginMember) {
+        validateMember(loginMember);
         Member member = memberDao.findByEmail(loginMember.getEmail());
         memberDao.deleteById(member.getId());
     }

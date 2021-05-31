@@ -9,6 +9,10 @@ public class LoginMember {
     public LoginMember() {
     }
 
+    public LoginMember(Integer age) {
+        this(null, null, age);
+    }
+
     public LoginMember(Long id, String email, Integer age) {
         this.id = id;
         this.email = email;
