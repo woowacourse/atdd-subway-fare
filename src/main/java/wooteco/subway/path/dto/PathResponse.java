@@ -8,12 +8,12 @@ import wooteco.subway.station.dto.StationResponse;
 public class PathResponse {
     private List<StationResponse> stations;
     private int distance;
-    private Fare fare;
+    private int fare;
 
     public PathResponse() {
     }
 
-    public PathResponse(List<StationResponse> stations, int distance, Fare fare) {
+    public PathResponse(List<StationResponse> stations, int distance, int fare) {
         this.stations = stations;
         this.distance = distance;
         this.fare = fare;
@@ -28,6 +28,6 @@ public class PathResponse {
     }
 
     public int getFare() {
-        return fare.getFare();
+        return fare;
     }
 }

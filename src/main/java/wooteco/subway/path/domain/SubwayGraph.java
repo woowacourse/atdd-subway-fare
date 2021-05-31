@@ -19,7 +19,7 @@ public class SubwayGraph extends WeightedMultigraph<Station, SectionEdge> {
             .flatMap(it -> it.getStations().stream())
             .distinct()
             .collect(Collectors.toList())
-            .forEach(it -> addVertex(it));
+            .forEach(this::addVertex);
     }
 
     public void addEdge(List<Line> lines) {

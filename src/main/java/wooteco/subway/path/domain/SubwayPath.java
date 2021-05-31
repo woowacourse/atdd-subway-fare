@@ -7,26 +7,14 @@ import wooteco.subway.path.domain.policy.FareByDistance;
 import wooteco.subway.station.domain.Station;
 
 public class SubwayPath {
-    private List<SectionEdge> sectionEdges;
-    private List<Station> stations;
+    private final List<SectionEdge> sectionEdges;
+    private final List<Station> stations;
     private int distance;
 
     public SubwayPath(List<SectionEdge> sectionEdges, List<Station> stations, int distance) {
         this.sectionEdges = sectionEdges;
         this.stations = stations;
         this.distance = distance;
-    }
-
-    public List<SectionEdge> getSectionEdges() {
-        return sectionEdges;
-    }
-
-    public List<Station> getStations() {
-        return stations;
-    }
-
-    public int getDistance() {
-        return distance;
     }
 
     public int calculateFareByDistance() {
@@ -42,5 +30,13 @@ public class SubwayPath {
             .mapToInt(Line::getExtraFare)
             .max()
             .orElse(0);
+    }
+
+    public List<Station> getStations() {
+        return stations;
+    }
+
+    public int getDistance() {
+        return distance;
     }
 }
