@@ -1,6 +1,7 @@
 package wooteco.subway.member.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.auth.application.AuthorizationException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
@@ -13,6 +14,7 @@ import wooteco.subway.member.exception.DuplicateEmailException;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class MemberService {
     private final MemberDao memberDao;
 
