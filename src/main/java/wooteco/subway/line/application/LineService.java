@@ -59,7 +59,8 @@ public class LineService {
     }
 
     public List<SimpleLineResponse> findSimpleLineResponses() {
-        List<Line> persistLines = findAllSimple();
+        List<Line> persistLines = findLines();
+
         return persistLines.stream()
                 .map(SimpleLineResponse::of)
                 .collect(Collectors.toList());
