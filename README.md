@@ -125,3 +125,9 @@
     - 근데 valid를 할꺼면 최대한 앞단에서 하는게 좋은 것 같긴함
     - 둘 다 똑같은 것을 두번 해줘야 하나?
 - 인수테스트만 해도 괜찮을까? 실제 시나리오를 반영시키는데 충분할 거 같기도하다
+- Argument Resolver에서 Optional<LoginMember>를 반환
+    - members/me & path의 fare 계산 로직에서 LoginMember를 알아야함 근데...
+        - members/me 에서는 필수
+        - path 에서는 선택
+    - 이러다 보니 Optional<LoginMember>를 반환해 필수로 들어와야 하는 members/me controller에서 validation
+        - 좋은 방법인지?
