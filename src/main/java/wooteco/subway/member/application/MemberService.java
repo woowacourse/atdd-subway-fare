@@ -11,16 +11,16 @@ import wooteco.subway.member.exception.EmailNotFoundRuntimeException;
 
 @Service
 public class MemberService {
-    private MemberDao memberDao;
+    private final MemberDao memberDao;
 
     public MemberService(MemberDao memberDao) {
         this.memberDao = memberDao;
     }
 
     public MemberResponse createMember(MemberRequest request) {
-        if (memberDao.findByEmail(request.getEmail()).isPresent()) {
+        memberDao.findByEmail(request.getEmail()).ifPresent(exception -> {
             throw new DuplicateEmailException();
-        }
+        });
         Member member = memberDao.insert(request.toMember());
         return MemberResponse.of(member);
     }

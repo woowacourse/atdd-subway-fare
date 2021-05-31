@@ -31,6 +31,6 @@ public enum FareAdjusterByAge {
     static class Constants {
         static final int COMMON_DISCOUNT = 350;
         static final double SCHOOL_AGED_DISCOUNT_RATE = 0.5;
-        static final double ADOLESCENT_DISCOUNT_RATE = 0.5;
+        static final double ADOLESCENT_DISCOUNT_RATE = 0.8;
     }
 }
