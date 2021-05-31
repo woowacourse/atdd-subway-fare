@@ -1,6 +1,6 @@
 package wooteco.subway.path.domain.fare;
 
-import static wooteco.subway.path.application.FarePolicyFinder.*;
+import static wooteco.subway.path.domain.fare.FarePolicyFinder.*;
 
 public class AdultFarePolicy implements FarePolicy {
 

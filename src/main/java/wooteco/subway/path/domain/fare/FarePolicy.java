@@ -1,6 +1,6 @@
 package wooteco.subway.path.domain.fare;
 
-import static wooteco.subway.path.application.FarePolicyFinder.FARE_PER_KM;
+import static wooteco.subway.path.domain.fare.FarePolicyFinder.FARE_PER_KM;
 
 public interface FarePolicy {
     double calculateFare(int distance, long extraFare);
