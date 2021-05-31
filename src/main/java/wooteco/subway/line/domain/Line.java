@@ -82,4 +82,12 @@ public class Line {
     public List<Station> getStations() {
         return sections.getStations();
     }
+
+    public boolean sameNameAs(String name) {
+        return this.name.equals(name);
+    }
+
+    public boolean sameIdAs(Long id) {
+        return this.id.equals(id);
+    }
 }

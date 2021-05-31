@@ -12,8 +12,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class StationService {
-    private StationDao stationDao;
-    private SectionDao sectionDao;
+    private final StationDao stationDao;
+    private final SectionDao sectionDao;
 
     public StationService(StationDao stationDao, SectionDao sectionDao) {
         this.stationDao = stationDao;
@@ -57,7 +57,7 @@ public class StationService {
         findStationById(id);
 
         stationDao.findByName(stationRequest.getName())
-                .filter(station -> station.getName().equals(stationRequest.getName()) && !station.getId().equals(id))
+                .filter(station -> station.sameNameAs(stationRequest.getName()) && !station.sameAs(id))
                 .ifPresent(station -> {
                     throw new DuplicateStationException();
                 });

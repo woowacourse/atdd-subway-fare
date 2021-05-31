@@ -1,6 +1,6 @@
 package wooteco.subway.line.dto;
 
-import wooteco.subway.line.domain.Sections;
+import wooteco.subway.line.domain.Line;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,24 +19,25 @@ public class LinesResponse {
         this(id, name, color, 0, sections);
     }
 
-    public LinesResponse(Long id, String name, String color, int extraFare, Sections sections) {
-        this(
-                id,
-                name,
-                color,
-                extraFare,
-                sections.getSections().stream()
-                        .map(SectionResponse::of)
-                        .collect(Collectors.toList())
-        );
-    }
-
     public LinesResponse(Long id, String name, String color, int extraFare, List<SectionResponse> sections) {
         this.id = id;
         this.name = name;
         this.color = color;
         this.extraFare = extraFare;
         this.sections = sections;
+    }
+
+    public static LinesResponse of(Line line) {
+        return new LinesResponse(
+                line.getId(),
+                line.getName(),
+                line.getColor(),
+                line.getExtraFare(),
+                line.getSections().getSections()
+                        .stream()
+                        .map(SectionResponse::of)
+                        .collect(Collectors.toList())
+        );
     }
 
     public Long getId() {

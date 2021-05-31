@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 public class LineService {
     private LineDao lineDao;
     private SectionDao sectionDao;
+
     private StationService stationService;
 
     public LineService(LineDao lineDao, SectionDao sectionDao, StationService stationService) {
@@ -49,7 +50,7 @@ public class LineService {
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
-                .map(line -> LineResponse.of(line))
+                .map(LineResponse::of)
                 .collect(Collectors.toList());
     }
 
@@ -71,7 +72,7 @@ public class LineService {
         validateExistLine(id);
 
         lineDao.findByName(lineUpdateRequest.getName())
-                .filter(line -> line.getName().equals(lineUpdateRequest.getName()) && !line.getId().equals(id))
+                .filter(line -> line.sameNameAs(lineUpdateRequest.getName()) && !line.sameIdAs(id))
                 .ifPresent(station -> {
                     throw new DuplicateLineException();
                 });
@@ -114,13 +115,7 @@ public class LineService {
     public List<LinesResponse> findAllInfo() {
         List<Line> lines = lineDao.findAll();
         return lines.stream()
-                .map(line ->
-                        new LinesResponse(
-                                line.getId(), line.getName(), line.getColor(),
-                                line.getExtraFare(),
-                                line.getSections()
-                        )
-                )
+                .map(LinesResponse::of)
                 .collect(Collectors.toList());
     }
 }

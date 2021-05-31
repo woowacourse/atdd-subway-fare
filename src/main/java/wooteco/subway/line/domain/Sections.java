@@ -6,10 +6,7 @@ import wooteco.subway.line.application.exception.NotFoundStationOfSectionExcepti
 import wooteco.subway.line.application.exception.OverDistanceOfSectionException;
 import wooteco.subway.station.domain.Station;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Sections {
@@ -90,7 +87,7 @@ public class Sections {
     }
 
     private void replaceSectionWithDownStation(Section newSection, Section existSection) {
-        if (existSection.getDistance() <= newSection.getDistance()) { // existSection.isOver(newSection)
+        if (existSection.isOverDistance(newSection)) {
             throw new OverDistanceOfSectionException();
         }
         this.sections.add(new Section(newSection.getDownStation(), existSection.getDownStation(), existSection.getDistance() - newSection.getDistance()));
@@ -99,7 +96,7 @@ public class Sections {
 
     public List<Station> getStations() {
         if (sections.isEmpty()) {
-            return Arrays.asList();
+            return Collections.emptyList();
         }
 
         List<Station> stations = new ArrayList<>();

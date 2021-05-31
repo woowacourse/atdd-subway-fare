@@ -14,7 +14,7 @@ import wooteco.subway.path.ui.farepolicy.*;
 import javax.servlet.http.HttpServletRequest;
 
 public class AuthFareArgumentResolver implements HandlerMethodArgumentResolver {
-    private AuthService authService;
+    private final AuthService authService;
 
     public AuthFareArgumentResolver(AuthService authService) {
         this.authService = authService;
@@ -32,7 +32,7 @@ public class AuthFareArgumentResolver implements HandlerMethodArgumentResolver {
         return findProperFarePolicy(member);
     }
 
-    private FarePolicy findProperFarePolicy(LoginMember member) {
+    private FarePolicy findProperFarePolicy(LoginMember member) { // TODO : 수정
         if (member.getId() == null || member.isAdult()) {
             return new AdultFarePolicy();
         }
