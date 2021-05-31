@@ -1,6 +1,5 @@
 package wooteco.subway.path.domain;
 
-import wooteco.subway.line.domain.Line;
 import wooteco.subway.path.application.InvalidPathException;
 import wooteco.subway.station.domain.Station;
 
@@ -39,8 +38,7 @@ public class SubwayPath {
 
     private int calculateExtraFare() {
         return sectionEdges.stream()
-            .map(SectionEdge::getLine)
-            .mapToInt(Line::getExtraFare)
+            .mapToInt(SectionEdge::getLineExtraFare)
             .max()
             .orElseThrow(InvalidPathException::new);
     }
