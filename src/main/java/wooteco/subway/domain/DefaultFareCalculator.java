@@ -1,8 +1,5 @@
-package wooteco.subway.service;
+package wooteco.subway.domain;
 
-import org.springframework.stereotype.Service;
-
-@Service
 public class DefaultFareCalculator implements FareCalculator {
     private static final int DEFAULT_FARE = 1250;
     private static final int TEN_KILOMETER = 10;

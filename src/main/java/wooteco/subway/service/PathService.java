@@ -7,11 +7,9 @@ import wooteco.auth.domain.LoginMember;
 import wooteco.auth.domain.Member;
 import wooteco.common.exception.badrequest.InvalidPathException;
 import wooteco.common.exception.notfound.MemberNotFoundException;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.SubwayPath;
+import wooteco.subway.domain.*;
 import wooteco.subway.web.dto.response.PathResponse;
 import wooteco.subway.web.dto.PathResponseAssembler;
-import wooteco.subway.domain.Station;
 
 import java.util.List;
 
@@ -21,14 +19,12 @@ public class PathService {
     private LineService lineService;
     private StationService stationService;
     private PathFinder pathFinder;
-    private FareCalculator fareCalculator;
     private MemberDao memberDao;
 
-    public PathService(LineService lineService, StationService stationService, PathFinder pathFinder, DefaultFareCalculator fareCalculator, MemberDao memberDao) {
+    public PathService(LineService lineService, StationService stationService, PathFinder pathFinder, MemberDao memberDao) {
         this.lineService = lineService;
         this.stationService = stationService;
         this.pathFinder = pathFinder;
-        this.fareCalculator = fareCalculator;
         this.memberDao = memberDao;
     }
 
@@ -51,10 +47,10 @@ public class PathService {
 
     private FareCalculator decideFareCalculator(LoginMember loginMember) {
         if (loginMember.isAnonymous()) {
-            return fareCalculator;
+            return new DefaultFareCalculator();
         }
         Member member = memberDao.findById(loginMember.getId())
                 .orElseThrow(MemberNotFoundException::new);
-        return new AgeDiscountFareCalculator(fareCalculator, member.getAge());
+        return new AgeDiscountFareCalculator(new DefaultFareCalculator(), member.getAge());
     }
 }

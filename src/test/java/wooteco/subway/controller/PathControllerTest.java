@@ -11,14 +11,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import wooteco.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.TestDataLoader;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
-import wooteco.subway.service.DefaultFareCalculator;
-import wooteco.subway.service.FareCalculator;
+import wooteco.subway.domain.*;
 import wooteco.subway.service.PathService;
 import wooteco.subway.web.PathController;
 import wooteco.subway.web.dto.response.PathResponse;
-import wooteco.subway.domain.Station;
 import wooteco.subway.web.dto.response.StationResponse;
 
 import java.util.Arrays;
