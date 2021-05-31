@@ -46,7 +46,7 @@ public class StationService {
     }
 
     public void deleteStationById(Long id) {
-        if (stationDao.isOnSection(id)) {
+        if (stationDao.existsInSection(id)) {
             throw new InvalidInsertException("이미 노선에 등록된 지하철 역입니다");
         }
         stationDao.deleteById(id);
@@ -58,9 +58,5 @@ public class StationService {
         }
         Station station = stationDao.updateName(id, req.getName());
         return StationResponse.of(station);
-    }
-
-    public List<Station> findAll() {
-        return stationDao.findAll();
     }
 }
