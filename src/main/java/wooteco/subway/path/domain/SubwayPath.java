@@ -4,7 +4,6 @@ import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
-import java.util.Optional;
 
 public class SubwayPath {
     private final List<SectionEdge> sectionEdges;

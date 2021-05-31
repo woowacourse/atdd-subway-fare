@@ -5,7 +5,7 @@ import wooteco.subway.line.domain.Line;
 import java.util.List;
 
 public class StationWithLines extends Station {
-    private List<Line> lines;
+    private final List<Line> lines;
 
     public StationWithLines(final Long id, final String name, final List<Line> lines) {
         super(id, name);

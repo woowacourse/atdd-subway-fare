@@ -7,12 +7,9 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.line.domain.Line;
-import wooteco.subway.line.dto.TransferLineResponse;
 import wooteco.subway.station.application.NoSuchStationException;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.domain.StationWithLines;
-import wooteco.subway.station.dto.StationLineResponse;
-import wooteco.subway.station.dto.StationTransferResponse;
 
 import javax.sql.DataSource;
 import java.util.Collections;
