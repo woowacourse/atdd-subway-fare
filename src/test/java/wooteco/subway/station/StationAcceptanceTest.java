@@ -126,6 +126,21 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_목록_포함됨(response, Arrays.asList(stationResponse1, stationResponse2));
     }
 
+    @DisplayName("지하철역을 조회시 응답 목록은 가장 최근에 등록된 역 먼저 보여준다.")
+    @Test
+    void getStationsWithOrder() {
+        // given
+        StationResponse stationResponse1 = 지하철역_등록되어_있음(강남역);
+        StationResponse stationResponse2 = 지하철역_등록되어_있음(역삼역);
+
+        // when
+        ExtractableResponse<Response> response = 지하철역_목록_조회_요청();
+
+        // then
+        지하철역_목록_응답됨(response);
+        지하철역_목록_순서가_보장됨(response, Arrays.asList(stationResponse2, stationResponse1));
+    }
+
     @DisplayName("지하철역을 제거한다.")
     @Test
     void deleteStation() {
@@ -253,7 +268,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철역_목록_포함됨(ExtractableResponse<Response> response, List<StationResponse> createdResponses) {
         List<Long> expectedLineIds = createdResponses.stream()
-                .map(it -> it.getId())
+                .map(StationResponse::getId)
                 .collect(Collectors.toList());
 
         List<Long> resultLineIds = response.jsonPath().getList(".", StationResponse.class).stream()
@@ -261,6 +276,18 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 .collect(Collectors.toList());
 
         assertThat(resultLineIds).containsAll(expectedLineIds);
+    }
+
+    public static void 지하철역_목록_순서가_보장됨(ExtractableResponse<Response> response, List<StationResponse> createdResponses) {
+        List<String> realResponseName = response.jsonPath().getList(".", StationResponse.class).stream()
+                .map(StationResponse::getName)
+                .collect(Collectors.toList());
+
+        List<String> expectedResponseName = createdResponses.stream()
+                .map(StationResponse::getName)
+                .collect(Collectors.toList());
+
+        assertThat(realResponseName).isEqualTo(expectedResponseName);
     }
 
     public static void 지하철역_목록_환승_정보_포함됨(ExtractableResponse<Response> response, List<StationWithTransferResponse> createdResponses) {

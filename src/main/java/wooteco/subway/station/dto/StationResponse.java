@@ -2,6 +2,7 @@ package wooteco.subway.station.dto;
 
 import wooteco.subway.station.domain.Station;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,6 +24,7 @@ public class StationResponse {
 
     public static List<StationResponse> listOf(List<Station> stations) {
         return stations.stream()
+                .sorted(Comparator.comparing(Station::getId).reversed())
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
     }
