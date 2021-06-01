@@ -1,5 +1,7 @@
 package wooteco.subway.exception;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -10,8 +12,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wooteco.subway.exception.dto.ErrorResponse;
 import wooteco.subway.path.application.InvalidPathException;
 
+import java.util.Arrays;
+
 @RestControllerAdvice
 public class SubwayControllerAdvice {
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @ExceptionHandler(AuthorizationException.class)
     public ResponseEntity<ErrorResponse> handleAuthorizationException(AuthorizationException e) {
@@ -55,7 +61,7 @@ public class SubwayControllerAdvice {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception e) {
-        e.printStackTrace();
+        logger.error(e.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse("처리하지 않은 서버에러입니다 ㅠㅜ.."));
     }
 }
