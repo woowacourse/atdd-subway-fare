@@ -11,8 +11,6 @@ public class FareCalculator {
     private static final int ADDITIONAL_FARE_PIVOT = 5;
     private static final int LONG_DISTANCE_PIVOT = 50;
     private static final int LONG_ADDITIONAL_FARE_PIVOT = 8;
-    private static final double CHILD_DISCOUNTED_RATE = 0.5;
-    private static final double TEENAGE_DISCOUNTED_RATE = 0.8;
 
     public static int calculateFare(final SubwayPath subwayPath, final Integer age) {
         int extraFareByDistance = FarePolicy.DEFAULT_FARE.getFare() + getMaximumExtraFareByLine(subwayPath.getSectionEdges()) + getExtraFareByDistance(subwayPath.getDistance());
@@ -42,12 +40,6 @@ public class FareCalculator {
     }
 
     private static int getDiscountedFareByAge(int fare, int age) {
-        if (AgePolicy.isChildren(age)) {
-            return (int) ((fare - FarePolicy.MINOR_DISCOUNT_FARE.getFare()) * CHILD_DISCOUNTED_RATE);
-        }
-        if (AgePolicy.isTeenage(age)) {
-            return (int) ((fare - FarePolicy.MINOR_DISCOUNT_FARE.getFare()) * TEENAGE_DISCOUNTED_RATE);
-        }
-        return fare;
+        return AgePolicy.getFareApplyPolicy(fare, age);
     }
 }

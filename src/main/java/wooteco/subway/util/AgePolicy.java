@@ -1,26 +1,29 @@
 package wooteco.subway.util;
 
+import java.util.Arrays;
+
 public enum AgePolicy {
-    CHILD_MINIMUM(6),
-    CHILD_MAXIMUM(12),
-    TEENAGE_MINIMUM(13),
-    TEENAGE_MAXIMUM(18);
+    CHILD_POLICY(6, 12, FarePolicy.MINOR_DISCOUNT_FARE, 0.5),
+    TEENAGE_POLICY(13, 18, FarePolicy.MINOR_DISCOUNT_FARE, 0.8),
+    DEFAULT_POLICY(14, 200, FarePolicy.DEFAULT_DISCOUNT_FARE, 1.0);
 
-    private final int age;
+    private final int minAge;
+    private final int maxAge;
+    private final FarePolicy discountFare;
+    private final double discountPercentage;
 
-    AgePolicy(int age) {
-        this.age = age;
+    AgePolicy(final int minAge, final int maxAge, final FarePolicy discountFare, final double discountPercentage) {
+        this.minAge = minAge;
+        this.maxAge = maxAge;
+        this.discountFare = discountFare;
+        this.discountPercentage = discountPercentage;
     }
 
-    public int getAge() {
-        return age;
-    }
-
-    public static boolean isChildren(int age) {
-        return age >= CHILD_MINIMUM.getAge() && age <= CHILD_MAXIMUM.getAge();
-    }
-
-    public static boolean isTeenage(int age) {
-        return age >= TEENAGE_MINIMUM.getAge() && age <= TEENAGE_MAXIMUM.getAge();
+    public static int getFareApplyPolicy(final int fare, final int age) {
+        AgePolicy policy = Arrays.stream(values())
+                .filter(agePolicy -> agePolicy.minAge <= age)
+                .filter(agePolicy -> agePolicy.maxAge >= age)
+                .findAny().orElse(DEFAULT_POLICY);
+        return (int)((fare - policy.discountFare.getFare()) * policy.discountPercentage);
     }
 }
