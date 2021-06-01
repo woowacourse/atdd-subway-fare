@@ -99,15 +99,15 @@ public class Line {
         return getStations().contains(station);
     }
 
-    public boolean isSameId(Long id){
+    public boolean isSameId(Long id) {
         return this.id.equals(id);
     }
 
-    public boolean isSameColor(String color){
+    public boolean isSameColor(String color) {
         return this.color.equals(color);
     }
 
-    public boolean isSameName(String name){
+    public boolean isSameName(String name) {
         return this.name.equals(name);
     }
 }

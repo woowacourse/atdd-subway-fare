@@ -1,7 +1,7 @@
 package wooteco.subway.member.domain;
 
 import org.apache.commons.lang3.StringUtils;
-import wooteco.subway.member.exception.InvalidPasswordRuntimeException;
+import wooteco.subway.auth.exception.InvalidPasswordException;
 
 public class Member {
     private Long id;
@@ -49,7 +49,7 @@ public class Member {
 
     public void checkPassword(String password) {
         if (!StringUtils.equals(this.password, password)) {
-            throw new InvalidPasswordRuntimeException();
+            throw new InvalidPasswordException();
         }
     }
 }

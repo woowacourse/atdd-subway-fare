@@ -6,8 +6,8 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import wooteco.subway.auth.application.AuthService;
-import wooteco.subway.auth.exception.InvalidTokenRuntimeException;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
+import wooteco.subway.auth.exception.InvalidTokenException;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
 import wooteco.subway.member.domain.LoginMember;
 
@@ -31,7 +31,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         String credentials = AuthorizationExtractor.extract(Objects.requireNonNull(webRequest.getNativeRequest(HttpServletRequest.class)));
         LoginMember loginMember = authService.findMemberByToken(credentials);
         if (loginMember.getId() == null) {
-            throw new InvalidTokenRuntimeException();
+            throw new InvalidTokenException();
         }
         return loginMember;
     }

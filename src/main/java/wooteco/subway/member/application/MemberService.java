@@ -1,13 +1,13 @@
 package wooteco.subway.member.application;
 
 import org.springframework.stereotype.Service;
+import wooteco.subway.auth.exception.EmailNotFoundException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
-import wooteco.subway.member.exception.DuplicateEmailRuntimeException;
-import wooteco.subway.member.exception.EmailNotFoundRuntimeException;
+import wooteco.subway.member.exception.DuplicateEmailException;
 
 @Service
 public class MemberService {
@@ -19,7 +19,7 @@ public class MemberService {
 
     public MemberResponse createMember(MemberRequest request) {
         if (memberDao.findByEmail(request.getEmail()).isPresent()) {
-            throw new DuplicateEmailRuntimeException();
+            throw new DuplicateEmailException();
         }
         Member member = memberDao.insert(request.toMember());
         return MemberResponse.of(member);
@@ -42,6 +42,6 @@ public class MemberService {
 
     private Member findMemberByEmail(LoginMember loginMember) {
         return memberDao.findByEmail(loginMember.getEmail())
-                .orElseThrow(EmailNotFoundRuntimeException::new);
+                .orElseThrow(EmailNotFoundException::new);
     }
 }

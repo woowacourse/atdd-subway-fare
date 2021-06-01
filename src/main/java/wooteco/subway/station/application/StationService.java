@@ -2,13 +2,13 @@ package wooteco.subway.station.application;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
-import wooteco.subway.line.exception.NotAbleToDeleteStationInLineRuntimeException;
+import wooteco.subway.line.exception.NotAbleToDeleteStationInLineException;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
-import wooteco.subway.station.exception.StationNameDuplicationRuntimeException;
-import wooteco.subway.station.exception.StationNotExistRuntimeException;
+import wooteco.subway.station.exception.StationNameDuplicationException;
+import wooteco.subway.station.exception.StationNotExistException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,7 +23,7 @@ public class StationService {
 
     public StationResponse saveStation(StationRequest stationRequest) {
         if (stationDao.findByName(stationRequest.getName()).isPresent()) {
-            throw new StationNameDuplicationRuntimeException();
+            throw new StationNameDuplicationException();
         }
         Station station = stationDao.insert(stationRequest.toStation());
         return StationResponse.from(station);
@@ -31,7 +31,7 @@ public class StationService {
 
     public Station findStationById(Long id) {
         return stationDao.findById(id)
-                .orElseThrow(() -> new StationNotExistRuntimeException());
+                .orElseThrow(() -> new StationNotExistException());
     }
 
     public List<StationResponse> findAllStationResponses() {
@@ -47,7 +47,7 @@ public class StationService {
         try {
             stationDao.deleteById(id);
         } catch (DataAccessException e) {
-            throw new NotAbleToDeleteStationInLineRuntimeException();
+            throw new NotAbleToDeleteStationInLineException();
         }
     }
 }

@@ -10,7 +10,7 @@ import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
 import wooteco.subway.line.exception.ExistLineColorException;
 import wooteco.subway.line.exception.ExistLineNameException;
-import wooteco.subway.line.exception.LineNotExistRuntimeException;
+import wooteco.subway.line.exception.LineNotExistException;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
@@ -80,7 +80,7 @@ public class LineService {
 
     public Line findLineById(Long id) {
         return lineDao.findById(id)
-                .orElseThrow(LineNotExistRuntimeException::new);
+                .orElseThrow(LineNotExistException::new);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {

@@ -8,8 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import wooteco.subway.exception.SubwayAuthorizationException;
-import wooteco.subway.exception.SubwayRuntimeException;
+import wooteco.subway.config.exception.BusinessException;
 
 import java.util.stream.Collectors;
 
@@ -35,15 +34,9 @@ public class ExceptionAdvice {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessage(message));
     }
 
-    @ExceptionHandler(SubwayRuntimeException.class)
-    public ResponseEntity<ErrorMessage> handleRuntimeException(SubwayRuntimeException e) {
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<ErrorMessage> handleRuntimeException(BusinessException e) {
         logger.error("method argument not valid exception occurred. message=[{}]", e.getMessage(), e);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessage(e.getMessage()));
-    }
-
-    @ExceptionHandler(SubwayAuthorizationException.class)
-    public ResponseEntity<ErrorMessage> handleAuthorizationException(SubwayAuthorizationException e) {
-        logger.error("method argument not valid exception occurred. message=[{}]", e.getMessage(), e);
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorMessage(e.getMessage()));
+        return ResponseEntity.status(e.getHttpStatus()).body(e.getErrorMessage());
     }
 }
