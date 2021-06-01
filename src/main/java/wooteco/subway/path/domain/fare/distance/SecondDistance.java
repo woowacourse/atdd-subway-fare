@@ -4,16 +4,12 @@ public class SecondDistance implements DistanceChain {
     private static final int UNIT = 5;
     private static final int UNIT_FARE = 100;
 
-    private DistanceChain chain;
+    private final DistanceChain chain;
     private final int threshold;
 
-    public SecondDistance(int threshold) {
-        this.threshold = threshold;
-    }
-
-    @Override
-    public void setNextChain(DistanceChain nextChain) {
+    public SecondDistance(DistanceChain nextChain, int threshold) {
         this.chain = nextChain;
+        this.threshold = threshold;
     }
 
     @Override

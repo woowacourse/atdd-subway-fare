@@ -4,13 +4,6 @@ public class ThirdDistance implements DistanceChain {
     private static final int UNIT = 8;
     private static final int UNIT_FARE = 100;
 
-    private DistanceChain chain;
-
-    @Override
-    public void setNextChain(DistanceChain nextChain) {
-        this.chain = nextChain;
-    }
-
     @Override
     public int calculate(int distance) {
         int count = (distance - 1) / UNIT;

@@ -7,12 +7,9 @@ public class ChainOfDistance {
     private final DistanceChain firstChain;
 
     public ChainOfDistance() {
-        this.firstChain = new DefaultDistance(FIRST_THRESHOLD);
-        DistanceChain secondChain = new SecondDistance(SECOND_THRESHOLD - FIRST_THRESHOLD);
-        DistanceChain thirdChain = new ThirdDistance();
-
-        firstChain.setNextChain(secondChain);
-        secondChain.setNextChain(thirdChain);
+        DistanceChain third = new ThirdDistance();
+        DistanceChain second = new SecondDistance(third, SECOND_THRESHOLD - FIRST_THRESHOLD);
+        this.firstChain = new DefaultDistance(second, FIRST_THRESHOLD);
     }
 
     public int calculate(int distance) {

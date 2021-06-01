@@ -3,16 +3,12 @@ package wooteco.subway.path.domain.fare.distance;
 public class DefaultDistance implements DistanceChain {
     public static final int BASIC_FARE = 1250;
 
-    private DistanceChain chain;
+    private final DistanceChain chain;
     private final int threshold;
 
-    public DefaultDistance(int threshold) {
-        this.threshold = threshold;
-    }
-
-    @Override
-    public void setNextChain(DistanceChain nextChain) {
+    public DefaultDistance(DistanceChain nextChain, int threshold) {
         this.chain = nextChain;
+        this.threshold = threshold;
     }
 
     @Override
