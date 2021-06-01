@@ -1,6 +1,7 @@
 package wooteco.subway.line.domain;
 
 import java.util.List;
+import java.util.Objects;
 import wooteco.subway.station.domain.Station;
 
 public class Line {
@@ -109,17 +110,36 @@ public class Line {
     }
 
     public int getNextStationDistance(Station station) {
-        for (Section section : sections.getSections()) {
-            if (section.getUpStation().equals(station)) {
-                return section.getDistance();
-            }
+        return sections.getSections()
+            .stream()
+            .filter(section -> section.getUpStation().equals(station))
+            .mapToInt(Section::getDistance)
+            .findFirst()
+            .orElse(0);
+    }
+
+    public boolean isSameName(String name) {
+        return this.name.equals(name);
+    }
+
+    public boolean isSameColor(String color) {
+        return this.color.equals(color);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
         }
-        return 0;
-//        Section section = sections.getSections()
-//            .stream()
-//            .filter(it -> it.getUpStation().equals(station))
-//            .findFirst()
-//            .orElseThrow(() -> new IllegalArgumentException("해당 노선에 존재하지 않는 지하철 역입니다."));
-//        return section.getDistance();
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Line line = (Line) o;
+        return Objects.equals(id, line.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

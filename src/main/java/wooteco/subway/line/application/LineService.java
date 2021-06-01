@@ -2,6 +2,7 @@ package wooteco.subway.line.application;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
@@ -54,12 +55,10 @@ public class LineService {
     public List<LineWithTransferAndDistanceResponse> findLineResponses() {
         List<Line> persistLines = findLines();
 
-        List<LineWithTransferAndDistanceResponse> response = new ArrayList<>();
-        for (Line line : persistLines) {
-            response.add(findLineResponseById(line.getId()));
-        }
-
-        return response;
+        return persistLines
+            .stream()
+            .map(line -> findLineResponseById(line.getId()))
+            .collect(Collectors.toList());
     }
 
     public List<Line> findLines() {
@@ -71,18 +70,16 @@ public class LineService {
         Line persistLine = findLineById(id);
         List<Station> persistStations = persistLine.getStations();
 
-        List<StationWithTransferAndNextDistanceResponse> stationsWithTransferAndNextDistance = new ArrayList<>();
-        for (Station station : persistStations) {
-            List<LineWithoutSectionsResponse> transferLines = findTransferLines(persistLines, station, persistLine);
+        List<StationWithTransferAndNextDistanceResponse> stationsWithTransferAndNextDistance = persistStations
+            .stream()
+            .map(station -> new StationWithTransferAndNextDistanceResponse(
+                    station.getId(),
+                    station.getName(),
+                    persistLine.getNextStationDistance(station),
+                    findTransferLines(persistLines, station, persistLine))
+            )
+            .collect(Collectors.toList());
 
-            int nextStationDistance = persistLine.getNextStationDistance(station);
-            stationsWithTransferAndNextDistance.add(new StationWithTransferAndNextDistanceResponse(
-                station.getId(),
-                station.getName(),
-                nextStationDistance,
-                transferLines
-            ));
-        }
         return new LineWithTransferAndDistanceResponse(
             persistLine.getId(),
             persistLine.getName(),
@@ -92,17 +89,11 @@ public class LineService {
     }
 
     private List<LineWithoutSectionsResponse> findTransferLines(List<Line> persistLines, Station station, Line persistLine) {
-        List<LineWithoutSectionsResponse> transferLines = new ArrayList<>();
-        for (Line line : persistLines) {
-            if (line.contains(station) && !line.getId().equals(persistLine.getId())) {
-                transferLines.add(new LineWithoutSectionsResponse(
-                    line.getId(),
-                    line.getName(),
-                    line.getColor()
-                ));
-            }
-        }
-        return transferLines;
+        return persistLines
+            .stream()
+            .filter(line -> line.contains(station) && !line.equals(persistLine))
+            .map(line -> new LineWithoutSectionsResponse(line.getId(), line.getName(), line.getColor()))
+            .collect(Collectors.toList());
     }
 
     public Line findLineById(Long id) {
@@ -111,10 +102,10 @@ public class LineService {
 
     public void updateLine(Long id, LineUpdateRequest lineUpdateRequest) {
         Line line = lineDao.findById(id);
-        if (!line.getName().equals(lineUpdateRequest.getName())) {
+        if (!line.isSameName(lineUpdateRequest.getName())) {
             checkAlreadyExistsName(lineUpdateRequest.getName());
         }
-        if (!line.getColor().equals(lineUpdateRequest.getColor())) {
+        if (!line.isSameColor(lineUpdateRequest.getColor())) {
             checkAlreadyExistsColor(lineUpdateRequest.getColor());
         }
 

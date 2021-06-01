@@ -1,9 +1,13 @@
 package wooteco.subway.line.domain;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.stream.Collectors;
 import wooteco.subway.line.exception.InvalidSectionException;
 import wooteco.subway.station.domain.Station;
@@ -101,24 +105,39 @@ public class Sections {
     }
 
     public List<Section> getSortedSections() {
-        if (sections.isEmpty()) {
-            return Arrays.asList();
-        }
+        return sort(sections);
+    }
 
-        List<Section> sortedSection = new ArrayList<>();
-        Section upEndSection = findUpEndSection();
+    private List<Section> sort(List<Section> sections) {
+        Queue<Section> waiting = new LinkedList<>(sections);
+        Deque<Section> sorted = new ArrayDeque<>();
 
-        sortedSection.add(upEndSection);
-        for (int i = 0; i < sections.size() - 1; i++) {
-            Section lastSection = sortedSection.get(sortedSection.size() - 1);
-            for (Section section : sections) {
-                if (lastSection.isConnectedBetweenDownAndUp(section)) {
-                    sortedSection.add(section);
-                    break;
-                }
-            }
+        sorted.addLast(waiting.poll());
+        sortWaiting(waiting, sorted);
+
+        return new ArrayList<>(sorted);
+    }
+
+    private void sortWaiting(Queue<Section> waiting, Deque<Section> sorted) {
+        while (!waiting.isEmpty()) {
+            sortInAscendingOrder(waiting, sorted);
         }
-        return sortedSection;
+    }
+
+    private void sortInAscendingOrder(Queue<Section> waiting, Deque<Section> sorted) {
+        Section current = waiting.poll();
+        Section first = sorted.peekFirst();
+        Section last = sorted.peekLast();
+
+        if (current.isBefore(first)) {
+            sorted.addFirst(current);
+            return;
+        }
+        if (current.isAfter(last)) {
+            sorted.addLast(current);
+            return;
+        }
+        waiting.add(current);
     }
 
     private Section findUpEndSection() {
