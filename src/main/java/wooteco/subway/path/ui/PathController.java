@@ -31,7 +31,7 @@ public class PathController {
     public ResponseEntity<PathResponse> findPath(@AuthenticationMember LoginMember loginMember,
                                                  @RequestParam Long source, @RequestParam Long target) {
         SubwayPath subwayPath = pathService.findPath(source, target);
-        SubwayFare subwayFare = fareService.findFare(subwayPath.getSectionEdges(), loginMember);
+        SubwayFare subwayFare = fareService.findFare(subwayPath.getSectionEdges(), subwayPath.calculateDistance(), loginMember);
 
         return ResponseEntity.ok(PathResponseAssembler.assemble(subwayPath, subwayFare));
     }

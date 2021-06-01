@@ -1,30 +1,14 @@
 package wooteco.subway.path.domain;
 
-import wooteco.subway.line.domain.Line;
-import wooteco.subway.path.strategy.FareStrategy;
-
-import java.util.Set;
-
 public class SubwayFare {
 
-    private final Set<Line> lines;
-    private final FareStrategy fareStrategy;
+    private final int fare;
 
-    public SubwayFare(Set<Line> lines, FareStrategy fareStrategy) {
-        this.lines = lines;
-        this.fareStrategy = fareStrategy;
+    public SubwayFare(int fare) {
+        this.fare = fare;
     }
 
-    public int calculateFare(int distance) {
-        return fareStrategy.discount(distance, findExtraFare());
+    public int getFare() {
+        return fare;
     }
-
-    private int findExtraFare() {
-        return lines.stream()
-                .mapToInt(Line::getExtraFare)
-                .max()
-                .orElse(0);
-    }
-
-
 }
