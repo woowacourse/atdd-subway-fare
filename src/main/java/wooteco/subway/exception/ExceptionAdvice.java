@@ -25,6 +25,12 @@ public class ExceptionAdvice {
         return ResponseEntity.badRequest().body(exceptionRes);
     }
 
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity handleIllegalStateException(IllegalStateException e) {
+        ExceptionResponse exceptionRes = new ExceptionResponse(e.getMessage(), HttpStatus.UNAUTHORIZED.value());
+        return new ResponseEntity(exceptionRes, HttpStatus.UNAUTHORIZED);
+    }
+
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity handleNotFoundException(NotFoundException e) {
         ExceptionResponse exceptionRes = new ExceptionResponse(e.getMessage(), HttpStatus.NOT_FOUND.value());

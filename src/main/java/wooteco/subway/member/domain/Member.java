@@ -4,7 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import wooteco.subway.exception.AuthorizationException;
 import wooteco.subway.exception.InvalidInsertException;
 
-public class Member {
+public class Member implements User {
     private Long id;
     private String email;
     private String password;
@@ -32,12 +32,19 @@ public class Member {
         this.age = age;
     }
 
-    public static Member guest() {
-        return new Guest();
+    public void checkPassword(String password) {
+        if (!StringUtils.equals(this.password, password)) {
+            throw new AuthorizationException("이메일 혹은 비밀번호를 다시 확인해주세요");
+        }
     }
 
-    public static Member loginMember(Long id, String email, Integer age) {
-        return new LoginMember(id, email, age);
+    public void validatePassword(String currentPassword, String newPassword) {
+        if (!this.password.equals(currentPassword)) {
+            throw new InvalidInsertException("현재 비밀번호를 다시 확인해주세요");
+        }
+        if (currentPassword.equals(newPassword)) {
+            throw new InvalidInsertException("현재 사용 중인 비밀번호입니다. 다른 비밀번호를 입력해주세요");
+        }
     }
 
     public Long getId() {
@@ -56,18 +63,8 @@ public class Member {
         return age;
     }
 
-    public void checkPassword(String password) {
-        if (!StringUtils.equals(this.password, password)) {
-            throw new AuthorizationException("이메일 혹은 비밀번호를 다시 확인해주세요");
-        }
-    }
-
-    public void validatePassword(String currentPassword, String newPassword) {
-        if (!this.password.equals(currentPassword)) {
-            throw new InvalidInsertException("현재 비밀번호를 다시 확인해주세요");
-        }
-        if (currentPassword.equals(newPassword)) {
-            throw new InvalidInsertException("현재 사용 중인 비밀번호입니다. 다른 비밀번호를 입력해주세요");
-        }
+    @Override
+    public boolean isGuest() {
+        return false;
     }
 }

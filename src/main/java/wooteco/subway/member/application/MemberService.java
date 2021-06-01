@@ -6,6 +6,7 @@ import wooteco.subway.exception.DuplicatedException;
 import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
+import wooteco.subway.member.domain.User;
 import wooteco.subway.member.dto.*;
 
 @Service
@@ -25,24 +26,24 @@ public class MemberService {
         }
     }
 
-    public MemberResponse findMember(Member loginMember) {
+    public MemberResponse findMember(User loginMember) {
         Member member = findMemberByEmail(loginMember);
         return MemberResponse.of(member);
     }
 
-    public void updatePassword(Member loginMember, PasswordRequest req) {
+    public void updatePassword(User loginMember, PasswordRequest req) {
         Member member = findMemberByEmail(loginMember);
         member.validatePassword(req.getCurrentPassword(), req.getNewPassword());
         memberDao.update(new Member(member.getId(), member.getEmail(), req.getNewPassword(), member.getAge()));
     }
 
-    public AgeResponse updateAge(Member loginMember, AgeRequest req) {
+    public AgeResponse updateAge(User loginMember, AgeRequest req) {
         Member member = findMemberByEmail(loginMember);
         memberDao.update(new Member(member.getId(), member.getEmail(), member.getPassword(), req.getAge()));
         return new AgeResponse(member.getId(), req.getAge());
     }
 
-    public void deleteMember(Member loginMember) {
+    public void deleteMember(User loginMember) {
         Member member = findMemberByEmail(loginMember);
         memberDao.deleteById(member.getId());
     }
@@ -53,13 +54,13 @@ public class MemberService {
         }
     }
 
-    private void checkExistsMember(Member member) {
+    private void checkExistsMember(User member) {
         if (member == null) {
             throw new NotFoundException("존재하지 않는 회원입니다");
         }
     }
 
-    private Member findMemberByEmail(Member loginMember) {
+    private Member findMemberByEmail(User loginMember) {
         Member member = memberDao.findByEmail(loginMember.getEmail());
         checkExistsMember(member);
         return member;

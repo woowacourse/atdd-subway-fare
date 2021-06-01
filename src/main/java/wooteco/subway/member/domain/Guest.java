@@ -1,26 +1,28 @@
 package wooteco.subway.member.domain;
 
-public class Guest extends Member {
-    private static final Long GUEST_ID = 0L;
-    private static final String GUEST_EMAIL = "guest";
-    private static final Integer GUEST_AGE = 20;
-
-    public Guest() {
-        super(GUEST_ID, GUEST_EMAIL, GUEST_AGE);
-    }
+public class Guest implements User {
 
     @Override
     public Long getId() {
-        return GUEST_ID;
+        throw new IllegalStateException("다시 로그인 후 시도해주세요");
     }
 
     @Override
     public String getEmail() {
-        return GUEST_EMAIL;
+        throw new IllegalStateException("다시 로그인 후 시도해주세요");
+    }
+
+    @Override
+    public String getPassword() {
+        throw new IllegalStateException("다시 로그인 후 시도해주세요");
     }
 
     @Override
     public Integer getAge() {
-        return GUEST_AGE;
+        throw new IllegalStateException("다시 로그인 후 시도해주세요");
+    }
+
+    public boolean isGuest() {
+        return true;
     }
 }

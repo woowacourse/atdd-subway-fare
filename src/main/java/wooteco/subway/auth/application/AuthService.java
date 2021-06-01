@@ -7,7 +7,9 @@ import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.exception.AuthorizationException;
 import wooteco.subway.member.dao.MemberDao;
+import wooteco.subway.member.domain.Guest;
 import wooteco.subway.member.domain.Member;
+import wooteco.subway.member.domain.User;
 
 @Service
 @Transactional
@@ -31,7 +33,7 @@ public class AuthService {
         }
     }
 
-    public Member findMemberByToken(String credentials) {
+    public User findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
             throw new AuthorizationException("다시 로그인 후 시도해주세요");
         }
@@ -39,9 +41,9 @@ public class AuthService {
         String email = jwtTokenProvider.getEmail(credentials);
         try {
             Member member = memberDao.findByEmail(email);
-            return Member.loginMember(member.getId(), member.getEmail(), member.getAge());
+            return new Member(member.getId(), member.getEmail(), member.getAge());
         } catch (Exception e) {
-            return Member.guest();
+            return new Guest();
         }
     }
 
