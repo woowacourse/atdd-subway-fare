@@ -24,19 +24,18 @@ public class AuthService {
     }
 
     public TokenResponse login(TokenRequest request) {
-        try {
-            Member member = memberDao.findByEmail(request.getEmail());
-            member.checkPassword(request.getPassword());
-        } catch (Exception e) {
-            throw new AuthorizationException();
+        if (!memberDao.isExistByEmail(request.getEmail())) {
+            throw new AuthorizationException("사용자를 찾을 수 없습니다.");
         }
+        Member member = memberDao.findByEmail(request.getEmail());
+        member.checkPassword(request.getPassword());
         String token = jwtTokenProvider.createToken(request.getEmail());
         return new TokenResponse(token);
     }
 
     public LoginMember findMemberByToken(String credentials) {
         String email = jwtTokenProvider.getPayload(credentials);
-        if (memberDao.isExistByEmail(email)) {
+        if (!memberDao.isExistByEmail(email)) {
             throw new AuthorizationException("유효하지 않은 토큰입니다.");
         }
         Member member = memberDao.findByEmail(email);
