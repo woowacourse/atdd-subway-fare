@@ -13,6 +13,8 @@ import wooteco.subway.TestDataLoader;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
+import wooteco.subway.member.domain.GuestMember;
+import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.path.application.PathService;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.domain.Station;
@@ -60,6 +62,9 @@ class PathControllerTest {
             new PathResponse(StationResponse.listOf(stations), totalDistance, 1250);
         final Long source = testDataLoader.강남역().getId();
         final Long target = testDataLoader.정자역().getId();
+
+        given(authService.findMemberByToken("token"))
+            .willReturn(new GuestMember());
 
         given(pathService.findPath(any(), eq(source), eq(target)))
             .willReturn(pathResponse);

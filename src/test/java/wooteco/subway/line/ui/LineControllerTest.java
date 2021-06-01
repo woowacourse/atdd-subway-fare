@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -32,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = LineController.class)
-@ActiveProfiles("test")
+@ActiveProfiles("test1")
 @AutoConfigureRestDocs
 class LineControllerTest {
     @Autowired
@@ -42,8 +43,8 @@ class LineControllerTest {
 
     @MockBean
     private LineService lineService;
-    @MockBean
-    private AuthService authService;
+//    @MockBean
+//    private AuthService authService;
 
     @Test
     @DisplayName("노선 생성 - 성공")

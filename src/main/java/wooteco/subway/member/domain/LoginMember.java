@@ -31,14 +31,6 @@ public class LoginMember implements Member {
 
     @Override
     public int calculateFare(int fare) {
-        if (age >= 13 && age < 19) {
-            return (int) ((fare - 350) * 0.8);
-        }
-
-        if (age >= 6 && age < 13) {
-            return (int) ((fare - 350) * 0.5);
-        }
-
-        return fare;
+        return AgeDiscountPolicy.of(age).calculateFare(fare);
     }
 }

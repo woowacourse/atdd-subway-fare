@@ -29,15 +29,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = StationController.class)
-@ActiveProfiles("test")
+@ActiveProfiles("test1")
 @AutoConfigureRestDocs
 class StationControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
     private StationService stationService;
-    @MockBean
-    private AuthService authService;
+//    @MockBean
+//    private AuthService authService;
     @Autowired
     private ObjectMapper objectMapper;
 
