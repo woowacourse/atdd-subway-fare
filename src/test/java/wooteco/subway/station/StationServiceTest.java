@@ -51,11 +51,11 @@ public class StationServiceTest {
     @DisplayName("노선에 등록되어 있는 역을 삭제할 시 UnsupportedOperationException이 발생한다.")
     @Test
     void throw_UnsupportedOperationException_When_Delete_RegisteredStation() {
-        StationResponse 강남역 = stationService.saveStation(new StationRequest("강남역"));
-        StationResponse 역삼역 = stationService.saveStation(new StationRequest("역삼역"));
-        lineService.saveLine(new LineRequest("2호선", "black", 강남역.getId(), 역삼역.getId(), 10));
+        StationResponse 원인재역 = stationService.saveStation(new StationRequest("원인재역"));
+        StationResponse 신연수역 = stationService.saveStation(new StationRequest("신연수역"));
+        lineService.saveLine(new LineRequest("2호선", "black", 원인재역.getId(), 신연수역.getId(), 10));
 
-        assertThatThrownBy(() ->  stationService.deleteStationById(강남역.getId()))
+        assertThatThrownBy(() ->  stationService.deleteStationById(원인재역.getId()))
                 .isInstanceOf(UnsupportedOperationException.class)
                 .hasMessage("노선에 등록된 역은 삭제할 수 없습니다.");
     }
