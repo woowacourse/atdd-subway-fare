@@ -26,7 +26,7 @@ public class MemberService {
     }
 
     private void validateDuplicateEmail(String email) {
-        if (memberDao.existsEmail(email)) {
+        if (memberDao.findByEmail(email).isPresent()) {
             throw new DuplicateException("이미 존재하는 이메일입니다.");
         }
     }
@@ -51,9 +51,7 @@ public class MemberService {
     }
 
     private Member findByEmail(LoginMember loginMember) {
-        if (!memberDao.existsEmail(loginMember.getEmail())) {
-            throw new AuthorizationException("존재하지 않는 이메일입니다.");
-        }
-        return memberDao.findByEmail(loginMember.getEmail());
+        return memberDao.findByEmail(loginMember.getEmail())
+                .orElseThrow(() -> new AuthorizationException("존재하지 않는 이메일입니다."));
     }
 }
