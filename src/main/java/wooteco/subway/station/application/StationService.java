@@ -1,6 +1,7 @@
 package wooteco.subway.station.application;
 
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import wooteco.subway.exception.DuplicateException;
 import wooteco.subway.exception.InvalidInputException;
@@ -30,7 +31,11 @@ public class StationService {
     }
 
     public Station findStationById(Long id) {
-        return stationDao.findById(id);
+        try {
+            return stationDao.findById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new InvalidInputException("존재하지 않는 Station id입니다.");
+        }
     }
 
     public List<StationResponse> findAllStationResponses() {

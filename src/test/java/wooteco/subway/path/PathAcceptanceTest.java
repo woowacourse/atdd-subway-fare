@@ -210,6 +210,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
         거리_경로_조회_요청_실패(response);
     }
 
+    @DisplayName("departure와 arrival중 하나라도 존재하지 않는 station이면, 예외발생한다.")
+    @Test
+    void noStationException() {
+
+        //given
+        int 존재하지않는_역_id = 1000;
+
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(존재하지않는_역_id, 에어포츈바다우기검프사랑해역.getId(), tokenResponse);
+
+        //then
+        거리_경로_조회_요청_실패(response);
+    }
+
     public static ExtractableResponse<Response> 거리_경로_조회_요청(long departure, long arrival, TokenResponse tokenResponse) {
         return RestAssured
                 .given().log().all()
