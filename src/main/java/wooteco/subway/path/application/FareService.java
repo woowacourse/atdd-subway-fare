@@ -1,52 +1,28 @@
 package wooteco.subway.path.application;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.member.domain.MemberType;
-import wooteco.subway.path.domain.FareType;
+import wooteco.subway.path.domain.fare.DefaultFarePolicy;
+import wooteco.subway.path.domain.fare.FarePolicy;
+import wooteco.subway.path.domain.fare.decorator.AgeFarePolicyDecorator;
+import wooteco.subway.path.domain.fare.decorator.DistanceFarePolicyDecorator;
+import wooteco.subway.path.domain.fare.decorator.ExtraFarePolicyDecorator;
 
-@Transactional
 @Service
 public class FareService {
-
-    private static final int DEFAULT_FARE = 1250;
-    private static final int FARE_PER_UNIT_DISTANCE = 100;
-
-    private static final int FIRST_ADDITIONAL_FARE_SECTION = 10;
-    private static final int SECOND_ADDITIONAL_FARE_SECTION = 50;
-
-    private static final int FIRST_ADDITIONAL_FARE_UNIT_DISTANCE = 5;
-    private static final int SECOND_ADDITIONAL_FARE_UNIT_DISTANCE = 8;
-
-    public int calculate(int distance, int extraFare, MemberType memberType) {
-        int fareByPath = fareByDistance(distance) + extraFare;
-        return FareType.of(memberType)
-                .price(fareByPath);
+    public int calculate(int distance, int extraFare) {
+        FarePolicy farePolicy =
+                new ExtraFarePolicyDecorator(extraFare,
+                        new DistanceFarePolicyDecorator(distance,
+                                new DefaultFarePolicy()));
+        return farePolicy.calculate();
     }
 
-    private int fareByDistance(int distance) {
-        return DEFAULT_FARE + fareInFirstSection(distance) + fareInSecondSection(distance);
-    }
-
-    private int fareInFirstSection(int distance) {
-        if (distance < FIRST_ADDITIONAL_FARE_SECTION) {
-            return 0;
-        }
-
-        int firstSectionDistance = Math.min(distance, SECOND_ADDITIONAL_FARE_SECTION) - FIRST_ADDITIONAL_FARE_SECTION;
-        return calculateAdditionalFare(firstSectionDistance, FIRST_ADDITIONAL_FARE_UNIT_DISTANCE);
-    }
-
-    private int fareInSecondSection(int distance) {
-        if (distance < SECOND_ADDITIONAL_FARE_SECTION) {
-            return 0;
-        }
-
-        int secondSectionDistance = distance - SECOND_ADDITIONAL_FARE_SECTION;
-        return calculateAdditionalFare(secondSectionDistance, SECOND_ADDITIONAL_FARE_UNIT_DISTANCE);
-    }
-
-    private int calculateAdditionalFare(int additionalDistance, int unitDistance) {
-        return (int) ((Math.ceil((additionalDistance - 1) / unitDistance) + 1) * FARE_PER_UNIT_DISTANCE);
+    public int calculate(int distance, int extraFare, int age) {
+        FarePolicy farePolicy =
+                new AgeFarePolicyDecorator(age,
+                        new ExtraFarePolicyDecorator(extraFare,
+                                new DistanceFarePolicyDecorator(distance,
+                                        new DefaultFarePolicy())));
+        return farePolicy.calculate();
     }
 }

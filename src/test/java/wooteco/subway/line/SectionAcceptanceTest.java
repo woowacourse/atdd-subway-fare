@@ -149,13 +149,13 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     public static void 지하철_노선에_지하철역_순서_정렬됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
         LineResponse line = response.as(LineResponse.class);
         List<Long> stationIds = line.getStations()
-                                    .stream()
-                                    .map(it -> it.getId())
-                                    .collect(Collectors.toList());
+                .stream()
+                .map(StationResponse::getId)
+                .collect(Collectors.toList());
 
         List<Long> expectedStationIds = expectedStations.stream()
-                                                        .map(it -> it.getId())
-                                                        .collect(Collectors.toList());
+                .map(StationResponse::getId)
+                .collect(Collectors.toList());
 
         assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
     }

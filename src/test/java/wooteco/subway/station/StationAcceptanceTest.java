@@ -91,27 +91,42 @@ public class StationAcceptanceTest extends AcceptanceTest {
         StationRequest stationRequest = new StationRequest(name);
 
         return RestAssured
-                .given().log().all()
+                .given()
+                .log()
+                .all()
                 .body(stationRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/stations")
-                .then().log().all()
+                .when()
+                .post("/stations")
+                .then()
+                .log()
+                .all()
                 .extract();
     }
 
     public static ExtractableResponse<Response> 지하철역_목록_조회_요청() {
         return RestAssured
-                .given().log().all()
-                .when().get("/stations")
-                .then().log().all()
+                .given()
+                .log()
+                .all()
+                .when()
+                .get("/stations")
+                .then()
+                .log()
+                .all()
                 .extract();
     }
 
     public static ExtractableResponse<Response> 지하철역_제거_요청(Long stationId) {
         return RestAssured
-                .given().log().all()
-                .when().delete("/stations/" + stationId)
-                .then().log().all()
+                .given()
+                .log()
+                .all()
+                .when()
+                .delete("/stations/" + stationId)
+                .then()
+                .log()
+                .all()
                 .extract();
     }
 
@@ -134,10 +149,12 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철역_목록_포함됨(ExtractableResponse<Response> response, List<StationResponse> createdResponses) {
         List<Long> expectedLineIds = createdResponses.stream()
-                .map(it -> it.getId())
+                .map(StationResponse::getId)
                 .collect(Collectors.toList());
 
-        List<Long> resultLineIds = response.jsonPath().getList(".", StationResponse.class).stream()
+        List<Long> resultLineIds = response.jsonPath()
+                .getList(".", StationResponse.class)
+                .stream()
                 .map(StationResponse::getId)
                 .collect(Collectors.toList());
 

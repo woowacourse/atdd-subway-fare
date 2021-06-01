@@ -6,10 +6,12 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import wooteco.subway.member.domain.MemberType;
-import wooteco.subway.member.domain.MemberTypeProducer;
+import wooteco.subway.auth.domain.OptionalAuthenticationPrincipal;
+import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.path.application.PathService;
 import wooteco.subway.path.dto.PathResponse;
+
+import java.util.Optional;
 
 @Validated
 @RestController
@@ -22,10 +24,10 @@ public class PathController {
     }
 
     @GetMapping("/paths")
-    public ResponseEntity<PathResponse> findPath(@MemberTypeProducer MemberType memberType,
+    public ResponseEntity<PathResponse> findPath(@OptionalAuthenticationPrincipal Optional<LoginMember> loginMember,
                                                  @RequestParam Long source,
                                                  @RequestParam Long target) {
-        PathResponse body = pathService.findPath(source, target, memberType);
+        PathResponse body = pathService.findPath(source, target, loginMember);
         return ResponseEntity.ok(body);
     }
 }

@@ -129,11 +129,16 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void updateLineWithNonExistId() {
         ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
+                .given()
+                .log()
+                .all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(lineRequest2)
-                .when().put("/lines/" + Long.MAX_VALUE)
-                .then().log().all()
+                .when()
+                .put("/lines/" + Long.MAX_VALUE)
+                .then()
+                .log()
+                .all()
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -153,11 +158,16 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteLineWithNonExistId() {
         ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
+                .given()
+                .log()
+                .all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(lineRequest2)
-                .when().delete("/lines/" + Long.MAX_VALUE)
-                .then().log().all()
+                .when()
+                .delete("/lines/" + Long.MAX_VALUE)
+                .then()
+                .log()
+                .all()
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -174,48 +184,74 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest params) {
         return RestAssured
-                .given().log().all()
+                .given()
+                .log()
+                .all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
-                .when().post("/lines")
-                .then().log().all().
+                .when()
+                .post("/lines")
+                .then()
+                .log()
+                .all()
+                .
                         extract();
     }
 
     private static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {
         return RestAssured
-                .given().log().all()
+                .given()
+                .log()
+                .all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines")
-                .then().log().all()
+                .when()
+                .get("/lines")
+                .then()
+                .log()
+                .all()
                 .extract();
     }
 
     public static ExtractableResponse<Response> 지하철_노선_조회_요청(Long id) {
         return RestAssured
-                .given().log().all()
+                .given()
+                .log()
+                .all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines/{lineId}", id)
-                .then().log().all()
+                .when()
+                .get("/lines/{lineId}", id)
+                .then()
+                .log()
+                .all()
                 .extract();
     }
 
     public static ExtractableResponse<Response> 지하철_노선_수정_요청(LineResponse response, LineRequest params) {
 
         return RestAssured
-                .given().log().all()
+                .given()
+                .log()
+                .all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
-                .when().put("/lines/" + response.getId())
-                .then().log().all()
+                .when()
+                .put("/lines/" + response.getId())
+                .then()
+                .log()
+                .all()
                 .extract();
     }
 
     public static ExtractableResponse<Response> 지하철_노선_제거_요청(LineResponse lineResponse) {
         return RestAssured
-                .given().log().all()
-                .when().delete("/lines/" + lineResponse.getId())
-                .then().log().all()
+                .given()
+                .log()
+                .all()
+                .when()
+                .delete("/lines/" + lineResponse.getId())
+                .then()
+                .log()
+                .all()
                 .extract();
     }
 
@@ -240,10 +276,12 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철_노선_목록_포함됨(ExtractableResponse<Response> response, List<LineResponse> createdResponses) {
         List<Long> expectedLineIds = createdResponses.stream()
-                .map(it -> it.getId())
+                .map(LineResponse::getId)
                 .collect(Collectors.toList());
 
-        List<Long> resultLineIds = response.jsonPath().getList(".", LineResponse.class).stream()
+        List<Long> resultLineIds = response.jsonPath()
+                .getList(".", LineResponse.class)
+                .stream()
                 .map(LineResponse::getId)
                 .collect(Collectors.toList());
 
