@@ -1,4 +1,4 @@
-package wooteco.subway.auth.ui;
+package wooteco.subway.infrastructure;
 
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -6,8 +6,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import wooteco.subway.auth.application.AuthService;
-import wooteco.subway.auth.domain.AuthenticationPrincipal;
-import wooteco.subway.exception.AuthorizationException;
+import wooteco.subway.infrastructure.AuthenticationPrincipal;
 import wooteco.subway.infrastructure.AuthorizationExtractor;
 import wooteco.subway.member.domain.LoginMember;
 

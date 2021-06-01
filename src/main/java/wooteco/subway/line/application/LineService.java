@@ -47,19 +47,12 @@ public class LineService {
 
     private Section addInitSection(Line line, LineRequest request) {
         if (request.getUpStationId() != null && request.getDownStationId() != null) {
-            checkSameEndStations(request.getUpStationId(), request.getDownStationId());
             Station upStation = stationService.findStationById(request.getUpStationId());
             Station downStation = stationService.findStationById(request.getDownStationId());
             Section section = new Section(upStation, downStation, request.getDistance());
             return sectionDao.insert(line, section);
         }
         return null;
-    }
-
-    private void checkSameEndStations(Long upStationId, Long downStationId) {
-        if (upStationId.equals(downStationId)) {
-            throw new InvalidSectionRequestException("상행역과 하행역은 같을 수 없습니다.");
-        }
     }
 
     public List<LineWithSectionsResponse> findLineWithSectionsResponses() {
@@ -103,9 +96,9 @@ public class LineService {
         }
     }
 
+    @Transactional
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
-        checkSameEndStations(request.getUpStationId(), request.getDownStationId());
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
         line.addSection(upStation, downStation, request.getDistance());
