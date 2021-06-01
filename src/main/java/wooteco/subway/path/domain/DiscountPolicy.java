@@ -6,7 +6,8 @@ import java.util.Arrays;
 import java.util.function.Predicate;
 
 public enum DiscountPolicy {
-    BABY(age -> age < 6, 0, 1),
+    DEFAULT(age -> age == -1, 0, 0),
+    BABY(age -> age >= 0 && age < 6, 0, 1),
     CHILD(age -> age >= 6 && age < 13, 350, 0.5),
     YOUTH(age -> age >= 13 && age < 19, 350, 0.2),
     ADULT(age -> age >= 19, 0, 0);
