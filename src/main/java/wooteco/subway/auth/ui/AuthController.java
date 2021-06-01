@@ -15,6 +15,7 @@ import wooteco.subway.auth.dto.TokenResponse;
 @RequestMapping("/api")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class AuthController {
+
     private AuthService authService;
 
     public AuthController(AuthService authService) {

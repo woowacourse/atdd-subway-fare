@@ -29,7 +29,7 @@ public class AgeFareCalculator implements FareCalculator {
         BABY(
             age -> age < 6,
             fare -> 0
-            ),
+        ),
         CHILD(
             age -> age >= 6 && age < 13,
             fare -> (int) ((fare - 350) * 0.5)

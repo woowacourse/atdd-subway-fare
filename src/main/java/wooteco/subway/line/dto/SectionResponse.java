@@ -1,7 +1,6 @@
 package wooteco.subway.line.dto;
 
 import wooteco.subway.line.domain.Section;
-import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationResponse;
 
 public class SectionResponse {
