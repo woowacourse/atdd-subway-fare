@@ -1,5 +1,7 @@
 package wooteco.subway.path.domain;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import wooteco.subway.member.domain.AuthMember;
 import wooteco.subway.station.domain.Station;
@@ -14,16 +16,16 @@ public class SubwayPath {
     private final List<Station> stations;
 
     public SubwayPath(List<SectionEdge> sectionEdges, List<Station> stations) {
-        this.sectionEdges = sectionEdges;
-        this.stations = stations;
+        this.sectionEdges = new ArrayList<>(sectionEdges);
+        this.stations = new ArrayList<>(stations);
     }
 
     public List<SectionEdge> getSectionEdges() {
-        return sectionEdges;
+        return Collections.unmodifiableList(sectionEdges);
     }
 
     public List<Station> getStations() {
-        return stations;
+        return Collections.unmodifiableList(stations);
     }
 
     public int calculateDistance() {

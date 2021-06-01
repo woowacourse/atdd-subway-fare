@@ -7,7 +7,7 @@ public class LoginMember implements AuthMember {
     private static final int ADULT_AGE_BOUNDARY = 19;
     private static final double DISCOUNT_RATE_FOR_CHILD = 0.5;
     private static final int DISCOUNT_PRICE_FOR_CHILD = 350;
-    private static final int DISOCUNT_FOR_TEENAGER = 350;
+    private static final int DISCOUNT_FOR_TEENAGER = 350;
     private static final double DISCOUNT_RATE_FOR_TEENAGER = 0.8;
     private static final int NO_FARE = 0;
     private Long id;
@@ -44,7 +44,7 @@ public class LoginMember implements AuthMember {
             return (int) ((fare - DISCOUNT_PRICE_FOR_CHILD) * DISCOUNT_RATE_FOR_CHILD);
         }
         if (isTeenager()) {
-            return (int) ((fare - DISOCUNT_FOR_TEENAGER) * DISCOUNT_RATE_FOR_TEENAGER);
+            return (int) ((fare - DISCOUNT_FOR_TEENAGER) * DISCOUNT_RATE_FOR_TEENAGER);
         }
         return fare;
     }
