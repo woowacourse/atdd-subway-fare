@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(SubwayException.class)
     public ResponseEntity<ErrorResponse> subwayExceptionHandler(SubwayException exception) {
         logger.warn(exception.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(exception.getMessage()));
+        return ResponseEntity.status(exception.getStatus()).body(new ErrorResponse(exception.getMessage()));
     }
 
     @ExceptionHandler(AuthorizationException.class)
