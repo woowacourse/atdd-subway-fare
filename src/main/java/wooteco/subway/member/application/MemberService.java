@@ -1,6 +1,7 @@
 package wooteco.subway.member.application;
 
 import org.springframework.stereotype.Service;
+import wooteco.subway.exception.AuthorizationException;
 import wooteco.subway.exception.DuplicatedException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
@@ -28,11 +29,17 @@ public class MemberService {
     }
 
     public MemberResponse findMember(LoginMember loginMember) {
+        if (!loginMember.isLogin()) {
+            throw new AuthorizationException("로그인하지 않은 회원입니다.");
+        }
         Member member = memberDao.findByEmail(loginMember.getEmail());
         return MemberResponse.of(member);
     }
 
     public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
+        if (!memberDao.isExistByEmail(loginMember.getEmail())) {
+            throw new MemberNotFoundException("회원을 찾을 수 없습니다.");
+        }
         Member member = memberDao.findByEmail(loginMember.getEmail());
         memberDao.update(
                 new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
