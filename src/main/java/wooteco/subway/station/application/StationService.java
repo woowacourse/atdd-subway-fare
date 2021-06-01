@@ -1,6 +1,5 @@
 package wooteco.subway.station.application;
 
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.DuplicateException;
@@ -37,7 +36,8 @@ public class StationService {
 
     @Transactional(readOnly = true)
     public Station findStationById(Long id) {
-        return stationDao.findById(id);
+        return stationDao.findById(id)
+                .orElseThrow(() -> new InvalidInputException("해당하는 id의 역이 없습니다."));
     }
 
     @Transactional(readOnly = true)
@@ -51,9 +51,13 @@ public class StationService {
 
     @Transactional
     public void deleteStationById(Long id) {
-        try {
-            stationDao.deleteById(id);
-        } catch (DataAccessException e) {
+        findStationById(id);
+        validateDeletable(id);
+        stationDao.deleteById(id);
+    }
+
+    private void validateDeletable(Long id) {
+        if (stationDao.countRegisteredById(id) != 0) {
             throw new InvalidInputException("노선에 등록된 역은 삭제할 수 없습니다.");
         }
     }
