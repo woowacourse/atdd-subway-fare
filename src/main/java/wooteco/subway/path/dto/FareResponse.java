@@ -1,6 +1,6 @@
 package wooteco.subway.path.dto;
 
-import wooteco.subway.path.domain.FareTable;
+import wooteco.subway.path.domain.fare.FareTable;
 
 public class FareResponse {
     private int adult;

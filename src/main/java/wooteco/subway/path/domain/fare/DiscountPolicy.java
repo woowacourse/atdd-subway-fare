@@ -1,4 +1,4 @@
-package wooteco.subway.path.domain;
+package wooteco.subway.path.domain.fare;
 
 import wooteco.subway.exception.NotFoundException;
 

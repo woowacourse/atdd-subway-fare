@@ -1,26 +1,25 @@
 package wooteco.subway.path.dto;
 
-import wooteco.subway.member.domain.Member;
-import wooteco.subway.path.domain.FarePolicy;
-import wooteco.subway.path.domain.FareTable;
+import wooteco.subway.member.domain.User;
 import wooteco.subway.path.domain.SubwayPath;
+import wooteco.subway.path.domain.fare.Fare;
+import wooteco.subway.path.domain.fare.FareTable;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class PathResponseAssembler {
-    public static PathResponse assemble(SubwayPath subwayPath, Member member) {
+    public static PathResponse assemble(SubwayPath subwayPath, User member) {
         List<StationResponse> stationResponses = subwayPath.getStations().stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
 
         int distance = subwayPath.calculateDistance();
         int extraFare = subwayPath.calculateExtraFare();
-        FarePolicy fare = FarePolicy.of(distance, extraFare);
-        FareTable fareTable = FareTable.of(fare);
-        int defaultFare = fareTable.findByAge(fare, member.getAge());
+        Fare fare = Fare.of(distance, extraFare);
+        FareTable fareTable = FareTable.of(fare, member);
 
-        return new PathResponse(stationResponses, distance, defaultFare, fareTable);
+        return new PathResponse(stationResponses, distance, fareTable);
     }
 }

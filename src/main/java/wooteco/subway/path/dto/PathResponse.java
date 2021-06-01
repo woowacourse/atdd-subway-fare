@@ -1,6 +1,6 @@
 package wooteco.subway.path.dto;
 
-import wooteco.subway.path.domain.FareTable;
+import wooteco.subway.path.domain.fare.FareTable;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.List;
@@ -14,10 +14,10 @@ public class PathResponse {
     public PathResponse() {
     }
 
-    public PathResponse(List<StationResponse> stations, int distance, int defaultFare, FareTable fareTable) {
+    public PathResponse(List<StationResponse> stations, int distance, FareTable fareTable) {
         this.stations = stations;
         this.distance = distance;
-        this.defaultFare = defaultFare;
+        this.defaultFare = fareTable.getDefaultFare();
         this.fareResponse = FareResponse.of(fareTable);
     }
 
