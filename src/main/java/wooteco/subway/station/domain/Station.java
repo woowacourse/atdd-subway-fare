@@ -4,11 +4,8 @@ import java.util.Objects;
 
 public class Station {
 
-    private Id id;
-    private Name name;
-
-    public Station() {
-    }
+    private final Id id;
+    private final Name name;
 
     public Station(String name) {
         this(null, new Name(name));
@@ -21,6 +18,10 @@ public class Station {
     public Station(Id id, Name name) {
         this.id = id;
         this.name = name;
+    }
+
+    public boolean matchId(Long id) {
+        return id.equals(getId());
     }
 
     public Long getId() {
@@ -40,7 +41,7 @@ public class Station {
             return false;
         }
         Station station = (Station) o;
-        return name.equals(station.name);
+        return Objects.equals(id, station.id) && Objects.equals(name, station.name);
     }
 
     @Override
