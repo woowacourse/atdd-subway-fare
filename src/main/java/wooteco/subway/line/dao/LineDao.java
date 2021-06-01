@@ -18,17 +18,15 @@ import wooteco.subway.station.domain.Station;
 @Repository
 public class LineDao {
 
-    private static RowMapper<Line> ROW_MAPPER() {
-        return (rs, rowNum) -> {
-            Long foundId = rs.getLong("id");
-            final String color = rs.getString("color");
-            final String name = rs.getString("name");
-            return new Line(foundId, name, color);
-        };
-    }
+    private RowMapper<Line> rowMapper = (rs, rowNum) ->
+        new Line(
+            rs.getLong("id"),
+            rs.getString("color"),
+            rs.getString("name")
+        );
 
-    private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcInsert insertAction;
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert insertAction;
 
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
@@ -60,7 +58,7 @@ public class LineDao {
             "left outer join STATION DST on S.down_station_id = DST.id " +
             "WHERE L.id = ?";
 
-        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, new Object[]{id});
+        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, id);
         return mapLine(result);
     }
 
@@ -130,6 +128,6 @@ public class LineDao {
 
     public List<Line> findByName(String name) {
         String query = "SELECT id, name, color FROM LINE WHERE name = ?";
-        return jdbcTemplate.query(query, ROW_MAPPER(), name);
+        return jdbcTemplate.query(query, rowMapper, name);
     }
 }

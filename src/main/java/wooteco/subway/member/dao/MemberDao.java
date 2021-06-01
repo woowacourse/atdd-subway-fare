@@ -13,9 +13,6 @@ import wooteco.subway.member.domain.Member;
 @Repository
 public class MemberDao {
 
-    private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcInsert simpleJdbcInsert;
-
     private RowMapper<Member> rowMapper = (rs, rowNum) ->
         new Member(
             rs.getLong("id"),
@@ -23,6 +20,9 @@ public class MemberDao {
             rs.getString("password"),
             rs.getInt("age")
         );
+
+    private JdbcTemplate jdbcTemplate;
+    private SimpleJdbcInsert simpleJdbcInsert;
 
 
     public MemberDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
