@@ -4,21 +4,17 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.springframework.stereotype.Service;
 import wooteco.subway.line.domain.Line;
-import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.path.domain.SectionEdge;
 import wooteco.subway.path.domain.SubwayGraph;
 import wooteco.subway.path.domain.SubwayPath;
-import wooteco.subway.path.strategy.FareStrategyFactory;
 import wooteco.subway.station.domain.Station;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class PathFinder {
-    public SubwayPath findPath(List<Line> lines, Station source, Station target, LoginMember loginMember) {
+    public SubwayPath findPath(List<Line> lines, Station source, Station target) {
         if (source.equals(target)) {
             throw new InvalidPathException();
         }
@@ -34,15 +30,13 @@ public class PathFinder {
             throw new InvalidPathException();
         }
 
-        return convertSubwayPath(path, loginMember.getAge());
+        return convertSubwayPath(path);
     }
 
-    private SubwayPath convertSubwayPath(GraphPath<Station, SectionEdge> graphPath, int age) {
+    private SubwayPath convertSubwayPath(GraphPath<Station, SectionEdge> graphPath) {
         List<SectionEdge> edges = new ArrayList<>(graphPath.getEdgeList());
         List<Station> stations = graphPath.getVertexList();
-        Set<Line> line = edges.stream()
-                .map(SectionEdge::getLine)
-                .collect(Collectors.toSet());
-        return new SubwayPath(edges, stations, line, FareStrategyFactory.findStrategy(age));
+
+        return new SubwayPath(edges, stations);
     }
 }
