@@ -6,31 +6,31 @@ import java.util.function.IntPredicate;
 public enum AgeAppliedRule {
     INFANT(0, 350, age -> (0 <= age) && (age < 6)),
     CHILD(0.5, 350, age -> (6 <= age) && (age < 13)),
-    JUVENILLE(0.80, 350, age -> (13 <= age) && (age < 19)),
-    OTHER(1.00, 0, age -> (19 <= age));
+    JUVENILE(0.80, 350, age -> (13 <= age) && (age < 19)),
+    ADULT(1.00, 0, age -> (19 <= age));
 
-    private double appliedRate;
-    private int deductedFare;
-    private IntPredicate isAgeInterval;
+    private final double appliedRate;
+    private final int deductedFare;
+    private final IntPredicate matchedFilter;
 
-    AgeAppliedRule(double appliedRate, int deductedFare, IntPredicate isAgeInterval) {
+    AgeAppliedRule(double appliedRate, int deductedFare, IntPredicate matchedFilter) {
         this.appliedRate = appliedRate;
         this.deductedFare = deductedFare;
-        this.isAgeInterval = isAgeInterval;
+        this.matchedFilter = matchedFilter;
     }
 
-    public static AgeAppliedRule matchRule(int age) {
+    private static AgeAppliedRule matchedRule(int age) {
         return Arrays.stream(AgeAppliedRule.values())
-            .filter(element -> element.isAgeInterval.test(age))
+            .filter(rule -> rule.matchedFilter.test(age))
             .findAny()
-            .orElseThrow(() -> new IllegalArgumentException("해당 되는 나이가 존재하지 않습니다."));
+            .orElseThrow(() -> new IllegalArgumentException("해당하는 나이가 존재하지 않습니다."));
     }
 
-    public double getAppliedRate() {
-        return appliedRate;
+    public static int applyRule(int fare, int age) {
+        return matchedRule(age).calculate(fare);
     }
 
-    public int getDeductedFare() {
-        return deductedFare;
+    private int calculate(int fare) {
+        return (int) ((fare - deductedFare) * appliedRate);
     }
 }

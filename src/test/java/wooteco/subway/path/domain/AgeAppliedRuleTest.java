@@ -10,20 +10,25 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 public class AgeAppliedRuleTest {
 
+    private static final int BASIC_FARE = 1250;
+
     @ParameterizedTest
-    @DisplayName("나이 매칭 ")
-    @MethodSource("matchedAge")
-    void create(int age, AgeAppliedRule ageAppliedRule) {
-        assertThat(AgeAppliedRule.matchRule(age))
-            .isEqualTo(ageAppliedRule);
+    @DisplayName("나이별 요금 계산")
+    @MethodSource("ageFare")
+    void ageRate(int age, int expectedFare) {
+        //when
+        int fare = AgeAppliedRule.applyRule(BASIC_FARE, age);
+
+        //then
+        assertThat(fare).isEqualTo(expectedFare);
     }
 
-    private static Stream<Arguments> matchedAge() {
+    private static Stream<Arguments> ageFare() {
         return Stream.of(
-            Arguments.of(3, AgeAppliedRule.INFANT),
-            Arguments.of(9, AgeAppliedRule.CHILD),
-            Arguments.of(15, AgeAppliedRule.JUVENILLE),
-            Arguments.of(20, AgeAppliedRule.OTHER)
+            Arguments.of(20, 1250),
+            Arguments.of(15, 720),
+            Arguments.of(8, 450),
+            Arguments.of(3, 0)
         );
     }
 }

@@ -36,7 +36,7 @@ public class PathService {
             SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
             int distance = subwayPath.calculateDistance();
             int extraFare = subwayPath.maximumExtraFare();
-            Fare fare = new Fare(distance, member, extraFare);
+            Fare fare = new Fare(distance, member.getAge(), extraFare);
 
             return PathResponseAssembler.assemble(subwayPath, distance, fare);
         } catch (Exception e) {
