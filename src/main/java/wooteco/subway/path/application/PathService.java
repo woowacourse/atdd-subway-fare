@@ -37,8 +37,9 @@ public class PathService {
             Station targetStation = stationService.findStationById(target);
 
             SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
-            SubwayFare subwayFare = FareFinder.findFare(
-                    existLines(subwayPath), subwayPath.calculateDistance(), loginMember);
+            SubwayFare subwayFare = new SubwayFare(
+                    existLines(subwayPath), subwayPath.calculateDistance(), loginMember
+            );
 
             return PathResponseAssembler.assemble(subwayPath, subwayFare);
         } catch (Exception e) {

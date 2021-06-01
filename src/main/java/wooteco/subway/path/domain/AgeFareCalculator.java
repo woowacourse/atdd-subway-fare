@@ -1,6 +1,7 @@
 package wooteco.subway.path.domain;
 
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 import java.util.function.BinaryOperator;
 
 public enum AgeFareCalculator {
@@ -24,6 +25,6 @@ public enum AgeFareCalculator {
                 .filter(it -> it.minAge <= age && age < it.maxAge)
                 .mapToInt(it -> it.adjuster.apply(fare, lineFare))
                 .findAny()
-                .orElseThrow(IllegalAccessError::new);
+                .orElseThrow(NoSuchElementException::new);
     }
 }
