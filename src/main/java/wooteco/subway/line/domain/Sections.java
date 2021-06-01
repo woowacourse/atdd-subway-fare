@@ -1,21 +1,22 @@
 package wooteco.subway.line.domain;
 
-import wooteco.subway.station.domain.Station;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.springframework.http.HttpStatus;
+import wooteco.subway.exception.HttpException;
+import wooteco.subway.station.domain.Station;
 
 public class Sections {
     private List<Section> sections = new ArrayList<>();
 
-    public List<Section> getSections() {
-        return sections;
+    public Sections() {
     }
 
-    public Sections() {
+    public Sections(Section section) {
+        sections.add(section);
     }
 
     public Sections(List<Section> sections) {
@@ -37,10 +38,28 @@ public class Sections {
         this.sections.add(section);
     }
 
+    public List<Section> getSections() {
+        List<Station> stations = getStations();
+        List<Section> sections = new ArrayList<>();
+        for (int i = 0; i < stations.size() - 1; i++) {
+            Station station = stations.get(i);
+            Section section = getSectionByUpStationId(station.getId());
+            sections.add(section);
+        }
+        return sections;
+    }
+
+    private Section getSectionByUpStationId(Long upStationId) {
+        return sections.stream()
+            .filter(section -> section.getUpStationId().equals(upStationId))
+            .findAny()
+            .orElseThrow(() -> new IllegalStateException("노선의 역 정보와 구간 정보가 서로 일치하지 않습니다."));
+    }
+
     private void checkAlreadyExisted(Section section) {
         List<Station> stations = getStations();
         if (!stations.contains(section.getUpStation()) && !stations.contains(section.getDownStation())) {
-            throw new RuntimeException();
+            throw new HttpException(HttpStatus.BAD_REQUEST, "추가할 구간의 모든 역이 노선에 존재하지 않습니다.");
         }
     }
 
@@ -48,22 +67,22 @@ public class Sections {
         List<Station> stations = getStations();
         List<Station> stationsOfNewSection = Arrays.asList(section.getUpStation(), section.getDownStation());
         if (stations.containsAll(stationsOfNewSection)) {
-            throw new RuntimeException();
+            throw new HttpException(HttpStatus.BAD_REQUEST, "추가할 구간의 모든 역이 이미 노선에 존재합니다.");
         }
     }
 
     private void addSectionUpToUp(Section section) {
         this.sections.stream()
-                .filter(it -> it.getUpStation().equals(section.getUpStation()))
-                .findFirst()
-                .ifPresent(it -> replaceSectionWithDownStation(section, it));
+            .filter(it -> it.getUpStation().equals(section.getUpStation()))
+            .findFirst()
+            .ifPresent(it -> replaceSectionWithDownStation(section, it));
     }
 
     private void addSectionDownToDown(Section section) {
         this.sections.stream()
-                .filter(it -> it.getDownStation().equals(section.getDownStation()))
-                .findFirst()
-                .ifPresent(it -> replaceSectionWithUpStation(section, it));
+            .filter(it -> it.getDownStation().equals(section.getDownStation()))
+            .findFirst()
+            .ifPresent(it -> replaceSectionWithUpStation(section, it));
     }
 
     private void replaceSectionWithUpStation(Section newSection, Section existSection) {
@@ -91,10 +110,11 @@ public class Sections {
         Section upEndSection = findUpEndSection();
         stations.add(upEndSection.getUpStation());
 
-        Section nextSection = upEndSection;
-        while (nextSection != null) {
+        Optional<Section> nextSectionOptional = Optional.of(upEndSection);
+        while (nextSectionOptional.isPresent()) {
+            Section nextSection = nextSectionOptional.get();
             stations.add(nextSection.getDownStation());
-            nextSection = findSectionByNextUpStation(nextSection.getDownStation());
+            nextSectionOptional = findSectionByNextUpStation(nextSection.getDownStation());
         }
 
         return stations;
@@ -102,33 +122,32 @@ public class Sections {
 
     private Section findUpEndSection() {
         List<Station> downStations = this.sections.stream()
-                .map(it -> it.getDownStation())
-                .collect(Collectors.toList());
+            .map(it -> it.getDownStation())
+            .collect(Collectors.toList());
 
         return this.sections.stream()
-                .filter(it -> !downStations.contains(it.getUpStation()))
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
+            .filter(it -> !downStations.contains(it.getUpStation()))
+            .findFirst()
+            .orElseThrow(RuntimeException::new);
     }
 
-    private Section findSectionByNextUpStation(Station station) {
+    private Optional<Section> findSectionByNextUpStation(Station station) {
         return this.sections.stream()
-                .filter(it -> it.getUpStation().equals(station))
-                .findFirst()
-                .orElse(null);
+            .filter(it -> it.getUpStation().equals(station))
+            .findFirst();
     }
 
     public void removeStation(Station station) {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new HttpException(HttpStatus.BAD_REQUEST, "노선에 구간이 한 개만 존재할 때는 구간을 삭제할 수 없습니다.");
         }
 
         Optional<Section> upSection = sections.stream()
-                .filter(it -> it.getUpStation().equals(station))
-                .findFirst();
+            .filter(it -> it.getUpStation().equals(station))
+            .findFirst();
         Optional<Section> downSection = sections.stream()
-                .filter(it -> it.getDownStation().equals(station))
-                .findFirst();
+            .filter(it -> it.getDownStation().equals(station))
+            .findFirst();
 
         if (upSection.isPresent() && downSection.isPresent()) {
             Station newUpStation = downSection.get().getUpStation();

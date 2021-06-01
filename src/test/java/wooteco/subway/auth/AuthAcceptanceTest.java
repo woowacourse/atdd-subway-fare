@@ -1,8 +1,20 @@
 package wooteco.subway.auth;
 
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
+import static wooteco.subway.member.MemberAcceptanceTest.내_회원_정보_조회_요청;
+import static wooteco.subway.member.MemberAcceptanceTest.응답코드_CREATED_확인;
+import static wooteco.subway.member.MemberAcceptanceTest.응답코드_확인;
+import static wooteco.subway.member.MemberAcceptanceTest.조회된_회원_정보_일치_확인;
+import static wooteco.subway.member.MemberAcceptanceTest.회원_가입_요청;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -10,12 +22,7 @@ import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import static wooteco.subway.member.MemberAcceptanceTest.회원_생성을_요청;
-import static wooteco.subway.member.MemberAcceptanceTest.회원_정보_조회됨;
-
+@DisplayName("회원 인증 관련 기능")
 public class AuthAcceptanceTest extends AcceptanceTest {
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
@@ -25,82 +32,70 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithBearerAuth() {
         // given
-        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
-        TokenResponse tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
+        ExtractableResponse<Response> signUpResponse = 회원_가입_요청(EMAIL, PASSWORD, AGE, "sign-up");
+        응답코드_CREATED_확인(signUpResponse);
+
+        ExtractableResponse<Response> loginResponse = 로그인_요청(EMAIL, PASSWORD, "login");
+        응답코드_확인(loginResponse, HttpStatus.OK);
+        TokenResponse tokenResponse = 로그인_성공_후_토큰추출(loginResponse);
 
         // when
-        ExtractableResponse<Response> response = 내_회원_정보_조회_요청(tokenResponse);
+        ExtractableResponse<Response> myInfoResponse = 내_회원_정보_조회_요청(tokenResponse, "get-login-user-my-info");
 
         // then
-        회원_정보_조회됨(response, EMAIL, AGE);
+        응답코드_확인(loginResponse, HttpStatus.OK);
+        조회된_회원_정보_일치_확인(myInfoResponse, EMAIL, AGE);
     }
 
     @DisplayName("Bearer Auth 로그인 실패")
     @Test
     void myInfoWithBadBearerAuth() {
-        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        // given
+        ExtractableResponse<Response> signUpResponse = 회원_가입_요청(EMAIL, PASSWORD, AGE, "sign-up");
+        응답코드_CREATED_확인(signUpResponse);
 
-        Map<String, String> params = new HashMap<>();
-        params.put("email", EMAIL + "OTHER");
-        params.put("password", PASSWORD);
+        // when
+        ExtractableResponse<Response> loginResponse = 로그인_요청(EMAIL + "OTHER", PASSWORD, "login-fail");
 
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.UNAUTHORIZED.value());
+        // then
+        응답코드_확인(loginResponse, HttpStatus.UNAUTHORIZED);
     }
 
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
+        // given
         TokenResponse tokenResponse = new TokenResponse("accesstoken");
 
-        RestAssured
-                .given().log().all()
-                .auth().oauth2(tokenResponse.getAccessToken())
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/me")
-                .then().log().all()
-                .statusCode(HttpStatus.UNAUTHORIZED.value());
+        // when
+        ExtractableResponse<Response> myInfoResponse = 내_회원_정보_조회_요청(tokenResponse, "not-valid-login-token-when-get-login-user-my-info");
+
+        // then
+        응답코드_확인(myInfoResponse, HttpStatus.UNAUTHORIZED);
     }
 
-    public static ExtractableResponse<Response> 회원_등록되어_있음(String email, String password, Integer age) {
-        return 회원_생성을_요청(email, password, age);
-    }
-
-    public static TokenResponse 로그인되어_있음(String email, String password) {
-        ExtractableResponse<Response> response = 로그인_요청(email, password);
-        return response.as(TokenResponse.class);
-    }
-
-    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
+    public static ExtractableResponse<Response> 로그인_요청(String email, String password, String docsIdentifier) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("password", password);
 
-        return RestAssured.given().log().all().
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                body(params).
-                when().
-                post("/login/token").
-                then().
-                log().all().
-                statusCode(HttpStatus.OK.value()).
-                extract();
+        return RestAssured.given(spec).log().all().
+            contentType(MediaType.APPLICATION_JSON_VALUE).
+            body(params).
+            filter(document(docsIdentifier, preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()))).
+            when().
+            post("/login/token").
+            then().
+            log().all().
+            extract();
     }
 
-    public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {
-        return RestAssured.given().log().all().
-                auth().oauth2(tokenResponse.getAccessToken()).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                get("/members/me").
-                then().
-                log().all().
-                statusCode(HttpStatus.OK.value()).
-                extract();
+    public static TokenResponse 로그인_성공_후_토큰추출(ExtractableResponse<Response> response) {
+        return response.as(TokenResponse.class);
+    }
+
+    public static TokenResponse 로그인되어_있음(String email, String password) {
+        ExtractableResponse<Response> response = 로그인_요청(email, password, "login");
+        return response.as(TokenResponse.class);
     }
 }
