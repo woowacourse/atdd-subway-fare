@@ -1,5 +1,8 @@
 package wooteco.subway.line.dto;
 
+import wooteco.subway.line.domain.Line;
+
+// todo validation
 public class LineRequest {
     private String name;
     private String color;
@@ -42,5 +45,9 @@ public class LineRequest {
 
     public int getDistance() {
         return distance;
+    }
+
+    public Line toEntity() {
+        return new Line(name, color, extraFare);
     }
 }

@@ -2,6 +2,7 @@ package wooteco.subway.line.application;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.config.exception.NotFoundException;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
@@ -16,6 +17,7 @@ import wooteco.subway.station.domain.Station;
 import java.util.List;
 
 @Service
+@Transactional
 public class LineService {
     private final LineDao lineDao;
     private final SectionDao sectionDao;
@@ -28,40 +30,42 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
+        Line persistLine = lineDao.insert(request.toEntity());
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);
     }
 
     private Section addInitSection(Line line, LineRequest request) {
-        if (request.getUpStationId() != null && request.getDownStationId() != null) {
-            Station upStation = stationService.findStationById(request.getUpStationId());
-            Station downStation = stationService.findStationById(request.getDownStationId());
-            Section section = new Section(upStation, downStation, request.getDistance());
-            return sectionDao.insert(line, section);
-        }
-        return null;
+        Station upStation = stationService.findStationById(request.getUpStationId());
+        Station downStation = stationService.findStationById(request.getDownStationId());
+        Section section = new Section(upStation, downStation, request.getDistance());
+        return sectionDao.insert(line, section);
     }
 
+    @Transactional(readOnly = true)
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
         return LineResponse.listOf(persistLines);
     }
 
+    @Transactional(readOnly = true)
     public List<LineResponse> findLinesWithSections() {
         List<Line> persistLines = findLines();
         return LineResponse.listWithSections(persistLines);
     }
 
+    @Transactional(readOnly = true)
     public List<Line> findLines() {
         return lineDao.findAll();
     }
 
+    @Transactional(readOnly = true)
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
         return LineResponse.of(persistLine);
     }
 
+    @Transactional(readOnly = true)
     public Line findLineById(Long id) {
         try {
             return lineDao.findById(id);

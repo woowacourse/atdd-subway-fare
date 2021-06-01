@@ -23,7 +23,6 @@ public class MemberDao {
                     rs.getInt("age")
             );
 
-
     public MemberDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
@@ -47,11 +46,6 @@ public class MemberDao {
     public void deleteById(Long id) {
         String sql = "delete from MEMBER where id = ?";
         jdbcTemplate.update(sql, id);
-    }
-
-    public Member findById(Long id) {
-        String sql = "select * from MEMBER where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
     public Member findByEmail(String email) {
