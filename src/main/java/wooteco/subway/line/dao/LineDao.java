@@ -20,16 +20,16 @@ public class LineDao {
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert insertAction;
 
-    public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public LineDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.insertAction = new SimpleJdbcInsert(dataSource)
+        this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("LINE")
                 .usingGeneratedKeyColumns("id");
     }
 
     public Line insert(Line line) {
         Map<String, Object> params = new HashMap<>();
-        params.put("id", line.getId());
+//        params.put("id", line.getId());
         params.put("name", line.getName());
         params.put("color", line.getColor());
         params.put("extra_fare", line.getExtraFare());
