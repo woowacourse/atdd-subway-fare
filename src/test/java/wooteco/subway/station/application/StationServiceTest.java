@@ -1,5 +1,6 @@
 package wooteco.subway.station.application;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -7,20 +8,18 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
-@ExtendWith(MockitoExtension.class)
+@MockitoSettings
 class StationServiceTest {
 
     private static final Long STATION_ID = 1L;
@@ -48,14 +47,13 @@ class StationServiceTest {
     @DisplayName("역을 저장한다. - 실패, 같은 이름의 역이 등록되어 있다.")
     @Test
     void saveStationFail_duplicateStation() {
-//        // given
-//        Station station = new Station(1L, "선정릉역");
-//        StationRequest stationRequest = new StationRequest("선정릉역");
-//        when(stationDao.insert(stationRequest.toStation())).thenReturn(station);
-//        // when
-//        stationService.saveStation(stationRequest);
-//        // then
-//        verify(stationDao).insert(stationRequest.toStation());
+        // given
+        StationRequest stationRequest = new StationRequest("선정릉역");
+        when(stationDao.exists(stationRequest.getName())).thenReturn(true);
+
+        // when // then
+        assertThatThrownBy(() -> stationService.saveStation(stationRequest))
+                .isExactlyInstanceOf(DuplicatedStationException.class);
     }
 
 
@@ -76,9 +74,7 @@ class StationServiceTest {
     void findStationByIdFail_stationNotExisting() {
         // given
         when(stationDao.findById(STATION_ID)).thenReturn(Optional.empty());
-        // when
-//        stationService.findStationById(STATION_ID);
-        // then
+        // when // then
         assertThatThrownBy(() -> stationService.findStationById(STATION_ID))
                 .isInstanceOf(NotFoundException.class);
     }
@@ -96,13 +92,8 @@ class StationServiceTest {
         List<StationResponse> responses = stationService.findAllStationResponses();
         // then
         verify(stationDao).findAll();
-        List<String> expectedNames = stations.stream()
-                .map(Station::getName)
-                .collect(Collectors.toList());
-        List<String> responseNames = responses.stream()
-                .map(StationResponse::getName)
-                .collect(Collectors.toList());
-//        assertThat(responseNames);
+        assertThat(responses).extracting("name")
+                .containsExactlyElementsOf(Arrays.asList("로키형네역", "피케이네역"));
     }
 
     @DisplayName("id로 역을 삭제한다.")
@@ -121,8 +112,7 @@ class StationServiceTest {
     void deleteStationByIdFail_stationInLine() {
         // given
         when(sectionDao.existsByStationId(STATION_ID)).thenReturn(true);
-        // when
-        // then
+        // when // then
         assertThatThrownBy(() -> stationService.deleteStationById(STATION_ID))
                 .isInstanceOf(InvalidDeletionException.class);
     }

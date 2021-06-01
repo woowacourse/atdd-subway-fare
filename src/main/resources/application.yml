@@ -13,4 +13,4 @@ springdoc:
 
 spring:
   profiles:
-    active: local
+    active: test
