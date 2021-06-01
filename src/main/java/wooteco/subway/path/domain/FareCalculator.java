@@ -28,7 +28,7 @@ public class FareCalculator {
 
     private int lineExtraFare() {
         return sectionEdges.stream()
-            .mapToInt(sectionEdge -> sectionEdge.getLine().getExtraFare())
+            .mapToInt(SectionEdge::lineExtraFare)
             .max()
             .orElse(0);
     }
