@@ -71,7 +71,7 @@ class FareTest {
     }, delimiter = ':')
     void testCalculateRate(int distance, int expected) {
         // when
-        Fare actual = Fare.calculateRate(distance, 0);
+        Fare actual = Fare.calculateRate(distance, Fare.ZERO);
 
         // then
         assertThat(actual).isEqualTo(new Fare(expected));
