@@ -21,9 +21,11 @@ public class SubwayPath {
         return sectionEdges.stream().mapToInt(it -> it.getSection().getDistance()).sum();
     }
 
-    public int subwayFare(int age) {
-        FareCalculator fareCalculator = new FareCalculator(sectionEdges, distance(), age);
-        return fareCalculator.fare();
+    public int lineExtraFare() {
+        return sectionEdges.stream()
+            .mapToInt(SectionEdge::lineExtraFare)
+            .max()
+            .orElse(0);
     }
 
 }
