@@ -72,7 +72,7 @@ class FareCalculatorTest {
             "19, 1250, 1250, 성인"
     })
     void getFareWithAge(int age, int currentFare, int expectedFare, String testCaseName) {
-        Fare actualFare = fareCalculator.getFareByAge(age, new Fare(currentFare));
+        Fare actualFare = AgeDiscountPolicy.discountFareByAge(age, new Fare(currentFare));
         assertThat(actualFare).isEqualTo(new Fare(expectedFare));
     }
 }

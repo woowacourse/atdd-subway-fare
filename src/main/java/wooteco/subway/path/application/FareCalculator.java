@@ -21,7 +21,7 @@ public class FareCalculator implements FarePolicy {
         if (!loginMember.isPresent()) {
             return fareWithLineExtraFare;
         }
-        return getFareByAge(loginMember.get().getAge(), fareWithLineExtraFare);
+        return AgeDiscountPolicy.discountFareByAge(loginMember.get().getAge(), fareWithLineExtraFare);
     }
 
     public Fare getFareByDistance(Fare currentFare, int distance) {
@@ -45,18 +45,5 @@ public class FareCalculator implements FarePolicy {
                 .max(Comparator.comparingInt(Fare::getFare))
                 .orElseThrow(() -> new IllegalArgumentException("Line이 한 개 이상 존재해야 합니다."))
                 .add(currentFare);
-    }
-
-    public Fare getFareByAge(int age, Fare fare) {
-        if (age < 6) {
-            return new Fare(0);
-        }
-        if (age < 13) {
-            return fare.sub(new Fare(350)).discount(0.5);
-        }
-        if (age < 19) {
-            return fare.sub(new Fare(350)).discount(0.2);
-        }
-        return fare;
     }
 }
