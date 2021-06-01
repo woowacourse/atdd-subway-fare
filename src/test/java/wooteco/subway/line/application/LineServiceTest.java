@@ -16,6 +16,7 @@ import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.LineWithSectionsResponse;
 import wooteco.subway.line.exception.LineNotFoundException;
 import wooteco.subway.station.application.StationService;
+import wooteco.subway.station.domain.Station;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,6 +34,8 @@ class LineServiceTest {
     private static final Long DOWN_STATION_ID = 2L;
     private static final int DISTANCE = 10;
     private static final int EXTRA_FARE = 0;
+    private static final String STATION_NAME1 = "강남역";
+    private static final String STATION_NAME2 = "잠남역";
 
     @InjectMocks
     private LineService lineService;
@@ -54,6 +57,8 @@ class LineServiceTest {
         given(lineDao.isExistByName(lineRequest.getName())).willReturn(false);
         given(lineDao.isExistByColor(lineRequest.getColor())).willReturn(false);
         given(lineDao.insert(ArgumentMatchers.any(Line.class))).willReturn(new Line(1L, NAME, COLOR, EXTRA_FARE));
+        given(stationService.findStationById(UP_STATION_ID)).willReturn(new Station(UP_STATION_ID, STATION_NAME1));
+        given(stationService.findStationById(DOWN_STATION_ID)).willReturn(new Station(DOWN_STATION_ID, STATION_NAME2));
 
         final LineResponse lineResponse = lineService.saveLine(lineRequest);
 
