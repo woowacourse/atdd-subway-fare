@@ -1,16 +1,25 @@
 package wooteco.subway.path.domain;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import wooteco.subway.exception.notfound.NotExistException;
 import wooteco.subway.member.domain.authmember.AuthMember;
+import wooteco.subway.path.domain.CalculateAdditionalFare.AdditionalFareOver10Km;
+import wooteco.subway.path.domain.CalculateAdditionalFare.AdditionalFareOver50km;
+import wooteco.subway.path.domain.CalculateAdditionalFare.AdditionalFareStrategy;
+import wooteco.subway.path.domain.CalculateAdditionalFare.AdditionalFareUnder10km;
 import wooteco.subway.station.domain.Station;
 
 public class SubwayPath {
 
-    private static final int DEFAULT_DISTANCE = 10;
-    private static final int OVER_LIMIT_DISTANCE = 50;
     private static final int DEFAULT_FARE = 1250;
+    private static final List<AdditionalFareStrategy> additionalFareStrategies = Arrays.asList(
+        new AdditionalFareUnder10km(),
+        new AdditionalFareOver10Km(),
+        new AdditionalFareOver50km()
+    );
 
     private final List<SectionEdge> sectionEdges;
     private final List<Station> stations;
@@ -34,32 +43,22 @@ public class SubwayPath {
 
     public int calculateFare(int distance, AuthMember authMember) {
         int fare = DEFAULT_FARE;
-        fare += calculateAdditionalFareByDistance(distance);
+        fare += calculateAdditionalFare(distance);
         fare += calculateAdditionalFareByLine();
         fare = authMember.discountFareByAge(fare);
 
         return fare;
     }
 
-    private int calculateAdditionalFareByDistance(int distance) {
-        int fare = 0;
-        if (DEFAULT_DISTANCE < distance && distance <= OVER_LIMIT_DISTANCE) {
-            return calculateAdditionalFareOver10km(distance - DEFAULT_DISTANCE);
-        }
-
-        if (OVER_LIMIT_DISTANCE < distance) {
-            return calculateAdditionalFareOver10km(OVER_LIMIT_DISTANCE - DEFAULT_DISTANCE)
-                + calculateAdditionalFareOver50km(distance - OVER_LIMIT_DISTANCE);
-        }
-        return fare;
+    private int calculateAdditionalFare(int distance) {
+        return distinguishAdditionalFareStrategy(distance).calculateAdditionalFare(distance);
     }
 
-    private int calculateAdditionalFareOver10km(int distance) {
-        return (int) ((Math.ceil((distance - 1) / 5) + 1) * 100);
-    }
-
-    private int calculateAdditionalFareOver50km(int distance) {
-        return (int) ((Math.ceil((distance - 1) / 8) + 1) * 100);
+    private AdditionalFareStrategy distinguishAdditionalFareStrategy(int distance) {
+        return additionalFareStrategies.stream()
+            .filter(additionalFareStrategy -> additionalFareStrategy.isInDistanceRange(distance))
+            .findAny()
+            .orElseThrow(NotExistException::new);
     }
 
     private int calculateAdditionalFareByLine() {

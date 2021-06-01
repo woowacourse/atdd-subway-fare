@@ -38,16 +38,16 @@ public class LoginMember implements AuthMember {
         return age;
     }
 
-    public AgeMember distinguishAgeMember() {
+    @Override
+    public int discountFareByAge(int fare) {
+        return distinguishAgeMember().discountFareByAge(fare);
+    }
+
+    private AgeMember distinguishAgeMember() {
         return ageMembers.stream()
             .filter(ageMember -> ageMember.isInAgeRange(age))
             .findAny()
             .orElseThrow(NotExistException::new);
-    }
-
-    @Override
-    public int discountFareByAge(int fare) {
-        return distinguishAgeMember().discountFareByAge(fare);
     }
 
     @Override
