@@ -5,6 +5,7 @@ import wooteco.subway.path.domain.fare.distance.DistanceStrategy;
 
 public class Fare {
     private static final int BASIC_FARE = 1250;
+
     private final DistanceStrategy distanceStrategy;
     private final AgeStrategy ageStrategy;
     private int fare;
