@@ -95,6 +95,9 @@ public class Line {
     }
 
     public Integer getExtraFare() {
+        if (extraFare == null) {
+             return 0;
+        }
         return extraFare;
     }
 }

@@ -24,9 +24,9 @@ public enum DistanceFareCalculator {
 
     public static int from(int distance) {
         return Arrays.stream(values())
-                .filter(it -> it.minDistance <= distance && distance < it.maxDistance)
+                .filter(it -> (it.minDistance <= distance && distance < it.maxDistance))
                 .map(it -> it.calculator.apply(distance))
-                .findAny()
+                .findFirst()
                 .orElseThrow(NoSuchElementException::new);
     }
 }

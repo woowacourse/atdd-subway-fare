@@ -1,5 +1,6 @@
 package wooteco.subway.path.application;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.line.application.LineService;
@@ -20,10 +21,12 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class PathService {
+
     private final LineService lineService;
     private final StationService stationService;
     private final PathFinder pathFinder;
 
+    @Autowired
     public PathService(LineService lineService, StationService stationService, PathFinder pathFinder) {
         this.lineService = lineService;
         this.stationService = stationService;
