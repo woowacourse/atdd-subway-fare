@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.badrequest.InvalidPathException;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
-import wooteco.subway.member.domain.AuthMember;
+import wooteco.subway.member.domain.authmember.AuthMember;
 import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.path.dto.PathResponseAssembler;

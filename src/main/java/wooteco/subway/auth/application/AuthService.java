@@ -7,8 +7,8 @@ import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.exception.unauthorized.AuthorizationException;
 import wooteco.subway.member.application.MemberService;
-import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
+import wooteco.subway.member.domain.authmember.LoginMember;
 
 @Service
 @Transactional

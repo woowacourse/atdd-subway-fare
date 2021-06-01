@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
-import wooteco.subway.member.domain.AuthMember;
+import wooteco.subway.member.domain.authmember.AuthMember;
 import wooteco.subway.path.application.PathService;
 import wooteco.subway.path.dto.PathResponse;
 

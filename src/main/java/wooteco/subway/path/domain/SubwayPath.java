@@ -3,7 +3,7 @@ package wooteco.subway.path.domain;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import wooteco.subway.member.domain.AuthMember;
+import wooteco.subway.member.domain.authmember.AuthMember;
 import wooteco.subway.station.domain.Station;
 
 public class SubwayPath {

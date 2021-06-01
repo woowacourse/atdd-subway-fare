@@ -1,4 +1,4 @@
-package wooteco.subway.member.domain;
+package wooteco.subway.member.domain.authmember;
 
 public class NotLoginMember implements AuthMember {
 
