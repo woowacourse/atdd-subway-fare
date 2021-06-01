@@ -10,8 +10,6 @@ import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.path.domain.fare.Fare;
 import wooteco.subway.path.domain.fare.age.AgeDiscountType;
 import wooteco.subway.path.domain.fare.age.AgeStrategy;
-import wooteco.subway.path.domain.fare.distance.DistanceDiscountType;
-import wooteco.subway.path.domain.fare.distance.DistanceStrategy;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.path.dto.PathResponseAssembler;
 import wooteco.subway.station.application.StationService;
@@ -39,8 +37,7 @@ public class PathService {
             Station arrivalStation = stationService.findStationById(arrival);
             SubwayPath subwayPath = pathFinder.findPath(lines, departureStation, arrivalStation);
 
-            int distance = subwayPath.calculateDistance();
-            Fare fare = generateFare(distance, loginMember);
+            Fare fare = generateFare(loginMember);
 
             return PathResponseAssembler.assemble(subwayPath, fare);
         } catch (Exception e) {
@@ -48,9 +45,8 @@ public class PathService {
         }
     }
 
-    private Fare generateFare(int distance, LoginMember loginMember) {
-        DistanceStrategy distanceStrategy = DistanceDiscountType.strategy(distance);
+    private Fare generateFare(LoginMember loginMember) {
         AgeStrategy ageStrategy = AgeDiscountType.strategy(loginMember);
-        return new Fare(distanceStrategy, ageStrategy);
+        return new Fare(ageStrategy);
     }
 }
