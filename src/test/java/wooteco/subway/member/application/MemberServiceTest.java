@@ -11,7 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import wooteco.subway.exception.AuthorizationException;
 import wooteco.subway.exception.DuplicatedException;
 import wooteco.subway.member.dao.MemberDao;
-import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.domain.Guest;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.EmailCheckRequest;
 import wooteco.subway.member.dto.MemberRequest;
@@ -64,10 +64,10 @@ class MemberServiceTest {
     @Test
     @DisplayName("로그인한 회원의 이메일로 회원을 찾는다.")
     void findMember() {
-        final LoginMember loginMember = new LoginMember(1L, EMAIL, AGE, true);
+        final Member member = new Member(1L, EMAIL, AGE);
         given(memberDao.findByEmail(EMAIL)).willReturn(new Member(1L, EMAIL,PASSWORD,AGE));
 
-        final MemberResponse memberResponse = memberService.findMember(loginMember);
+        final MemberResponse memberResponse = memberService.findMember(member);
         assertThat(memberResponse.getEmail()).isEqualTo(EMAIL);
         assertThat(memberResponse.getAge()).isEqualTo(AGE);
         assertThat(memberResponse.getId()).isEqualTo(1L);
@@ -76,53 +76,53 @@ class MemberServiceTest {
     @Test
     @DisplayName("로그인하지 않은 회원의 이메일로 회원을 찾을 시 예외를 던진다.")
     void findMemberWithNotLogin() {
-        final LoginMember loginMember = new LoginMember(false);
+        final Guest guest = new Guest();
 
-        assertThatThrownBy(() -> memberService.findMember(loginMember))
+        assertThatThrownBy(() -> memberService.findMember(guest))
                 .isInstanceOf(AuthorizationException.class);
     }
 
     @Test
     @DisplayName("회원 정보를 수정한다.")
     void updateMember() {
-        final LoginMember loginMember = new LoginMember(1L, EMAIL, AGE, true);
+        final Member member = new Member(1L, EMAIL, AGE);
         final MemberRequest memberRequest = new MemberRequest(EMAIL, PASSWORD, AGE);
         given(memberDao.isExistByEmail(EMAIL)).willReturn(true);
         given(memberDao.findByEmail(EMAIL)).willReturn(new Member(1L, EMAIL,PASSWORD,AGE));
 
-        assertThatCode(() -> memberService.updateMember(loginMember, memberRequest))
+        assertThatCode(() -> memberService.updateMember(member, memberRequest))
                 .doesNotThrowAnyException();
     }
 
     @Test
     @DisplayName("유효하지 않은 이메일을 가진 회원 정보를 수정할 경우 예외를 던진다.")
     void updateMemberWithInvalidEmail() {
-        final LoginMember loginMember = new LoginMember(1L, EMAIL, AGE, true);
-        final MemberRequest memberRequest = new MemberRequest(EMAIL, PASSWORD, AGE);
-        given(memberDao.isExistByEmail(EMAIL)).willReturn(false);
+        final Member member = new Member(1L, EMAIL+"!!!!!@  @@@", AGE);
+        final MemberRequest memberRequest = new MemberRequest(EMAIL+"!!!!!@  @@@", PASSWORD, AGE);
+        given(memberDao.isExistByEmail(EMAIL+"!!!!!@  @@@")).willReturn(false);
 
-        assertThatThrownBy(() -> memberService.updateMember(loginMember, memberRequest))
+        assertThatThrownBy(() -> memberService.updateMember(member, memberRequest))
                 .isInstanceOf(MemberNotFoundException.class);
     }
 
     @Test
     @DisplayName("이메일로 회원 정보를 삭제한다.")
     void deleteMember() {
-        final LoginMember loginMember = new LoginMember(1L, EMAIL, AGE, true);
+        final Member member = new Member(1L, EMAIL, AGE);
         given(memberDao.isExistByEmail(EMAIL)).willReturn(true);
         given(memberDao.findByEmail(EMAIL)).willReturn(new Member(1L, EMAIL,PASSWORD,AGE));
 
-        assertThatCode(() -> memberService.deleteMember(loginMember))
+        assertThatCode(() -> memberService.deleteMember(member))
                 .doesNotThrowAnyException();
     }
 
     @Test
     @DisplayName("유효하지 않은 이메일로 회원 정보를 삭제할 경우 예외를 던진다.")
     void deleteMemberWithInvalidEmail() {
-        final LoginMember loginMember = new LoginMember(1L, EMAIL, AGE, true);
-        given(memberDao.isExistByEmail(EMAIL)).willReturn(false);
+        final Member member = new Member(1L, EMAIL+"!!!!!@  @@@", AGE);
+        given(memberDao.isExistByEmail(EMAIL+"!!!!!@  @@@")).willReturn(false);
 
-        assertThatThrownBy(() -> memberService.deleteMember(loginMember))
+        assertThatThrownBy(() -> memberService.deleteMember(member))
                 .isInstanceOf(MemberNotFoundException.class);
     }
 

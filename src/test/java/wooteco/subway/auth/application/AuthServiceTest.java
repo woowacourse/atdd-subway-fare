@@ -12,7 +12,6 @@ import wooteco.subway.auth.exception.TokenInvalidException;
 import wooteco.subway.exception.AuthorizationException;
 import wooteco.subway.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
-import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -64,9 +63,9 @@ class AuthServiceTest {
         given(memberDao.isExistByEmail(EMAIL)).willReturn(true);
         given(memberDao.findByEmail(EMAIL)).willReturn(new Member(1L, EMAIL, PASSWORD, AGE));
 
-        final LoginMember loginMember = authService.findMemberByToken(TOKEN);
-        assertThat(loginMember.getId()).isEqualTo(1L);
-        assertThat(loginMember.getEmail()).isEqualTo("email@email.com");
+        final Member member = authService.findMemberByToken(TOKEN);
+        assertThat(member.getId()).isEqualTo(1L);
+        assertThat(member.getEmail()).isEqualTo("email@email.com");
     }
 
     @Test

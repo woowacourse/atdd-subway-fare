@@ -3,7 +3,7 @@ package wooteco.subway.member.domain;
 import org.apache.commons.lang3.StringUtils;
 import wooteco.subway.exception.AuthorizationException;
 
-public class Member {
+public class Member implements User{
 
     private Long id;
     private String email;
@@ -44,8 +44,13 @@ public class Member {
         return password;
     }
 
-    public Integer getAge() {
+    public int getAge() {
         return age;
+    }
+
+    @Override
+    public boolean isGuest() {
+        return false;
     }
 
     public void checkPassword(String password) {

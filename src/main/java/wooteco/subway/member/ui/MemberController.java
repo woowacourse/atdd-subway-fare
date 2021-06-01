@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.infrastructure.AuthenticationPrincipal;
 import wooteco.subway.member.application.MemberService;
-import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.domain.User;
 import wooteco.subway.member.dto.EmailCheckRequest;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
@@ -29,9 +29,9 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
-        MemberResponse member = memberService.findMember(loginMember);
-        return ResponseEntity.ok().body(member);
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal User user) {
+        MemberResponse memberResponse = memberService.findMember(user);
+        return ResponseEntity.ok().body(memberResponse);
     }
 
     @PostMapping("/members/email-check")
@@ -41,15 +41,15 @@ public class MemberController {
     }
 
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember,
+    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal User user,
                                                              @RequestBody MemberRequest param) {
-        memberService.updateMember(loginMember, param);
+        memberService.updateMember(user, param);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/members/me")
-    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
-        memberService.deleteMember(loginMember);
+    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal User user) {
+        memberService.deleteMember(user);
         return ResponseEntity.noContent().build();
     }
 }

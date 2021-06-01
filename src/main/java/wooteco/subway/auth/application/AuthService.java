@@ -8,7 +8,6 @@ import wooteco.subway.auth.exception.TokenInvalidException;
 import wooteco.subway.exception.AuthorizationException;
 import wooteco.subway.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
-import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
 
 @Service
@@ -33,13 +32,12 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
-    public LoginMember findMemberByToken(String credentials) {
+    public Member findMemberByToken(String credentials) {
         String email = jwtTokenProvider.getPayload(credentials);
         if (!memberDao.isExistByEmail(email)) {
             throw new AuthorizationException("유효하지 않은 토큰입니다.");
         }
-        Member member = memberDao.findByEmail(email);
-        return new LoginMember(member.getId(), member.getEmail(), member.getAge(), true);
+        return memberDao.findByEmail(email);
     }
 
     public void validateToken(String credentials) {

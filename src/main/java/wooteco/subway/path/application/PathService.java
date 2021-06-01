@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
-import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.domain.User;
 import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.path.dto.PathResponseAssembler;
@@ -29,21 +29,21 @@ public class PathService {
         this.fareService = fareService;
     }
 
-    public PathResponse findPath(LoginMember loginMember, Long source, Long target) {
+    public PathResponse findPath(User user, Long source, Long target) {
         List<Line> lines = lineService.findLines();
         Station sourceStation = stationService.findStationById(source);
         Station targetStation = stationService.findStationById(target);
         SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
 
-        int totalFare = calculateTotalFare(loginMember, subwayPath);
+        int totalFare = calculateTotalFare(user, subwayPath);
         return PathResponseAssembler.assemble(subwayPath, totalFare);
     }
 
-    private int calculateTotalFare(LoginMember loginMember, SubwayPath subwayPath) {
+    private int calculateTotalFare(User user, SubwayPath subwayPath) {
         final int fare = fareService.calculateFare(subwayPath.calculateDistance());
         final int addedFare = fareService.calculateExtraFare(fare, subwayPath.getLines());
-        if (loginMember.isLogin()) {
-            return fareService.discountFareByAge(addedFare, loginMember.getAge());
+        if (!user.isGuest()) {
+            return fareService.discountFareByAge(addedFare, user.getAge());
         }
         return addedFare;
     }
