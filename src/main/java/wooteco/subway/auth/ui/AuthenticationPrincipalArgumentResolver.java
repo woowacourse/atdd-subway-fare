@@ -29,13 +29,17 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
         String credentials = AuthorizationExtractor.extract(request);
         LoginMember member = authService.findMemberByToken(credentials);
-        if (member.getId() == null && isFindPathRequest(request)) {
+        if (!isGuest(member)) {
+            return member;
+        }
+        if (isFindPathRequest(request)) {
             return LoginMember.DUMMY;
         }
-        if (member.getId() == null) {
-            throw new InvalidTokenException();
-        }
-        return member;
+        throw new InvalidTokenException();
+    }
+
+    private boolean isGuest(LoginMember loginMember) {
+        return loginMember.getId() == null;
     }
 
     private boolean isFindPathRequest(HttpServletRequest request) {
