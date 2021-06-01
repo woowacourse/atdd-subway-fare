@@ -15,6 +15,7 @@ import wooteco.subway.line.dto.LineWithoutSectionsResponse;
 import wooteco.subway.line.dto.SectionRequest;
 import wooteco.subway.line.exception.DuplicateLineColorException;
 import wooteco.subway.line.exception.DuplicateLineNameException;
+import wooteco.subway.line.exception.InvalidSectionException;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationWithTransferAndNextDistanceResponse;
@@ -47,7 +48,7 @@ public class LineService {
             Section section = new Section(upStation, downStation, request.getDistance());
             return sectionDao.insert(line, section);
         }
-        return null;
+        throw new InvalidSectionException("유효하지 않는 요청 값입니다");
     }
 
     public List<LineWithTransferAndDistanceResponse> findLineResponses() {
