@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 
 public interface ExtraFarePolicy {
 
+    boolean isSatisfied(int distance);
+
     BigDecimal calculate(int distance);
 
 }

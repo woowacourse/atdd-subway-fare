@@ -2,7 +2,7 @@ package wooteco.subway.path.domain.policy.extrafarepolicy;
 
 import java.math.BigDecimal;
 
-public class TenFiftyPolicyExtra implements ExtraFarePolicy {
+public class TenFiftyPolicyExtraFare extends DistanceExtraFarePolicy {
 
     private static final int FARE = 100;
     private static final int OVER_FARE_DISTANCE = 5;
@@ -10,12 +10,13 @@ public class TenFiftyPolicyExtra implements ExtraFarePolicy {
     private static final int UP_THRESHOLD = 50;
 
     @Override
-    public BigDecimal calculate(int distance) {
-        distance = initializedDistance(distance);
+    public boolean isSatisfied(int distance) {
+        return distance > DOWN_THRESHOLD;
+    }
 
-        if (distance <= 0) {
-            return BigDecimal.ZERO;
-        }
+    @Override
+    protected BigDecimal calculateExtraFare(int distance) {
+        distance = initializedDistance(distance);
 
         return BigDecimal.valueOf(calculateOverFare(distance));
     }

@@ -4,35 +4,36 @@ import java.math.BigDecimal;
 import java.util.List;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.member.domain.LoginMember;
-import wooteco.subway.path.domain.policy.discountpolicy.DiscountFarePolicy;
+import wooteco.subway.path.domain.policy.discountpolicy.DiscountPolicy;
 import wooteco.subway.path.domain.policy.extrafarepolicy.ExtraFarePolicy;
 
 public class Fare {
 
-    private final List<ExtraFarePolicy> farePolicies;
-    private final List<DiscountFarePolicy> discountPolicies;
+    private final List<ExtraFarePolicy> distanceFarePolicies;
+    private final List<DiscountPolicy> discountPolicies;
 
-    public Fare(List<ExtraFarePolicy> farePolicies, List<DiscountFarePolicy> discountPolicies) {
-        this.farePolicies = farePolicies;
+    public Fare(List<ExtraFarePolicy> distanceFarePolicies, List<DiscountPolicy> discountPolicies) {
+        this.distanceFarePolicies = distanceFarePolicies;
         this.discountPolicies = discountPolicies;
     }
 
     public BigDecimal calculate(SubwayPath subwayPath, LoginMember loginMember) {
-        BigDecimal fare = calculateExtraFareOfDistance(subwayPath)
-            .add(calculateMaximumExtraFareOfLines(subwayPath));
+        BigDecimal fare = calculateDistanceExtraFare(subwayPath)
+            .add(calculateLineExtraFare(subwayPath));
 
         return fare.subtract(calculateDiscountPolicy(loginMember, fare));
     }
 
-    private BigDecimal calculateExtraFareOfDistance(SubwayPath subwayPath) {
+    private BigDecimal calculateDistanceExtraFare(SubwayPath subwayPath) {
         int distance = subwayPath.calculateDistance();
 
-        return farePolicies.stream().map(
-            farePolicy -> farePolicy.calculate(distance)
-        ).reduce(BigDecimal.ZERO, BigDecimal::add);
+        return distanceFarePolicies.stream()
+            .filter(extraFarePolicy -> extraFarePolicy.isSatisfied(distance))
+            .map(extraFarePolicy -> extraFarePolicy.calculate(distance))
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    private BigDecimal calculateMaximumExtraFareOfLines(SubwayPath subwayPath) {
+    private BigDecimal calculateLineExtraFare(SubwayPath subwayPath) {
         int extraFare = subwayPath.getSectionEdges().stream()
             .map(SectionEdge::getLine)
             .mapToInt(Line::getExtraFare)
@@ -42,10 +43,12 @@ public class Fare {
         return BigDecimal.valueOf(extraFare);
     }
 
-    private BigDecimal calculateDiscountPolicy(LoginMember loginMember, BigDecimal fare) {
+    private BigDecimal calculateDiscountPolicy(LoginMember loginMember, BigDecimal currentFare) {
         return discountPolicies.stream()
-            .map(farePolicy -> farePolicy.calculate(loginMember).apply(fare))
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+            .filter(discountPolicy -> discountPolicy.isSatisfied(loginMember))
+            .map(discountPolicy -> discountPolicy.calculate(loginMember, currentFare))
+            .findAny()
+            .orElse(BigDecimal.ZERO);
     }
 
 }

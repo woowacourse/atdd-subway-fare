@@ -4,11 +4,13 @@ import java.math.BigDecimal;
 import java.util.function.UnaryOperator;
 import wooteco.subway.member.domain.LoginMember;
 
-public interface DiscountFarePolicy {
+public interface DiscountPolicy {
 
     static UnaryOperator<BigDecimal> zero() {
         return fare -> BigDecimal.ZERO;
     }
 
-    UnaryOperator<BigDecimal> calculate(LoginMember loginMember);
+    boolean isSatisfied(LoginMember loginMember);
+
+    BigDecimal calculate(LoginMember loginMember, BigDecimal currentFare);
 }
