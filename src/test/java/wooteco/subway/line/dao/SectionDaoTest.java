@@ -18,15 +18,11 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
 
 @JdbcTest
 @DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
 class SectionDaoTest {
-
-    SectionDao sectionDao;
-    StationDao stationDao;
 
     private final static Station STATION1 = new Station(1L, "강남역");
     private final static Station STATION2 = new Station(2L, "잠남역");
@@ -35,7 +31,8 @@ class SectionDaoTest {
     private final static Section SECTION = new Section(1L, STATION1, STATION2, 10);
     private final static Section SECTION2 = new Section(2L, STATION1, STATION2, 10);
     private final static Line LINE_WITH_SECTIONS = new Line(1L, "봉미선", "red", new Sections(Arrays.asList(SECTION)));
-
+    SectionDao sectionDao;
+    StationDao stationDao;
     @Autowired
     JdbcTemplate jdbcTemplate;
 

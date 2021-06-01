@@ -27,12 +27,10 @@ class MemberServiceTest {
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
     private static final int AGE = 24;
-
-    @InjectMocks
-    private MemberService memberService;
-
     @Mock
     MemberDao memberDao;
+    @InjectMocks
+    private MemberService memberService;
 
     @BeforeEach
     void setUp() {
@@ -43,7 +41,7 @@ class MemberServiceTest {
     void createMember() {
         final MemberRequest memberRequest = new MemberRequest(EMAIL, PASSWORD, AGE);
         given(memberDao.isExistByEmail(EMAIL)).willReturn(false);
-        given(memberDao.insert(ArgumentMatchers.any(Member.class))).willReturn(new Member(1L, EMAIL,PASSWORD,AGE));
+        given(memberDao.insert(ArgumentMatchers.any(Member.class))).willReturn(new Member(1L, EMAIL, PASSWORD, AGE));
 
         final MemberResponse memberResponse = memberService.createMember(memberRequest);
         assertThat(memberResponse.getEmail()).isEqualTo(EMAIL);
@@ -65,7 +63,7 @@ class MemberServiceTest {
     @DisplayName("로그인한 회원의 이메일로 회원을 찾는다.")
     void findMember() {
         final Member member = new Member(1L, EMAIL, AGE);
-        given(memberDao.findByEmail(EMAIL)).willReturn(new Member(1L, EMAIL,PASSWORD,AGE));
+        given(memberDao.findByEmail(EMAIL)).willReturn(new Member(1L, EMAIL, PASSWORD, AGE));
 
         final MemberResponse memberResponse = memberService.findMember(member);
         assertThat(memberResponse.getEmail()).isEqualTo(EMAIL);
@@ -88,7 +86,7 @@ class MemberServiceTest {
         final Member member = new Member(1L, EMAIL, AGE);
         final MemberRequest memberRequest = new MemberRequest(EMAIL, PASSWORD, AGE);
         given(memberDao.isExistByEmail(EMAIL)).willReturn(true);
-        given(memberDao.findByEmail(EMAIL)).willReturn(new Member(1L, EMAIL,PASSWORD,AGE));
+        given(memberDao.findByEmail(EMAIL)).willReturn(new Member(1L, EMAIL, PASSWORD, AGE));
 
         assertThatCode(() -> memberService.updateMember(member, memberRequest))
                 .doesNotThrowAnyException();
@@ -97,9 +95,9 @@ class MemberServiceTest {
     @Test
     @DisplayName("유효하지 않은 이메일을 가진 회원 정보를 수정할 경우 예외를 던진다.")
     void updateMemberWithInvalidEmail() {
-        final Member member = new Member(1L, EMAIL+"!!!!!@  @@@", AGE);
-        final MemberRequest memberRequest = new MemberRequest(EMAIL+"!!!!!@  @@@", PASSWORD, AGE);
-        given(memberDao.isExistByEmail(EMAIL+"!!!!!@  @@@")).willReturn(false);
+        final Member member = new Member(1L, EMAIL + "!!!!!@  @@@", AGE);
+        final MemberRequest memberRequest = new MemberRequest(EMAIL + "!!!!!@  @@@", PASSWORD, AGE);
+        given(memberDao.isExistByEmail(EMAIL + "!!!!!@  @@@")).willReturn(false);
 
         assertThatThrownBy(() -> memberService.updateMember(member, memberRequest))
                 .isInstanceOf(MemberNotFoundException.class);
@@ -110,7 +108,7 @@ class MemberServiceTest {
     void deleteMember() {
         final Member member = new Member(1L, EMAIL, AGE);
         given(memberDao.isExistByEmail(EMAIL)).willReturn(true);
-        given(memberDao.findByEmail(EMAIL)).willReturn(new Member(1L, EMAIL,PASSWORD,AGE));
+        given(memberDao.findByEmail(EMAIL)).willReturn(new Member(1L, EMAIL, PASSWORD, AGE));
 
         assertThatCode(() -> memberService.deleteMember(member))
                 .doesNotThrowAnyException();
@@ -119,8 +117,8 @@ class MemberServiceTest {
     @Test
     @DisplayName("유효하지 않은 이메일로 회원 정보를 삭제할 경우 예외를 던진다.")
     void deleteMemberWithInvalidEmail() {
-        final Member member = new Member(1L, EMAIL+"!!!!!@  @@@", AGE);
-        given(memberDao.isExistByEmail(EMAIL+"!!!!!@  @@@")).willReturn(false);
+        final Member member = new Member(1L, EMAIL + "!!!!!@  @@@", AGE);
+        given(memberDao.isExistByEmail(EMAIL + "!!!!!@  @@@")).willReturn(false);
 
         assertThatThrownBy(() -> memberService.deleteMember(member))
                 .isInstanceOf(MemberNotFoundException.class);

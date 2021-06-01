@@ -74,8 +74,8 @@ class AuthServiceTest {
         given(jwtTokenProvider.getPayload(TOKEN)).willReturn(EMAIL);
         given(memberDao.isExistByEmail(EMAIL)).willReturn(false);
 
-       assertThatThrownBy(() -> authService.findMemberByToken(TOKEN))
-               .isInstanceOf(AuthorizationException.class);
+        assertThatThrownBy(() -> authService.findMemberByToken(TOKEN))
+                .isInstanceOf(AuthorizationException.class);
     }
 
     @Test

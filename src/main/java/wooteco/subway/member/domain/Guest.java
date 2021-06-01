@@ -2,7 +2,7 @@ package wooteco.subway.member.domain;
 
 import wooteco.subway.exception.AuthorizationException;
 
-public class Guest implements User{
+public class Guest implements User {
     @Override
     public Long getId() {
         throw new AuthorizationException("로그인 후 시도하세요.");

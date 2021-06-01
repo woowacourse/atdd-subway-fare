@@ -8,25 +8,21 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import wooteco.subway.member.domain.Member;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 @JdbcTest
 public
 class MemberDaoTest {
 
-    MemberDao memberDao;
-
-    @Autowired
-    JdbcTemplate jdbcTemplate;
-
     static Member 새로운_멤버 = new Member("email1@email.com", "password", 1234);
     static Member 동일한_이메일을_가진_멤버 = new Member("email@email.com", "password", 1234);
-    static Member 삭제용_멤버 = new Member( "delete@email.com", "password", 1234);
+    static Member 삭제용_멤버 = new Member("delete@email.com", "password", 1234);
+    MemberDao memberDao;
+    @Autowired
+    JdbcTemplate jdbcTemplate;
 
     @BeforeEach
     void setUp() {

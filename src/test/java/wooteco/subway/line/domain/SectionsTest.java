@@ -7,11 +7,9 @@ import wooteco.subway.exception.NotPermittedException;
 import wooteco.subway.station.domain.Station;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 class SectionsTest {
 
@@ -19,10 +17,10 @@ class SectionsTest {
     private static final Station NEW_UP_STATION = new Station(3L, "조w앤");
     private static final Station DOWN_STATION = new Station(2L, "이사");
     private static final Station NEW_DOWN_STATION = new Station(4L, "이2사");
-    private static final Section SECTION =  new Section(1L, UP_STATION, DOWN_STATION, 10);
-    private static final Section SECTION_FOR_ADD =  new Section(2L, UP_STATION, NEW_DOWN_STATION, 7);
-    private static final Section SECTION_WITH_INVALID_DISTANCE =  new Section(3L, UP_STATION, NEW_DOWN_STATION, 100);
-    private static final Section SECTION_WITH_INVALID_ENDPOINTS =  new Section(4L, NEW_UP_STATION, NEW_DOWN_STATION, 6);
+    private static final Section SECTION = new Section(1L, UP_STATION, DOWN_STATION, 10);
+    private static final Section SECTION_FOR_ADD = new Section(2L, UP_STATION, NEW_DOWN_STATION, 7);
+    private static final Section SECTION_WITH_INVALID_DISTANCE = new Section(3L, UP_STATION, NEW_DOWN_STATION, 100);
+    private static final Section SECTION_WITH_INVALID_ENDPOINTS = new Section(4L, NEW_UP_STATION, NEW_DOWN_STATION, 6);
 
     Sections sections;
 

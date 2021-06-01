@@ -8,8 +8,6 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.member.domain.Member;
 
-import javax.sql.DataSource;
-
 @Repository
 public class MemberDao {
     private JdbcTemplate jdbcTemplate;

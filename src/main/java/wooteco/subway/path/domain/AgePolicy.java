@@ -5,7 +5,7 @@ import java.util.function.IntPredicate;
 
 public enum AgePolicy {
     TWENTIES(age -> age > 19, 0, 0),
-    TEENAGERS(age -> 13 <= age  && age < 19, 350, 0.2),
+    TEENAGERS(age -> 13 <= age && age < 19, 350, 0.2),
     PRESCHOOLER(age -> 6 <= age && age < 13, 350, 0.5),
     BABIES(age -> age < 6, 0, 1);
 

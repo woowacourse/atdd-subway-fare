@@ -3,7 +3,7 @@ package wooteco.subway.member.domain;
 import org.apache.commons.lang3.StringUtils;
 import wooteco.subway.exception.AuthorizationException;
 
-public class Member implements User{
+public class Member implements User {
 
     private Long id;
     private String email;

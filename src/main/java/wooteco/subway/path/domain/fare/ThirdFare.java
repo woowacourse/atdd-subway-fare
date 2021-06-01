@@ -1,6 +1,6 @@
 package wooteco.subway.path.domain.fare;
 
-public class ThirdFare implements FareChain{
+public class ThirdFare implements FareChain {
     private static final int KM = 8;
     private static final int THRESHOLD = 50;
 

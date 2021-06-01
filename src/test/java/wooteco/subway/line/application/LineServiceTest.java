@@ -92,7 +92,7 @@ class LineServiceTest {
     @DisplayName("저장된 모든 노선을 불러온다.")
     void findLineWithSectionsResponses() {
         final Line line1 = new Line(1L, NAME, COLOR, EXTRA_FARE);
-        final Line line2= new Line(2L, NAME, COLOR, EXTRA_FARE);
+        final Line line2 = new Line(2L, NAME, COLOR, EXTRA_FARE);
         given(lineDao.findAll()).willReturn(Arrays.asList(line1, line2));
         final List<LineWithSectionsResponse> lineWithSectionsResponses = lineService.findLineWithSectionsResponses();
         assertThat(lineWithSectionsResponses.size()).isEqualTo(2);
