@@ -48,4 +48,8 @@ public class MemberService {
             throw new AlreadyExistEmailException();
         }
     }
+
+    public Member findByEmail(String email) {
+        return memberDao.findByEmail(email);
+    }
 }
