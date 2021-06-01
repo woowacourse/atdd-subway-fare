@@ -130,9 +130,13 @@ public class LineService {
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
-        line.removeSection(station);
 
-        sectionDao.deleteByLineId(lineId);
-        sectionDao.insertSections(line);
+        if (line.hasStation(stationId)) {
+            line.removeSection(station);
+            sectionDao.deleteByLineId(lineId);
+            sectionDao.insertSections(line);
+            return;
+        }
+        throw new UnsupportedOperationException("노선에 등록되지 않은 역은 삭제할 수 없습니다.");
     }
 }

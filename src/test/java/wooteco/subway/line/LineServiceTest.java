@@ -90,4 +90,13 @@ public class LineServiceTest {
                 .isInstanceOf(NoSuchElementException.class)
                 .hasMessage("존재하지 않는 노선입니다.");
     }
+
+    @DisplayName("등록되어 있지 않은 역을 이용한 구간 삭제 시 UnsupportedOperationException이 발생한다.")
+    @Test
+    void throw_UnsupportedOperationException_When_Delete_UnregisteredStation() {
+        LineResponse lineResponse = lineService.saveLine(new LineRequest("인천1호선", "green", 1L, 2L, 10));
+        assertThatThrownBy(() -> lineService.removeLineStation(lineResponse.getId(), 3L))
+                .isInstanceOf(UnsupportedOperationException.class)
+                .hasMessage("노선에 등록되지 않은 역은 삭제할 수 없습니다.");
+    }
 }
