@@ -2,6 +2,8 @@ spring:
     profiles:
         active: local
 ---
+swagger:
+    host: localhost:8080
 spring:
     config:
         activate:
@@ -34,6 +36,8 @@ spring:
         console:
             enabled: true
 ---
+swagger:
+    host: woowasubway.kro.kr
 spring:
     config:
         activate:
