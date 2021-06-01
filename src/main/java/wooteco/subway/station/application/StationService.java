@@ -1,13 +1,17 @@
 package wooteco.subway.station.application;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.InvalidStationException;
+import wooteco.subway.line.dao.LineDao;
+import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.dto.StationTransferResponse;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
+import wooteco.subway.station.dto.StationLinesResponse;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 import wooteco.subway.exception.AlreadyExistingStationException;
@@ -16,9 +20,11 @@ import wooteco.subway.exception.AlreadyExistingStationException;
 public class StationService {
 
     private final StationDao stationDao;
+    private final LineDao lineDao;
 
-    public StationService(StationDao stationDao) {
+    public StationService(StationDao stationDao, LineDao lineDao) {
         this.stationDao = stationDao;
+        this.lineDao = lineDao;
     }
 
     @Transactional
@@ -27,16 +33,21 @@ public class StationService {
         return StationResponse.of(station);
     }
 
+    @Transactional(readOnly = true)
     public Station findStationById(Long id) {
         checkStationExist(id);
         return stationDao.findById(id);
     }
 
-    public List<StationResponse> findAllStationResponses() {
+    @Transactional(readOnly = true)
+    public List<StationLinesResponse> findAll() {
         List<Station> stations = stationDao.findAll();
+        List<Line> lines = lineDao.findAll();
+        Map<List<Station>, Line> lineStations = lines.stream().collect(Collectors.toMap(Line::getStations,
+            line -> line));
 
         return stations.stream()
-            .map(StationResponse::of)
+            .map(station -> StationLinesResponse.of(station, lineStations))
             .collect(Collectors.toList());
     }
 
@@ -65,6 +76,7 @@ public class StationService {
         }
     }
 
+    @Transactional(readOnly = true)
     public List<StationTransferResponse> findStationsWithTransferLine(Long lineId) {
         return stationDao.getStationsWithTransferLines(lineId);
     }

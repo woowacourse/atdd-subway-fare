@@ -31,6 +31,7 @@ public class MemberService {
         return !memberDao.findExistingEmail(request.getEmail());
     }
 
+    @Transactional(readOnly = true)
     public MemberResponse findMember(LoginMember loginMember) {
         Member member = memberDao.findByEmail(loginMember.getEmail());
         return MemberResponse.of(member);

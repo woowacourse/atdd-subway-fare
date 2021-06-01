@@ -18,7 +18,6 @@ import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.LineSectionResponse;
 import wooteco.subway.line.dto.SectionDistanceRequest;
 import wooteco.subway.line.dto.SectionRequest;
-import wooteco.subway.line.dto.SectionResponse;
 import wooteco.subway.line.dto.StationTransferResponse;
 import wooteco.subway.line.dto.TransferLineResponse;
 import wooteco.subway.station.application.StationService;
@@ -28,6 +27,7 @@ import wooteco.subway.station.dto.StationMapResponse;
 @Service
 public class LineService {
 
+    private static final int LAST_SORTED_STATION_MARK = -1;
     private final LineDao lineDao;
     private final SectionDao sectionDao;
     private final StationService stationService;
@@ -63,6 +63,7 @@ public class LineService {
             .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<Line> findLines() {
         return lineDao.findAll();
     }
@@ -72,6 +73,7 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
+    @Transactional(readOnly = true)
     public Line findLineById(Long id) {
         checkLineExist(id);
         return lineDao.findById(id);
@@ -121,28 +123,7 @@ public class LineService {
 
     public LineSectionResponse findSectionsById(Long lineId) {
         Line line = lineDao.findById(lineId);
-        List<StationTransferResponse> stationResponses = sortStations(line, stationService
-            .findStationsWithTransferLine(lineId));
-        List<SectionResponse> sectionResponses = convertToSectionResponse(
-            line.getSections().sort());
-        return new LineSectionResponse(lineId, line.getName(),
-            line.getColor(), stationResponses, sectionResponses);
-    }
-
-    private List<StationTransferResponse> sortStations(Line line,
-        List<StationTransferResponse> stationResponses) {
-        return line.getStations().stream()
-            .map(station -> stationResponses.stream()
-                .filter(response -> response.getId().equals(station.getId()))
-                .findFirst()
-                .get())
-            .collect(Collectors.toList());
-    }
-
-    private List<SectionResponse> convertToSectionResponse(Sections sections) {
-        return sections.getSections().stream()
-            .map(SectionResponse::of)
-            .collect(Collectors.toList());
+        return LineSectionResponse.of(line, stationService.findStationsWithTransferLine(lineId));
     }
 
     private void checkLineExist(Long id) {
@@ -186,6 +167,6 @@ public class LineService {
             .filter(section -> section.getUpStation().getId().equals(stationId))
             .findFirst()
             .map(Section::getDistance)
-            .orElse(-1);
+            .orElse(LAST_SORTED_STATION_MARK);
     }
 }

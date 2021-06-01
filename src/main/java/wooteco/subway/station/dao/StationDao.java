@@ -3,7 +3,9 @@ package wooteco.subway.station.dao;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Repository;
 import wooteco.subway.line.dto.StationTransferResponse;
 import wooteco.subway.line.dto.TransferLineResponse;
 import wooteco.subway.station.domain.Station;
+import wooteco.subway.station.dto.StationLinesResponse;
 
 @Repository
 public class StationDao {
@@ -26,7 +29,6 @@ public class StationDao {
             rs.getLong("id"),
             rs.getString("name")
         );
-
 
     public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
@@ -72,15 +74,18 @@ public class StationDao {
     }
 
     public List<StationTransferResponse> getStationsWithTransferLines(final long lineId) {
-        String query = "SELECT S.id AS station_id, S.name AS station_name, " +
-            "L.id AS line_id, L.name AS line_name, L.color AS line_color " +
+        String query = "SELECT S.id AS station_id," +
+            "S.name AS station_name, " +
+            "L.id AS line_id, " +
+            "L.name AS line_name, " +
+            "L.color AS line_color " +
             "FROM STATION AS S " +
-            "INNER JOIN (SELECT line_id, up_station_id, down_station_id FROM SECTION WHERE line_id = ?) AS SE "
-            +
+            "INNER JOIN (SELECT line_id, up_station_id, down_station_id FROM SECTION WHERE line_id = ?) AS SE " +
             "ON (SE.up_station_id = S.id OR SE.down_station_id = S.id) " +
-            "LEFT JOIN SECTION AS SE_L ON (SE_L.up_station_id = S.id OR SE_L.down_station_id = S.id) "
-            +
-            "LEFT JOIN LINE AS L ON SE_L.line_id = L.id";
+            "LEFT JOIN SECTION AS SE_L " +
+            "ON (SE_L.up_station_id = S.id OR SE_L.down_station_id = S.id) " +
+            "LEFT JOIN LINE AS L " +
+            "ON SE_L.line_id = L.id";
 
         List<Map<String, Object>> result = jdbcTemplate.queryForList(query, lineId);
 
@@ -113,6 +118,7 @@ public class StationDao {
         if (result.isEmpty() || result.get(0).get("line_id") == null) {
             return Collections.EMPTY_LIST;
         }
+
         return result.stream()
             .collect(Collectors.groupingBy(it -> it.get("line_id")))
             .entrySet()
@@ -126,5 +132,4 @@ public class StationDao {
                 ))
             .collect(Collectors.toList());
     }
-
 }
