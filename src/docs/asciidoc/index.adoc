@@ -9,10 +9,32 @@ endif::[]
 
 == Error(에러)
 === 일반적인 에러
-include::{snippets}/exception-normal/http-response.adoc[]
+[source,http,options="nowrap"]
+----
+인증 실패: 401
+요청 변수 확인: 400
+api, 리소스 없음: 404
+서버 오류: 500
+
+예시
+{
+  이미 존재하는 역 이름입니다.
+}
+----
 
 === 유효성 검증 에러
-include::{snippets}/exception-validation/http-response.adoc[]
+[source,http,options="nowrap"]
+----
+유효성 검증: 400
+
+예시
+[ {
+  "field" : "name",
+  "objectName" : "stationRequest",
+  "code" : "SubwayName",
+  "defaultMessage" : "잘못된 이름 형식입니다."
+} ]
+----
 
 == Stations (역)
 
