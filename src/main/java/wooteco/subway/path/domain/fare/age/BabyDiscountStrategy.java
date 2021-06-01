@@ -1,6 +1,6 @@
 package wooteco.subway.path.domain.fare.age;
 
-public class BabyStrategy implements AgeStrategy {
+public class BabyDiscountStrategy implements AgeStrategy {
     @Override
     public int calculate(int fare) {
         return 0;

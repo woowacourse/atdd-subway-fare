@@ -2,13 +2,13 @@ package wooteco.subway.path.domain.fare;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wooteco.subway.path.domain.fare.age.BabyStrategy;
-import wooteco.subway.path.domain.fare.age.ChildStrategy;
-import wooteco.subway.path.domain.fare.age.DefaultStrategy;
-import wooteco.subway.path.domain.fare.age.TeenagerStrategy;
-import wooteco.subway.path.domain.fare.distance.OverFiftyStrategy;
-import wooteco.subway.path.domain.fare.distance.TenToFiftyStrategy;
-import wooteco.subway.path.domain.fare.distance.UnderTenStrategy;
+import wooteco.subway.path.domain.fare.age.BabyDiscountStrategy;
+import wooteco.subway.path.domain.fare.age.ChildDiscountStrategy;
+import wooteco.subway.path.domain.fare.age.DefaultDiscountStrategy;
+import wooteco.subway.path.domain.fare.age.TeenagerDiscountStrategy;
+import wooteco.subway.path.domain.fare.distance.FarthestDistanceDiscountStrategy;
+import wooteco.subway.path.domain.fare.distance.MiddleDistanceDiscountStrategy;
+import wooteco.subway.path.domain.fare.distance.DefaultDistanceDiscountStrategy;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.line.LineFixture.이호선;
@@ -20,7 +20,7 @@ public class FareTest {
     @Test
     void calculateFare() {
         // given
-        Fare fare = new Fare(이호선.getExtraFare(), new UnderTenStrategy(), new DefaultStrategy());
+        Fare fare = new Fare(이호선.getExtraFare(), new DefaultDistanceDiscountStrategy(), new DefaultDiscountStrategy());
 
         // when
         int totalFare = fare.calculate(10);
@@ -33,7 +33,7 @@ public class FareTest {
     @Test
     void calculateFare2() {
         // given
-        Fare fare = new Fare(이호선.getExtraFare(), new TenToFiftyStrategy(), new DefaultStrategy());
+        Fare fare = new Fare(이호선.getExtraFare(), new MiddleDistanceDiscountStrategy(), new DefaultDiscountStrategy());
 
         // when
         int totalFare = fare.calculate(47);
@@ -46,7 +46,7 @@ public class FareTest {
     @Test
     void calculateFare3() {
         // given
-        Fare fare = new Fare(이호선.getExtraFare(), new OverFiftyStrategy(), new DefaultStrategy());
+        Fare fare = new Fare(이호선.getExtraFare(), new FarthestDistanceDiscountStrategy(), new DefaultDiscountStrategy());
 
         // when
         int totalFare = fare.calculate(57);
@@ -59,7 +59,7 @@ public class FareTest {
     @Test
     void calculateFareAge() {
         // given
-        Fare fare = new Fare(이호선.getExtraFare(), new UnderTenStrategy(), new BabyStrategy());
+        Fare fare = new Fare(이호선.getExtraFare(), new DefaultDistanceDiscountStrategy(), new BabyDiscountStrategy());
 
         // when
         int totalFare = fare.calculate(10);
@@ -72,7 +72,7 @@ public class FareTest {
     @Test
     void calculateFareAge2() {
         // given
-        Fare fare = new Fare(이호선.getExtraFare(), new UnderTenStrategy(), new ChildStrategy());
+        Fare fare = new Fare(이호선.getExtraFare(), new DefaultDistanceDiscountStrategy(), new ChildDiscountStrategy());
 
         // when
         int totalFare = fare.calculate(10);
@@ -85,7 +85,7 @@ public class FareTest {
     @Test
     void calculateFareAge3() {
         // given
-        Fare fare = new Fare(이호선.getExtraFare(), new UnderTenStrategy(), new TeenagerStrategy());
+        Fare fare = new Fare(이호선.getExtraFare(), new DefaultDistanceDiscountStrategy(), new TeenagerDiscountStrategy());
 
         // when
         int totalFare = fare.calculate(10);
@@ -98,7 +98,7 @@ public class FareTest {
     @Test
     void calculateFareAge4() {
         // given
-        Fare fare = new Fare(이호선.getExtraFare(), new UnderTenStrategy(), new DefaultStrategy());
+        Fare fare = new Fare(이호선.getExtraFare(), new DefaultDistanceDiscountStrategy(), new DefaultDiscountStrategy());
 
         // when
         int totalFare = fare.calculate(10);

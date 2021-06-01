@@ -1,6 +1,6 @@
 package wooteco.subway.path.domain.fare.distance;
 
-public class TenToFiftyStrategy implements DistanceStrategy {
+public class MiddleDistanceDiscountStrategy implements DistanceStrategy {
     private static final int UNIT = 5;
     private static final int UNIT_FARE = 100;
     private static final int MIN_DISTANCE = 10;

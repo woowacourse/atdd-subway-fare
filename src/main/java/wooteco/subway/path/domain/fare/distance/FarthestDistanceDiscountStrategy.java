@@ -1,14 +1,14 @@
 package wooteco.subway.path.domain.fare.distance;
 
-import static wooteco.subway.path.domain.fare.distance.TenToFiftyStrategy.MAX_DISTANCE;
+import static wooteco.subway.path.domain.fare.distance.MiddleDistanceDiscountStrategy.MAX_DISTANCE;
 
-public class OverFiftyStrategy implements DistanceStrategy {
+public class FarthestDistanceDiscountStrategy implements DistanceStrategy {
     private static final int UNIT = 8;
     private static final int UNIT_FARE = 100;
 
     @Override
     public int calculate(int distance) {
-        TenToFiftyStrategy strategy = new TenToFiftyStrategy();
+        MiddleDistanceDiscountStrategy strategy = new MiddleDistanceDiscountStrategy();
         int underFiftyFare = strategy.maxFare();
         distance -= MAX_DISTANCE;
         int count = (distance - 1) / UNIT;

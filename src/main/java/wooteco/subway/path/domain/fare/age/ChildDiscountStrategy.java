@@ -1,8 +1,8 @@
 package wooteco.subway.path.domain.fare.age;
 
-public class TeenagerStrategy implements AgeStrategy {
+public class ChildDiscountStrategy implements AgeStrategy {
     private static final int DEDUCTED_FARE = 350;
-    private static final double DISCOUNT_PERCENTAGE = 0.8;
+    private static final double DISCOUNT_PERCENTAGE = 0.5;
 
     @Override
     public int calculate(int fare) {
