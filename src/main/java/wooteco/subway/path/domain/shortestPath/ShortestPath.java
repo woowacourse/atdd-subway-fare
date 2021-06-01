@@ -16,12 +16,13 @@ public abstract class ShortestPath {
 
     public ShortestPath(List<Line> lines, Station source, Station target) {
         SubwayGraph subwayGraph = new SubwayGraph(SectionEdge.class, lines);
-        this.path = getShortestPathAlgorithm(subwayGraph).getPath(source, target);
+        this.path = shortestPathAlgorithm(subwayGraph).getPath(source, target);
         validatePath(path);
     }
 
     private void validatePath(GraphPath<Station, SectionEdge> path) {
         if(path == null) {
+        if (path == null) {
             throw new InvalidPathException();
         }
     }
@@ -34,5 +35,5 @@ public abstract class ShortestPath {
         return path.getVertexList();
     }
 
-    protected abstract ShortestPathAlgorithm<Station, SectionEdge> getShortestPathAlgorithm(SubwayGraph subwayGraph);
+    protected abstract ShortestPathAlgorithm<Station, SectionEdge> shortestPathAlgorithm(SubwayGraph subwayGraph);
 }

@@ -2,11 +2,9 @@ package wooteco.subway.path.domain.shortestPath;
 
 import java.util.List;
 
-import org.jgrapht.GraphPath;
 import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 
-import wooteco.subway.exception.invalid.InvalidPathException;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.path.domain.SectionEdge;
 import wooteco.subway.path.domain.SubwayGraph;
@@ -18,7 +16,7 @@ public class ShortestPathWithDijkstra extends ShortestPath {
     }
 
     @Override
-    protected ShortestPathAlgorithm<Station, SectionEdge> getShortestPathAlgorithm(SubwayGraph subwayGraph) {
+    protected ShortestPathAlgorithm<Station, SectionEdge> shortestPathAlgorithm(SubwayGraph subwayGraph) {
         return new DijkstraShortestPath<>(subwayGraph);
     }
 }
