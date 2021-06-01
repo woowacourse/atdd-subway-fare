@@ -1,7 +1,7 @@
 plugins {
-	id 'org.springframework.boot' version '2.4.3'
-	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-	id 'java'
+    id 'org.springframework.boot' version '2.4.3'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
 }
 
 group = 'com.example'
@@ -9,39 +9,43 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
 
-	compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
-	compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
+    implementation 'org.projectlombok:lombok:1.18.18'
+    compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
+    compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
 
-	// spring
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.2.4'
+    implementation 'org.springframework.boot:spring-boot-starter-log4j2'
 
-	// handlebars
-	implementation 'pl.allegro.tech.boot:handlebars-spring-boot-starter:0.3.0'
+    // spring
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.2.4'
 
-	// log
-	implementation 'net.rakugakibox.spring.boot:logback-access-spring-boot-starter:2.7.1'
+    // handlebars
+    testImplementation 'io.rest-assured:rest-assured:3.3.0'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-	testImplementation 'io.rest-assured:rest-assured:3.3.0'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'com.h2database:h2'
+    implementation("mysql:mysql-connector-java")
 
-	implementation 'com.h2database:h2'
-	implementation("mysql:mysql-connector-java")
-
-	// jgrapht
+    // jgrapht
     implementation 'org.jgrapht:jgrapht-core:1.0.1'
 
-	// jwt
-	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    // jwt
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+}
+
+configurations {
+    all {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
 }
 
 test {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }

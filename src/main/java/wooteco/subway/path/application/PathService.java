@@ -27,7 +27,7 @@ public class PathService {
     public PathResponse findPath(Long sourceId, Long targetId, MemberType memberType) {
         SubwayRoute route = findRoute(sourceId, targetId);
 
-        return getPathResponse(route, memberType);
+        return pathResponse(route, memberType);
     }
 
     private SubwayRoute findRoute(Long sourceId, Long targetId) {
@@ -40,7 +40,7 @@ public class PathService {
         }
     }
 
-    private PathResponse getPathResponse(SubwayRoute route, MemberType memberType) {
+    private PathResponse pathResponse(SubwayRoute route, MemberType memberType) {
         int fare = FarePolicy.calculate(route.distance(), route.extraFare(), memberType);
         List<StationResponse> stationResponses = stationService.stationResponses(route.stations());
 

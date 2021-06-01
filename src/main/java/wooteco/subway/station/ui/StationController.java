@@ -14,6 +14,7 @@ import java.util.List;
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class StationController {
+
     private StationService stationService;
 
     public StationController(StationService stationService) {

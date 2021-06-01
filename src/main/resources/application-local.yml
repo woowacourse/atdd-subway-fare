@@ -11,3 +11,8 @@ spring:
 handlebars:
   suffix: .html
   enabled: true
+
+logging:
+  level:
+    root: TRACE
+  config: classpath:log4j2.xml
