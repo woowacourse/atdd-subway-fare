@@ -6,11 +6,11 @@ import java.util.function.UnaryOperator;
 
 public enum DistanceFareCalculator {
     DEFAULT_DISTANCE(0, 10, (distance) -> 1250),
-    OVER_10KM_TO_50KM(10,50,
-            (distance) -> 1250 + (int)((Math.ceil(distance - 10 -1) / 5 + 1)) * 100),
+    OVER_10KM_TO_50KM(10, 50,
+            (distance) -> 1250 + (int) ((Math.ceil(distance - 10 - 1) / 5 + 1)) * 100),
     OVER_50KM(50, Integer.MAX_VALUE, (distance) ->
-            1250 + (int)((Math.ceil(50 - 10 -1) / 5 + 1)) * 100
-            + (int)((Math.ceil(distance - 50 -1) / 8 + 1)) * 100);
+            1250 + (int) ((Math.ceil(50 - 10 - 1) / 5 + 1)) * 100
+                    + (int) ((Math.ceil(distance - 50 - 1) / 8 + 1)) * 100);
 
     private final int minDistance;
     private final int maxDistance;

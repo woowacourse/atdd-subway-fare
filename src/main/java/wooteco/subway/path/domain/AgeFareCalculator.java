@@ -5,9 +5,9 @@ import java.util.NoSuchElementException;
 import java.util.function.BinaryOperator;
 
 public enum AgeFareCalculator {
-    PRE_SCHOOL(0, 6, (fare, lineFare) -> 0 ),
-    CHILD(6, 13, (fare, lineFare) -> (int)(((fare+lineFare) - 350 ) * 0.5)),
-    TEENAGER(13, 19, (fare, lineFare) -> (int)(((fare+lineFare) - 350 ) * 0.8)),
+    PRE_SCHOOL(0, 6, (fare, lineFare) -> 0),
+    CHILD(6, 13, (fare, lineFare) -> (int) (((fare + lineFare) - 350) * 0.5)),
+    TEENAGER(13, 19, (fare, lineFare) -> (int) (((fare + lineFare) - 350) * 0.8)),
     ADULT(19, 200, Integer::sum);
 
     private final int minAge;

@@ -15,12 +15,10 @@ import wooteco.subway.path.dto.PathResponse;
 public class PathController {
 
     private final PathService pathService;
-    private final FareService fareService;
 
     @Autowired
-    public PathController(PathService pathService, FareService fareService) {
+    public PathController(PathService pathService) {
         this.pathService = pathService;
-        this.fareService = fareService;
     }
 
     @GetMapping("/paths")
