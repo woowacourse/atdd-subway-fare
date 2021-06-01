@@ -1,7 +1,5 @@
 package wooteco.subway.path.domain;
 
-import wooteco.subway.member.domain.LoginMember;
-
 public class Price {
 
     private static final int DEFAULT_DISTANCE = 10;
@@ -25,6 +23,12 @@ public class Price {
 
     public Price(int price) {
         this.price = price;
+    }
+
+    public Price(int distance, int extraPrice, Integer age) {
+        calculatePrice(distance);
+        addExtraPrice(extraPrice);
+        calculateDiscountRateFromAge(age);
     }
 
     public void calculatePrice(int distance) {
@@ -51,20 +55,20 @@ public class Price {
         this.price += extraPrice;
     }
 
-    public void calculateDiscountRateFromAge(LoginMember loginMember) {
-        if (loginMember.getAge() == null) {
+    public void calculateDiscountRateFromAge(Integer age) {
+        if (age == null) {
             return;
         }
-        if (loginMember.getAge() < DISCOUNT_FIRST_BOUNDARY_FROM_AGE) {
+        if (age < DISCOUNT_FIRST_BOUNDARY_FROM_AGE) {
             this.price = 0;
             return;
         }
-        if (loginMember.getAge() < DISCOUNT_SECOND_BOUNDARY_FROM_AGE) {
+        if (age < DISCOUNT_SECOND_BOUNDARY_FROM_AGE) {
             this.price -= DEDUCTION_PRICE;
             this.price -= (int) (this.price * DISCOUNT_RATE_50);
             return;
         }
-        if (loginMember.getAge() < DISCOUNT_THIRD_BOUNDARY_FROM_AGE) {
+        if (age < DISCOUNT_THIRD_BOUNDARY_FROM_AGE) {
             this.price -= DEDUCTION_PRICE;
             this.price -= (int) (this.price * DISCOUNT_RATE_20);
         }

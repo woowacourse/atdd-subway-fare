@@ -15,11 +15,7 @@ public class PathResponseAssembler {
             .collect(Collectors.toList());
 
         int distance = subwayPath.calculateDistance();
-
-        Price price = new Price(0);
-        price.calculatePrice(distance);
-        price.addExtraPrice(subwayPath.findMaxExtraPrice());
-        price.calculateDiscountRateFromAge(loginMember);
+        Price price = new Price(distance, subwayPath.findMaxExtraPrice(), loginMember.getAge());
 
         return new PathResponse(stationResponses, distance, price);
     }

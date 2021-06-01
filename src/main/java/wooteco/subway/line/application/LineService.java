@@ -105,13 +105,13 @@ public class LineService {
         sectionDao.insertSections(line);
     }
 
-    public boolean isRegisteredStation(Station station) {
+    public void checkRegisteredStation(Station station) {
         List<Line> lines = lineDao.findAll();
 
-        lines.stream().filter(line -> line.getStations().contains(station)).forEach(line -> {
-            throw new StationAlreadyRegisteredInLineException("노선에 등록된 역은 삭제할 수 없습니다.");
-        });
-        return false;
+        lines.stream().filter(line -> line.getStations().contains(station)).findAny()
+            .orElseThrow(
+                () -> new StationAlreadyRegisteredInLineException("노선에 등록된 역은 삭제할 수 없습니다."));
+
     }
 
     public List<MapDetailResponse> showMap() {
