@@ -111,6 +111,7 @@ public class LineService {
 
     public void deleteLineById(Long id) {
         if (lineDao.isExistById(id)) {
+            sectionDao.deleteByLineId(id);
             lineDao.deleteById(id);
             return;
         }
