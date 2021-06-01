@@ -9,7 +9,7 @@ public class TenToFiftyStrategy implements DistanceStrategy {
     @Override
     public int calculate(int distance) {
         distance -= MIN_DISTANCE;
-        return (int) ((Math.ceil((distance - 1) / UNIT) + 1) * UNIT_FARE);
+        return (int) ((Math.floor((distance - 1.) / UNIT) + 1) * UNIT_FARE);
     }
 
     public int maxFare() {
