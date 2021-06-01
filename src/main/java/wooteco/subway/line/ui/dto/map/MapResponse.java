@@ -12,9 +12,9 @@ public class MapResponse {
 
     @ConstructorProperties({"id", "name", "color", "stations"})
     public MapResponse(Long id,
-                       String name,
-                       String color,
-                       List<StationOfMapResponse> stations) {
+        String name,
+        String color,
+        List<StationOfMapResponse> stations) {
         this.id = id;
         this.name = name;
         this.color = color;

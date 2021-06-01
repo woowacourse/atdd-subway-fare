@@ -1,9 +1,8 @@
 package wooteco.subway.path.ui.dto;
 
-import wooteco.subway.station.ui.dto.StationResponse;
-
 import java.beans.ConstructorProperties;
 import java.util.List;
+import wooteco.subway.station.ui.dto.StationResponse;
 
 public class PathResponse {
 

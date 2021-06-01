@@ -5,6 +5,7 @@ import java.util.function.UnaryOperator;
 import wooteco.subway.member.domain.LoginMember;
 
 public interface DiscountFarePolicy {
+
     static UnaryOperator<BigDecimal> zero() {
         return fare -> BigDecimal.ZERO;
     }

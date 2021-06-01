@@ -5,6 +5,7 @@ import java.util.function.UnaryOperator;
 import wooteco.subway.member.domain.LoginMember;
 
 public class TeenageDiscountPolicy implements DiscountFarePolicy {
+
     private static final int DEDUCTION = 350;
     private static final int MINIMUM_AGE = 13;
     private static final int MAXIMUM_AGE = 19;

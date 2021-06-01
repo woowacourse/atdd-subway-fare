@@ -1,8 +1,7 @@
 package wooteco.subway.member.domain;
 
-import wooteco.subway.exception.AuthorizationException;
-
 import java.util.Objects;
+import wooteco.subway.exception.AuthorizationException;
 
 public class Member {
 
@@ -23,7 +22,7 @@ public class Member {
     }
 
     public Member(Long id, String email, Integer age) {
-        this(id, email, null ,age);
+        this(id, email, null, age);
     }
 
     public Long getId() {

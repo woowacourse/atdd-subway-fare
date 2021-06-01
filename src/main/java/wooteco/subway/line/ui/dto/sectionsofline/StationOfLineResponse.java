@@ -1,12 +1,11 @@
 package wooteco.subway.line.ui.dto.sectionsofline;
 
-import wooteco.subway.line.domain.Line;
-import wooteco.subway.station.domain.Station;
+import static java.util.stream.Collectors.toList;
 
 import java.beans.ConstructorProperties;
 import java.util.List;
-
-import static java.util.stream.Collectors.toList;
+import wooteco.subway.line.domain.Line;
+import wooteco.subway.station.domain.Station;
 
 public class StationOfLineResponse {
 

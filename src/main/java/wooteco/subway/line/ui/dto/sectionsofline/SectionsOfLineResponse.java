@@ -1,10 +1,9 @@
 package wooteco.subway.line.ui.dto.sectionsofline;
 
-import wooteco.subway.line.ui.dto.SectionResponse;
-import wooteco.subway.line.ui.dto.SectionsResponse;
-
 import java.beans.ConstructorProperties;
 import java.util.List;
+import wooteco.subway.line.ui.dto.SectionResponse;
+import wooteco.subway.line.ui.dto.SectionsResponse;
 
 public class SectionsOfLineResponse {
 
@@ -27,7 +26,7 @@ public class SectionsOfLineResponse {
     }
 
     public SectionsOfLineResponse(LineWithTransferLineResponse lineResponse,
-                                  SectionsResponse sectionsResponse) {
+        SectionsResponse sectionsResponse) {
         this.id = lineResponse.getId();
         this.color = lineResponse.getColor();
         this.name = lineResponse.getName();

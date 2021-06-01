@@ -1,6 +1,7 @@
 package wooteco.subway.member.domain;
 
 public class LoginMember {
+
     private static final LoginMember EMPTY_LOGIN_MEMBER = new LoginMember(null, null, null);
 
     private final Long id;

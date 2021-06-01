@@ -1,5 +1,11 @@
 package wooteco.subway.station.application;
 
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
+
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.DuplicateException;
@@ -14,13 +20,6 @@ import wooteco.subway.station.ui.dto.LineResponse;
 import wooteco.subway.station.ui.dto.StationRequest;
 import wooteco.subway.station.ui.dto.StationResponse;
 import wooteco.subway.station.ui.dto.StationWithLinesResponse;
-
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
 
 @Transactional(readOnly = true)
 @Service
@@ -84,7 +83,7 @@ public class StationService {
     }
 
     private void validateDeletableStation(Long id) {
-        if(sectionDao.existsByStationId(id)) {
+        if (sectionDao.existsByStationId(id)) {
             throw new SubwayException("노선에 등록된 역은 삭제할 수 없습니다.");
         }
     }

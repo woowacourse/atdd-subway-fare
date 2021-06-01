@@ -1,11 +1,10 @@
 package wooteco.subway.line.ui.dto;
 
-import wooteco.subway.line.domain.Sections;
+import static java.util.stream.Collectors.toList;
 
 import java.io.Serializable;
 import java.util.List;
-
-import static java.util.stream.Collectors.toList;
+import wooteco.subway.line.domain.Sections;
 
 public class SectionsResponse implements Serializable {
 

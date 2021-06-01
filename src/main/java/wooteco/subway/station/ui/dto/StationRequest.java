@@ -1,12 +1,10 @@
 package wooteco.subway.station.ui.dto;
 
+import java.beans.ConstructorProperties;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.Length;
 import wooteco.subway.station.domain.Station;
-
-import java.beans.ConstructorProperties;
 
 public class StationRequest {
 

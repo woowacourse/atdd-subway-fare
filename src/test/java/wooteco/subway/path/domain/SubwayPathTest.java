@@ -28,13 +28,11 @@ public class SubwayPathTest {
 
         SubwayPath subwayPath = new SubwayPath(
             Collections.singletonList(sectionEdge),
-            Arrays.asList(neozalStation(), rootStation()),
-            new Fare(
-                FarePolicyFactory.createExtraFarePolicy(),
-                FarePolicyFactory.createDiscountPolicy()
-            ));
+            Arrays.asList(neozalStation(), rootStation()));
 
-        assertThat(subwayPath.fare(loginMember).intValue()).isEqualTo(expectedFare);
+        Fare fare = new Fare(FarePolicyFactory.createExtraFarePolicy(), FarePolicyFactory.createDiscountPolicy());
+
+        assertThat(fare.calculate(subwayPath, loginMember).intValue()).isEqualTo(expectedFare);
     }
 
     private Station neozalStation() {

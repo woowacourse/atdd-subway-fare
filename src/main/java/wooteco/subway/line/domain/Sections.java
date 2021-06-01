@@ -1,14 +1,16 @@
 package wooteco.subway.line.domain;
 
+import static java.util.stream.Collectors.toList;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import wooteco.subway.exception.DuplicateException;
 import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.exception.SubwayException;
 import wooteco.subway.station.domain.Station;
-
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toList;
 
 public class Sections {
 
@@ -39,14 +41,16 @@ public class Sections {
 
     private void checkAlreadyExisted(Section section) {
         List<Station> stations = getStations();
-        if (!stations.contains(section.getUpStation()) && !stations.contains(section.getDownStation())) {
+        if (!stations.contains(section.getUpStation()) && !stations
+            .contains(section.getDownStation())) {
             throw new DuplicateException("이미 존재하는 구간입니다.");
         }
     }
 
     private void checkExistedAny(Section section) {
         List<Station> stations = getStations();
-        List<Station> stationsOfNewSection = Arrays.asList(section.getUpStation(), section.getDownStation());
+        List<Station> stationsOfNewSection = Arrays
+            .asList(section.getUpStation(), section.getDownStation());
         if (stations.containsAll(stationsOfNewSection)) {
             throw new DuplicateException("이미 존재하는 구간입니다.");
         }
@@ -54,23 +58,24 @@ public class Sections {
 
     private void addSectionUpToUp(Section section) {
         this.sections.stream()
-                .filter(it -> it.getUpStation().equals(section.getUpStation()))
-                .findFirst()
-                .ifPresent(it -> replaceSectionWithDownStation(section, it));
+            .filter(it -> it.getUpStation().equals(section.getUpStation()))
+            .findFirst()
+            .ifPresent(it -> replaceSectionWithDownStation(section, it));
     }
 
     private void addSectionDownToDown(Section section) {
         this.sections.stream()
-                .filter(it -> it.getDownStation().equals(section.getDownStation()))
-                .findFirst()
-                .ifPresent(it -> replaceSectionWithUpStation(section, it));
+            .filter(it -> it.getDownStation().equals(section.getDownStation()))
+            .findFirst()
+            .ifPresent(it -> replaceSectionWithUpStation(section, it));
     }
 
     private void replaceSectionWithUpStation(Section newSection, Section existSection) {
         if (existSection.getDistance() <= newSection.getDistance()) {
             throw new SubwayException("구간의 길이가 잘못됐습니");
         }
-        this.sections.add(new Section(existSection.getUpStation(), newSection.getUpStation(), existSection.getDistance() - newSection.getDistance()));
+        this.sections.add(new Section(existSection.getUpStation(), newSection.getUpStation(),
+            existSection.getDistance() - newSection.getDistance()));
         this.sections.remove(existSection);
     }
 
@@ -78,7 +83,8 @@ public class Sections {
         if (existSection.getDistance() <= newSection.getDistance()) {
             throw new SubwayException("구간의 길이가 잘못됐습니다.");
         }
-        this.sections.add(new Section(newSection.getDownStation(), existSection.getDownStation(), existSection.getDistance() - newSection.getDistance()));
+        this.sections.add(new Section(newSection.getDownStation(), existSection.getDownStation(),
+            existSection.getDistance() - newSection.getDistance()));
         this.sections.remove(existSection);
     }
 
@@ -102,20 +108,20 @@ public class Sections {
 
     private Section findUpEndSection() {
         List<Station> downStations = this.sections.stream()
-                .map(Section::getDownStation)
-                .collect(toList());
+            .map(Section::getDownStation)
+            .collect(toList());
 
         return this.sections.stream()
-                .filter(it -> !downStations.contains(it.getUpStation()))
-                .findFirst()
-                .orElseThrow(() -> new NotFoundException("구간을 찾을 수 없습니다."));
+            .filter(it -> !downStations.contains(it.getUpStation()))
+            .findFirst()
+            .orElseThrow(() -> new NotFoundException("구간을 찾을 수 없습니다."));
     }
 
     private Section findSectionByNextUpStation(Station station) {
         return this.sections.stream()
-                .filter(it -> it.getUpStation().equals(station))
-                .findFirst()
-                .orElse(null);
+            .filter(it -> it.getUpStation().equals(station))
+            .findFirst()
+            .orElse(null);
     }
 
     public void removeStation(Station station) {
@@ -124,11 +130,11 @@ public class Sections {
         }
 
         Optional<Section> upSection = sections.stream()
-                .filter(it -> it.getUpStation().equals(station))
-                .findFirst();
+            .filter(it -> it.getUpStation().equals(station))
+            .findFirst();
         Optional<Section> downSection = sections.stream()
-                .filter(it -> it.getDownStation().equals(station))
-                .findFirst();
+            .filter(it -> it.getDownStation().equals(station))
+            .findFirst();
 
         if (upSection.isPresent() && downSection.isPresent()) {
             Station newUpStation = downSection.get().getUpStation();
@@ -144,15 +150,16 @@ public class Sections {
     public void updateDistance(Long upStationId, Long downStationId, Integer distance) {
         validateDistance(distance);
 
-        Section targetSection = findSectionByUpStationIdAndDownStationId(upStationId, downStationId);
+        Section targetSection = findSectionByUpStationIdAndDownStationId(upStationId,
+            downStationId);
         sections.remove(targetSection);
         sections.add(
-                new Section(
-                        targetSection.getId(),
-                        targetSection.getUpStation(),
-                        targetSection.getDownStation(),
-                        distance
-                )
+            new Section(
+                targetSection.getId(),
+                targetSection.getUpStation(),
+                targetSection.getDownStation(),
+                distance
+            )
         );
     }
 
@@ -164,23 +171,23 @@ public class Sections {
 
     private Section findSectionByUpStationIdAndDownStationId(Long upStationId, Long downStationId) {
         return sections.stream()
-                .filter(section -> section.hasSameDownStationId(downStationId))
-                .filter(section -> section.hasSameUpStationId(upStationId))
-                .findAny()
-                .orElseThrow(() -> new NotFoundException("일치하는 구간을 찾을 수 없습니다."));
+            .filter(section -> section.hasSameDownStationId(downStationId))
+            .filter(section -> section.hasSameUpStationId(upStationId))
+            .findAny()
+            .orElseThrow(() -> new NotFoundException("일치하는 구간을 찾을 수 없습니다."));
     }
 
     public List<Section> getSections() {
         return getStations().subList(0, sections.size()).stream()
-                .map(this::findSectionByUpStation)
-                .collect(toList());
+            .map(this::findSectionByUpStation)
+            .collect(toList());
     }
 
     private Section findSectionByUpStation(Station station) {
         return sections.stream()
-                .filter(section -> section.getUpStation().equals(station))
-                .findAny()
-                .orElseThrow(() -> new NotFoundException("섹션 목록을 불러오는데 실패했습니다"));
+            .filter(section -> section.getUpStation().equals(station))
+            .findAny()
+            .orElseThrow(() -> new NotFoundException("섹션 목록을 불러오는데 실패했습니다"));
     }
 
 }

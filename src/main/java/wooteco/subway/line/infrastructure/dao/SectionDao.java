@@ -1,42 +1,43 @@
 package wooteco.subway.line.infrastructure.dao;
 
+import static java.util.stream.Collectors.toList;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 
-import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static java.util.stream.Collectors.toList;
-
 @Repository
 public class SectionDao {
+
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
 
     public SectionDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
-                .withTableName("section")
-                .usingGeneratedKeyColumns("id");
+            .withTableName("section")
+            .usingGeneratedKeyColumns("id");
     }
 
     public Section insert(Line line, Section section) {
         Map<String, Object> params = createParams(line, section);
         Long sectionId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
 
-        return new Section(sectionId, section.getUpStation(), section.getDownStation(), section.getDistance());
+        return new Section(sectionId, section.getUpStation(), section.getDownStation(),
+            section.getDistance());
     }
 
     public void insertSections(Line line) {
         List<Section> sections = line.getSections().getSections();
         List<Map<String, Object>> batchValues = sections.stream()
-                .map(section -> createParams(line, section))
-                .collect(toList());
+            .map(section -> createParams(line, section))
+            .collect(toList());
 
         simpleJdbcInsert.executeBatch(batchValues.toArray(new Map[sections.size()]));
     }

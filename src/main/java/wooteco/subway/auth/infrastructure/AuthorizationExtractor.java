@@ -1,24 +1,25 @@
 package wooteco.subway.auth.infrastructure;
 
-import java.util.Optional;
-import wooteco.subway.exception.AuthorizationException;
-
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
+import javax.servlet.http.HttpServletRequest;
+import wooteco.subway.exception.AuthorizationException;
 
 public class AuthorizationExtractor {
+
     public static final String AUTHORIZATION = "Authorization";
+    public static final String ACCESS_TOKEN_TYPE =
+        AuthorizationExtractor.class.getSimpleName() + ".ACCESS_TOKEN_TYPE";
     public static String BEARER_TYPE = "Bearer";
-    public static final String ACCESS_TOKEN_TYPE = AuthorizationExtractor.class.getSimpleName() + ".ACCESS_TOKEN_TYPE";
 
     public static String extract(HttpServletRequest request) {
         Enumeration<String> headers = request.getHeaders(AUTHORIZATION);
 
         String token = findAuthorizationHeader(headers)
-                .orElseThrow(AuthorizationException::new);
+            .orElseThrow(AuthorizationException::new);
 
         request.setAttribute(ACCESS_TOKEN_TYPE, BEARER_TYPE);
 

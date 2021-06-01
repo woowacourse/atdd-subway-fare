@@ -3,6 +3,7 @@ package wooteco.subway.path.domain.policy.extrafarepolicy;
 import java.math.BigDecimal;
 
 public class TenFiftyPolicyExtra implements ExtraFarePolicy {
+
     private static final int FARE = 100;
     private static final int OVER_FARE_DISTANCE = 5;
     private static final int DOWN_THRESHOLD = 10;

@@ -9,6 +9,7 @@ import wooteco.subway.path.ui.ClassifyingMemberPrincipalArgumentResolver;
 
 @Configuration
 public class ClassifyingMemberPrincipalConfig implements WebMvcConfigurer {
+
     private final AuthService authService;
 
     public ClassifyingMemberPrincipalConfig(AuthService authService) {

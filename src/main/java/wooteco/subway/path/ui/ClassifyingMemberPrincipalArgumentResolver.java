@@ -34,7 +34,7 @@ public class ClassifyingMemberPrincipalArgumentResolver implements HandlerMethod
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
         Objects.requireNonNull(request);
 
-        if(!AuthorizationExtractor.isExtractable(request)) {
+        if (!AuthorizationExtractor.isExtractable(request)) {
             return LoginMember.empty();
         }
 

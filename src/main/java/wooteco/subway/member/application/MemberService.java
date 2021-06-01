@@ -51,7 +51,8 @@ public class MemberService {
         }
     }
 
-    private void validateToAlreadyExistEmailExceptMe(MemberRequest request, LoginMember loginMember) {
+    private void validateToAlreadyExistEmailExceptMe(MemberRequest request,
+        LoginMember loginMember) {
         if (memberDao.existsByEmailWithoutId(request.getEmail(), loginMember.getId())) {
             throw new DuplicateException("이미 존재하는 email 입니다.");
         }

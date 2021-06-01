@@ -1,9 +1,8 @@
 package wooteco.subway.line.ui.dto;
 
+import java.beans.ConstructorProperties;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.ui.dto.map.StationOfSectionResponse;
-
-import java.beans.ConstructorProperties;
 
 public class SectionResponse {
 

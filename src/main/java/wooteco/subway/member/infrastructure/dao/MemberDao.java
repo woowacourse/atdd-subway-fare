@@ -1,5 +1,6 @@
 package wooteco.subway.member.infrastructure.dao;
 
+import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -7,8 +8,6 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.member.domain.Member;
-
-import javax.sql.DataSource;
 
 @Repository
 public class MemberDao {
@@ -21,16 +20,16 @@ public class MemberDao {
         this.jdbcTemplate = jdbcTemplate;
 
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
-                .withTableName("member")
-                .usingGeneratedKeyColumns("id");
+            .withTableName("member")
+            .usingGeneratedKeyColumns("id");
 
         this.rowMapper = (rs, rowNum) ->
-                new Member(
-                        rs.getLong("id"),
-                        rs.getString("email"),
-                        rs.getString("password"),
-                        rs.getInt("age")
-                );
+            new Member(
+                rs.getLong("id"),
+                rs.getString("email"),
+                rs.getString("password"),
+                rs.getInt("age")
+            );
     }
 
     public Member insert(Member member) {
@@ -41,7 +40,8 @@ public class MemberDao {
 
     public void update(Member member) {
         String sql = "update member set email = ?, password = ?, age = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{member.getEmail(), member.getPassword(), member.getAge(), member.getId()});
+        jdbcTemplate.update(sql,
+            member.getEmail(), member.getPassword(), member.getAge(), member.getId());
     }
 
     public boolean existsByEmail(String email) {
