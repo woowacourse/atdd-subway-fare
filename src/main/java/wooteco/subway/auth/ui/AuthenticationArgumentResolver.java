@@ -12,7 +12,7 @@ import wooteco.subway.member.domain.LoginMember;
 
 public abstract class AuthenticationArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private AuthService authService;
+    private final AuthService authService;
 
     public AuthenticationArgumentResolver(AuthService authService) {
         this.authService = authService;
@@ -21,12 +21,13 @@ public abstract class AuthenticationArgumentResolver implements HandlerMethodArg
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
         NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        String credentials = AuthorizationExtractor
-            .extract(webRequest.getNativeRequest(HttpServletRequest.class));
-        LoginMember member = authService.findMemberByToken(credentials);
-        return validMember(member);
+        String credentials = AuthorizationExtractor.extract(
+            (HttpServletRequest) webRequest.getNativeRequest()
+        );
+        LoginMember loginMember = authService.findMemberByToken(credentials);
+        return considerUncertifiedMember(loginMember);
     }
 
-    abstract LoginMember validMember(LoginMember member);
+    abstract LoginMember considerUncertifiedMember(LoginMember member);
 
 }

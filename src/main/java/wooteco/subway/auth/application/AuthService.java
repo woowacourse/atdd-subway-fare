@@ -13,8 +13,9 @@ import wooteco.subway.member.exception.MemberNotFoundException;
 @Service
 @Transactional
 public class AuthService {
-    private MemberDao memberDao;
-    private JwtTokenProvider jwtTokenProvider;
+
+    private final MemberDao memberDao;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public AuthService(MemberDao memberDao, JwtTokenProvider jwtTokenProvider) {
         this.memberDao = memberDao;
@@ -35,16 +36,12 @@ public class AuthService {
 
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
+            return LoginMember.obtainUncertifiedMember();
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
-        try {
-            Member member = memberDao.findByEmail(email)
-                .orElseThrow(() -> new MemberNotFoundException(email));
-            return new LoginMember(member.getId(), member.getEmail(), member.getAge());
-        } catch (Exception e) {
-            return new LoginMember();
-        }
+        return memberDao.findByEmail(email)
+            .map(LoginMember::new)
+            .orElse(LoginMember.obtainUncertifiedMember());
     }
 }
