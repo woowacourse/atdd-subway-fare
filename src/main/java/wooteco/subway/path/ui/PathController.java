@@ -2,7 +2,9 @@ package wooteco.subway.path.ui;
 
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,8 +25,7 @@ public class PathController {
 
     @Operation(summary = "Find path from source to target")
     @GetMapping("/paths")
-    public ResponseEntity<PathResponse> findPath(@AuthenticationPrincipal LoginMember loginMember,
-            @RequestParam Long source, @RequestParam Long target) {
+    public ResponseEntity<PathResponse> findPath(@AuthenticationPrincipal LoginMember loginMember, @RequestParam Long source, @RequestParam Long target) {
         return ResponseEntity.ok(pathService.findPath(loginMember, source, target));
     }
 }

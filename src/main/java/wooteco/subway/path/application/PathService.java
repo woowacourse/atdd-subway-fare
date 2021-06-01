@@ -1,7 +1,6 @@
 package wooteco.subway.path.application;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.line.application.LineService;
@@ -30,6 +29,9 @@ public class PathService {
 
     public PathResponse findPath(LoginMember loginMember, Long source, Long target) {
         try {
+            if (source.equals(target)) {
+                throw new InvalidPathException();
+            }
             List<Line> lines = lineService.findLines();
             Station sourceStation = stationService.findStationById(source);
             Station targetStation = stationService.findStationById(target);

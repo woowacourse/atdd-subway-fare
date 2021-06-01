@@ -6,6 +6,7 @@ import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.station.domain.Station;
 
 public class SubwayPath {
+
     private List<SectionEdge> sectionEdges;
     private List<Station> stations;
 
@@ -14,26 +15,27 @@ public class SubwayPath {
         this.stations = stations;
     }
 
-    public int calculateDistance() {
-        return sectionEdges.stream().mapToInt(it -> it.getSection().getDistance()).sum();
+    public Fare fareOf(LoginMember loginMember) {
+        int distance = calculateDistance();
+        Fare maxExtraFare = calculateMaxExtraFare();
+
+        Fare totalFare = Fare.calculateRate(distance, maxExtraFare);
+        return totalFare.discountByAge(loginMember.getAge());
     }
 
-    public Fare calculatePrice() {
-        int distance = calculateDistance();
+    public int calculateDistance() {
+        return sectionEdges.stream()
+                .mapToInt(it -> it.getSection().getDistance())
+                .sum();
+    }
 
+    private Fare calculateMaxExtraFare() {
         int maxExtraFare = sectionEdges.stream()
                 .map(SectionEdge::getLine)
                 .mapToInt(Line::getExtraFare)
                 .max()
                 .getAsInt();
-
-        return Fare.calculateRate(distance, maxExtraFare);
-    }
-
-    public Fare fareOf(LoginMember loginMember) {
-        Fare fare = calculatePrice();
-        Fare discountFare = fare.discountByAge(loginMember.getAge());
-        return fare.subtract(discountFare);
+        return new Fare(maxExtraFare);
     }
 
     public List<SectionEdge> getSectionEdges() {

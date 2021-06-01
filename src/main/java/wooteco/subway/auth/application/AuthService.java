@@ -40,7 +40,7 @@ public class AuthService {
         String email = jwtTokenProvider.getPayload(credentials);
         try {
             Member member = memberDao.findByEmail(email);
-            return Optional.ofNullable(LoginMember.of(member));
+            return Optional.of(LoginMember.of(member));
         } catch (Exception e) {
             return Optional.empty();
         }
