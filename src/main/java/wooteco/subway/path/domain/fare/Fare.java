@@ -8,15 +8,14 @@ public class Fare {
 
     private final DistanceStrategy distanceStrategy;
     private final AgeStrategy ageStrategy;
-    private int fare;
 
-    public Fare(int extraFare, DistanceStrategy distanceStrategy, AgeStrategy ageStrategy) {
-        this.fare = BASIC_FARE + extraFare;
+    public Fare(DistanceStrategy distanceStrategy, AgeStrategy ageStrategy) {
         this.distanceStrategy = distanceStrategy;
         this.ageStrategy = ageStrategy;
     }
 
-    public int calculate(int distance) {
+    public int calculate(int extraFare, int distance) {
+        int fare = BASIC_FARE + extraFare;
         fare += distanceStrategy.calculate(distance);
         return ageStrategy.calculate(fare);
     }

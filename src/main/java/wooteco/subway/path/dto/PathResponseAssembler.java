@@ -1,6 +1,7 @@
 package wooteco.subway.path.dto;
 
 import wooteco.subway.path.domain.SubwayPath;
+import wooteco.subway.path.domain.fare.Fare;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.List;
@@ -11,13 +12,13 @@ public class PathResponseAssembler {
     private PathResponseAssembler() {
     }
 
-    public static PathResponse assemble(SubwayPath subwayPath, int fare) {
+    public static PathResponse assemble(SubwayPath subwayPath, Fare fare) {
         List<StationResponse> stationResponses = subwayPath.getStations().stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
 
         int distance = subwayPath.calculateDistance();
 
-        return new PathResponse(stationResponses, distance, fare);
+        return new PathResponse(stationResponses, distance, fare.calculate(subwayPath.extraFare(), distance));
     }
 }

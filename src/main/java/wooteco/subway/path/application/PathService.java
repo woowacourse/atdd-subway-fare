@@ -20,7 +20,6 @@ import wooteco.subway.station.domain.Station;
 import java.util.List;
 
 @Service
-@Transactional
 public class PathService {
     private final LineService lineService;
     private final StationService stationService;
@@ -41,17 +40,17 @@ public class PathService {
             SubwayPath subwayPath = pathFinder.findPath(lines, departureStation, arrivalStation);
 
             int distance = subwayPath.calculateDistance();
-            Fare fare = calculateFare(loginMember, subwayPath, distance);
+            Fare fare = generateFare(distance, loginMember);
 
-            return PathResponseAssembler.assemble(subwayPath, fare.calculate(distance));
+            return PathResponseAssembler.assemble(subwayPath, fare);
         } catch (Exception e) {
             throw new InvalidPathException(e.getMessage());
         }
     }
 
-    private Fare calculateFare(LoginMember loginMember, SubwayPath subwayPath, int distance) {
+    private Fare generateFare(int distance, LoginMember loginMember) {
         DistanceStrategy distanceStrategy = DistanceDiscountType.strategy(distance);
         AgeStrategy ageStrategy = AgeDiscountType.strategy(loginMember);
-        return new Fare(subwayPath.extraFare(), distanceStrategy, ageStrategy);
+        return new Fare(distanceStrategy, ageStrategy);
     }
 }
