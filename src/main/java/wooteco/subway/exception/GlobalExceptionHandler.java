@@ -24,13 +24,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(SubwayException.class)
     public ResponseEntity<ErrorResponse> subwayExceptionHandler(SubwayException exception) {
-        logger.error(exception.getMessage());
+        logger.warn(exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(exception.getMessage()));
     }
 
     @ExceptionHandler(AuthorizationException.class)
     public ResponseEntity<ErrorResponse> authorizeException(AuthorizationException exception) {
-        logger.error(exception.getMessage());
+        logger.warn(exception.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(exception.getMessage()));
     }
 
