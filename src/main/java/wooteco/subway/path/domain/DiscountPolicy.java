@@ -1,5 +1,7 @@
 package wooteco.subway.path.domain;
 
+import wooteco.subway.path.application.InvalidPathException;
+
 import java.util.Arrays;
 import java.util.function.Predicate;
 
@@ -24,6 +26,6 @@ public enum DiscountPolicy {
                      .filter(it -> it.agePredicate.test(age))
                      .map(it -> (int) Math.ceil((fare - it.discountFare) * it.discountRate + it.discountFare))
                      .findAny()
-                     .get();
+                     .orElseThrow(() -> new InvalidPathException("나이별 할인요금을 구할 수 없습니다."));
     }
 }

@@ -1,5 +1,7 @@
 package wooteco.subway.path.domain;
 
+import wooteco.subway.path.application.InvalidPathException;
+
 import java.util.Arrays;
 import java.util.function.Predicate;
 
@@ -24,7 +26,7 @@ public enum DistanceExtraFarePolicy {
                      .filter(it -> it.distancePredicate.test(distance))
                      .map(it -> (int) Math.ceil((distance - 10) / it.delimiter) * it.additionalFare)
                      .findAny()
-                     .get();
+                     .orElseThrow(() -> new InvalidPathException("경로당 추가요금을 계산할 수 없습니다."));
     }
 }
 
