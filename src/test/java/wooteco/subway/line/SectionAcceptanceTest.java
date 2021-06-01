@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
+import wooteco.subway.exception.ErrorResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
@@ -114,6 +115,13 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_노선에_지하철역_제외_실패됨(removeResponse);
+    }
+
+    @DisplayName("구간에 포함된 두 역이 같을 경우 예외 처리")
+    @Test
+    void sectionHasSameStations() {
+        ExtractableResponse<Response> response = 지하철_구간_생성_요청(신분당선, 강남역, 강남역, 3);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     private ExtractableResponse<Response> 지하철_구간_생성_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {

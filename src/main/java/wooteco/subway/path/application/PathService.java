@@ -2,11 +2,11 @@ package wooteco.subway.path.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.fare.domain.FareByAge;
+import wooteco.subway.fare.domain.FareByDistance;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.member.domain.LoginMember;
-import wooteco.subway.fare.domain.FareByAge;
-import wooteco.subway.fare.domain.FareByDistance;
 import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.path.dto.PathResponseAssembler;
@@ -30,12 +30,11 @@ public class PathService {
     }
 
     public PathResponse findPath(LoginMember loginMember, Long source, Long target) {
+        List<Line> lines = lineService.findLines();
+        Station sourceStation = stationService.findStationById(source);
+        Station targetStation = stationService.findStationById(target);
         try {
-            List<Line> lines = lineService.findLines();
-            Station sourceStation = stationService.findStationById(source);
-            Station targetStation = stationService.findStationById(target);
             SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
-
             int fare = calculateFare(loginMember, subwayPath);
             return PathResponseAssembler.assemble(subwayPath, fare);
         } catch (Exception e) {
@@ -53,7 +52,6 @@ public class PathService {
         if (Objects.isNull(loginMember.getAge())) {
             return fareWithoutDiscount;
         }
-
         return FareByAge.calculate(loginMember.getAge(), fareWithoutDiscount);
     }
 }

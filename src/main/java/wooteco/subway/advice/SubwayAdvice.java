@@ -3,12 +3,14 @@ package wooteco.subway.advice;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import wooteco.subway.exception.DuplicateException;
 import wooteco.subway.exception.ErrorResponse;
 
+import javax.validation.ConstraintViolationException;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
@@ -31,10 +33,12 @@ public class SubwayAdvice {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleBindingException(MethodArgumentNotValidException methodArgumentNotValidException) {
-        String message = methodArgumentNotValidException.getFieldErrors()
-                .stream()
-                .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                .collect(Collectors.joining(System.lineSeparator()));
+        String message = methodArgumentNotValidException.getBindingResult().getAllErrors().get(0).getDefaultMessage();
         return ResponseEntity.badRequest().body(new ErrorResponse(message));
+    }
+
+    @ExceptionHandler({ConstraintViolationException.class})
+    public ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
     }
 }
