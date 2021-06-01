@@ -27,19 +27,6 @@ public class SectionResponse {
         this.downStation = downStation;
     }
 
-    public static SectionResponse of(Section section) {
-        final Station upStation = section.getUpStation();
-        final Station downStation = section.getDownStation();
-        final int distance = section.getDistance();
-
-        return new SectionResponse(
-            section.getId(),
-            StationResponse.of(upStation),
-            StationResponse.of(downStation),
-            distance
-        );
-    }
-
     public Long getId() {
         return id;
     }
