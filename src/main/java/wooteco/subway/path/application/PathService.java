@@ -51,7 +51,7 @@ public class PathService {
 
     private Fare calculateFare(LoginMember loginMember, SubwayPath subwayPath, int distance) {
         DistanceStrategy distanceStrategy = DistanceType.distanceStrategy(distance);
-        AgeStrategy ageStrategy = AgeType.ageStrategy(loginMember.getAge());
+        AgeStrategy ageStrategy = AgeType.ageStrategy(loginMember);
         return new Fare(subwayPath.extraFare(), distanceStrategy, ageStrategy);
     }
 }

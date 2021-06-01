@@ -35,7 +35,7 @@ public class AuthService {
     @Transactional(readOnly = true)
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
+            return LoginMember.anonymous();
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
@@ -43,7 +43,7 @@ public class AuthService {
             Member member = memberDao.findByEmail(email);
             return new LoginMember(member.getId(), member.getEmail(), member.getAge());
         } catch (Exception e) {
-            return new LoginMember();
+            return LoginMember.anonymous();
         }
     }
 

@@ -1,6 +1,8 @@
 package wooteco.subway.member.domain;
 
 public class LoginMember {
+    private static final LoginMember anonymous = new LoginMember();
+
     private Long id;
     private String email;
     private int age;
@@ -14,8 +16,12 @@ public class LoginMember {
         this.age = age;
     }
 
-    public boolean isPresent() {
-        return id != null;
+    public static LoginMember anonymous() {
+        return anonymous;
+    }
+
+    public boolean isAnonymous() {
+        return anonymous.equals(this);
     }
 
     public Long getId() {

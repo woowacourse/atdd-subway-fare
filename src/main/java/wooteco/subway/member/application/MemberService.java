@@ -43,7 +43,7 @@ public class MemberService {
     }
 
     private void validatesMember(LoginMember loginMember) {
-        if (!loginMember.isPresent()) {
+        if (loginMember.isAnonymous()) {
             throw new AuthorizationException("유효하지 않은 토큰입니다.");
         }
     }
