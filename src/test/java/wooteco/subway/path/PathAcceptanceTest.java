@@ -96,6 +96,18 @@ public class PathAcceptanceTest extends AcceptanceTest {
         총_요금이_응답됨(response3, 2050 + 1200);
     }
 
+    @DisplayName("RequestParameter에 null을 보내면 Bad Request를 반환한다.")
+    @Test
+    void findPathWithNull() {
+        //when
+        final ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/paths?source=&target=")
+                .then().log().all()
+                .extract();
+        assertThat(response.statusCode()).isEqualTo(400);
+    }
 
     @DisplayName("어린이, 청소년이 아닌 사용자의 신분으로, 두 역의 최단 거리 경로를 조회한다.")
     @Test
