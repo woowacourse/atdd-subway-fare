@@ -1,6 +1,7 @@
 package wooteco.subway.line.dto;
 
 import org.hibernate.validator.constraints.Length;
+import wooteco.subway.line.domain.Line;
 
 import javax.validation.constraints.Pattern;
 
@@ -57,5 +58,9 @@ public class LineRequest {
 
     public int getExtraFare() {
         return extraFare;
+    }
+
+    public Line toLine() {
+        return new Line(name, color, extraFare);
     }
 }

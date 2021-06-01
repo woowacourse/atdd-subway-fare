@@ -40,7 +40,7 @@ public class LineService {
         if (lineDao.isExistByColor(request.getColor())) {
             throw new DuplicatedException(request.getColor());
         }
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
+        Line persistLine = lineDao.insert(request.toLine());
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);
     }
@@ -78,7 +78,7 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
-    public Line findLineById(Long id) {
+    private Line findLineById(Long id) {
         if (!lineDao.isExistById(id)) {
             throw new LineNotFoundException(String.valueOf(id));
         }
