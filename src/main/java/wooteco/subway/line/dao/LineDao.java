@@ -51,7 +51,7 @@ public class LineDao {
                 "DST.id as down_station_id, " +
                 "DST.name as down_station_name " +
                 "from LINE L " +
-                "left outer join SECTION S "+
+                "left outer join SECTION S " +
                 "on L.id = S.line_id " +
                 "left outer join STATION UST " +
                 "on S.up_station_id = UST.id " +
@@ -135,7 +135,12 @@ public class LineDao {
     }
 
     public boolean findExistingLineById(Long id) {
-        String sql = "select exists (select count(*) from LINE where id = ?)";
+        String sql = "select exists (select * from LINE where id = ?)";
         return jdbcTemplate.queryForObject(sql, Boolean.class, id);
+    }
+
+    public boolean findExistingLineByName(String name) {
+        String sql = "select exists (select * from LINE where name = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, name);
     }
 }

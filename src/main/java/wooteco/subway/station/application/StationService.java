@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.exception.DuplicateStationException;
 import wooteco.subway.exception.InvalidStationException;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.domain.Line;
@@ -14,7 +15,6 @@ import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationLinesResponse;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
-import wooteco.subway.exception.AlreadyExistingStationException;
 
 @Service
 public class StationService {
@@ -29,6 +29,9 @@ public class StationService {
 
     @Transactional
     public StationResponse saveStation(StationRequest stationRequest) {
+        if (isExistingName(stationRequest.getName())) {
+            throw new DuplicateStationException();
+        }
         Station station = stationDao.insert(stationRequest.toStation());
         return StationResponse.of(station);
     }
@@ -43,8 +46,9 @@ public class StationService {
     public List<StationLinesResponse> findAll() {
         List<Station> stations = stationDao.findAll();
         List<Line> lines = lineDao.findAll();
-        Map<List<Station>, Line> lineStations = lines.stream().collect(Collectors.toMap(Line::getStations,
-            line -> line));
+        Map<List<Station>, Line> lineStations = lines.stream()
+            .collect(Collectors.toMap(Line::getStations,
+                line -> line));
 
         return stations.stream()
             .map(station -> StationLinesResponse.of(station, lineStations))
@@ -61,9 +65,14 @@ public class StationService {
     public void updateStationById(Long id, String name) {
         checkStationExist(id);
         if (isExistingName(name)) {
-            throw new AlreadyExistingStationException();
+            throw new DuplicateStationException();
         }
         stationDao.updateById(id, name);
+    }
+
+    @Transactional(readOnly = true)
+    public List<StationTransferResponse> findStationsWithTransferLine(Long lineId) {
+        return stationDao.getStationsWithTransferLines(lineId);
     }
 
     private boolean isExistingName(String name) {
@@ -71,13 +80,8 @@ public class StationService {
     }
 
     private void checkStationExist(Long id) {
-        if(!stationDao.findExistingStationById(id)) {
+        if (!stationDao.findExistingStationById(id)) {
             throw new InvalidStationException();
         }
-    }
-
-    @Transactional(readOnly = true)
-    public List<StationTransferResponse> findStationsWithTransferLine(Long lineId) {
-        return stationDao.getStationsWithTransferLines(lineId);
     }
 }

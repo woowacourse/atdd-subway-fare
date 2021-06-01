@@ -5,8 +5,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.exception.DuplicateLineException;
 import wooteco.subway.exception.InvalidLineException;
-import wooteco.subway.exception.NotFoundException;
+import wooteco.subway.exception.InvalidSectionException;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
@@ -40,22 +41,16 @@ public class LineService {
 
     @Transactional
     public LineResponse saveLine(LineRequest request) {
+        if (isExistingLineName(request.getName())) {
+            throw new DuplicateLineException();
+        }
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(),
             request.getFare()));
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);
     }
 
-    private Section addInitSection(Line line, LineRequest request) {
-        if (request.getUpStationId() != null && request.getDownStationId() != null) {
-            Station upStation = stationService.findStationById(request.getUpStationId());
-            Station downStation = stationService.findStationById(request.getDownStationId());
-            Section section = new Section(upStation, downStation, request.getDistance());
-            return sectionDao.insert(line, section);
-        }
-        return null;
-    }
-
+    @Transactional(readOnly = true)
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
@@ -68,6 +63,7 @@ public class LineService {
         return lineDao.findAll();
     }
 
+    @Transactional(readOnly = true)
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
         return LineResponse.of(persistLine);
@@ -121,9 +117,32 @@ public class LineService {
         sectionDao.updateByLineId(lineId, stationId, downStationId, distance);
     }
 
+    @Transactional(readOnly = true)
     public LineSectionResponse findSectionsById(Long lineId) {
         Line line = lineDao.findById(lineId);
         return LineSectionResponse.of(line, stationService.findStationsWithTransferLine(lineId));
+    }
+
+    @Transactional(readOnly = true)
+    public List<LineMapResponse> findMap() {
+        return lineDao.findAll().stream()
+            .map(line -> LineMapResponse
+                .of(line, convertToStationMapResponse(line, line.getStations())))
+            .collect(Collectors.toList());
+    }
+
+    private Section addInitSection(Line line, LineRequest request) {
+        if (request.getUpStationId() != null && request.getDownStationId() != null) {
+            Station upStation = stationService.findStationById(request.getUpStationId());
+            Station downStation = stationService.findStationById(request.getDownStationId());
+            Section section = new Section(upStation, downStation, request.getDistance());
+            return sectionDao.insert(line, section);
+        }
+        return null;
+    }
+
+    private boolean isExistingLineName(String name) {
+        return lineDao.findExistingLineByName(name);
     }
 
     private void checkLineExist(Long id) {
@@ -134,15 +153,8 @@ public class LineService {
 
     private void checkSectionExist(Long lineId, Long stationId, Long downStationId) {
         if (!sectionDao.findExistingSection(lineId, stationId, downStationId)) {
-            throw new NotFoundException("존재하지 않는 구간입니다.");
+            throw new InvalidSectionException();
         }
-    }
-
-    public List<LineMapResponse> findMap() {
-        return lineDao.findAll().stream()
-            .map(line -> LineMapResponse
-                .of(line, convertToStationMapResponse(line, line.getStations())))
-            .collect(Collectors.toList());
     }
 
     private List<StationMapResponse> convertToStationMapResponse(Line line,

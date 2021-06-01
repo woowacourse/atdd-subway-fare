@@ -61,7 +61,7 @@ public class SectionDao {
     }
 
     public boolean findExistingSection(Long lineId, Long upStationId, Long downStationId) {
-        String sql = "select exists (select count(*) from SECTION where line_id = ? and up_station_id = ? and down_station_id = ?)";
+        String sql = "select exists (select * from SECTION where line_id = ? and up_station_id = ? and down_station_id = ?)";
         return jdbcTemplate.queryForObject(sql, Boolean.class, lineId, upStationId, downStationId);
     }
 }

@@ -3,9 +3,7 @@ package wooteco.subway.station.dao;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -16,7 +14,6 @@ import org.springframework.stereotype.Repository;
 import wooteco.subway.line.dto.StationTransferResponse;
 import wooteco.subway.line.dto.TransferLineResponse;
 import wooteco.subway.station.domain.Station;
-import wooteco.subway.station.dto.StationLinesResponse;
 
 @Repository
 public class StationDao {
@@ -59,12 +56,12 @@ public class StationDao {
     }
 
     public boolean findExistingStationById(Long id) {
-        String sql = "select exists (select count(*) from STATION where id = ?)";
+        String sql = "select exists (select * from STATION where id = ?)";
         return jdbcTemplate.queryForObject(sql, Boolean.class, id);
     }
 
     public boolean findStationByName(String name) {
-        String sql = "select exists (select count(*) from STATION where name = ?)";
+        String sql = "select exists (select * from STATION where name = ?)";
         return jdbcTemplate.queryForObject(sql, Boolean.class, name);
     }
 
@@ -80,7 +77,8 @@ public class StationDao {
             "L.name AS line_name, " +
             "L.color AS line_color " +
             "FROM STATION AS S " +
-            "INNER JOIN (SELECT line_id, up_station_id, down_station_id FROM SECTION WHERE line_id = ?) AS SE " +
+            "INNER JOIN (SELECT line_id, up_station_id, down_station_id FROM SECTION WHERE line_id = ?) AS SE "
+            +
             "ON (SE.up_station_id = S.id OR SE.down_station_id = S.id) " +
             "LEFT JOIN SECTION AS SE_L " +
             "ON (SE_L.up_station_id = S.id OR SE_L.down_station_id = S.id) " +
