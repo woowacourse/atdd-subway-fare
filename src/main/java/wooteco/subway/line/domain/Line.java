@@ -110,4 +110,9 @@ public class Line {
     public List<Section> getEachSection() {
         return sections.getSections();
     }
+
+    public boolean hasStation(Long id) {
+        return sections.getStations().stream()
+                .anyMatch(station -> station.hasSameId(id));
+    }
 }

@@ -41,13 +41,23 @@ public class StationDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public int deleteById(Long id) {
+    public void deleteById(Long id) {
         String sql = "delete from STATION where id = ?";
-        return jdbcTemplate.update(sql, id);
+        jdbcTemplate.update(sql, id);
     }
 
     public Station findById(Long id) {
         String sql = "select * from STATION where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    }
+
+    public boolean isNotExistById(Long id) {
+        String sql = "select EXISTS (select * from STATION where id = ?)";
+        return !jdbcTemplate.queryForObject(sql, Boolean.class, id);
+    }
+
+    public boolean isExistByName(String name) {
+        String sql = "select EXISTS (select * from STATION where name = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, name);
     }
 }

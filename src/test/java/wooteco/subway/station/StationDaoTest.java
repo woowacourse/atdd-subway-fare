@@ -45,10 +45,4 @@ public class StationDaoTest {
         assertThatThrownBy(() -> stationDao.findById(1L))
                 .isInstanceOf(EmptyResultDataAccessException.class);
     }
-
-    @DisplayName("존재하지 않는 지하철 역을 삭제할 시 affectedRow가 0이다.")
-    @Test
-    void throw_NoSuchElementException_When_Delete_NonExists() {
-        assertThat(stationDao.deleteById(1L)).isEqualTo(0);
-    }
 }

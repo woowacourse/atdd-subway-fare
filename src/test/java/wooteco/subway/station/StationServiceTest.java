@@ -5,8 +5,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import wooteco.subway.exception.DuplicateException;
+import wooteco.subway.line.application.LineService;
+import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.dto.StationRequest;
+import wooteco.subway.station.dto.StationResponse;
 
 import java.util.NoSuchElementException;
 
@@ -17,9 +20,12 @@ public class StationServiceTest {
     @Autowired
     private StationService stationService;
 
+    @Autowired
+    private LineService lineService;
+
     @DisplayName("중복되는 이름을 가지는 역을 추가할 시 DuplicateNameException이 발생한다.")
     @Test
-    void throw_DuplicateNameException_When_Find_NonExists() {
+    void throw_DuplicateNameException_When_Insert_DuplicateName() {
         stationService.saveStation(new StationRequest("잠실역"));
         assertThatThrownBy(() -> stationService.saveStation(new StationRequest("잠실역")))
                 .isInstanceOf(DuplicateException.class)
@@ -40,5 +46,17 @@ public class StationServiceTest {
         assertThatThrownBy(() -> stationService.deleteStationById(3L))
                 .isInstanceOf(NoSuchElementException.class)
                 .hasMessage("존재하지 않는 역입니다.");
+    }
+
+    @DisplayName("노선에 등록되어 있는 역을 삭제할 시 UnsupportedOperationException이 발생한다.")
+    @Test
+    void throw_UnsupportedOperationException_When_Delete_RegisteredStation() {
+        StationResponse 강남역 = stationService.saveStation(new StationRequest("강남역"));
+        StationResponse 역삼역 = stationService.saveStation(new StationRequest("역삼역"));
+        lineService.saveLine(new LineRequest("2호선", "black", 강남역.getId(), 역삼역.getId(), 10));
+
+        assertThatThrownBy(() ->  stationService.deleteStationById(강남역.getId()))
+                .isInstanceOf(UnsupportedOperationException.class)
+                .hasMessage("노선에 등록된 역은 삭제할 수 없습니다.");
     }
 }

@@ -1,6 +1,5 @@
 package wooteco.subway.station.application;
 
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import wooteco.subway.exception.DuplicateException;
 import wooteco.subway.line.dao.LineDao;
@@ -26,19 +25,17 @@ public class StationService {
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
-        try {
-            return StationResponse.of(stationDao.insert(stationRequest.toStation()));
-        } catch (Exception e) {
+        if (stationDao.isExistByName(stationRequest.getName())) {
             throw new DuplicateException("이미 존재하는 역입니다.");
         }
+        return StationResponse.of(stationDao.insert(stationRequest.toStation()));
     }
 
     public Station findStationById(Long id) {
-        try {
-            return stationDao.findById(id);
-        } catch (EmptyResultDataAccessException e) {
+        if (stationDao.isNotExistById(id)) {
             throw new NoSuchElementException("존재하지 않는 역입니다.");
         }
+        return stationDao.findById(id);
     }
 
     public List<StationResponse> findAllStationResponses() {
@@ -50,10 +47,21 @@ public class StationService {
     }
 
     public void deleteStationById(Long id) {
-        int affectedRowNumber = stationDao.deleteById(id);
-        if (affectedRowNumber == 0) {
+        List<Line> lines = lineDao.findAll();
+
+        if (isStationRegisteredInLine(id, lines)) {
+            throw new UnsupportedOperationException("노선에 등록된 역은 삭제할 수 없습니다.");
+        }
+
+        if (stationDao.isNotExistById(id)) {
             throw new NoSuchElementException("존재하지 않는 역입니다.");
         }
+        stationDao.deleteById(id);
+    }
+
+    private boolean isStationRegisteredInLine(Long id, List<Line> lines) {
+        return lines.stream()
+                .anyMatch(line -> line.hasStation(id));
     }
 
     public List<TransferResponse> findAllStationResponsesWithTransferable() {
