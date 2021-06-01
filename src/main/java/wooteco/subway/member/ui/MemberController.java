@@ -45,8 +45,8 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/email-check")
-    public ResponseEntity<Void> checkEmailDuplication(@RequestBody EmailRequest request) {
+    @GetMapping("/email-check")
+    public ResponseEntity<Void> checkEmailDuplication(@RequestParam("email") EmailRequest request) {
         memberService.checkEmail(request);
         return ResponseEntity.ok().build();
     }
