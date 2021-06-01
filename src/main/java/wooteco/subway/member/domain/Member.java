@@ -5,10 +5,6 @@ import wooteco.subway.exception.AuthorizationException;
 import wooteco.subway.exception.InvalidInsertException;
 
 public class Member {
-    private static final Long GUEST_ID = 0L;
-    private static final String GUEST_EMAIL = "guest";
-    private static final Integer GUEST_AGE = 20;
-
     private Long id;
     private String email;
     private String password;
@@ -37,11 +33,11 @@ public class Member {
     }
 
     public static Member guest() {
-        return new Member(GUEST_ID, GUEST_EMAIL, GUEST_AGE);
+        return new Guest();
     }
 
     public static Member loginMember(Long id, String email, Integer age) {
-        return new Member(id, email, age);
+        return new LoginMember(id, email, age);
     }
 
     public Long getId() {
