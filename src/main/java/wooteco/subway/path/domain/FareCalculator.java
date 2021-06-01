@@ -26,6 +26,32 @@ public class FareCalculator {
         return discountFare(member, fare);
     }
 
+    private int calculateOverFare(int distance, List<SectionEdge> sectionEdges) {
+        return calculateDistanceOverFare(distance) + calculateLineOverFare(sectionEdges);
+    }
+
+    private int calculateDistanceOverFare(int distance) {
+        if (distance > OVERFARE_DISTANCE_10KM_STANDARD && distance <= 50) {
+            return (int) ((Math.ceil(
+                (distance - OVERFARE_DISTANCE_10KM_STANDARD) / OVERFARE_DISTANCE_10KM_PER_UNIT) + 1)
+                * MONEY_UNIT);
+        }
+        if (distance > OVERFARE_DISTANCE_50KM_STANDARD) {
+            return DEFAULT_OVERFARE_IN_50KM_DISTANCE + (int) ((Math.ceil(
+                (distance - OVERFARE_DISTANCE_50KM_STANDARD) / OVERFARE_DISTANCE_50KM_PER_UNIT) + 1)
+                * MONEY_UNIT);
+        }
+        return 0;
+    }
+
+    private int calculateLineOverFare(List<SectionEdge> sectionEdges) {
+        return sectionEdges.stream()
+            .mapToInt(edges -> edges.getLine().getFare())
+            .max()
+            .orElseThrow(FareCalculateException::new)
+            ;
+    }
+
     private int discountFare(LoginMember member, int fare) {
         if (member.getId() == null) {
             return fare;
@@ -45,31 +71,5 @@ public class FareCalculator {
 
     private boolean isTeenager(LoginMember member) {
         return member.getAge() >= TEENAGER_MIN_AGE && member.getAge() < TEENAGER_MAX_AGE;
-    }
-
-    private int calculateOverFare(int distance, List<SectionEdge> sectionEdges) {
-        return calculateDistanceOverFare(distance) + calculateLineOverFare(sectionEdges);
-    }
-
-    private int calculateLineOverFare(List<SectionEdge> sectionEdges) {
-        return sectionEdges.stream()
-            .mapToInt(edges -> edges.getLine().getFare())
-            .max()
-            .orElseThrow(FareCalculateException::new)
-            ;
-    }
-
-    private int calculateDistanceOverFare(int distance) {
-        if (distance > OVERFARE_DISTANCE_10KM_STANDARD && distance <= 50) {
-            return (int) ((Math.ceil(
-                (distance - OVERFARE_DISTANCE_10KM_STANDARD) / OVERFARE_DISTANCE_10KM_PER_UNIT) + 1)
-                * MONEY_UNIT);
-        }
-        if (distance > OVERFARE_DISTANCE_50KM_STANDARD) {
-            return DEFAULT_OVERFARE_IN_50KM_DISTANCE + (int) ((Math.ceil(
-                (distance - OVERFARE_DISTANCE_50KM_STANDARD) / OVERFARE_DISTANCE_50KM_PER_UNIT) + 1)
-                * MONEY_UNIT);
-        }
-        return 0;
     }
 }

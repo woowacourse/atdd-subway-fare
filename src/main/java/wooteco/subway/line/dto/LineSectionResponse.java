@@ -1,6 +1,9 @@
 package wooteco.subway.line.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import wooteco.subway.line.domain.Line;
+import wooteco.subway.line.domain.Sections;
 
 public class LineSectionResponse {
 
@@ -21,6 +24,28 @@ public class LineSectionResponse {
         this.color = color;
         this.stations = stations;
         this.sections = sections;
+    }
+
+    public static LineSectionResponse of(Line line,
+        List<StationTransferResponse> stations) {
+        return new LineSectionResponse(line.getId(), line.getName(), line.getColor(),
+            sortStations(line, stations), convertToSectionResponse(line.getSections().sort()));
+    }
+
+    private static List<StationTransferResponse> sortStations(Line line,
+        List<StationTransferResponse> stationResponses) {
+        return line.getStations().stream()
+            .map(station -> stationResponses.stream()
+                .filter(response -> response.getId().equals(station.getId()))
+                .findFirst()
+                .get())
+            .collect(Collectors.toList());
+    }
+
+    private static List<SectionResponse> convertToSectionResponse(Sections sections) {
+        return sections.getSections().stream()
+            .map(SectionResponse::of)
+            .collect(Collectors.toList());
     }
 
     public Long getId() {
