@@ -9,6 +9,7 @@ import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.auth.ui.AuthenticationPrincipalArgumentResolver;
 import wooteco.subway.auth.ui.SubwayInterceptor;
+import wooteco.subway.path.ui.FindAgeResolver;
 
 @Configuration
 public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
@@ -25,11 +26,17 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(List argumentResolvers) {
         argumentResolvers.add(createAuthenticationPrincipalArgumentResolver());
+        argumentResolvers.add(createFindAgeResolver());
     }
 
     @Bean
     public AuthenticationPrincipalArgumentResolver createAuthenticationPrincipalArgumentResolver() {
         return new AuthenticationPrincipalArgumentResolver(authService);
+    }
+
+    @Bean
+    public FindAgeResolver createFindAgeResolver() {
+        return new FindAgeResolver(authService);
     }
 
     @Override

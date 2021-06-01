@@ -1,12 +1,12 @@
 package wooteco.subway.path.ui;
 
-import javax.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
+import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.path.application.PathService;
+import wooteco.subway.path.domain.FindAgePrincipal;
 import wooteco.subway.path.dto.PathResponse;
 
 @RestController
@@ -19,11 +19,11 @@ public class PathController {
     }
 
     @GetMapping("/paths")
-    public ResponseEntity<PathResponse> findPath(HttpServletRequest request,
+    public ResponseEntity<PathResponse> findPath(@FindAgePrincipal LoginMember loginMember,
         @RequestParam Long source,
-        @RequestParam Long target) {
-        String accessToken = AuthorizationExtractor.extract(request);
-        return ResponseEntity.ok(pathService.findPath(source, target, accessToken));
+        @RequestParam Long target
+    ) {
+        return ResponseEntity.ok(pathService.findPath(source, target, loginMember.getAge()));
     }
 
 }
