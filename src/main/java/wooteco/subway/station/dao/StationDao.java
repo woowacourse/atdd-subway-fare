@@ -13,6 +13,8 @@ import java.util.List;
 
 @Repository
 public class StationDao {
+    private static int NO_ELEMENT_COUNT = 0;
+
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert insertAction;
 
@@ -22,12 +24,17 @@ public class StationDao {
                     rs.getString("name")
             );
 
-
     public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("station")
+                .withTableName("STATION")
                 .usingGeneratedKeyColumns("id");
+    }
+
+    public boolean notExistId(Long id) {
+        String sql = "select count(*) from STATION where id = ?";
+        int count = jdbcTemplate.queryForObject(sql, Integer.class, id);
+        return count == NO_ELEMENT_COUNT;
     }
 
     public Station insert(Station station) {
@@ -37,7 +44,7 @@ public class StationDao {
     }
 
     public List<Station> findAll() {
-        String sql = "select * from STATION";
+        String sql = "select * from STATION order by id";
         return jdbcTemplate.query(sql, rowMapper);
     }
 

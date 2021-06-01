@@ -12,23 +12,31 @@ import javax.sql.DataSource;
 
 @Repository
 public class MemberDao {
+    private static int NO_ELEMENT_COUNT = 0;
+
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert simpleJdbcInsert;
 
-    private RowMapper<Member> rowMapper = (rs, rowNum) ->
-            new Member(
-                    rs.getLong("id"),
-                    rs.getString("email"),
-                    rs.getString("password"),
-                    rs.getInt("age")
-            );
+    private final RowMapper<Member> rowMapper = (rs, rowNum) ->
+        new Member(
+            rs.getLong("id"),
+            rs.getString("email"),
+            rs.getString("password"),
+            rs.getInt("age")
+        );
 
 
     public MemberDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
-                .withTableName("member")
-                .usingGeneratedKeyColumns("id");
+            .withTableName("MEMBER")
+            .usingGeneratedKeyColumns("id");
+    }
+
+    public boolean existEmail(String email) {
+        String sql = "select count(*) from member where email = ?";
+        int count = jdbcTemplate.queryForObject(sql, Integer.class, email);
+        return count > NO_ELEMENT_COUNT;
     }
 
     public Member insert(Member member) {
@@ -39,7 +47,7 @@ public class MemberDao {
 
     public void update(Member member) {
         String sql = "update MEMBER set email = ?, password = ?, age = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{member.getEmail(), member.getPassword(), member.getAge(), member.getId()});
+        jdbcTemplate.update(sql, member.getEmail(), member.getPassword(), member.getAge(), member.getId());
     }
 
     public void deleteById(Long id) {

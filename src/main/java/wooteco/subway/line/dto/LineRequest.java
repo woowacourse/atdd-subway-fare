@@ -1,21 +1,27 @@
 package wooteco.subway.line.dto;
 
+import javax.validation.constraints.NotNull;
+
 public class LineRequest {
     private String name;
     private String color;
+    @NotNull(message = "상행선 id는 필수 값입니다.")
     private Long upStationId;
+    @NotNull(message = "하행선 id는 필수 값입니다.")
     private Long downStationId;
     private int distance;
+    private int extraFare;
 
     public LineRequest() {
     }
 
-    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance) {
+    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance, int extraFare) {
         this.name = name;
         this.color = color;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
+        this.extraFare = extraFare;
     }
 
     public String getName() {
@@ -36,5 +42,9 @@ public class LineRequest {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 }

@@ -1,6 +1,5 @@
 package wooteco.subway.member.application;
 
-import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.member.dao.MemberDao;
@@ -10,6 +9,7 @@ import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
 @Service
+@Transactional(readOnly = true)
 public class MemberService {
     private MemberDao memberDao;
 
@@ -17,23 +17,29 @@ public class MemberService {
         this.memberDao = memberDao;
     }
 
+    @Transactional
     public MemberResponse createMember(MemberRequest request) {
+        if (memberDao.existEmail(request.getEmail())) {
+            throw new DuplicateMemberEmailException();
+        }
         Member member = memberDao.insert(request.toMember());
         return MemberResponse.of(member);
     }
 
-    public MemberResponse findMember(LoginMember loginMember) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
-        return MemberResponse.of(member);
+    public MemberResponse findMember(LoginMember member) {
+        Member authorizationMember = memberDao.findByEmail(member.getEmail());
+        return MemberResponse.of(authorizationMember);
     }
 
-    public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
-        memberDao.update(new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
+    @Transactional
+    public void updateMember(LoginMember member, MemberRequest memberRequest) {
+        Member authorizationMember = memberDao.findByEmail(member.getEmail());
+        memberDao.update(new Member(authorizationMember.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
     }
 
-    public void deleteMember(LoginMember loginMember) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
-        memberDao.deleteById(member.getId());
+    @Transactional
+    public void deleteMember(LoginMember member) {
+        Member authorizationMember = memberDao.findByEmail(member.getEmail());
+        memberDao.deleteById(authorizationMember.getId());
     }
 }

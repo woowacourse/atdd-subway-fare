@@ -14,7 +14,7 @@ import wooteco.subway.station.domain.Station;
 import java.util.List;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class PathService {
     private LineService lineService;
     private StationService stationService;
@@ -26,14 +26,14 @@ public class PathService {
         this.pathFinder = pathFinder;
     }
 
-    public PathResponse findPath(Long source, Long target) {
+    public PathResponse findPath(LoginMember member, Long source, Long target) {
         try {
             List<Line> lines = lineService.findLines();
             Station sourceStation = stationService.findStationById(source);
             Station targetStation = stationService.findStationById(target);
             SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
 
-            return PathResponseAssembler.assemble(subwayPath);
+            return PathResponseAssembler.assemble(subwayPath, member);
         } catch (Exception e) {
             throw new InvalidPathException();
         }

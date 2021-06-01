@@ -1,5 +1,7 @@
 package wooteco.subway.path.domain;
 
+import wooteco.subway.line.domain.Line;
+import wooteco.subway.path.application.InvalidPathException;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
@@ -23,5 +25,19 @@ public class SubwayPath {
 
     public int calculateDistance() {
         return sectionEdges.stream().mapToInt(it -> it.getSection().getDistance()).sum();
+    }
+
+    public Fare calculateFare() {
+        int totalDistance = calculateDistance();
+        final Fare fare = Fare.createDefaultFare(totalDistance);
+        return fare.add(calculateExtraFare());
+    }
+
+    private Fare calculateExtraFare() {
+        return new Fare(sectionEdges.stream()
+            .map(SectionEdge::getLine)
+            .mapToInt(Line::getExtraFare)
+            .max()
+            .orElseThrow(InvalidPathException::new));
     }
 }

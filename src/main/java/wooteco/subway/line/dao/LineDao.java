@@ -17,14 +17,30 @@ import java.util.stream.Collectors;
 
 @Repository
 public class LineDao {
+    private static int NO_ELEMENT_COUNT = 0;
+
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert insertAction;
 
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("line")
-                .usingGeneratedKeyColumns("id");
+            .withTableName("LINE")
+            .usingGeneratedKeyColumns("id");
+    }
+
+    public boolean existColor(String color) {
+        return existColumn(color, "color");
+    }
+
+    public boolean existName(String name) {
+        return existColumn(name, "name");
+    }
+
+    private boolean existColumn(String value, String column) {
+        String sql = "select count(*) from line where " + column + " = ?";
+        int count = jdbcTemplate.queryForObject(sql, Integer.class, value);
+        return count > NO_ELEMENT_COUNT;
     }
 
     public Line insert(Line line) {
@@ -32,13 +48,14 @@ public class LineDao {
         params.put("id", line.getId());
         params.put("name", line.getName());
         params.put("color", line.getColor());
+        params.put("extra_fare", line.getExtraFare());
 
         Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new Line(lineId, line.getName(), line.getColor());
+        return new Line(lineId, line.getName(), line.getColor(), line.getExtraFare());
     }
 
     public Line findById(Long id) {
-        String sql = "select L.id as line_id, L.name as line_name, L.color as line_color, " +
+        String sql = "select L.id as line_id, L.name as line_name, L.color as line_color, L.extra_fare as line_extra_fare," +
                 "S.id as section_id, S.distance as section_distance, " +
                 "UST.id as up_station_id, UST.name as up_station_name, " +
                 "DST.id as down_station_id, DST.name as down_station_name " +
@@ -53,12 +70,12 @@ public class LineDao {
     }
 
     public void update(Line newLine) {
-        String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
+        String sql = "update LINE set name = ?, color = ?, extra_fare = ? where id = ?";
+        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getExtraFare(), newLine.getId()});
     }
 
     public List<Line> findAll() {
-        String sql = "select L.id as line_id, L.name as line_name, L.color as line_color, " +
+        String sql = "select L.id as line_id, L.name as line_name, L.color as line_color, L.extra_fare as line_extra_fare," +
                 "S.id as section_id, S.distance as section_distance, " +
                 "UST.id as up_station_id, UST.name as up_station_name, " +
                 "DST.id as down_station_id, DST.name as down_station_name " +
@@ -69,8 +86,8 @@ public class LineDao {
 
         List<Map<String, Object>> result = jdbcTemplate.queryForList(sql);
         Map<Long, List<Map<String, Object>>> resultByLine = result.stream().collect(Collectors.groupingBy(it -> (Long) it.get("line_id")));
-        return resultByLine.entrySet().stream()
-                .map(it -> mapLine(it.getValue()))
+        return resultByLine.values().stream()
+                .map(this::mapLine)
                 .collect(Collectors.toList());
     }
 
@@ -85,6 +102,7 @@ public class LineDao {
                 (Long) result.get(0).get("LINE_ID"),
                 (String) result.get(0).get("LINE_NAME"),
                 (String) result.get(0).get("LINE_COLOR"),
+                (int) result.get(0).get("LINE_EXTRA_FARE"),
                 new Sections(sections));
     }
 

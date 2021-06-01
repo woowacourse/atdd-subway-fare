@@ -1,14 +1,9 @@
 package wooteco.subway.path.application;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import wooteco.subway.aop.exception.SubwayException;
 
-@ResponseStatus(HttpStatus.BAD_REQUEST)
-public class InvalidPathException extends RuntimeException {
+public class InvalidPathException extends SubwayException {
     public InvalidPathException() {
-    }
-
-    public InvalidPathException(String message) {
-        super(message);
+        super("빈 구간 그래프입니다.", "Empty");
     }
 }
