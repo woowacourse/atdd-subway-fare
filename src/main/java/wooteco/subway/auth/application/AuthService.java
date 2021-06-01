@@ -11,7 +11,6 @@ import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
 
 @Service
-@Transactional
 public class AuthService {
 
     private final MemberService memberService;
