@@ -79,6 +79,6 @@ scp -i $CERTIFICATE_PATH $JAR_PATH $USER@$HOST:$LOCATION
 
 JAR_NAME=${JAR_PATH##*/}
 
-ssh -i $CERTIFICATE_PATH -l $USER $HOST "PID=\$(ps -p \$(lsof -ti tcp:8080) o pid=); kill -15 \$PID; nohup java -Dspring.profiles.active=$DEPLOY -jar $LOCATION/$JAR_NAME > subway.out 2> subway.err < /dev/null &"
+ssh -i $CERTIFICATE_PATH -l $USER $HOST "PID=\$(ps -p \$(lsof -ti tcp:8080) o pid=); kill -15 \$PID; nohup java -Dspring.profiles.active=$DEPLOY -jar $LOCATION/$JAR_NAME > /dev/null 2>&1 &"
 
 echo "deploy finished"

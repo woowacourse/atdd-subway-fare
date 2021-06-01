@@ -1,8 +1,15 @@
 <configuration>
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>subway.log</file>
+        <encoder>
+            <pattern>%n###### HTTP Request ######%n%fullRequest%n###### HTTP Response ######%n%fullResponse%n%n</pattern>
+        </encoder>
+    </appender>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%n###### HTTP Request ######%n%fullRequest%n###### HTTP Response ######%n%fullResponse%n%n</pattern>
         </encoder>
     </appender>
     <appender-ref ref="STDOUT" />
+    <appender-ref ref="FILE"/>
 </configuration>
