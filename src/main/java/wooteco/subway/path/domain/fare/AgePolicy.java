@@ -5,7 +5,7 @@ import java.util.Arrays;
 public enum AgePolicy {
     CHILD_POLICY(6, 12, FarePolicy.MINOR_DISCOUNT_FARE, 0.5),
     TEENAGE_POLICY(13, 18, FarePolicy.MINOR_DISCOUNT_FARE, 0.8),
-    DEFAULT_POLICY(14, 200, FarePolicy.DEFAULT_DISCOUNT_FARE, 1.0);
+    DEFAULT_POLICY(19, 200, FarePolicy.DEFAULT_DISCOUNT_FARE, 1.0);
 
     private final int minAge;
     private final int maxAge;
