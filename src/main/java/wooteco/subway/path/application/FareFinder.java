@@ -1,6 +1,5 @@
 package wooteco.subway.path.application;
 
-import org.springframework.stereotype.Service;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.path.domain.AgeFareCalculator;
@@ -9,10 +8,9 @@ import wooteco.subway.path.domain.SubwayFare;
 
 import java.util.Set;
 
-@Service
 public class FareFinder {
 
-    public SubwayFare findFare(Set<Line> lines, int distance, LoginMember loginMember) {
+    public static SubwayFare findFare(Set<Line> lines, int distance, LoginMember loginMember) {
         int fare = AgeFareCalculator.of(
                 loginMember.getAge(),
                 DistanceFareCalculator.from(distance),
@@ -21,7 +19,7 @@ public class FareFinder {
         return new SubwayFare(fare);
     }
 
-    private int findExtraFare(Set<Line> lines) {
+    private static int findExtraFare(Set<Line> lines) {
         return lines.stream()
                 .mapToInt(Line::getExtraFare)
                 .max()
