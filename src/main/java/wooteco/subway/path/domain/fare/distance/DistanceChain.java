@@ -1,5 +1,5 @@
 package wooteco.subway.path.domain.fare.distance;
 
-public interface DistanceStrategy {
+public interface DistanceChain {
     int calculate(int distance);
 }

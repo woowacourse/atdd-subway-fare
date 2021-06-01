@@ -10,8 +10,6 @@ import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.path.domain.fare.Fare;
 import wooteco.subway.path.domain.fare.age.AgeStrategy;
 import wooteco.subway.path.domain.fare.age.AgeType;
-import wooteco.subway.path.domain.fare.distance.DistanceStrategy;
-import wooteco.subway.path.domain.fare.distance.DistanceType;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.path.dto.PathResponseAssembler;
 import wooteco.subway.station.application.StationService;
@@ -40,18 +38,16 @@ public class PathService {
             Station arrivalStation = stationService.findStationById(arrival);
             SubwayPath subwayPath = pathFinder.findPath(lines, departureStation, arrivalStation);
 
-            int distance = subwayPath.calculateDistance();
-            Fare fare = calculateFare(distance, subwayPath, loginMember);
+            Fare fare = generateFare(loginMember);
 
-            return PathResponseAssembler.assemble(subwayPath, fare.calculate(distance));
+            return PathResponseAssembler.assemble(subwayPath, fare);
         } catch (Exception e) {
             throw new InvalidPathException(e.getMessage());
         }
     }
 
-    private Fare calculateFare(int distance, SubwayPath subwayPath, LoginMember loginMember) {
-        DistanceStrategy distanceStrategy = DistanceType.distanceStrategy(distance);
+    private Fare generateFare(LoginMember loginMember) {
         AgeStrategy ageStrategy = AgeType.ageStrategy(loginMember.getAge());
-        return new Fare(subwayPath.extraFare(), distanceStrategy, ageStrategy);
+        return new Fare(ageStrategy);
     }
 }

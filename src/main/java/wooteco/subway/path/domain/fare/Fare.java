@@ -1,23 +1,18 @@
 package wooteco.subway.path.domain.fare;
 
 import wooteco.subway.path.domain.fare.age.AgeStrategy;
-import wooteco.subway.path.domain.fare.distance.DistanceStrategy;
+import wooteco.subway.path.domain.fare.distance.ChainOfDistance;
 
 public class Fare {
-    private static final int BASIC_FARE = 1250;
-
-    private final DistanceStrategy distanceStrategy;
     private final AgeStrategy ageStrategy;
-    private int fare;
 
-    public Fare(int extraFare, DistanceStrategy distanceStrategy, AgeStrategy ageStrategy) {
-        this.fare = BASIC_FARE + extraFare;
-        this.distanceStrategy = distanceStrategy;
+    public Fare(AgeStrategy ageStrategy) {
         this.ageStrategy = ageStrategy;
     }
 
-    public int calculate(int distance) {
-        fare += distanceStrategy.calculate(distance);
+    public int calculate(int extraFare, int distance) {
+        ChainOfDistance chainOfDistance = new ChainOfDistance();
+        int fare = chainOfDistance.calculate(distance) + extraFare;
         return ageStrategy.calculate(fare);
     }
 }
