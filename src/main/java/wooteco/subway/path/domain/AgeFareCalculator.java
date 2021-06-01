@@ -21,8 +21,7 @@ public enum AgeFareCalculator {
 
     public static int of(int age, int fare, int lineFare) {
         return Arrays.stream(values())
-                .filter(it -> it.minAge <= age)
-                .filter(it -> it.maxAge > age)
+                .filter(it -> it.minAge <= age && age < it.maxAge)
                 .mapToInt(it -> it.adjuster.apply(fare, lineFare))
                 .findAny()
                 .orElseThrow(IllegalAccessError::new);
