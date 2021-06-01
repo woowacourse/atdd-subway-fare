@@ -1,4 +1,4 @@
-package wooteco.subway.util;
+package wooteco.subway.path.domain.fare;
 
 import wooteco.subway.path.domain.SectionEdge;
 import wooteco.subway.path.domain.SubwayPath;

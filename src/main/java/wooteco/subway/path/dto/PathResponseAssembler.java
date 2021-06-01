@@ -3,7 +3,7 @@ package wooteco.subway.path.dto;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.station.dto.StationResponse;
-import wooteco.subway.util.FareCalculator;
+import wooteco.subway.path.domain.fare.FareCalculator;
 
 import java.util.List;
 import java.util.stream.Collectors;

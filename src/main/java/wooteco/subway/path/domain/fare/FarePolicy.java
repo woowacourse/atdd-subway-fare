@@ -1,4 +1,4 @@
-package wooteco.subway.util;
+package wooteco.subway.path.domain.fare;
 
 public enum FarePolicy {
     DEFAULT_FARE(1250),
