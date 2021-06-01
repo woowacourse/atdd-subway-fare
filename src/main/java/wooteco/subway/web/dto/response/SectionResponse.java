@@ -10,8 +10,7 @@ public class SectionResponse {
     private StationResponse downStation;
     private int distance;
 
-    public SectionResponse() {
-    }
+    public SectionResponse() {}
 
     public SectionResponse(Long id, StationResponse upStation,
         StationResponse downStation, int distance) {
