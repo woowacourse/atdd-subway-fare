@@ -20,7 +20,7 @@ public class AuthenticationMemberArgumentResolver extends AuthenticationArgument
     @Override
     protected LoginMember validMember(LoginMember member) {
         if (member.getId() == null) {
-            return new LoginMember(null, null, 20);
+            return new LoginMember(false);
         }
         return member;
     }

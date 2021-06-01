@@ -20,7 +20,10 @@ public abstract class AuthenticationArgumentResolver implements HandlerMethodArg
     }
 
     @Override
-    public LoginMember resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+    public LoginMember resolveArgument(MethodParameter parameter,
+                                       ModelAndViewContainer mavContainer,
+                                       NativeWebRequest webRequest,
+                                       WebDataBinderFactory binderFactory) {
         String credentials = AuthorizationExtractor
                 .extract(webRequest.getNativeRequest(HttpServletRequest.class));
         LoginMember member = authService.findMemberByToken(credentials);
