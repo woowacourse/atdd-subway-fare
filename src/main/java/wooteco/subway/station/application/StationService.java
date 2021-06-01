@@ -1,6 +1,7 @@
 package wooteco.subway.station.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;
@@ -19,6 +20,7 @@ public class StationService {
         this.stationDao = stationDao;
     }
 
+    @Transactional
     public StationResponse saveStation(StationRequest stationRequest) {
         validateDuplicateStationName(stationRequest.getName());
 
@@ -44,6 +46,7 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void deleteStationById(Long id) {
         if (stationDao.deleteById(id).equals(0)) {
             throw new InvalidStationIdException("존재하지 않는 역입니다.");
