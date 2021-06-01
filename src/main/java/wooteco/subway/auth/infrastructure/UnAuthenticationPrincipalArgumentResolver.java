@@ -1,4 +1,4 @@
-package wooteco.subway.auth.ui;
+package wooteco.subway.auth.infrastructure;
 
 import java.util.Objects;
 
@@ -11,28 +11,32 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import wooteco.subway.auth.application.AuthService;
-import wooteco.subway.auth.domain.AuthenticationPrincipal;
-import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
-import wooteco.subway.exception.impossible.AuthorizationException;
-import wooteco.subway.exception.invalid.InvalidTokenException;
+import wooteco.subway.exception.SubwayException;
 import wooteco.subway.member.domain.LoginMember;
 
-public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
+public class UnAuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
+    private static final int DEFAULT_AGE = 20;
+
     private final AuthService authService;
 
-    public AuthenticationPrincipalArgumentResolver(AuthService authService) {
+    public UnAuthenticationPrincipalArgumentResolver(AuthService authService) {
         this.authService = authService;
     }
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(AuthenticationPrincipal.class);
+        return parameter.hasParameterAnnotation(UnAuthenticationPrincipal.class);
     }
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
         NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        String credentials = AuthorizationExtractor.extract(Objects.requireNonNull(webRequest.getNativeRequest(HttpServletRequest.class)));
-        return authService.findMemberByToken(credentials);
+        String credentials = AuthorizationExtractor.extract(
+            Objects.requireNonNull(webRequest.getNativeRequest(HttpServletRequest.class)));
+        try{
+            return authService.findMemberByToken(credentials);
+        } catch (SubwayException e){
+            return new LoginMember(DEFAULT_AGE);
+        }
     }
 }

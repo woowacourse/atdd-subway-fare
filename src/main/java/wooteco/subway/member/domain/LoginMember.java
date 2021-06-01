@@ -1,6 +1,6 @@
 package wooteco.subway.member.domain;
 
-public class LoginMember {
+public class LoginMember extends Throwable {
     private Long id;
     private String email;
     private Integer age;

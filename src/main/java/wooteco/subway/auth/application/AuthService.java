@@ -36,7 +36,7 @@ public class AuthService {
 
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember(20);
+            throw new InvalidTokenException();
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
