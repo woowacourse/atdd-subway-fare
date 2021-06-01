@@ -14,6 +14,12 @@ public class LoginMember {
         this.age = age;
     }
 
+    public LoginMember(Member member){
+        this.id = member.getId();
+        this.email = member.getEmail();
+        this.age = member.getAge();
+    }
+
     public Long getId() {
         return id;
     }
@@ -25,4 +31,5 @@ public class LoginMember {
     public Integer getAge() {
         return age;
     }
+
 }

@@ -12,6 +12,7 @@ import wooteco.subway.member.domain.Member;
 @Service
 @Transactional
 public class AuthService {
+
     private final MemberDao memberDao;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -31,23 +32,19 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
-    public LoginMember findMemberByToken(String credentials) {
-        if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
-        }
-
-        String email = jwtTokenProvider.getPayload(credentials);
-        try {
+    public LoginMember findLoginMemberByToken(String token) {
+        validateToken(token);
+        String email = jwtTokenProvider.getPayload(token);
+        if (memberDao.existsEmail(email)) {
             Member member = memberDao.findByEmail(email);
-            return new LoginMember(member.getId(), member.getEmail(), member.getAge());
-        } catch (Exception e) {
-            return new LoginMember();
+            return new LoginMember(member);
         }
+        throw new AuthorizationException("토큰이 유효하지 않습니다.");
     }
 
     public void validateToken(String token) {
         if (!jwtTokenProvider.validateToken(token)) {
-            throw new AuthorizationException("토큰 유효하지 않음!");
+            throw new AuthorizationException("토큰이 유효하지 않습니다.");
         }
     }
 }
