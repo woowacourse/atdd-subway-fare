@@ -17,14 +17,6 @@ spring:
     h2:
         console:
             enabled: true
-handlebars:
-    suffix: .html
-    enabled: true
-security:
-    jwt:
-        token:
-            secret-key: my_secret_is_secret
-            expire-length: 3600000
 ---
 spring:
     config:
@@ -41,14 +33,6 @@ spring:
     h2:
         console:
             enabled: true
-handlebars:
-    suffix: .html
-    enabled: true
-security:
-    jwt:
-        token:
-            secret-key: my_secret_is_secret
-            expire-length: 3600000
 ---
 spring:
     config:
@@ -62,6 +46,7 @@ spring:
         url: jdbc:mysql://localhost:3306/subway?useSSL=false&serverTimezone=UTC
         username: root
         password: 1234
+---
 handlebars:
     suffix: .html
     enabled: true

@@ -15,10 +15,10 @@ public class SwaggerConfig {
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
+                .host("https://woowasubway.kro.kr")
                 .select()
-                .apis(RequestHandlerSelectors.any())
+                .apis(RequestHandlerSelectors.basePackage("wooteco.subway"))
                 .paths(PathSelectors.ant("/api/**"))
                 .build();
     }
-
 }
