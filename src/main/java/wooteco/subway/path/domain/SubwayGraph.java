@@ -10,11 +10,17 @@ import wooteco.subway.line.domain.Section;
 import wooteco.subway.station.domain.Station;
 
 public class SubwayGraph extends WeightedMultigraph<Station, SectionEdge> {
-    public SubwayGraph(Class edgeClass) {
+    public SubwayGraph(Class edgeClass, List<Line> lines) {
         super(edgeClass);
+        createGraph(lines);
     }
 
-    public void addVertexWith(List<Line> lines) {
+    private void createGraph(List<Line> lines) {
+        addVertexesWith(lines);
+        addEdgesWith(lines);
+    }
+
+    private void addVertexesWith(List<Line> lines) {
         lines.stream()
             .flatMap(it -> it.getStations().stream())
             .distinct()
@@ -22,14 +28,12 @@ public class SubwayGraph extends WeightedMultigraph<Station, SectionEdge> {
             .forEach(this::addVertex);
     }
 
-    public void addEdge(List<Line> lines) {
-        for (Line line : lines) {
-            line.getSections()
-                .forEach(it -> addEdge(it, line));
-        }
+    private void addEdgesWith(List<Line> lines) {
+        lines.forEach(line -> line.getSections()
+            .forEach(section -> addEdgeWith(section, line)));
     }
 
-    private void addEdge(Section section, Line line) {
+    private void addEdgeWith(Section section, Line line) {
         SectionEdge sectionEdge = new SectionEdge(section, line);
         addEdge(section.getUpStation(), section.getDownStation(), sectionEdge);
         setEdgeWeight(sectionEdge, section.getDistance());
