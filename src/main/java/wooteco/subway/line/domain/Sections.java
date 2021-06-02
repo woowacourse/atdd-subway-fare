@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import wooteco.subway.exception.ValidationFailureException;
+import wooteco.subway.exception.application.ValidationFailureException;
 import wooteco.subway.line.exception.LineCompositionException;
 import wooteco.subway.line.exception.LineRemovalException;
 import wooteco.subway.station.domain.Station;

@@ -1,6 +1,8 @@
 package wooteco.subway.line.exception;
 
-public class LineRemovalException extends RuntimeException {
+import wooteco.subway.exception.web.BadRequestException;
+
+public class LineRemovalException extends BadRequestException {
 
     public LineRemovalException(String message) {
         super(message);

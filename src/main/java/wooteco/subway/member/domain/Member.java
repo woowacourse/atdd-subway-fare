@@ -23,7 +23,7 @@ public class Member {
 
     public void checkPassword(String password) {
         if (!StringUtils.equals(this.password, password)) {
-            throw new AuthorizationException();
+            throw new AuthorizationException("입력한 정보가 틀립니다.");
         }
     }
 

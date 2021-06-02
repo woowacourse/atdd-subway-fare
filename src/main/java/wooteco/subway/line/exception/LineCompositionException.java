@@ -1,6 +1,8 @@
 package wooteco.subway.line.exception;
 
-public class LineCompositionException extends RuntimeException {
+import wooteco.subway.exception.web.BadRequestException;
+
+public class LineCompositionException extends BadRequestException {
 
     public LineCompositionException(String message) {
         super(message);

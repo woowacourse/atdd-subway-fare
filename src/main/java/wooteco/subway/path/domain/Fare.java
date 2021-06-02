@@ -1,6 +1,6 @@
 package wooteco.subway.path.domain;
 
-import wooteco.subway.exception.ValidationFailureException;
+import wooteco.subway.exception.application.ValidationFailureException;
 
 public class Fare {
 

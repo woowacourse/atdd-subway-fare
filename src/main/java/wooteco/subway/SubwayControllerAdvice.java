@@ -1,49 +1,16 @@
 package wooteco.subway;
 
-import java.nio.file.InvalidPathException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import wooteco.subway.auth.application.AuthorizationException;
 import wooteco.subway.dto.ErrorResponse;
-import wooteco.subway.exception.DataNotFoundException;
-import wooteco.subway.member.exception.DuplicatedEmailAddressException;
+import wooteco.subway.exception.SubwayException;
 
 @RestControllerAdvice
 public class SubwayControllerAdvice {
-
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ErrorResponse> handleBadRequestException(RuntimeException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-            .body(new ErrorResponse(e.getMessage()));
-    }
-
-    @ExceptionHandler(InvalidPathException.class)
-    public ResponseEntity<ErrorResponse> handleInValidPatahException(InvalidPathException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-            .body(new ErrorResponse(e.getMessage()));
-    }
-
-    @ExceptionHandler(AuthorizationException.class)
-    public ResponseEntity<ErrorResponse> handleAuthorizationException(AuthorizationException e) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-            .body(new ErrorResponse(e.getMessage()));
-    }
-
-    @ExceptionHandler(DataNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleDataNotFoundException(DataNotFoundException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-            .body(new ErrorResponse(e.getMessage()));
-    }
-
-    @ExceptionHandler(DuplicatedEmailAddressException.class)
-    public ResponseEntity<ErrorResponse> handleDuplicatedEmailAddressException(DuplicatedEmailAddressException e) {
-        return ResponseEntity.status(HttpStatus.CONFLICT)
-            .body(new ErrorResponse(e.getMessage()));
-    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleRequestValidationException(final MethodArgumentNotValidException e) {
@@ -55,5 +22,17 @@ public class SubwayControllerAdvice {
         });
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(new ErrorResponse(stringBuffer.toString()));
+    }
+
+    @ExceptionHandler(SubwayException.class)
+    public ResponseEntity<ErrorResponse> handleSubwayException(SubwayException e) {
+        return ResponseEntity.status(e.getHttpStatus())
+            .body(new ErrorResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleUnpredictableException(Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(new ErrorResponse("서버 내부 예외가 발생했습니다. 담당자에게 문의하세요."));
     }
 }
