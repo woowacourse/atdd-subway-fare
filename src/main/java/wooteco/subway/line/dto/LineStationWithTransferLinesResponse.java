@@ -39,7 +39,7 @@ public class LineStationWithTransferLinesResponse {
                 .map(section -> StationTransferLinesResponse.of(line.getId(), section, allStationWithTransferLines))
                 .collect(Collectors.toList());
         Section lastSection = sections.get(sections.size() - 1);
-        stationTransferLinesResponses.add(StationTransferLinesResponse.of(line.getId(), lastSection.getDownStation(), allStationWithTransferLines));
+        stationTransferLinesResponses.add(StationTransferLinesResponse.lastStationResponse(line.getId(), lastSection.getDownStation(), allStationWithTransferLines));
         return new LineStationWithTransferLinesResponse(line.getId(), line.getName(), line.getColor(), line.getExtraFare().money(), stationTransferLinesResponses);
     }
 

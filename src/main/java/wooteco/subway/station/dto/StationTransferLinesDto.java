@@ -1,6 +1,6 @@
 package wooteco.subway.station.dto;
 
-import wooteco.subway.line.dto.LineNameColorDto;
+import wooteco.subway.line.dto.LineNameColorResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +8,7 @@ import java.util.List;
 public class StationTransferLinesDto {
     private Long id;
     private String name;
-    private List<LineNameColorDto> transferLines;
+    private List<LineNameColorResponse> transferLines;
 
     public StationTransferLinesDto() {
     }
@@ -17,7 +17,7 @@ public class StationTransferLinesDto {
         this(id, name, new ArrayList<>());
     }
 
-    public StationTransferLinesDto(Long id, String name, List<LineNameColorDto> transferLines) {
+    public StationTransferLinesDto(Long id, String name, List<LineNameColorResponse> transferLines) {
         this.id = id;
         this.name = name;
         this.transferLines = transferLines;
@@ -31,7 +31,7 @@ public class StationTransferLinesDto {
         return name;
     }
 
-    public List<LineNameColorDto> getTransferLines() {
+    public List<LineNameColorResponse> getTransferLines() {
         return transferLines;
     }
 }

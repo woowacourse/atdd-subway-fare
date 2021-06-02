@@ -28,19 +28,17 @@ public class StationTransferLinesResponse {
                 .filter(stationWithTransferLine -> section.getUpStation().getId().equals(stationWithTransferLine.getId()))
                 .findAny().orElseThrow(IllegalArgumentException::new);
         List<LineNameColorResponse> lineNameColorResponses = stationTransferLinesDto.getTransferLines().stream()
-                .filter(lineNameColorDto -> !lineNameColorDto.getId().equals(id))
-                .map(LineNameColorResponse::of)
+                .filter(lineNameColorResponse -> !lineNameColorResponse.getId().equals(id))
                 .collect(Collectors.toList());
         return new StationTransferLinesResponse(stationTransferLinesDto.getId(), stationTransferLinesDto.getName(), section.getDistance(), lineNameColorResponses);
     }
 
-    public static StationTransferLinesResponse of(Long lineId, Station downStation, List<StationTransferLinesDto> allStationWithTransferLines) {
+    public static StationTransferLinesResponse lastStationResponse(Long lineId, Station downStation, List<StationTransferLinesDto> allStationWithTransferLines) {
         StationTransferLinesDto stationTransferLinesDto = allStationWithTransferLines.stream()
                 .filter(stationWithTransferLine -> downStation.getId().equals(stationWithTransferLine.getId()))
                 .findAny().orElseThrow(IllegalArgumentException::new);
         List<LineNameColorResponse> lineNameColorResponses = stationTransferLinesDto.getTransferLines().stream()
-                .filter(lineNameColorDto -> !lineNameColorDto.getId().equals(lineId))
-                .map(LineNameColorResponse::of)
+                .filter(lineNameColorResponse -> !lineNameColorResponse.getId().equals(lineId))
                 .collect(Collectors.toList());
         return new StationTransferLinesResponse(downStation.getId(), downStation.getName(), 0, lineNameColorResponses);
     }

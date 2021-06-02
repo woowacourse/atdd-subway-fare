@@ -8,7 +8,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.exception.notfound.StationNotFoundException;
-import wooteco.subway.line.dto.LineNameColorDto;
+import wooteco.subway.line.dto.LineNameColorResponse;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationTransferLinesDto;
 
@@ -16,6 +16,7 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -77,9 +78,13 @@ public class StationDao {
     public List<StationTransferLinesDto> findAllWithTransferLines() {
         String sql = "SELECT DISTINCT st.id, st.name, l.id AS line_id, l.name AS line_name, l.color AS line_color " +
                 "FROM station AS st " +
-                "JOIN section AS sec ON st.id = sec.up_station_id OR st.id = sec.down_station_id " +
-                "JOIN line AS l ON sec.line_id = l.id";
-        return jdbcTemplate.queryForObject(sql, stationRowMapperWithTransferLines);
+                "LEFT JOIN section AS sec ON st.id = sec.up_station_id OR st.id = sec.down_station_id " +
+                "LEFT JOIN line AS l ON sec.line_id = l.id";
+        try {
+            return jdbcTemplate.queryForObject(sql, stationRowMapperWithTransferLines);
+        } catch (EmptyResultDataAccessException e) {
+            return Collections.emptyList();
+        }
     }
 
     private final RowMapper<List<StationTransferLinesDto>> stationRowMapperWithTransferLines = (rs, rowNum) -> {
@@ -88,23 +93,22 @@ public class StationDao {
         while (!stationId.equals(rs.getLong("id")) || !rs.isLast()) {
             stationId = rs.getLong("id");
             String stationName = rs.getString("name");
-            List<LineNameColorDto> lineNameColorDtos = extractLine(rs, stationId);
-            stationTransferLinesDtos.add(new StationTransferLinesDto(stationId, stationName, lineNameColorDtos));
+            List<LineNameColorResponse> lineNameColorResponses = extractLine(rs, stationId);
+            stationTransferLinesDtos.add(new StationTransferLinesDto(stationId, stationName, lineNameColorResponses));
         }
         return stationTransferLinesDtos;
     };
 
-
-    private List<LineNameColorDto> extractLine(ResultSet result, Long stationId) throws SQLException {
-        List<LineNameColorDto> lineNameColorDtos = new ArrayList<>();
-        do {
-            lineNameColorDtos.add(
-                    new LineNameColorDto(
+    private List<LineNameColorResponse> extractLine(ResultSet result, Long stationId) throws SQLException {
+        List<LineNameColorResponse> lineNameColorResponses = new ArrayList<>();
+        while (!result.isLast() && result.next() && stationId.equals(result.getLong("id"))) {
+            lineNameColorResponses.add(
+                    new LineNameColorResponse(
                             result.getLong("line_id"),
                             result.getString("line_name"),
                             result.getString("line_color"))
             );
-        } while (!result.isLast() && result.next() && stationId.equals(result.getLong("id")));
-        return lineNameColorDtos;
+        }
+        return lineNameColorResponses;
     }
 }

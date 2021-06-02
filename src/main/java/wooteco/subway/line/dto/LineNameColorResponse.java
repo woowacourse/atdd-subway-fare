@@ -11,10 +11,6 @@ public class LineNameColorResponse {
         this.color = color;
     }
 
-    public static LineNameColorResponse of(LineNameColorDto transferLine) {
-        return new LineNameColorResponse(transferLine.getId(), transferLine.getName(), transferLine.getColor());
-    }
-
     public Long getId() {
         return id;
     }
