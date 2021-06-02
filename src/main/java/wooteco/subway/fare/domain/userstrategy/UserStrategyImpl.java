@@ -15,7 +15,7 @@ public class UserStrategyImpl {
                 new NonLoginStrategy(lineExtraFare, distance, loginMember));
     }
 
-    public FarePolicy selectFarePolicy(){
+    public FarePolicy selectFarePolicy() {
         return userStrategies.stream()
                 .filter(UserStrategy::isState)
                 .map(UserStrategy::generateFarePolicy)

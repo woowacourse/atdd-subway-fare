@@ -7,7 +7,7 @@ import wooteco.subway.member.domain.LoginMember;
 
 import java.util.Objects;
 
-public class NonLoginStrategy implements UserStrategy{
+public class NonLoginStrategy implements UserStrategy {
 
     private final int lineExtraFare;
     private final int distance;
