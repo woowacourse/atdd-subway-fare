@@ -13,9 +13,6 @@ import wooteco.subway.auth.dto.TokenResponse;
 import java.util.HashMap;
 import java.util.Map;
 
-import static wooteco.subway.member.MemberAcceptanceTest.회원_생성을_요청;
-import static wooteco.subway.member.MemberAcceptanceTest.회원_정보_조회됨;
-
 public class AuthAcceptanceTest extends AcceptanceTest {
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
@@ -69,27 +66,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 회원_등록되어_있음(String email, String password, Integer age) {
         return 회원_생성을_요청(email, password, age);
-    }
-
-    public static TokenResponse 로그인되어_있음(String email, String password) {
-        ExtractableResponse<Response> response = 로그인_요청(email, password);
-        return response.as(TokenResponse.class);
-    }
-
-    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
-
-        return RestAssured.given().log().all().
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                body(params).
-                when().
-                post("/login/token").
-                then().
-                log().all().
-                statusCode(HttpStatus.OK.value()).
-                extract();
     }
 
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {
