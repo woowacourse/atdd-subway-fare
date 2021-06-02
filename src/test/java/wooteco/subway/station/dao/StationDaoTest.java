@@ -95,7 +95,7 @@ class StationDaoTest {
     @Test
     void deleteByNotExistId() {
         //when then
-        assertThatThrownBy(() -> stationDao.deleteById(station1.getId()))
+        assertThatThrownBy(() -> stationDao.deleteById(Long.MAX_VALUE))
                 .isInstanceOf(StationNotFoundException.class);
     }
 
