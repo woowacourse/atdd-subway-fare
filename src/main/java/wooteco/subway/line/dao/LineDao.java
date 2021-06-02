@@ -27,12 +27,12 @@ public class LineDao {
     public Line insert(Line line) {
         Map<String, Object> params = new HashMap<>();
         params.put("id", line.getId());
-        params.put("name", line.getName());
-        params.put("color", line.getColor());
+        params.put("name", line.getLineName());
+        params.put("color", line.getLineColor());
         params.put("extra_fare", line.getExtraFare());
 
         Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new Line(lineId, line.getName(), line.getColor(), line.getExtraFare());
+        return new Line(lineId, line.getLineName(), line.getLineColor(), line.getExtraFare());
     }
 
     public Optional<Line> findById(Long id) {
@@ -82,7 +82,7 @@ public class LineDao {
 
     public void update(Line newLine) {
         String sql = "update LINE set name = ?, color = ?, extra_fare = ? where id = ?";
-        jdbcTemplate.update(sql, newLine.getName(), newLine.getColor(), newLine.getExtraFare(), newLine.getId());
+        jdbcTemplate.update(sql, newLine.getLineName(), newLine.getLineColor(), newLine.getExtraFare(), newLine.getId());
     }
 
     public List<Line> findAll() {

@@ -35,7 +35,7 @@ public class StationWithTransferResponse {
 
     public static StationWithTransferResponse of(Station station, List<Line> stationIncludedLines) {
         final List<String> includedLineName = stationIncludedLines.stream()
-                .map(Line::getName)
+                .map(Line::getLineName)
                 .collect(Collectors.toList());
         return new StationWithTransferResponse(station.getId(), station.getName(), includedLineName);
     }

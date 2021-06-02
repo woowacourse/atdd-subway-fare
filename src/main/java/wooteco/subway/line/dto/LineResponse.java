@@ -31,7 +31,7 @@ public class LineResponse {
         final List<SectionResponse> sections = line.getSections().getSections().stream()
                 .map(SectionResponse::of)
                 .collect(Collectors.toList());
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), line.getExtraFare(), stations, sections);
+        return new LineResponse(line.getId(), line.getLineName(), line.getLineColor(), line.getExtraFare(), stations, sections);
     }
 
     public static List<LineResponse> listOf(List<Line> lines) {

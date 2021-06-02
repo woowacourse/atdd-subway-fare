@@ -1,53 +1,21 @@
 package wooteco.subway.station.domain;
 
-import wooteco.subway.station.exception.InvalidStationNameException;
-
 import java.util.Objects;
-import java.util.regex.Pattern;
 
 public class Station {
-    private static final String NAME_PATTERN = "^[가-힣|0-9]*$";
-    private static final String BLANK = " ";
-    private static final int MINIMUM_NAME_LENGTH = 2;
-
     private Long id;
-    private String name;
+    private StationName name;
 
     public Station() {
     }
 
     public Station(Long id, String name) {
         this.id = id;
-        this.name = name;
+        this.name = new StationName(name);
     }
 
     public Station(String name) {
-        validateName(name);
-        this.name = name;
-    }
-
-    private void validateName(String name) {
-        validateNameLength(name);
-        validateNameContainsBlank(name);
-        validateNameMatchesPattern(name);
-    }
-
-    private void validateNameLength(String name) {
-        if (name.length() < MINIMUM_NAME_LENGTH) {
-            throw new InvalidStationNameException();
-        }
-    }
-
-    private void validateNameContainsBlank(String name) {
-        if (name.contains(BLANK)) {
-            throw new InvalidStationNameException();
-        }
-    }
-
-    private void validateNameMatchesPattern(String name) {
-        if (!Pattern.matches(NAME_PATTERN, name)) {
-            throw new InvalidStationNameException();
-        }
+        this(null, name);
     }
 
     public Long getId() {
@@ -55,7 +23,7 @@ public class Station {
     }
 
     public String getName() {
-        return name;
+        return name.getName();
     }
 
     @Override
@@ -63,11 +31,11 @@ public class Station {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Station station = (Station) o;
-        return name.equals(station.name);
+        return name.getName().equals(station.name.getName());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(id, name.getName());
     }
 }

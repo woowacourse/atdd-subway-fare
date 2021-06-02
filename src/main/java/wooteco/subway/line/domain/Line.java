@@ -1,80 +1,41 @@
 package wooteco.subway.line.domain;
 
-import wooteco.subway.line.exception.InvalidLineColorException;
-import wooteco.subway.line.exception.InvalidLineNameException;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
-import java.util.regex.Pattern;
 
 public class Line {
-    private static final String NAME_PATTERN = "^[가-힣|0-9]*$";
-    private static final String BLANK = " ";
-    private static final int MINIMUM_NAME_LENGTH = 2;
-
     private Long id;
-    private String name;
-    private String color;
+    private LineName lineName;
+    private LineColor lineColor;
     private Integer extraFare;
     private Sections sections;
 
     public Line() {
     }
 
-    public Line(Long id, String name, String color, int extraFare, Sections sections) {
+    public Line(Long id, String lineName, String lineColor, int extraFare, Sections sections) {
         this.id = id;
-        validateName(name);
-        this.name = name;
-        validateColor(color);
-        this.color = color;
+        this.lineName = new LineName(lineName);
+        this.lineColor = new LineColor(lineColor);
         this.extraFare = extraFare;
         this.sections = sections;
     }
 
-    public Line(String name, String color) {
-        this(null, name, color, 0, new Sections());
+    public Line(String lineName, String lineColor) {
+        this(null, lineName, lineColor, 0, new Sections());
     }
 
-    public Line(String name, String color, int extraFare) {
-        this(null, name, color, extraFare, new Sections());
+    public Line(String lineName, String lineColor, int extraFare) {
+        this(null, lineName, lineColor, extraFare, new Sections());
     }
 
-    public Line(Long id, String name, String color) {
-        this(id, name, color, 0, new Sections());
+    public Line(Long id, String lineName, String lineColor) {
+        this(id, lineName, lineColor, 0, new Sections());
     }
 
-    public Line(Long id, String name, String color, int extraFare) {
-        this(id, name, color, extraFare, new Sections());
-    }
-
-    private void validateName(String name) {
-        validateNameLength(name);
-        validateNameContainsBlank(name);
-        validateNameMatchesPattern(name);
-    }
-
-    private void validateNameLength(String name) {
-        if (name.length() < MINIMUM_NAME_LENGTH) {
-            throw new InvalidLineNameException();
-        }
-    }
-
-    private void validateNameContainsBlank(String name) {
-        if (name.contains(BLANK)) {
-            throw new InvalidLineNameException();
-        }
-    }
-
-    private void validateNameMatchesPattern(String name) {
-        if (!Pattern.matches(NAME_PATTERN, name)) {
-            throw new InvalidLineNameException();
-        }
-    }
-
-    private void validateColor(String color) {
-        if (color.contains(BLANK)) {
-            throw new InvalidLineColorException();
-        }
+    public Line(Long id, String lineName, String lineColor, int extraFare) {
+        this(id, lineName, lineColor, extraFare, new Sections());
     }
 
     public boolean containsStation(Station station) {
@@ -82,11 +43,11 @@ public class Line {
     }
 
     public boolean hasSameName(String name) {
-        return this.name.equals(name);
+        return this.lineName.hasSameName(name);
     }
 
     public boolean hasSameColor(String color) {
-        return this.color.equals(color);
+        return this.lineColor.hasSameColor(color);
     }
 
     public void addSection(Station upStation, Station downStation, int distance) {
@@ -113,12 +74,12 @@ public class Line {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public String getLineName() {
+        return lineName.getName();
     }
 
-    public String getColor() {
-        return color;
+    public String getLineColor() {
+        return lineColor.getColor();
     }
 
     public Integer getExtraFare() {
