@@ -17,6 +17,7 @@ import wooteco.subway.line.dto.CustomLineResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.line.dto.UpdateLineRequest;
 
 @RestController
 @RequestMapping("/api/lines")
@@ -45,7 +46,7 @@ public class LineController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity updateLine(@PathVariable Long id, @RequestBody LineRequest lineRequest) {
+    public ResponseEntity updateLine(@PathVariable Long id, @RequestBody UpdateLineRequest lineRequest) {
         lineService.update(id, lineRequest);
         return ResponseEntity.ok().build();
     }

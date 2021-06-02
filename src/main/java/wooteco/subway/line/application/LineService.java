@@ -14,6 +14,7 @@ import wooteco.subway.line.dto.CustomLineResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.line.dto.UpdateLineRequest;
 import wooteco.subway.section.application.SectionService;
 import wooteco.subway.section.dto.SectionServiceDto;
 import wooteco.subway.station.dto.StationResponse;
@@ -70,7 +71,7 @@ public class LineService {
     }
 
     @Transactional
-    public void update(Long lineId, LineRequest lineRequest) {
+    public void update(Long lineId, UpdateLineRequest lineRequest) {
         Line line = lineRequest.toLine();
         Lines lines = new Lines(lineDao.findAll());
         lines.validateDuplicate(line);
