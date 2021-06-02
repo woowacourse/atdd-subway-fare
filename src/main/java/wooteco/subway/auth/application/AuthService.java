@@ -1,9 +1,11 @@
 package wooteco.subway.auth.application;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
+import wooteco.subway.auth.exception.InvalidEmailException;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
@@ -12,6 +14,7 @@ import wooteco.subway.member.domain.Member;
 @Service
 @Transactional
 public class AuthService {
+
     private MemberDao memberDao;
     private JwtTokenProvider jwtTokenProvider;
 
@@ -24,9 +27,10 @@ public class AuthService {
         try {
             Member member = memberDao.findByEmail(request.getEmail());
             member.checkPassword(request.getPassword());
-        } catch (Exception e) {
-            throw new AuthorizationException();
+        } catch (EmptyResultDataAccessException e) {
+            throw new InvalidEmailException("이메일을 찾을 수 없습니다.");
         }
+
         String token = jwtTokenProvider.createToken(request.getEmail());
         return new TokenResponse(token);
     }
@@ -43,5 +47,13 @@ public class AuthService {
         } catch (Exception e) {
             return new LoginMember();
         }
+    }
+
+    public boolean isNotValidToken(String token) {
+        return !jwtTokenProvider.validateToken(token);
+    }
+
+    public boolean isValidToken(String token) {
+        return jwtTokenProvider.validateToken(token);
     }
 }

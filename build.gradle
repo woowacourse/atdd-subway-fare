@@ -17,6 +17,8 @@ dependencies {
 	// spring
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	implementation 'mysql:mysql-connector-java'
+
 
 	// handlebars
 	implementation 'pl.allegro.tech.boot:handlebars-spring-boot-starter:0.3.0'
@@ -28,12 +30,17 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
 	runtimeOnly 'com.h2database:h2'
+	runtimeOnly 'mysql:mysql-connector-java'
 
 	// jgrapht
     implementation 'org.jgrapht:jgrapht-core:1.0.1'
 
 	// jwt
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
+	// validation
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
 }
 
 test {

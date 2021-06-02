@@ -1,16 +1,17 @@
 package wooteco.subway.member.application;
 
-import org.apache.commons.logging.Log;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
+import wooteco.subway.member.exception.DuplicatedIdException;
 
 @Service
 public class MemberService {
+
     private MemberDao memberDao;
 
     public MemberService(MemberDao memberDao) {
@@ -18,18 +19,29 @@ public class MemberService {
     }
 
     public MemberResponse createMember(MemberRequest request) {
-        Member member = memberDao.insert(request.toMember());
+        try {
+            memberDao.findByEmail(request.getEmail());
+        } catch (EmptyResultDataAccessException exception) {
+            Member member = memberDao.insert(request.toMember());
+            return MemberResponse.of(member);
+        }
+        throw new DuplicatedIdException("중복된 ID 입니다.");
+    }
+
+    public MemberResponse findMember(String email) {
+        Member member = memberDao.findByEmail(email);
         return MemberResponse.of(member);
     }
 
     public MemberResponse findMember(LoginMember loginMember) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
-        return MemberResponse.of(member);
+        return findMember(loginMember.getEmail());
     }
 
     public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
         Member member = memberDao.findByEmail(loginMember.getEmail());
-        memberDao.update(new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
+        memberDao.update(
+            new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(),
+                memberRequest.getAge()));
     }
 
     public void deleteMember(LoginMember loginMember) {
