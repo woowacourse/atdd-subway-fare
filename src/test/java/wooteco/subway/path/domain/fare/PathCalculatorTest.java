@@ -32,7 +32,6 @@ public class PathCalculatorTest {
         assertThat(FareCalculator.calculateFare(subwayPath, age)).isEqualTo(expectedFare);
     }
 
-
     @ParameterizedTest
     @ValueSource(ints = {0, 5, 10})
     @DisplayName("이동 거리가 10km 이하이면, 거리별 추가요금이 붙지 않는다.")

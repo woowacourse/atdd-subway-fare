@@ -16,12 +16,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
-    public static final String EMAIL = "email@email.com";
-    public static final String PASSWORD = "password";
-    public static final int AGE = 20;
-    public static final String NEW_EMAIL = "new_email@email.com";
-    public static final String NEW_PASSWORD = "new_password";
-    public static final int NEW_AGE = 30;
+    private static final String EMAIL = "email@email.com";
+    private static final String PASSWORD = "password";
+    private static final int AGE = 20;
+    private static final String NEW_PASSWORD = "new_password";
+    private static final int NEW_AGE = 30;
 
     @DisplayName("회원 정보를 관리한다.")
     @Test
@@ -42,6 +41,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     @DisplayName("중복된 이름으로 회원가입 시도시 실패한다.")
+    @Test
     void duplicateEmailException() {
         //given
         ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
