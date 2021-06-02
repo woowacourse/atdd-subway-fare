@@ -6,7 +6,9 @@ import wooteco.subway.fare.domain.FareByAge;
 import wooteco.subway.fare.domain.FareByDistance;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
+import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.domain.Member;
 import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.path.dto.PathResponseAssembler;
@@ -21,11 +23,13 @@ import java.util.Objects;
 public class PathService {
     private LineService lineService;
     private StationService stationService;
+    private MemberDao memberDao;
     private PathFinder pathFinder;
 
-    public PathService(LineService lineService, StationService stationService, PathFinder pathFinder) {
+    public PathService(LineService lineService, StationService stationService, MemberDao memberDao, PathFinder pathFinder) {
         this.lineService = lineService;
         this.stationService = stationService;
+        this.memberDao = memberDao;
         this.pathFinder = pathFinder;
     }
 
@@ -49,9 +53,11 @@ public class PathService {
                 .orElseThrow(IllegalStateException::new);
 
         final int fareWithoutDiscount = FareByDistance.calculate(subwayPath.calculateDistance()) + lineExtraFare;
-        if (Objects.isNull(loginMember.getAge())) {
+
+        if (Objects.isNull(loginMember.getId())) {
             return fareWithoutDiscount;
         }
-        return FareByAge.calculate(loginMember.getAge(), fareWithoutDiscount);
+        Member member = memberDao.findById(loginMember.getId());
+        return FareByAge.calculate(member.getAge(), fareWithoutDiscount);
     }
 }

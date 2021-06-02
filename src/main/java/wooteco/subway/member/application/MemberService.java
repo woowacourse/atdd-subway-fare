@@ -26,20 +26,21 @@ public class MemberService {
     }
 
     public MemberResponse findMember(LoginMember loginMember) {
-        if (Objects.isNull(loginMember.getEmail())) {
+        Long id = loginMember.getId();
+        if (Objects.isNull(id)) {
             throw new AuthorizationException();
         }
-        Member member = memberDao.findByEmail(loginMember.getEmail());
+        Member member = memberDao.findById(id);
         return MemberResponse.of(member);
     }
 
     public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
+        Member member = memberDao.findById(loginMember.getId());
         memberDao.update(new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
     }
 
     public void deleteMember(LoginMember loginMember) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
+        Member member = memberDao.findById(loginMember.getId());
         memberDao.deleteById(member.getId());
     }
 

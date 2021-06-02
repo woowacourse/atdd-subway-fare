@@ -20,29 +20,23 @@ public class AuthService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    public TokenResponse login(TokenRequest request) {
+    public TokenResponse createToken(TokenRequest request) {
         try {
             Member member = memberDao.findByEmail(request.getEmail());
             member.checkPassword(request.getPassword());
+            String token = jwtTokenProvider.createToken(String.valueOf(member.getId()));
+            return new TokenResponse(token);
         } catch (Exception e) {
-            throw new AuthorizationException();
+            throw new AuthorizationException("이메일 혹은 비밀번호가 유효하지 않습니다.");
         }
-        String token = jwtTokenProvider.createToken(request.getEmail());
-        return new TokenResponse(token);
     }
 
-    public LoginMember findMemberByToken(String credentials) {
-        if (!jwtTokenProvider.validateToken(credentials)) {
+    public LoginMember findMemberByToken(String token) {
+        if (!jwtTokenProvider.validateToken(token)) {
             return new LoginMember();
         }
-
-        String email = jwtTokenProvider.getPayload(credentials);
-        try {
-            Member member = memberDao.findByEmail(email);
-            return new LoginMember(member.getId(), member.getEmail(), member.getAge());
-        } catch (Exception e) {
-            return new LoginMember();
-        }
+        String id = jwtTokenProvider.getPayload(token);
+        return new LoginMember(Long.valueOf(id));
     }
 
     public boolean validateToken(String token) {
