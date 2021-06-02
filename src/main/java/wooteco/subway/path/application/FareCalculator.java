@@ -1,9 +1,11 @@
 package wooteco.subway.path.application;
 
 import org.springframework.stereotype.Service;
+import wooteco.subway.line.domain.Line;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.path.domain.FareByDistance;
 import wooteco.subway.path.domain.FareDiscountByAge;
+import wooteco.subway.path.domain.SectionEdge;
 import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.path.exception.FareCalculationException;
 
@@ -26,7 +28,8 @@ public class FareCalculator {
     private int calculateLineExtraFare(SubwayPath subwayPath) {
         return subwayPath.getSectionEdges()
                 .stream()
-                .mapToInt(sectionEdge -> sectionEdge.getLine().getExtraFare())
+                .map(SectionEdge::getLine)
+                .mapToInt(Line::getExtraFare)
                 .max()
                 .orElseThrow(FareCalculationException::new);
     }
