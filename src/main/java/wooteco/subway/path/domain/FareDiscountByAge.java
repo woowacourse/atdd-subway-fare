@@ -7,7 +7,7 @@ public enum FareDiscountByAge {
     TEENAGER(13, 19, 0.2),
     OTHERS(0, 0, 0);
 
-    private static final int deductibleFare = 350;
+    private static final int DEDUCTIBLE_FARE = 350;
 
     private final int ageFrom;
     private final int ageTo;
@@ -29,6 +29,6 @@ public enum FareDiscountByAge {
     }
 
     private int applyDiscount(int totalFare) {
-        return (int) ((totalFare - deductibleFare) * (1 - this.discountRate)) + deductibleFare;
+        return (int) ((totalFare - DEDUCTIBLE_FARE) * (1 - this.discountRate)) + DEDUCTIBLE_FARE;
     }
 }
