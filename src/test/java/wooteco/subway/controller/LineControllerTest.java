@@ -30,11 +30,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("노선 관련 테스트")
 @WebMvcTest(controllers = LineController.class)
 public class LineControllerTest extends ControllerTest {
-    @MockBean
-    private LineService lineService;
-    @MockBean
-    private AuthService authService;
-
+    public static final long LINE_ID = 1L;
+    public static final LineRequest 이호선_REQUEST =
+            new LineRequest("2호선", "주황색", 1L, 2L, 10, 100);
+    public static final LineResponse 이호선_RESPONSE =
+            new LineResponse(LINE_ID, "2호선", "주황색", Collections.emptyList(), Collections.emptyList());
+    public static final LineResponse 삼호선_RESPONSE =
+            new LineResponse(2L, "3호선", "주황색", Collections.emptyList(), Collections.emptyList());
     public static final FieldDescriptor[] LINE = new FieldDescriptor[]{
             fieldWithPath("id").type(JsonFieldType.NUMBER).description("ID"),
             fieldWithPath("name").type(JsonFieldType.STRING).description("노선 이름"),
@@ -42,20 +44,24 @@ public class LineControllerTest extends ControllerTest {
             fieldWithPath("stations").type(JsonFieldType.ARRAY).description("역 목록"),
             fieldWithPath("sections").type(JsonFieldType.ARRAY).description("구간 목록")};
 
+    @MockBean
+    private LineService lineService;
+    @MockBean
+    private AuthService authService;
+
     @Test
     @DisplayName("생성 - 성공")
     void create() throws Exception {
-        long lineId = 1L;
-        LineRequest lineRequest = new LineRequest("테스트선", "주황색", 1L, 2L, 10, 100);
-        LineResponse lineResponse = new LineResponse(lineId, "테스트선", "주황색", Collections.emptyList(), Collections.emptyList());
-        String json = new ObjectMapper().writeValueAsString(lineRequest);
-        given(lineService.saveLine(any(LineRequest.class))).willReturn(lineResponse);
+        String json = new ObjectMapper().writeValueAsString(이호선_REQUEST);
+
+        given(lineService.saveLine(any(LineRequest.class))).willReturn(이호선_RESPONSE);
+
         mockMvc.perform(post("/lines")
                 .content(json)
                 .header("Content-Type", "application/json"))
                 .andExpect(status().isCreated())
-                .andExpect(header().string("Location", "/lines/" + lineId))
-                .andExpect(content().json(objectMapper.writeValueAsString(lineResponse)))
+                .andExpect(header().string("Location", "/lines/" + LINE_ID))
+                .andExpect(content().json(objectMapper.writeValueAsString(이호선_RESPONSE)))
                 .andDo(print())
                 .andDo(document("line-create",
                         getDocumentRequest(),
@@ -82,11 +88,10 @@ public class LineControllerTest extends ControllerTest {
     @DisplayName("전체 조회 - 성공")
     void findAllLines() throws Exception {
 
-        List<LineResponse> lineResponses = Arrays.asList(
-                new LineResponse(1L, "테스트1선", "주황색", Collections.emptyList(), Collections.emptyList()),
-                new LineResponse(2L, "테스트2선", "주황색", Collections.emptyList(), Collections.emptyList())
-        );
+        List<LineResponse> lineResponses = Arrays.asList(이호선_RESPONSE, 삼호선_RESPONSE);
+
         given(lineService.findLineResponses()).willReturn(lineResponses);
+
         mockMvc.perform(get("/lines"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.*").isArray())
@@ -103,12 +108,11 @@ public class LineControllerTest extends ControllerTest {
     @Test
     @DisplayName("id 조회 - 성공")
     void findById() throws Exception {
-        LineResponse lineResponse = new LineResponse(1L, "테스트1선", "주황색", Collections.emptyList(), Collections.emptyList());
-        long lineId = 1L;
-        given(lineService.findLineResponseById(lineId)).willReturn(lineResponse);
-        mockMvc.perform(get("/lines/" + lineId))
+        given(lineService.findLineResponseById(LINE_ID)).willReturn(이호선_RESPONSE);
+
+        mockMvc.perform(get("/lines/" + LINE_ID))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(lineResponse)))
+                .andExpect(content().json(objectMapper.writeValueAsString(이호선_RESPONSE)))
                 .andDo(print())
                 .andDo(document("line-findbyid",
                         getDocumentRequest(),
@@ -126,24 +130,21 @@ public class LineControllerTest extends ControllerTest {
     @Test
     @DisplayName("삭제 - 성공")
     void deleteLine() throws Exception {
-        long lineId = 1L;
-        mockMvc.perform(delete("/lines/" + lineId))
+        mockMvc.perform(delete("/lines/" + LINE_ID))
                 .andExpect(status().isNoContent())
                 .andDo(print())
                 .andDo(document("line-delete",
                         getDocumentRequest(),
                         getDocumentResponse()
                 ));
-
     }
 
     @Test
     @DisplayName("수정 - 성공")
     void update() throws Exception {
-        long lineId = 1L;
-        LineRequest lineRequest = new LineRequest("테스트선", "주황색", 1L, 2L, 10, 100);
-        String json = new ObjectMapper().writeValueAsString(lineRequest);
-        mockMvc.perform(put("/lines/" + lineId)
+        String json = new ObjectMapper().writeValueAsString(이호선_REQUEST);
+
+        mockMvc.perform(put("/lines/" + LINE_ID)
                 .content(json)
                 .header("Content-Type", "application/json"))
                 .andExpect(status().isOk())
@@ -164,10 +165,10 @@ public class LineControllerTest extends ControllerTest {
     @Test
     @DisplayName("구간 추가 - 성공")
     void addSection() throws Exception {
-        long lineId = 1L;
         SectionRequest sectionRequest = new SectionRequest(1L, 2L, 10);
         String json = new ObjectMapper().writeValueAsString(sectionRequest);
-        mockMvc.perform(post("/lines/" + lineId + "/sections")
+
+        mockMvc.perform(post("/lines/" + LINE_ID + "/sections")
                 .content(json)
                 .header("Content-Type", "application/json"))
                 .andExpect(status().isOk())
@@ -185,9 +186,9 @@ public class LineControllerTest extends ControllerTest {
     @Test
     @DisplayName("구간 삭제 - 성공")
     void deleteSection() throws Exception {
-        long lineId = 1L;
         long stationId = 1L;
-        mockMvc.perform(delete("/lines/" + lineId + "/sections?stationId=" + stationId))
+
+        mockMvc.perform(delete("/lines/" + LINE_ID + "/sections?stationId=" + stationId))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andDo(document("section-delete",

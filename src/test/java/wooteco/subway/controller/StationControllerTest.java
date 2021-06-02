@@ -30,6 +30,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("역 관련 테스트")
 @WebMvcTest(controllers = StationController.class)
 public class StationControllerTest extends ControllerTest {
+    public static final StationRequest 잠실역 = new StationRequest("잠실역");
+    public static final StationResponse RESPONSE = new StationResponse(1L, "잠실역");
+    public static final FieldDescriptor[] FIELD_DESCRIPTORS = new FieldDescriptor[]{
+            fieldWithPath("id").type(JsonFieldType.NUMBER).description("ID"),
+            fieldWithPath("name").type(JsonFieldType.STRING).description("역 이름")};
+    public static final List<StationResponse> STATION_RESPONSES = Arrays.asList(
+            new StationResponse(1L, "잠실역"),
+            new StationResponse(2L, "삼전역"),
+            new StationResponse(3L, "강남역"),
+            new StationResponse(4L, "신천역"),
+            new StationResponse(5L, "마찌역")
+    );
     @MockBean
     private StationService stationService;
 
@@ -39,15 +51,13 @@ public class StationControllerTest extends ControllerTest {
     @Test
     @DisplayName("생성 - 성공")
     public void createStation() throws Exception {
-        StationRequest stationRequest = new StationRequest("테스트역");
-        StationResponse stationResponse = new StationResponse(1L, "테스트역");
-        given(stationService.saveStation(any(StationRequest.class))).willReturn(stationResponse);
+        given(stationService.saveStation(any(StationRequest.class))).willReturn(RESPONSE);
 
         mockMvc.perform(post("/stations")
-                .content(objectMapper.writeValueAsString(stationRequest))
+                .content(objectMapper.writeValueAsString(잠실역))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
-                .andExpect(content().json(objectMapper.writeValueAsString(stationResponse)))
+                .andExpect(content().json(objectMapper.writeValueAsString(RESPONSE)))
                 .andDo(print())
                 .andDo(document("station-create",
                         getDocumentRequest(),
@@ -65,34 +75,22 @@ public class StationControllerTest extends ControllerTest {
     @Test
     @DisplayName("조회 - 성공")
     public void showStations() throws Exception {
-        FieldDescriptor[] station = new FieldDescriptor[]{
-                fieldWithPath("id").type(JsonFieldType.NUMBER).description("ID"),
-                fieldWithPath("name").type(JsonFieldType.STRING).description("역 이름")};
-
         //given
-        List<StationResponse> stationResponses = Arrays.asList(
-                new StationResponse(1L, "테스트1"),
-                new StationResponse(2L, "테스트2"),
-                new StationResponse(3L, "테스트3"),
-                new StationResponse(4L, "테스트4"),
-                new StationResponse(5L, "테스트5")
-        );
-
-        given(stationService.findAllStationResponses()).willReturn(stationResponses);
+        given(stationService.findAllStationResponses()).willReturn(STATION_RESPONSES);
 
         mockMvc.perform(get("/stations"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.*", hasSize(5)))
                 .andExpect(jsonPath("$.*").isArray())
-                .andExpect(jsonPath("$.*.name").value(Matchers.containsInAnyOrder("테스트1", "테스트2", "테스트3", "테스트4",
-                        "테스트5")))
+                .andExpect(jsonPath("$.*.name").value(Matchers
+                        .containsInAnyOrder("잠실역", "삼전역", "강남역", "신천역", "마찌역")))
                 .andDo(print())
                 .andDo(document("station-find",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("[]").description("역 목록"))
-                                .andWithPrefix("[].", station)));
+                                .andWithPrefix("[].", FIELD_DESCRIPTORS)));
     }
 
     @Test

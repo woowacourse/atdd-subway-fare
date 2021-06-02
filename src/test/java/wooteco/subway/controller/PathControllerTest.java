@@ -29,6 +29,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("경로 관련 테스트")
 @WebMvcTest(controllers = PathController.class)
 public class PathControllerTest extends ControllerTest {
+    public static final long SOURCE_STATION_ID = 1L;
+    public static final long TARGET_STATION_ID = 2L;
+    public static final int DISTANCE = 30;
+    public static final int FARE = 2800;
+    public static final int AGE = 12;
+    public static final String EMAIL = "email@eamil.com";
+    public static final Station 강남역 = new Station(SOURCE_STATION_ID, "강남역");
+    public static final Station 잠실역 = new Station(TARGET_STATION_ID, "잠실역");
+    public static final Station 삼전역 = new Station(3L, "삼전역");
+
     @MockBean
     private PathService pathService;
 
@@ -39,18 +49,14 @@ public class PathControllerTest extends ControllerTest {
     @DisplayName("조회 - 성공")
     public void showPath() throws Exception {
         //given
-        long sourceStationId = 1L;
-        long targetStationId = 2L;
-        Station 강남역 = new Station(1L,"강남역");
-        Station 잠실역 = new Station(2L,"잠실역");
-        Station 삼전역 = new Station(3L,"삼전역");
         PathResponse pathResponse = new PathResponse(StationResponse.listOf(Arrays.asList(강남역, 잠실역, 삼전역)),
-                30, 2800);
-        LoginMember loginMember = new LoginMember(1L, "email@eamil.com", 12);
-        given(authService.findMemberByToken("secrettokentoken")).willReturn(loginMember);
-        given(pathService.findPath(eq(loginMember.getAge()), eq(1L), eq(2L))).willReturn(pathResponse);
+                DISTANCE, FARE);
+        LoginMember loginMember = new LoginMember(1L, EMAIL, AGE);
 
-        mockMvc.perform(get("/paths?source=" + sourceStationId + "&target=" + targetStationId)
+        given(authService.findMemberByToken("secrettokentoken")).willReturn(loginMember);
+        given(pathService.findPath(eq(loginMember.getAge()), eq(SOURCE_STATION_ID), eq(TARGET_STATION_ID))).willReturn(pathResponse);
+
+        mockMvc.perform(get("/paths?source=" + SOURCE_STATION_ID + "&target=" + TARGET_STATION_ID)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer secrettokentoken"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.stations[*].name").value(

@@ -23,23 +23,26 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("인증 관련 테스트")
 @WebMvcTest(controllers = AuthController.class)
 public class AuthControllerTest extends ControllerTest {
+    public static final TokenRequest TOKEN_REQUEST = new TokenRequest("email@email.com", "password");
+    public static final TokenResponse TOKEN_RESPONSE = new TokenResponse("abcdef");
+
     @MockBean
     private AuthService authService;
 
     @Test
     @DisplayName("로그인 성공")
     void login() throws Exception {
-        TokenRequest tokenRequest = new TokenRequest("email@email.com", "password");
-        String json = new ObjectMapper().writeValueAsString(tokenRequest);
-        TokenResponse tokenResponse = new TokenResponse("abcdef");
-        given(authService.login(any(TokenRequest.class))).willReturn(tokenResponse);
+        String json = new ObjectMapper().writeValueAsString(TOKEN_REQUEST);
+
+        given(authService.login(any(TokenRequest.class))).willReturn(TOKEN_RESPONSE);
+
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/login/token")
                 .content(json)
                 .header("Content-Type", "application/json"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accessToken")
-                        .value(tokenResponse.getAccessToken()))
+                        .value(TOKEN_RESPONSE.getAccessToken()))
                 .andDo(print())
                 .andDo(document("auth-token",
                         getDocumentRequest(),
