@@ -28,10 +28,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = StationController.class)
 public class StationControllerTest extends ControllerTest {
     @MockBean
-    StationService stationService;
+    private StationService stationService;
 
     @MockBean
-    AuthService authService;
+    private AuthService authService;
 
     @Test
     @DisplayName("생성 - 성공")

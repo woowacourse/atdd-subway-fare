@@ -28,9 +28,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = LineController.class)
 public class LineControllerTest extends ControllerTest {
     @MockBean
-    LineService lineService;
+    private LineService lineService;
     @MockBean
-    AuthService authService;
+    private AuthService authService;
 
     @Test
     @DisplayName("생성 - 성공")

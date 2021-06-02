@@ -35,9 +35,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public static final int AGE_UNDER_6 = 5;
     public static final int AGE_IN_BETWEEN_6_TO_13 = 9;
     public static final int AGE_IN_BETWEEN_13_TO_19 = 15;
-    TokenResponse 초딩;
-    TokenResponse 중고딩;
-    TokenResponse 애기;
+    private TokenResponse 초딩;
+    private TokenResponse 중고딩;
+    private TokenResponse 애기;
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;

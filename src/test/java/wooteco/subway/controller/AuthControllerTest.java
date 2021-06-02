@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = AuthController.class)
 public class AuthControllerTest extends ControllerTest {
     @MockBean
-    AuthService authService;
+    private AuthService authService;
 
     @Test
     @DisplayName("로그인 성공")

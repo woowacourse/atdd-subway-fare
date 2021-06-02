@@ -27,10 +27,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = PathController.class)
 public class PathControllerTest extends ControllerTest {
     @MockBean
-    PathService pathService;
+    private PathService pathService;
 
     @MockBean
-    AuthService authService;
+    private AuthService authService;
 
     @Test
     @DisplayName("조회 - 성공")

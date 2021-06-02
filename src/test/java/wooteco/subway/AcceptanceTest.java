@@ -14,7 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 @AutoConfigureRestDocs
 public class AcceptanceTest {
     @LocalServerPort
-    int port;
+    private int port;
 
     @BeforeEach
     public void setUp() {
