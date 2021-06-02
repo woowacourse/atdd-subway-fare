@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.domain.RequestUser;
 import wooteco.subway.member.dto.ChangeAgeRequest;
 import wooteco.subway.member.dto.ChangeAgeResponse;
 import wooteco.subway.member.dto.ChangePasswordRequest;
@@ -44,26 +45,26 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal RequestUser loginMember) {
         MemberResponse member = memberService.findMember(loginMember);
         return ResponseEntity.ok().body(member);
     }
 
     @PutMapping("/members/me")
-    public ResponseEntity<ChangeAgeResponse> changeAge(@AuthenticationPrincipal LoginMember loginMember, @Valid @RequestBody ChangeAgeRequest request) {
+    public ResponseEntity<ChangeAgeResponse> changeAge(@AuthenticationPrincipal RequestUser loginMember, @Valid @RequestBody ChangeAgeRequest request) {
         memberService.changeAge(loginMember, request);
         ChangeAgeResponse response = new ChangeAgeResponse(loginMember.getId(), request.getAge());
         return ResponseEntity.ok().body(response);
     }
 
     @PutMapping("/members/me/pw")
-    public ResponseEntity changePassword(@AuthenticationPrincipal LoginMember loginMember, @Valid @RequestBody ChangePasswordRequest request) {
+    public ResponseEntity changePassword(@AuthenticationPrincipal RequestUser loginMember, @Valid @RequestBody ChangePasswordRequest request) {
         memberService.changePassword(loginMember, request);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/members/me")
-    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
+    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal RequestUser loginMember) {
         memberService.deleteMember(loginMember);
         return ResponseEntity.noContent().build();
     }

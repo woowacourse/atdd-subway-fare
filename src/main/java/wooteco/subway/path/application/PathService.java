@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.domain.RequestUser;
 import wooteco.subway.path.domain.DiscountPolicy;
 import wooteco.subway.path.domain.FareTable;
 import wooteco.subway.path.domain.SubwayPath;
@@ -26,7 +27,7 @@ public class PathService {
         this.pathFinder = pathFinder;
     }
 
-    public PathResponse findPath(LoginMember loginMember,Long source, Long target) {
+    public PathResponse findPath(RequestUser loginMember,Long source, Long target) {
         try {
             List<Line> lines = lineService.findLines();
             Station sourceStation = stationService.findStationById(source);

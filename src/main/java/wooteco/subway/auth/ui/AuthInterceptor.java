@@ -9,6 +9,7 @@ import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.exception.InvalidTokenException;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
 import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.domain.RequestUser;
 
 public class AuthInterceptor implements HandlerInterceptor {
 
@@ -24,13 +25,13 @@ public class AuthInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        if (request.getMethod().equals(HttpMethod.GET.name())) {
+        if (isGetRequest(request)) {
             return true;
         }
 
         String credentials = AuthorizationExtractor.extract(request);
-        LoginMember member = authService.findMemberByToken(credentials);
-        if (member.getId() == null) {
+        RequestUser member = authService.findMemberByToken(credentials);
+        if (member.isAnonymous()) {
             throw new InvalidTokenException();
         }
 
@@ -56,5 +57,9 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     private boolean hasOrigin(HttpServletRequest request) {
         return Objects.nonNull(request.getHeader("Origin"));
+    }
+
+    private boolean isGetRequest(HttpServletRequest request) {
+        return request.getMethod().equals(HttpMethod.GET.name());
     }
 }

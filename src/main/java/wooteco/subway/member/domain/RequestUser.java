@@ -1,25 +1,20 @@
 package wooteco.subway.member.domain;
 
-public class LoginMember extends RequestUser {
-    public static final LoginMember DUMMY = new LoginMember(-1L, "dummy", 20);
-
+public abstract class RequestUser {
     private Long id;
     private String email;
     private Integer age;
 
-    public LoginMember() {
+    public RequestUser() {
     }
 
-    public LoginMember(Long id, String email, Integer age) {
+    public RequestUser(Long id, String email, Integer age) {
         this.id = id;
         this.email = email;
         this.age = age;
     }
 
-    @Override
-    public boolean isAnonymous() {
-        return false;
-    }
+    public abstract boolean isAnonymous();
 
     public Long getId() {
         return id;

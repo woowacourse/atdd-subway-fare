@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
+import wooteco.subway.member.domain.RequestUser;
 import wooteco.subway.member.dto.ChangeAgeRequest;
 import wooteco.subway.member.dto.ChangePasswordRequest;
 import wooteco.subway.member.dto.MemberRequest;
@@ -29,18 +30,18 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public MemberResponse findMember(LoginMember loginMember) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
+    public MemberResponse findMember(RequestUser requestUser) {
+        Member member = memberDao.findByEmail(requestUser.getEmail());
         return MemberResponse.of(member);
     }
 
-    public void changeAge(LoginMember loginMember, ChangeAgeRequest request) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
+    public void changeAge(RequestUser requestUser, ChangeAgeRequest request) {
+        Member member = memberDao.findByEmail(requestUser.getEmail());
         memberDao.update(new Member(member.getId(), member.getEmail(), member.getPassword(), request.getAge()));
     }
 
-    public void changePassword(LoginMember loginMember, ChangePasswordRequest request) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
+    public void changePassword(RequestUser requestUser, ChangePasswordRequest request) {
+        Member member = memberDao.findByEmail(requestUser.getEmail());
         if (!member.getPassword().equals(request.getCurrentPassword())) {
             throw new InvalidPasswordException();
         }
@@ -52,8 +53,8 @@ public class MemberService {
         memberDao.update(new Member(member.getId(), member.getEmail(), request.getNewPassword(), member.getAge()));
     }
 
-    public void deleteMember(LoginMember loginMember) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
+    public void deleteMember(RequestUser requestUser) {
+        Member member = memberDao.findByEmail(requestUser.getEmail());
         memberDao.deleteById(member.getId());
     }
 

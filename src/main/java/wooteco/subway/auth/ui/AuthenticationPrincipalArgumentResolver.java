@@ -11,8 +11,11 @@ import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.auth.exception.InvalidTokenException;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
 import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.domain.RequestUser;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
+    private static final String PATH_REQUEST_URI = "/api/paths";
+
     private AuthService authService;
 
     public AuthenticationPrincipalArgumentResolver(AuthService authService) {
@@ -28,21 +31,18 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
         String credentials = AuthorizationExtractor.extract(request);
-        LoginMember member = authService.findMemberByToken(credentials);
-        if (!isGuest(member)) {
+        RequestUser member = authService.findMemberByToken(credentials);
+
+        if (!member.isAnonymous()) {
             return member;
         }
         if (isFindPathRequest(request)) {
-            return LoginMember.DUMMY;
+            return member;
         }
         throw new InvalidTokenException();
     }
 
-    private boolean isGuest(LoginMember loginMember) {
-        return loginMember.getId() == null;
-    }
-
     private boolean isFindPathRequest(HttpServletRequest request) {
-        return request.getRequestURI().equals("/api/paths");
+        return request.getRequestURI().equals(PATH_REQUEST_URI);
     }
 }
