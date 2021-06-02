@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
-import wooteco.subway.exception.ErrorResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
@@ -19,18 +19,16 @@ import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 구간 관련 기능")
 public class SectionAcceptanceTest extends AcceptanceTest {
-    private final String EMAIL = "fafi@fafi.com";
-    private final String PASSWORD = "1234";
-    private final int AGE = 27;
+    private static final String EMAIL = "fafi@fafi.com";
+    private static final String PASSWORD = "1234";
+    private static final int AGE = 27;
 
     private LineResponse 신분당선;
     private StationResponse 강남역;
@@ -63,8 +61,6 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 노선에 여러개의 역을 순서 상관 없이 등록한다.")
     @Test
     void addLineSection2() {
-        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
-
         // when
         지하철_구간_생성_요청(신분당선, 강남역, 양재역, 2);
         ExtractableResponse<Response> response = 지하철_구간_생성_요청(신분당선, 정자역, 강남역, 5);
@@ -140,6 +136,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
     private void 지하철_노선에_지하철역_순서_정렬됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
         LineResponse line = response.as(LineResponse.class);
+
         List<Long> stationIds = line.getStations().stream()
                 .map(it -> it.getId())
                 .collect(Collectors.toList());
@@ -204,13 +201,11 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 로그인_요청(String email, String password) {
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
+        TokenRequest tokenRequest = new TokenRequest(email, password);
 
         return RestAssured.given().log().all().
                 contentType(MediaType.APPLICATION_JSON_VALUE).
-                body(params).
+                body(tokenRequest).
                 when().
                 post("/login/token").
                 then().
@@ -239,11 +234,6 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
     private LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
         LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance);
-        return 지하철_노선_등록되어_있음(lineRequest);
-    }
-
-    private LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance, int extraFare) {
-        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance, extraFare);
         return 지하철_노선_등록되어_있음(lineRequest);
     }
 
