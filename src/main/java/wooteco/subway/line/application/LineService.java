@@ -11,7 +11,7 @@ import wooteco.subway.line.dto.LineDetailResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
-import wooteco.subway.station.application.StationService;
+import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
@@ -22,12 +22,12 @@ import java.util.stream.Collectors;
 public class LineService {
     private final LineDao lineDao;
     private final SectionDao sectionDao;
-    private final StationService stationService;
+    private final StationDao stationDao;
 
-    public LineService(LineDao lineDao, SectionDao sectionDao, StationService stationService) {
+    public LineService(LineDao lineDao, SectionDao sectionDao, StationDao stationDao) {
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
-        this.stationService = stationService;
+        this.stationDao = stationDao;
     }
 
     @Transactional
@@ -45,8 +45,8 @@ public class LineService {
 
     private Section addInitSection(Line line, LineRequest request) {
         if (request.getUpStationId() != null && request.getDownStationId() != null) {
-            Station upStation = stationService.findStationById(request.getUpStationId());
-            Station downStation = stationService.findStationById(request.getDownStationId());
+            Station upStation = stationDao.findById(request.getUpStationId());
+            Station downStation = stationDao.findById(request.getDownStationId());
             Section section = new Section(upStation, downStation, request.getDistance());
             return sectionDao.insert(line, section);
         }
@@ -86,8 +86,9 @@ public class LineService {
     @Transactional
     public LineResponse addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
-        Station upStation = stationService.findStationById(request.getUpStationId());
-        Station downStation = stationService.findStationById(request.getDownStationId());
+
+        Station upStation = stationDao.findById(request.getUpStationId());
+        Station downStation = stationDao.findById(request.getDownStationId());
         line.addSection(upStation, downStation, request.getDistance());
 
         sectionDao.deleteByLineId(lineId);
@@ -99,7 +100,7 @@ public class LineService {
     @Transactional
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
-        Station station = stationService.findStationById(stationId);
+        Station station = stationDao.findById(stationId);
         line.removeSection(station);
 
         sectionDao.deleteByLineId(lineId);
