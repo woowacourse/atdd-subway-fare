@@ -20,13 +20,6 @@ public class Sections {
 
     public Sections(List<Section> sections) {
         this.sections = sections;
-        validateSectionCount(this.sections);
-    }
-
-    private void validateSectionCount(List<Section> sections) {
-        if (sections.isEmpty()) {
-            throw new IllegalStateException("구간의 수가 너무 적습니다.");
-        }
     }
 
     public boolean isBothEndSection(Section section) {
