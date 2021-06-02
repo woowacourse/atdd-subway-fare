@@ -21,7 +21,7 @@ public class SectionResponse {
         this.distance = distance;
     }
 
-    public static List<SectionResponse> fromList(Sections sections) {
+    public static List<SectionResponse> listOf(Sections sections) {
         return sections.getSections().stream()
                 .map(t -> new SectionResponse(StationResponse.of(t.getUpStation()), StationResponse.of(t.getDownStation()), t.getDistance()))
                 .collect(Collectors.toList());
