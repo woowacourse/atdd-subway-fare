@@ -2,39 +2,29 @@ package wooteco.subway.path.dto;
 
 import wooteco.subway.path.domain.FareTable;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class FareResponse {
-    private int adult;
-    private int teenager;
-    private int child;
-    private int baby;
+    Map<String, Integer> fare;
 
     public FareResponse() {
     }
 
-    public FareResponse(int adult, int teenager, int child, int baby) {
-        this.adult = adult;
-        this.teenager = teenager;
-        this.child = child;
-        this.baby = baby;
+    public FareResponse(Map<String, Integer> fare) {
+        this.fare = fare;
     }
 
     public static FareResponse of(FareTable fareTable) {
-        return new FareResponse(fareTable.getAdult(), fareTable.getTeenager(), fareTable.getChild(), fareTable.getBaby());
+        Map<String, Integer> fare = new HashMap<>();
+        fare.put("성인", fareTable.getAdult());
+        fare.put("청소년", fareTable.getTeenager());
+        fare.put("어린이", fareTable.getChild());
+        fare.put("유아", fareTable.getBaby());
+        return new FareResponse(fare);
     }
 
-    public int getAdult() {
-        return adult;
-    }
-
-    public int getTeenager() {
-        return teenager;
-    }
-
-    public int getChild() {
-        return child;
-    }
-
-    public int getBaby() {
-        return baby;
+    public Map<String, Integer> getFare() {
+        return fare;
     }
 }

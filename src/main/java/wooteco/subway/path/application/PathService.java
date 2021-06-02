@@ -2,7 +2,6 @@ package wooteco.subway.path.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.exception.badrequest.InvalidPathException;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.member.domain.LoginMember;
@@ -35,7 +34,7 @@ public class PathService {
             Station sourceStation = stationService.findStationById(source);
             Station targetStation = stationService.findStationById(target);
             SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
-            Fare fare = Fare.calculateFare(subwayPath.calculateDistance(), subwayPath.mostExpensiveAdditionalFare());
+            Fare fare = Fare.calculateFare(subwayPath.calculateDistance(), subwayPath.mostExpensiveExtraFare());
             FareTable fareTable = FareTable.of(fare);
             return PathResponseAssembler.assemble(subwayPath, fare.discountByAge(loginMember.getAge()), fareTable);
         } catch (Exception e) {

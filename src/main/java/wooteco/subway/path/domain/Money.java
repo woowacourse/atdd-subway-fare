@@ -25,24 +25,32 @@ public class Money {
     }
 
     public static Money calculateFareByDistance(int distance) {
-        if (distance > SECOND_BOUND) {
-            return DEFAULT_FARE.plusFirstBound(SECOND_BOUND).plusSecondBound(distance);
+        if (isOverSecondBound(distance)) {
+            return DEFAULT_FARE.addFirstBound(SECOND_BOUND).addSecondBound(distance);
         }
-        return DEFAULT_FARE.plusFirstBound(distance);
+        return DEFAULT_FARE.addFirstBound(distance);
     }
 
-    public Money plusFirstBound(int distance) {
-        if (distance < FIRST_BOUND) {
+    private static boolean isOverSecondBound(int distance) {
+        return distance > SECOND_BOUND;
+    }
+
+    private Money addFirstBound(int distance) {
+        if (isDefaultFareDistance(distance)) {
             return this.add(ZERO);
         }
         return this.add(calculateFarePerDistance(distance, FIRST_BOUND, FIRST_BOUND_REFERENCE_PER_DISTANCE, FARE_PER_DISTANCE));
     }
 
-    public Money plusSecondBound(int distance) {
+    private static boolean isDefaultFareDistance(int distance) {
+        return distance < FIRST_BOUND;
+    }
+
+    private Money addSecondBound(int distance) {
         return this.add(calculateFarePerDistance(distance, SECOND_BOUND, SECOND_BOUND_REFERENCE_PER_DISTANCE, FARE_PER_DISTANCE));
     }
 
-    public Money calculateFarePerDistance(int distance, int startingPoint , double perDistance, Money additionalFare) {
+    private Money calculateFarePerDistance(int distance, int startingPoint, double perDistance, Money additionalFare) {
         return new Money((int) (Math.ceil((distance - startingPoint) / perDistance) * additionalFare.value));
     }
 

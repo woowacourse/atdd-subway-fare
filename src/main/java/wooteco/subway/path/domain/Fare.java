@@ -1,5 +1,7 @@
 package wooteco.subway.path.domain;
 
+import java.util.Objects;
+
 public class Fare {
     private final Money money;
 
@@ -25,5 +27,18 @@ public class Fare {
 
     public Fare discountByAge(int age) {
         return discount(DiscountPolicy.findByAge(age));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Fare fare = (Fare) o;
+        return Objects.equals(money, fare.money);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(money);
     }
 }
