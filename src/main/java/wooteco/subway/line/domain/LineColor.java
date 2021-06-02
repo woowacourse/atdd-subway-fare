@@ -8,11 +8,11 @@ public class LineColor {
     private final String color;
 
     public LineColor(String color) {
-        validateColor(color);
+        validateColorContainsBlank(color);
         this.color = color;
     }
 
-    private void validateColor(String color) {
+    private void validateColorContainsBlank(String color) {
         if (color.contains(BLANK)) {
             throw new InvalidLineColorException();
         }

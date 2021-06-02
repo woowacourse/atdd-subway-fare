@@ -118,9 +118,9 @@
 - [ ] 특정 계층에서 사용하는 예외를 다른 Layer 클래스에서 사용하지 않도록 리팩토링
     - [ ] dao단의 에러는 dao에서만! 그냥 RuntimeException으로 바꾸는게 나을수도
 - [ ] ArgumentResolver에서 다형성을 통해 Optional을 제거해보기
-- [ ] 확장성이 필요하지 않다고 생각하는 어플리케이션에서는 적당히 Validation
-    - [ ] 여기서 Valid된 필드에 대해서는 신뢰
-    - [ ] 가령... Dto에서는 Null만 확인, 후에는 Null 검사 할 필요 없음
+- [x] 확장성이 필요하지 않다고 생각하는 어플리케이션에서는 적당히 Validation
+    - [x] 여기서 Valid된 필드에 대해서는 신뢰
+    - [x] 가령... Dto에서는 Null만 확인, 후에는 Null 검사 할 필요 없음
 - [ ] NamedParameterJdbcTemplate 도입
 - [x] 도메인 필드 값에 대해 원시값 포장
 - [x] 매직 넘버 상수화

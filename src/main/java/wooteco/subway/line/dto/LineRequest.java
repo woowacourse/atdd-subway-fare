@@ -1,17 +1,14 @@
 package wooteco.subway.line.dto;
 
-import org.hibernate.validator.constraints.Length;
 import wooteco.subway.line.exception.InvalidLineColorException;
 import wooteco.subway.line.exception.InvalidLineNameException;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.PositiveOrZero;
 
 public class LineRequest {
     @NotBlank(message = InvalidLineNameException.ERROR_MESSAGE)
-    @Length(min = 2, message = InvalidLineNameException.ERROR_MESSAGE)
-    @Pattern(regexp = "^[가-힣|0-9]*$", message = InvalidLineNameException.ERROR_MESSAGE)
     private String name;
 
     @NotBlank(message = InvalidLineColorException.ERROR_MESSAGE)
@@ -23,10 +20,10 @@ public class LineRequest {
     @NotNull
     private Long downStationId;
 
-    @NotNull
+    @PositiveOrZero(message = InvalidLineNameException.ERROR_MESSAGE)
     private int distance;
 
-    @NotNull
+    @PositiveOrZero(message = InvalidLineNameException.ERROR_MESSAGE)
     private int extraFare;
 
     public LineRequest() {
