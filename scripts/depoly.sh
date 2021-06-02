@@ -11,7 +11,9 @@ echo "> git reset --hard"
 
 git reset --hard # 깃허브 초기화
 
-git pull origin
+BRANCH="step1"
+
+git pull origin $BRANCH
 
 echo "> gradle clean build 실행"
 
