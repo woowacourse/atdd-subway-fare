@@ -29,13 +29,13 @@ public class MemberController {
     }
 
     @GetMapping("/members/check-validation")
-    public ResponseEntity findDuplicatedEmail(@RequestParam String email) {
+    public ResponseEntity<Void> findDuplicatedEmail(@RequestParam String email) {
         memberService.checkDuplicatedEmail(email);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/members")
-    public ResponseEntity createMember(@RequestBody @Valid MemberRequest memberRequest, BindingResult bindingResult) {
+    public ResponseEntity<Void> createMember(@RequestBody @Valid MemberRequest memberRequest, BindingResult bindingResult) {
         MemberResponse member = memberService.createMember(memberRequest);
         return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
     }
