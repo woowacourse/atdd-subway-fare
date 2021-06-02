@@ -155,6 +155,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // 거리가 55키로 일 시 (거리 추가요금)
         final ExtractableResponse<Response> response7 = 거리_경로_조회_요청(새로운역.getId(), 먼역.getId(),
             token4);
-        요금_비교(response7, 2550);
+        요금_비교(response7, 2450);
     }
 }
