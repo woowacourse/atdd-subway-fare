@@ -12,7 +12,6 @@ import wooteco.subway.station.dto.TransferResponse;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Service
 public class StationService {
@@ -40,10 +39,7 @@ public class StationService {
 
     public List<StationResponse> findAllStationResponses() {
         List<Station> stations = stationDao.findAll();
-
-        return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+        return StationResponse.listOf(stations);
     }
 
     public void deleteStationById(Long id) {
