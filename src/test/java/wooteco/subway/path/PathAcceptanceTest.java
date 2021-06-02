@@ -28,13 +28,13 @@ import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록�
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
-    public static final String EMAIL1 = "email1@email.com";
-    public static final String EMAIL2 = "email2@email.com";
-    public static final String EMAIL3 = "email3@email.com";
-    public static final String PASSWORD = "password";
-    public static final int AGE_UNDER_6 = 5;
-    public static final int AGE_IN_BETWEEN_6_TO_13 = 9;
-    public static final int AGE_IN_BETWEEN_13_TO_19 = 15;
+    private static final String EMAIL1 = "email1@email.com";
+    private static final String EMAIL2 = "email2@email.com";
+    private static final String EMAIL3 = "email3@email.com";
+    private static final String PASSWORD = "password";
+    private static final int AGE_UNDER_6 = 5;
+    private static final int AGE_IN_BETWEEN_6_TO_13 = 9;
+    private static final int AGE_IN_BETWEEN_13_TO_19 = 15;
     private TokenResponse 초딩;
     private TokenResponse 중고딩;
     private TokenResponse 애기;

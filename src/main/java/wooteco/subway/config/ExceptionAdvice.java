@@ -16,12 +16,6 @@ import java.util.stream.Collectors;
 public class ExceptionAdvice {
     private final Logger logger = LoggerFactory.getLogger(ExceptionAdvice.class);
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorMessage> handleServerErrorException(Exception e) {
-        logger.error("method argument not valid exception occurred. message=[{}]", e.getMessage(), e);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorMessage("관리자에게 문의해주세요."));
-    }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorMessage> handleBindException(MethodArgumentNotValidException e) {
         logger.error("method argument not valid exception occurred. message=[{}]", e.getMessage(), e);
@@ -36,7 +30,13 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ErrorMessage> handleRuntimeException(BusinessException e) {
-        logger.error("method argument not valid exception occurred. message=[{}]", e.getMessage(), e);
+        logger.error(e.getMessage(), e);
         return ResponseEntity.status(e.getHttpStatus()).body(e.getErrorMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorMessage> handleServerErrorException(Exception e) {
+        logger.error(e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorMessage("관리자에게 문의해주세요."));
     }
 }
