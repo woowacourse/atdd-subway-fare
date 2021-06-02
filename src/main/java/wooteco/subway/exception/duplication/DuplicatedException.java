@@ -1,8 +1,11 @@
 package wooteco.subway.exception.duplication;
 
-public class DuplicatedException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+import wooteco.subway.exception.CustomException;
+
+public class DuplicatedException extends CustomException {
 
     public DuplicatedException(String message) {
-        super(message);
+        super(HttpStatus.BAD_REQUEST,message);
     }
 }
