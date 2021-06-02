@@ -142,7 +142,7 @@ public class LineService {
             .collect(Collectors.toList());
     }
 
-    public List<SectionResponse> assembleSectionResponses(List<Section> sections) {
+    private List<SectionResponse> assembleSectionResponses(List<Section> sections) {
         List<SectionResponse> sectionResponses = sections.stream()
             .map(section -> SectionResponseAssembler.assemble(section, section.getUpStation(),
                 lineDao.findByStationId(section.getUpStation())))

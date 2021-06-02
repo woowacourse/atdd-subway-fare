@@ -55,7 +55,7 @@ public class SubwayControllerAdvice {
         return ResponseEntity.badRequest().body(exceptionResponse);
     }
 
-    @ExceptionHandler(SQLException.class)
+    @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Void> handleSQLException() {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }

@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import wooteco.subway.exception.exist.BothStationsAlreadyInLine;
-import wooteco.subway.exception.exist.BothStationsNotInLine;
+import wooteco.subway.exception.exist.BothStationsAlreadyInLineException;
+import wooteco.subway.exception.exist.BothStationsNotInLineException;
 import wooteco.subway.exception.exist.OnlyOneSectionExistException;
 import wooteco.subway.exception.exist.SameStationsInSectionException;
 import wooteco.subway.exception.impossible.ImpossibleDistanceException;
@@ -47,7 +47,7 @@ public class Sections {
     private void checkAlreadyExisted(Section section) {
         List<Station> stations = getStations();
         if (!stations.contains(section.getUpStation()) && !stations.contains(section.getDownStation())) {
-            throw new BothStationsNotInLine();
+            throw new BothStationsNotInLineException();
         }
     }
 
@@ -55,7 +55,7 @@ public class Sections {
         List<Station> stations = getStations();
         List<Station> stationsOfNewSection = Arrays.asList(section.getUpStation(), section.getDownStation());
         if (stations.containsAll(stationsOfNewSection)) {
-            throw new BothStationsAlreadyInLine();
+            throw new BothStationsAlreadyInLineException();
         }
     }
 
