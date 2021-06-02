@@ -17,7 +17,6 @@ import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
 @Service
-@Transactional
 public class LineService {
 
     private static final int ZERO_COUNT = 0;
@@ -31,6 +30,7 @@ public class LineService {
         this.stationService = stationService;
     }
 
+    @Transactional
     public LineResponse saveLine(LineRequest request) {
         validateNameDuplicate(request.getName());
 
@@ -78,6 +78,7 @@ public class LineService {
         return lineDao.findById(id);
     }
 
+    @Transactional
     public LineResponse updateLine(Long id, LineUpdateRequest lineUpdateRequest) {
         validateNameDuplicate(lineUpdateRequest.getName());
 
@@ -85,11 +86,13 @@ public class LineService {
         return findLineResponseById(id);
     }
 
+    @Transactional
     public void deleteLineById(Long id) {
         sectionDao.deleteByLineId(id);
         lineDao.deleteById(id);
     }
 
+    @Transactional
     public void addSection(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
@@ -100,6 +103,7 @@ public class LineService {
         sectionDao.insertSections(line);
     }
 
+    @Transactional
     public void deleteSection(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);

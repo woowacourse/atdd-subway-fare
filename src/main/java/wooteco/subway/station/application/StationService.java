@@ -31,6 +31,7 @@ public class StationService {
         this.lineDao = lineDao;
     }
 
+    @Transactional
     public StationResponse saveStation(StationRequest stationRequest) {
         String name = stationRequest.getName();
         validateDuplicate(name);
@@ -55,6 +56,7 @@ public class StationService {
             .collect(Collectors.toList());
     }
 
+    @Transactional
     public void deleteStationById(Long id) {
         if (sectionDao.countSectionByStationId(id) > ZERO_COUNT) {
             throw new CannotRemoveStationException();
@@ -62,6 +64,7 @@ public class StationService {
         stationDao.deleteById(id);
     }
 
+    @Transactional
     public StationResponse updateStation(Long id, StationRequest stationRequest) {
         String name = stationRequest.getName();
         validateDuplicate(name);

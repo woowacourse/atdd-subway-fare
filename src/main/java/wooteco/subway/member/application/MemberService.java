@@ -12,7 +12,6 @@ import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
 @Service
-@Transactional
 public class MemberService {
 
     private MemberDao memberDao;
@@ -21,6 +20,7 @@ public class MemberService {
         this.memberDao = memberDao;
     }
 
+    @Transactional
     public MemberResponse createMember(MemberRequest request) {
         Member member = memberDao.insert(request.toMember());
         return MemberResponse.of(member);
@@ -32,6 +32,7 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
+    @Transactional
     public MemberResponse updateMember(LoginMember loginMember, MemberRequest memberRequest) {
         Member member = memberDao.findById(loginMember.getId())
             .orElseThrow(MemberNotFoundException::new);
@@ -41,6 +42,7 @@ public class MemberService {
         return MemberResponse.of(updatedMember);
     }
 
+    @Transactional
     public void deleteMember(LoginMember loginMember) {
         Member member = memberDao.findById(loginMember.getId())
             .orElseThrow(MemberNotFoundException::new);
