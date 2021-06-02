@@ -1,7 +1,7 @@
 package wooteco.subway.station.application;
 
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.exception.NotAbleToDeleteStationInLineException;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
@@ -16,9 +16,11 @@ import java.util.stream.Collectors;
 @Service
 public class StationService {
     private StationDao stationDao;
+    private SectionDao sectionDao;
 
-    public StationService(StationDao stationDao) {
+    public StationService(StationDao stationDao, SectionDao sectionDao) {
         this.stationDao = stationDao;
+        this.sectionDao = sectionDao;
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
@@ -31,7 +33,7 @@ public class StationService {
 
     public Station findStationById(Long id) {
         return stationDao.findById(id)
-                .orElseThrow(() -> new StationNotExistException());
+                .orElseThrow(StationNotExistException::new);
     }
 
     public List<StationResponse> findAllStationResponses() {
@@ -44,10 +46,6 @@ public class StationService {
 
     public void deleteStationById(Long id) {
         findStationById(id);
-        try {
-            stationDao.deleteById(id);
-        } catch (DataAccessException e) {
-            throw new NotAbleToDeleteStationInLineException();
-        }
+        stationDao.deleteById(id);
     }
 }

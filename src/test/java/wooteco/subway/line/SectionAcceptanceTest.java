@@ -83,19 +83,19 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         지하철_구간_등록_실패됨(response);
     }
 
-//    @DisplayName("지하철 노선에 등록된 지하철역을 제외한다.")
-//    @Test
-//    void removeLineSection1() {
-//        // given
-//        지하철_구간_생성_요청(신분당선, 강남역, 양재역, 2);
-//        지하철_구간_생성_요청(신분당선, 양재역, 정자역, 2);
-//
-//        // when
-//        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
-//
-//        // then
-//        지하철_노선에_지하철역_제외됨(removeResponse, 신분당선, Arrays.asList(강남역, 정자역, 광교역));
-//    }
+    @DisplayName("지하철 노선에 등록된 지하철역을 제외한다.")
+    @Test
+    void removeLineSection1() {
+        // given
+        지하철_구간_생성_요청(신분당선, 강남역, 양재역, 2);
+        지하철_구간_생성_요청(신분당선, 양재역, 정자역, 2);
+
+        // when
+        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
+
+        // then
+        지하철_노선에_지하철역_제외_실패됨(removeResponse);
+    }
 
     @DisplayName("지하철 노선에 등록된 지하철역이 두개일 때 한 역을 제외한다.")
     @Test
@@ -148,16 +148,6 @@ public class SectionAcceptanceTest extends AcceptanceTest {
                 .when().delete("/lines/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
                 .then().log().all()
                 .extract();
-    }
-
-    public static void 지하철_구간_생성됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    public static void 지하철_노선에_지하철역_제외됨(ExtractableResponse<Response> result, LineResponse lineResponse, List<StationResponse> stationResponses) {
-        assertThat(result.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        ExtractableResponse<Response> response = 지하철_노선_조회_요청(lineResponse);
-        지하철_노선에_지하철역_순서_정렬됨(response, stationResponses);
     }
 
     public static void 지하철_구간_등록_실패됨(ExtractableResponse<Response> response) {

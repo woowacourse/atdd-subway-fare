@@ -36,22 +36,22 @@ public class PathControllerTest extends ControllerTest {
     @DisplayName("조회 - 성공")
     public void showPath() throws Exception {
         //given
-        long source = 1L;
-        long target = 2L;
-        Station station1 = new Station("테스트1");
-        Station station2 = new Station("테스트2");
-        Station station3 = new Station("테스트3");
-        PathResponse pathResponse = new PathResponse(StationResponse.listOf(Arrays.asList(station1, station2, station3)),
+        long sourceStationId = 1L;
+        long targetStationId = 2L;
+        Station 강남역 = new Station("강남역");
+        Station 잠실역 = new Station("잠실역");
+        Station 삼전역 = new Station("삼전역");
+        PathResponse pathResponse = new PathResponse(StationResponse.listOf(Arrays.asList(강남역, 잠실역, 삼전역)),
                 30, 2800);
         LoginMember loginMember = new LoginMember(1L, "email@eamil.com", 12);
         given(authService.findMemberByToken("secrettokentoken")).willReturn(loginMember);
         given(pathService.findPath(eq(loginMember.getAge()), eq(1L), eq(2L))).willReturn(pathResponse);
 
-        mockMvc.perform(get("/paths?source=" + source + "&target=" + target)
+        mockMvc.perform(get("/paths?source=" + sourceStationId + "&target=" + targetStationId)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer secrettokentoken"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.stations[*].name").value(
-                        Matchers.containsInRelativeOrder("테스트1", "테스트2", "테스트3")))
+                        Matchers.containsInRelativeOrder("강남역", "잠실역", "삼전역")))
                 .andDo(document("path-find"));
     }
 }
