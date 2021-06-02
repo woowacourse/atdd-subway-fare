@@ -20,6 +20,8 @@ spring:
         console:
             enabled: true
 ---
+swagger:
+    host: test
 spring:
     config:
         activate:
