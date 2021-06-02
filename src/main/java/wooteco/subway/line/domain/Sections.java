@@ -11,9 +11,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Sections {
-    private List<Section> sections = new ArrayList<>();
+    private final List<Section> sections;
 
     public Sections() {
+        this(new ArrayList<>());
     }
 
     public Sections(List<Section> sections) {
