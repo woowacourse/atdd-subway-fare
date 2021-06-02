@@ -14,7 +14,6 @@ public class FareCalculator {
     private static final int DEFAULT_FARE_DISTANCE = 10;
     private static final int FIFTY_DISTANCE = 50;
 
-
     private FareCalculator() {}
 
     public static int calculateFare(int distance, int age, List<SectionEdge> sectionEdges) {

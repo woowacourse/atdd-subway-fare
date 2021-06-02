@@ -6,10 +6,10 @@ import wooteco.subway.path.exception.PathExceptionSet;
 
 public enum AgeSet {
 
-    ADULT() {
+    ADULT(19) {
         @Override
         boolean isContainAge(int age) {
-            return age >= ADUlT_AGE;
+            return age >= getReferenceAge();
         }
 
         @Override
@@ -17,10 +17,10 @@ public enum AgeSet {
             return 0;
         }
     },
-    TEENAGER() {
+    TEENAGER(13) {
         @Override
         boolean isContainAge(int age) {
-            return age < ADUlT_AGE && age >= TEENAGER_AGE;
+            return age < ADULT.getReferenceAge() && age >= getReferenceAge();
         }
 
         @Override
@@ -28,10 +28,10 @@ public enum AgeSet {
             return (int) ((fare - DEDUCTIBLE_AMOUNT) * TEENAGER_DISCOUNT);
         }
     },
-    CHILD() {
+    CHILD(6) {
         @Override
         boolean isContainAge(int age) {
-            return age < TEENAGER_AGE && age >= CHILD_AGE;
+            return age < TEENAGER.getReferenceAge() && age >= getReferenceAge();
         }
 
         @Override
@@ -39,10 +39,10 @@ public enum AgeSet {
             return (int) ((fare - DEDUCTIBLE_AMOUNT) * CHILDREN_DISCOUNT);
         }
     },
-    BABY() {
+    BABY(0) {
         @Override
         boolean isContainAge(int age) {
-            return age < CHILD_AGE;
+            return age < CHILD.getReferenceAge() && age >= getReferenceAge();
         }
 
         @Override
@@ -51,26 +51,27 @@ public enum AgeSet {
         }
     };
 
-
-    private static final int ADUlT_AGE = 19;
-    private static final int TEENAGER_AGE = 13;
-    private static final int CHILD_AGE = 6;
     private static final int DEDUCTIBLE_AMOUNT = 350;
     private static final double TEENAGER_DISCOUNT = 0.2;
     private static final double CHILDREN_DISCOUNT = 0.5;
 
-    AgeSet() {
+    private final int referenceAge;
 
+    AgeSet(int referenceAge) {
+        this.referenceAge = referenceAge;
     }
 
     public static AgeSet of(int age) {
         return Arrays.stream(AgeSet.values())
             .filter(item -> item.isContainAge(age))
-            .findAny().orElseThrow(() -> new SubwayException(
-                PathExceptionSet.AGE_NOT_FOUND));
+            .findAny().orElseThrow(() -> new SubwayException(PathExceptionSet.AGE_NOT_FOUND));
     }
 
     abstract boolean isContainAge(int age);
 
     public abstract int ageDisCount(int fare);
+
+    public int getReferenceAge() {
+        return referenceAge;
+    }
 }
