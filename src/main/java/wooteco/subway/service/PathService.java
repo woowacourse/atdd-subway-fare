@@ -6,7 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.auth.domain.LoginMember;
 import wooteco.auth.domain.User;
 import wooteco.auth.service.MemberService;
-import wooteco.common.exception.badrequest.InvalidPathException;
+import wooteco.common.exception.badrequest.BadRequestException;
+import wooteco.common.exception.badrequest.BadRequestException.BadRequestMessage;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.SubwayPath;
@@ -46,7 +47,7 @@ public class PathService {
 
             return PathResponseAssembler.assemble(subwayPath, fare);
         } catch (Exception e) {
-            throw new InvalidPathException();
+            throw new BadRequestException(BadRequestMessage.INVALID_PATH);
         }
     }
 }

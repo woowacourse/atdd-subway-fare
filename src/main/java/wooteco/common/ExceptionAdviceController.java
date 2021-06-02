@@ -32,9 +32,4 @@ public class ExceptionAdviceController {
     public ResponseEntity<BindingResult> argumentNotValid(MethodArgumentNotValidException e) {
         return ResponseEntity.badRequest().body(e.getBindingResult());
     }
-
-//    @ExceptionHandler(Exception.class)
-//    public ResponseEntity serverError(Exception e) {
-//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-//    }
 }

@@ -5,7 +5,8 @@ import java.util.stream.Collectors;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.springframework.stereotype.Service;
-import wooteco.common.exception.badrequest.InvalidPathException;
+import wooteco.common.exception.badrequest.BadRequestException;
+import wooteco.common.exception.badrequest.BadRequestException.BadRequestMessage;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.SectionEdge;
 import wooteco.subway.domain.Station;
@@ -17,7 +18,7 @@ public class PathFinder {
 
     public SubwayPath findPath(List<Line> lines, Station source, Station target) {
         if (source.equals(target)) {
-            throw new InvalidPathException();
+            throw new BadRequestException(BadRequestMessage.INVALID_PATH);
         }
         SubwayGraph graph = new SubwayGraph(SectionEdge.class);
         graph.addVertexWith(lines);
@@ -27,7 +28,7 @@ public class PathFinder {
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
         GraphPath<Station, SectionEdge> path = dijkstraShortestPath.getPath(source, target);
         if (path == null) {
-            throw new InvalidPathException();
+            throw new BadRequestException(BadRequestMessage.INVALID_PATH);
         }
 
         return convertSubwayPath(path);

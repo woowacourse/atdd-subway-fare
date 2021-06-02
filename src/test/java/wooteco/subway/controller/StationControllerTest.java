@@ -31,7 +31,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import wooteco.auth.util.JwtTokenProvider;
 import wooteco.common.ExceptionAdviceController;
-import wooteco.common.exception.badrequest.StationNameDuplicateException;
+import wooteco.common.exception.badrequest.BadRequestException;
+import wooteco.common.exception.badrequest.BadRequestException.BadRequestMessage;
 import wooteco.subway.service.StationService;
 import wooteco.subway.web.api.StationController;
 import wooteco.subway.web.dto.request.StationRequest;
@@ -133,7 +134,7 @@ class StationControllerTest {
         given(jwtTokenProvider.validateToken(token)).willReturn(true);
 
         given(stationService.updateStation(any(), any()))
-            .willThrow(new StationNameDuplicateException());
+            .willThrow(new BadRequestException(BadRequestMessage.STATION_NAME_DUPLICATE));
 
         final StationRequest stationRequest = new StationRequest("새로운역");
 

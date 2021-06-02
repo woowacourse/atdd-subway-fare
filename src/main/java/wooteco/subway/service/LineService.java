@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.common.exception.badrequest.LineColorDuplicateException;
-import wooteco.common.exception.badrequest.LineNameDuplicateException;
+import wooteco.common.exception.badrequest.BadRequestException;
+import wooteco.common.exception.badrequest.BadRequestException.BadRequestMessage;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.domain.Line;
@@ -42,10 +42,10 @@ public class LineService {
 
     private void validateLineRequest(LineRequest request) {
         if (lineDao.findByName(request.getName()).isPresent()) {
-            throw new LineNameDuplicateException();
+            throw new BadRequestException(BadRequestMessage.LINE_NAME_DUPLICATE);
         }
         if (lineDao.findByColor(request.getColor()).isPresent()) {
-            throw new LineColorDuplicateException();
+            throw new BadRequestException(BadRequestMessage.LINE_COLOR_DUPLICATE);
         }
     }
 

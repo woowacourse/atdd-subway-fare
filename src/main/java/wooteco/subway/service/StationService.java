@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.common.exception.badrequest.NotRemovalStationException;
-import wooteco.common.exception.badrequest.StationNameDuplicateException;
+import wooteco.common.exception.badrequest.BadRequestException;
+import wooteco.common.exception.badrequest.BadRequestException.BadRequestMessage;
 import wooteco.subway.dao.LineDao;
 import wooteco.subway.dao.SectionDao;
 import wooteco.subway.dao.StationDao;
@@ -32,7 +32,7 @@ public class StationService {
     @Transactional
     public StationResponse saveStation(StationRequest stationRequest) {
         if (stationDao.findByName(stationRequest.getName()).isPresent()) {
-            throw new StationNameDuplicateException();
+            throw new BadRequestException(BadRequestMessage.STATION_NAME_DUPLICATE);
         }
         Station station = stationDao.insert(stationRequest.toStation());
         return StationResponse.of(station);
@@ -54,7 +54,7 @@ public class StationService {
     @Transactional
     public void deleteStationById(Long id) {
         if (sectionDao.existStation(id)) {
-            throw new NotRemovalStationException();
+            throw new BadRequestException(BadRequestMessage.NOT_REMOVAL_STATION);
         }
         stationDao.deleteById(id);
     }
@@ -62,7 +62,7 @@ public class StationService {
     @Transactional
     public StationResponse updateStation(Long id, String name) {
         if (stationDao.findByName(name).isPresent()) {
-            throw new StationNameDuplicateException();
+            throw new BadRequestException(BadRequestMessage.STATION_NAME_DUPLICATE);
         }
         stationDao.updateName(id, name);
         return new StationResponse(id, name);
