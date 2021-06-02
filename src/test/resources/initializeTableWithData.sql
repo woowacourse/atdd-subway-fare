@@ -43,7 +43,7 @@ create table if not exists MEMBER
     primary key(id)
 );
 
-INSERT INTO LINE(name, color, extraFare) VALUES('OneLine', 'BLUE', 0);
+INSERT INTO LINE(name, color, extraFare) VALUES('1호선','파란색', 0);
 INSERT INTO STATION(name) VALUES('신설동역');
 INSERT INTO STATION(name) VALUES('동묘앞역');
 INSERT INTO STATION(name) VALUES('동대문역');
