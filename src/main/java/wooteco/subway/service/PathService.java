@@ -7,6 +7,7 @@ import wooteco.auth.domain.LoginMember;
 import wooteco.auth.domain.Member;
 import wooteco.common.exception.badrequest.InvalidPathException;
 import wooteco.common.exception.badrequest.MemberNotFoundException;
+import wooteco.subway.domain.FareCalculator;
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
 import wooteco.subway.domain.SubwayPath;

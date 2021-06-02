@@ -74,7 +74,10 @@ public class StationControllerTest {
                 .andExpect(jsonPath("id").value(stationResponse.getId()))
                 .andExpect(jsonPath("name").value(stationResponse.getName()))
                 .andDo(print())
-                .andDo(document("station-create"));
+                .andDo(document("station-create",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())
+                ));
     }
 
     @DisplayName("역 생성 - 실패(인증)")

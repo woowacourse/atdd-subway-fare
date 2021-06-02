@@ -1,5 +1,7 @@
 package wooteco.subway.service;
 
+import wooteco.subway.domain.FareCalculator;
+
 import java.util.Arrays;
 import java.util.function.Function;
 import java.util.function.Predicate;

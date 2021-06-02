@@ -15,7 +15,7 @@ public class StationResponse {
         return new StationResponse(station.getId(), station.getName());
     }
 
-    public static StationResponse of(Station station, List<SimpleLineResponse> linesResponses){
+    public static StationResponse of(Station station, List<SimpleLineResponse> linesResponses) {
         return new StationResponse(station.getId(), station.getName(), linesResponses);
     }
 

@@ -143,7 +143,7 @@ class LineControllerTest {
                 .andExpect(jsonPath("$[*].stations[*].distance")
                         .value(containsInAnyOrder(10, 10, 10, 10)))
                 .andDo(print())
-                .andDo(document("line-findAll",
+                .andDo(document("line-find",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint())
                 ));

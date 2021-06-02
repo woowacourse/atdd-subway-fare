@@ -9,19 +9,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import wooteco.auth.domain.Authority;
 import wooteco.auth.domain.LoginMember;
-import wooteco.auth.service.MemberService;
 import wooteco.auth.util.JwtTokenProvider;
 import wooteco.auth.web.api.LoginInterceptor;
-import wooteco.auth.web.dto.response.MemberResponse;
 import wooteco.subway.TestDataLoader;
-import wooteco.subway.domain.Line;
-import wooteco.subway.domain.Section;
 import wooteco.subway.domain.Station;
 import wooteco.subway.service.AgeDiscountFareCalculator;
 import wooteco.subway.service.DefaultFareCalculator;
-import wooteco.subway.service.FareCalculator;
+import wooteco.subway.domain.FareCalculator;
 import wooteco.subway.service.PathService;
 import wooteco.subway.web.api.PathController;
 import wooteco.subway.web.dto.response.PathResponse;
@@ -53,8 +48,8 @@ class PathControllerTest {
     @MockBean
     private JwtTokenProvider jwtTokenProvider;
 
-    TestDataLoader testDataLoader = new TestDataLoader();
-    FareCalculator fareCalculator = new DefaultFareCalculator();
+    private TestDataLoader testDataLoader = new TestDataLoader();
+    private FareCalculator fareCalculator = new DefaultFareCalculator();
 
     @Test
     @DisplayName("구간 검색 - 성공(성인 또는 비회원)")

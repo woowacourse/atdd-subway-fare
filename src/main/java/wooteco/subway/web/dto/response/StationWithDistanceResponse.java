@@ -2,7 +2,7 @@ package wooteco.subway.web.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.*;
+import static com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 public class StationWithDistanceResponse {
 
