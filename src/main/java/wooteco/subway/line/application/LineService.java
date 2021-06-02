@@ -31,25 +31,19 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        List<Line> lines = lineDao.findAll();
-        findOptionalLineByName(request, lines).ifPresent(exception -> new ExistLineNameException());
-        findOptionalLineByColor(request, lines).ifPresent(exception -> new ExistLineColorException());
-
+        checkExistInfo(request);
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);
     }
 
-    private Optional<Line> findOptionalLineByName(LineRequest request, List<Line> lines) {
-        return lines.stream()
-                .filter(line -> line.isSameName(request.getName()))
-                .findAny();
-    }
-
-    private Optional<Line> findOptionalLineByColor(LineRequest request, List<Line> lines) {
-        return lines.stream()
-                .filter(line -> line.isSameColor(request.getColor()))
-                .findAny();
+    private void checkExistInfo(LineRequest request) {
+        if (lineDao.findByName(request.getName()).isPresent()) {
+            throw new ExistLineNameException();
+        }
+        if (lineDao.findByColor(request.getColor()).isPresent()) {
+            throw new ExistLineColorException();
+        }
     }
 
     private Section addInitSection(Line line, LineRequest request) {
@@ -84,13 +78,11 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        List<Line> lines = lineDao.findAll();
-
-        Optional<Line> findWithNameLine = findOptionalLineByName(lineUpdateRequest, lines);
+        Optional<Line> findWithNameLine = lineDao.findByName(lineUpdateRequest.getName());
         if (findWithNameLine.isPresent() && !findWithNameLine.get().isSameId(id)) {
             throw new ExistLineNameException();
         }
-        Optional<Line> findWithColorLine = findOptionalLineByColor(lineUpdateRequest, lines);
+        Optional<Line> findWithColorLine = lineDao.findByColor(lineUpdateRequest.getColor());
         if (findWithColorLine.isPresent() && !findWithColorLine.get().isSameId(id)) {
             throw new ExistLineColorException();
         }

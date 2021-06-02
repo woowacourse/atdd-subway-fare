@@ -4,13 +4,14 @@ import java.util.Arrays;
 import java.util.function.BinaryOperator;
 
 public enum FareAdjusterByAge {
-    PRE_SCHOOLED(0, 6, getIntegerBinaryOperator(0)),
-    SCHOOL_AGED(6, 13, getIntegerBinaryOperator(0.5)),
-    ADOLESCENT(13, 19, getIntegerBinaryOperator(0.8));
+    PRE_SCHOOLED(0, Constants.PRE_SCHOOL_MAX_BOUNDARY, getIntegerBinaryOperator(0)),
+    SCHOOL_AGED(Constants.PRE_SCHOOL_MAX_BOUNDARY, Constants.SCHOOL_AGED_MAX_BOUNDARY, getIntegerBinaryOperator(Constants.SCHOOL_AGED_RATE)),
+    ADOLESCENT(Constants.SCHOOL_AGED_MAX_BOUNDARY, Constants.ADOLESCENT_MAX_BOUNDARY, getIntegerBinaryOperator(Constants.ADOLESCENT_RATE));
 
     private final int minInclusive;
     private final int maxExclusive;
     private final BinaryOperator<Integer> adjuster;
+
     FareAdjusterByAge(int minInclusive, int maxExclusive, BinaryOperator<Integer> adjuster) {
         this.minInclusive = minInclusive;
         this.maxExclusive = maxExclusive;
@@ -27,5 +28,13 @@ public enum FareAdjusterByAge {
                 .map(calculator -> calculator.adjuster.apply(fare, lineFare))
                 .findAny()
                 .orElse(fare + lineFare);
+    }
+
+    private static class Constants {
+        public static final int PRE_SCHOOL_MAX_BOUNDARY = 6;
+        public static final int SCHOOL_AGED_MAX_BOUNDARY = 13;
+        public static final int ADOLESCENT_MAX_BOUNDARY = 19;
+        public static final double SCHOOL_AGED_RATE = 0.5;
+        public static final double ADOLESCENT_RATE = 0.8;
     }
 }

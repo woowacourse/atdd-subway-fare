@@ -31,11 +31,7 @@ public class Line {
     }
 
     public Line(Long id, String name, String color, int extraFare) {
-        this.id = id;
-        this.name = name;
-        this.color = color;
-        this.extraFare = extraFare;
-        this.sections = new Sections();
+        this(id, name, color, extraFare, new Sections());
     }
 
     public Line(Long id, String name, String color, int extraFare, Sections sections) {

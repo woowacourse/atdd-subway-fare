@@ -9,15 +9,20 @@ public class LineRequest {
     @NotBlank(message = "name은 필수로 입력하여야 합니다.")
     @Pattern(regexp = "^[가-힣0-9]{2,10}$", message = "노선 이름은 2~20자 이하의 한글/숫자만 가능합니다")
     private String name;
+
     @NotBlank(message = "Color은 필수로 입력하여야 합니다.")
     private String color;
+
     @NotNull(message = "상행역 ID는 필수로 입력하여야 합니다.")
     private Long upStationId;
+
     @NotNull(message = "하행역 ID는 필수로 입력하여야 합니다.")
     private Long downStationId;
+
     @NotNull(message = "거리 값은 필수로 입력하여야 합니다.")
     @Positive(message = "거리 값은 0보다 커야 합니다.")
     private Integer distance;
+
     private int extraFare;
 
     public LineRequest() {
