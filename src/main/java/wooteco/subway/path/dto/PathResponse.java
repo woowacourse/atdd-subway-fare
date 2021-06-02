@@ -2,7 +2,6 @@ package wooteco.subway.path.dto;
 
 import wooteco.subway.station.dto.StationResponse;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
