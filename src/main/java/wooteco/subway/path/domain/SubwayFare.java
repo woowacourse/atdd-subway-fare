@@ -7,14 +7,8 @@ public class SubwayFare {
     private static final int DEFAULT_FARE = 1250;
     private static final int DEFAULT_DISTANCE = 10;
     private static final int EXTRA_DISTANCE = 50;
-    private static final int ADULT_AGE = 19;
-    private static final int TEEN_AGE = 13;
-    private static final int CHILD_AGE = 6;
-    private static final int DISCOUNT_MONEY = 350;
-    private static final double DISCOUNT_RATE_TEEN_AGE = 0.2;
-    private static final double DISCOUNT_RATE_CHILD_AGE = 0.5;
 
-    private List<SectionEdge> sectionEdges;
+    private final List<SectionEdge> sectionEdges;
 
     public SubwayFare(List<SectionEdge> sectionEdges) {
         this.sectionEdges = sectionEdges;
@@ -23,28 +17,16 @@ public class SubwayFare {
     public int calculateFare(int distance, int age) {
         int fareByDistance = calculateFareByDistance(distance);
 
-        return fareByDistance - calculateFareByAge(fareByDistance, age);
+        return fareByDistance - getDiscountMoney(fareByDistance, age);
     }
 
     private int calculateFareByDistance(int distance) {
         return DEFAULT_FARE + distanceTenToFifty(distance) + distanceMoreThanFifty(distance) + getExpensiveFare();
     }
 
-    private int calculateFareByAge(int fare, int age) {
-
-        if (age >= ADULT_AGE) {
-            return 0;
-        }
-
-        if (age >= TEEN_AGE) {
-            return (int) ((fare - DISCOUNT_MONEY) * DISCOUNT_RATE_TEEN_AGE);
-        }
-
-        if (age >= CHILD_AGE) {
-            return (int) ((fare - DISCOUNT_MONEY) * DISCOUNT_RATE_CHILD_AGE);
-        }
-
-        return fare;
+    private int getDiscountMoney(int fare, int age) {
+        Age discountAge = Age.of(age);
+        return discountAge.calculateFareByAge(fare);
     }
 
     private int getExpensiveFare() {
