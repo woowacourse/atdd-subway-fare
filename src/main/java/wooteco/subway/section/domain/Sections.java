@@ -9,6 +9,7 @@ import wooteco.subway.exception.BothStationAlreadyRegisteredInLineException;
 import wooteco.subway.exception.BothStationNotRegisteredInLineException;
 import wooteco.subway.exception.NoSuchSectionException;
 import wooteco.subway.exception.NoSuchStationException;
+import wooteco.subway.exception.OnlyOneSectionExistsException;
 import wooteco.subway.station.domain.Station;
 
 public class Sections {
@@ -92,7 +93,7 @@ public class Sections {
 
     public void validateDeletableCount() {
         if (sections.size() <= MINIMUM_COUNT) {
-            throw new IllegalStateException("구간을 제거할 수 없습니다.");
+            throw new OnlyOneSectionExistsException();
         }
     }
 
@@ -107,8 +108,9 @@ public class Sections {
             .noneMatch(section -> section.hasSameStation(station));
     }
 
-    public boolean isNotEmpty() {
-        return !sections.isEmpty();
+    public boolean hasStation(Station station) {
+        return sections.stream()
+            .anyMatch(section -> section.hasSameStation(station));
     }
 
     public Section findByMatchStation(Section section) {

@@ -6,22 +6,23 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.exception.NoSuchStationException;
+import wooteco.subway.exception.StationAlreadyRegisteredInLineException;
+import wooteco.subway.section.dao.SectionDao;
+import wooteco.subway.section.domain.Sections;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
-import wooteco.subway.station.dto.StationServiceDto;
 
 @Service
 public class StationService {
 
-    private static final int NOT_FOUND = 0;
-
     private final StationDao stationDao;
+    private final SectionDao sectionDao;
 
-    public StationService(StationDao stationDao) {
+    public StationService(StationDao stationDao, SectionDao sectionDao) {
         this.stationDao = stationDao;
+        this.sectionDao = sectionDao;
     }
 
     public List<StationResponse> showStations() {
@@ -45,8 +46,15 @@ public class StationService {
 
     @Transactional
     public void delete(@NotNull Long id) {
-        if (stationDao.delete(id) == NOT_FOUND) {
-            throw new NoSuchStationException();
+        validateExistOnLines(id);
+        stationDao.delete(id);
+    }
+
+    private void validateExistOnLines(Long id) {
+        Station station = stationDao.findById(id);
+        Sections sections = new Sections(sectionDao.findAll());
+        if (sections.hasStation(station)) {
+            throw new StationAlreadyRegisteredInLineException();
         }
     }
 }

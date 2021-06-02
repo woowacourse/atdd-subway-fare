@@ -1,6 +1,7 @@
 package wooteco.subway.section.domain;
 
 import java.util.Objects;
+import wooteco.subway.exception.ImpossibleDistanceException;
 import wooteco.subway.exception.InvalidDistanceException;
 
 public class Distance {
@@ -29,6 +30,10 @@ public class Distance {
     }
 
     public Distance subtract(Distance distance) {
+        if (value <= distance.getValue()) {
+            throw new ImpossibleDistanceException();
+        }
+
         return new Distance(value - distance.getValue());
     }
 
