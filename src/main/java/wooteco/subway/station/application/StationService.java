@@ -30,7 +30,9 @@ public class StationService {
 
     private void validateDuplicatedName(String name) {
         stationDao.findByName(name)
-                .ifPresent(station -> { throw new StationNameDuplicatedException(); });
+                .ifPresent(station -> {
+                    throw new StationNameDuplicatedException();
+                });
     }
 
     public Station findStationById(Long id) {

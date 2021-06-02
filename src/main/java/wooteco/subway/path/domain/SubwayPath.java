@@ -1,7 +1,7 @@
 package wooteco.subway.path.domain;
 
-import wooteco.subway.line.domain.Line;
 import wooteco.subway.exception.path.InvalidPathException;
+import wooteco.subway.line.domain.Line;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;

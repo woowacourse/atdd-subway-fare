@@ -3,6 +3,11 @@ package wooteco.subway.path.application;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.fare.domain.Fare;
+import wooteco.subway.fare.domain.Money;
+import wooteco.subway.fare.domain.farestrategy.AgeFare;
+import wooteco.subway.fare.domain.farestrategy.DistanceFare;
+import wooteco.subway.fare.domain.farestrategy.FarePolicy;
+import wooteco.subway.fare.domain.farestrategy.LineFare;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.member.domain.LoginMember;
@@ -40,10 +45,14 @@ public class PathService {
     private PathResponse getPathResponse(LoginMember loginMember, SubwayPath subwayPath) {
         List<Station> stations = subwayPath.getStations();
         int distance = subwayPath.calculateDistance();
-        Fare fare = new Fare(distance, subwayPath.calculateLineFare());
+        int lineExtraFare = subwayPath.calculateLineFare();
         if (Objects.isNull(loginMember)) {
-            return PathResponseAssembler.assemble(stations, distance, fare.calculateBasicFare());
+            FarePolicy farePolicy = new FarePolicy(new LineFare(lineExtraFare), new DistanceFare(distance));
+            Fare fare = new Fare(Money.DEFAULT_MONEY, farePolicy);
+            return PathResponseAssembler.assemble(stations, distance, fare.calculate());
         }
-        return PathResponseAssembler.assemble(stations,distance, fare.calculateDiscountFare(loginMember.getAge()));
+        FarePolicy farePolicy = new FarePolicy(new LineFare(lineExtraFare), new DistanceFare(distance), new AgeFare(loginMember.getAge()));
+        Fare fare = new Fare(Money.DEFAULT_MONEY, farePolicy);
+        return PathResponseAssembler.assemble(stations, distance, fare.calculate());
     }
 }

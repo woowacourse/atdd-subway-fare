@@ -28,7 +28,9 @@ public class MemberService {
 
     private void validateDuplicatedEmail(String email) {
         memberDao.findByEmail(email)
-                .ifPresent(member -> { throw new EmailDuplicatedException(); });
+                .ifPresent(member -> {
+                    throw new EmailDuplicatedException();
+                });
     }
 
     public MemberResponse findMember(LoginMember loginMember) {

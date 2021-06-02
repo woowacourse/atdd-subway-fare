@@ -29,6 +29,6 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         if (credentials == null && webRequest.getNativeRequest(HttpServletRequest.class).getRequestURI().equals("/paths")) {
             return null;
         }
-        return authService.findMemberByToken(credentials);
+        return authService.findLoginMemberByToken(credentials);
     }
 }
