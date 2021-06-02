@@ -2,15 +2,12 @@ package wooteco.subway.member.domain;
 
 public class LoginMember {
 
-    private static final LoginMember UNCERTIFIED_MEMBER = new LoginMember();
+    private static final LoginMember UNCERTIFIED_MEMBER = new LoginMember(null, "UNCERTIFIED_MEMBER", null);
     private static final LoginMember GUEST = new LoginMember(null, "GUEST", 20);
 
-    private Long id;
-    private String email;
-    private Integer age;
-
-    private LoginMember() {
-    }
+    private final Long id;
+    private final String email;
+    private final Integer age;
 
     public LoginMember(Member member) {
         this(member.getId(), member.getEmail(), member.getAge());
