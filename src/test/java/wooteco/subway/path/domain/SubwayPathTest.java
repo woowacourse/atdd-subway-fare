@@ -18,7 +18,8 @@ class SubwayPathTest {
         SubwayPath subwayPath = new SubwayPath(new ArrayList<>(), new ArrayList<>());
 
         //when
-        int fare = subwayPath.calculateFare(Integer.parseInt(distance), 20);
+        int fare = FareCalculator.calculateFare(Integer.parseInt(distance), 20,
+            subwayPath.getSectionEdges());
 
         //then
         assertThat(fare).isEqualTo(Integer.parseInt(targetFare));
@@ -34,7 +35,8 @@ class SubwayPathTest {
         discountTargetFare -= (discountTargetFare - 350) * 0.2;
 
         //when
-        int fare = subwayPath.calculateFare(Integer.parseInt(distance), 15);
+        int fare = FareCalculator.calculateFare(Integer.parseInt(distance), 15,
+            subwayPath.getSectionEdges());
 
         //then
         assertThat(fare).isEqualTo(discountTargetFare);
@@ -50,7 +52,8 @@ class SubwayPathTest {
         discountTargetFare -= (discountTargetFare - 350) * 0.5;
 
         //when
-        int fare = subwayPath.calculateFare(Integer.parseInt(distance), 7);
+        int fare = FareCalculator.calculateFare(Integer.parseInt(distance), 7,
+            subwayPath.getSectionEdges());
 
         //then
         assertThat(fare).isEqualTo(discountTargetFare);
