@@ -5,6 +5,7 @@ import wooteco.subway.station.domain.Station;
 import java.util.List;
 
 public class SubwayPath {
+    private static final int DEFAULT_EXTRA_FARE = 0;
 
     private final List<SectionEdge> sectionEdges;
     private final List<Station> stations;
@@ -20,6 +21,13 @@ public class SubwayPath {
 
     public List<Station> getStations() {
         return stations;
+    }
+
+    public int getMaximumExtraFareByLine(){
+        return sectionEdges.stream()
+                .mapToInt(SectionEdge::getExtraFareByLine)
+                .max()
+                .orElse(DEFAULT_EXTRA_FARE);
     }
 
     public int getDistance() {
