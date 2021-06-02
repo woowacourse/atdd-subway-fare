@@ -62,9 +62,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.as(ExceptionResponse.class).getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
+        assertThat(response.as(ExceptionResponse.class).getMessage()).isEqualTo("존재하지 않는 지하철 역입니다");
     }
 
-    @DisplayName("생성 - 구간이 존재하지 않는 역인 경우 예외를 던진다.")
+    @DisplayName("생성 - 상행과 하행이 같은 역인 경우 예외를 던진다.")
     @Test
     void createLineWhenSameStationsInSection() {
         // when
@@ -74,6 +75,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.as(ExceptionResponse.class).getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.as(ExceptionResponse.class).getMessage()).isEqualTo("유효하지 않은 요청 값입니다");
     }
 
     @DisplayName("생성 - 로그인하지 않은 사용자나 유효하지 않은 회원이 요청시 예외를 발생한다.")
@@ -97,6 +99,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_노선_생성_실패됨(response);
+        assertThat(response.as(ExceptionResponse.class).getMessage()).isEqualTo("지하철 노선 이름이 이미 존재합니다.");
     }
 
     @DisplayName("지하철 노선 목록을 조회한다.")
@@ -196,6 +199,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.as(ExceptionResponse.class).getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.as(ExceptionResponse.class).getMessage()).isEqualTo("지하철 노선 색깔이 이미 존재합니다");
     }
 
     @DisplayName("수정 - 로그인하지 않은 사용자나 유효하지 않은 회원이 요청시 예외를 발생한다.")
@@ -225,6 +229,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_노선_생성_실패됨(response);
+        assertThat(response.as(ExceptionResponse.class).getMessage()).isEqualTo("지하철 노선 이름이 이미 존재합니다");
     }
 
     @DisplayName("지하철 노선을 제거한다.")

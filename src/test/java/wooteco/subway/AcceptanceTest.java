@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import wooteco.subway.auth.dto.TokenResponse;
+import wooteco.subway.exception.ExceptionResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
@@ -43,5 +44,6 @@ public class AcceptanceTest {
 
     protected void 비회원_요청_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        assertThat(response.as(ExceptionResponse.class).getMessage()).isEqualTo("다시 로그인 후 시도해주세요");
     }
 }

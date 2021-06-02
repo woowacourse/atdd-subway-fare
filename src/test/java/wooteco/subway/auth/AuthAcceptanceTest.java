@@ -5,6 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenRequest;
@@ -38,6 +39,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> response = 로그인_요청(EMAIL, PASSWORD+"!");
 
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
         assertThat(response.as(ExceptionResponse.class).getMessage()).isEqualTo("이메일 혹은 비밀번호를 다시 확인해주세요");
     }
 

@@ -76,6 +76,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.as(ExceptionResponse.class).getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
+        assertThat(response.as(ExceptionResponse.class).getMessage()).isEqualTo("존재하지 않는 지하철 역입니다");
     }
 
     @DisplayName("등록 - 유효하지 않은 거리의 경우 예외를 던진다.")
@@ -86,6 +87,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.as(ExceptionResponse.class).getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.as(ExceptionResponse.class).getMessage()).isEqualTo("거리는 1 이상의 숫자를 입력해주세요");
     }
 
     @DisplayName("등록 - 등록하려는 구간의 거리가 기존 구간보다 긴 경우 예외를 던진다.")
@@ -96,6 +98,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.as(ExceptionResponse.class).getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.as(ExceptionResponse.class).getMessage()).isEqualTo("유효하지 않는 요청 값입니다");
     }
 
     @DisplayName("지하철 노선에 여러개의 역을 순서 상관 없이 등록한다.")
@@ -117,6 +120,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_구간_등록_실패됨(response);
+        assertThat(response.as(ExceptionResponse.class).getMessage()).isEqualTo("유효하지 않는 요청 값입니다");
     }
 
     @DisplayName("지하철 노선에 등록되지 않은 역을 기준으로 등록한다.")
@@ -127,6 +131,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_구간_등록_실패됨(response);
+        assertThat(response.as(ExceptionResponse.class).getMessage()).isEqualTo("유효하지 않는 요청 값입니다");
     }
 
     @DisplayName("지하철 노선에 등록된 지하철역을 제외한다.")
@@ -165,6 +170,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_노선에_지하철역_제외_실패됨(removeResponse);
+        assertThat(removeResponse.as(ExceptionResponse.class).getMessage()).isEqualTo("유효하지 않는 요청 값입니다");
     }
 
     public static void 지하철_구간_등록되어_있음(LineResponse lineResponse, StationResponse upStation, StationResponse downStation, int distance) {

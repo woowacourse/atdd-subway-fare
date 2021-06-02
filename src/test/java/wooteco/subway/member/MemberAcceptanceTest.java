@@ -68,6 +68,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> notValidPwRes = 내_비밀번호_수정_요청(신규회원, PASSWORD + "!", NEW_PASSWORD);
 
         assertThat(notValidPwRes.as(ExceptionResponse.class).getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(notValidPwRes.as(ExceptionResponse.class).getMessage()).isEqualTo("현재 비밀번호를 다시 확인해주세요");
     }
 
     @Test
@@ -75,6 +76,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     void testChangePasswordWhenSameWithCurrentPassword() {
         ExtractableResponse<Response> samePwRes = 내_비밀번호_수정_요청(신규회원, PASSWORD, PASSWORD);
 
+        assertThat(samePwRes.as(ExceptionResponse.class).getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat(samePwRes.as(ExceptionResponse.class).getMessage()).isEqualTo("현재 사용 중인 비밀번호입니다. 다른 비밀번호를 입력해주세요");
     }
 
@@ -91,6 +93,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 최소나이 = 내_나이정보_수정_요청(신규회원, 0);
         ExtractableResponse<Response> 최대나이 = 내_나이정보_수정_요청(신규회원, 151);
 
+        assertThat(최소나이.as(ExceptionResponse.class).getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(최대나이.as(ExceptionResponse.class).getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 
         assertThat(최소나이.as(ExceptionResponse.class).getMessage()).isEqualTo("1부터 150 사이의 나이를 입력해주세요");
         assertThat(최대나이.as(ExceptionResponse.class).getMessage()).isEqualTo("1부터 150 사이의 나이를 입력해주세요");
@@ -103,6 +107,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> findResponse = 이메일_중복_확인(Email);
 
         assertThat(findResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(findResponse.as(ExceptionResponse.class).getMessage()).isEqualTo("중복된 이메일이 존재합니다");
     }
 
     @Test
