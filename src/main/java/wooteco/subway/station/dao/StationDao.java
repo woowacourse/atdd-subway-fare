@@ -7,11 +7,14 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import wooteco.subway.exception.notfound.StationNotFoundException;
 import wooteco.subway.line.dto.LineNameColorDto;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationTransferLinesDto;
 
 import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -48,7 +51,10 @@ public class StationDao {
 
     public void deleteById(Long id) {
         String sql = "delete from station where id = ?";
-        jdbcTemplate.update(sql, id);
+        int count = jdbcTemplate.update(sql, id);
+        if (count < 1) {
+            throw new StationNotFoundException();
+        }
     }
 
     public Optional<Station> findById(Long id) {
@@ -62,7 +68,10 @@ public class StationDao {
 
     public void update(Station station) {
         String sql = "update station set name = ? where id = ?";
-        jdbcTemplate.update(sql, station.getName(), station.getId());
+        int count = jdbcTemplate.update(sql, station.getName(), station.getId());
+        if (count < 1) {
+            throw new StationNotFoundException();
+        }
     }
 
     public List<StationTransferLinesDto> findAllWithTransferLines() {
@@ -73,24 +82,29 @@ public class StationDao {
         return jdbcTemplate.queryForObject(sql, stationRowMapperWithTransferLines);
     }
 
-    private RowMapper<List<StationTransferLinesDto>> stationRowMapperWithTransferLines = (rs, rowNum) -> {
+    private final RowMapper<List<StationTransferLinesDto>> stationRowMapperWithTransferLines = (rs, rowNum) -> {
         List<StationTransferLinesDto> stationTransferLinesDtos = new ArrayList<>();
         Long stationId = 0L;
         while (!stationId.equals(rs.getLong("id")) || !rs.isLast()) {
             stationId = rs.getLong("id");
             String stationName = rs.getString("name");
-            List<LineNameColorDto> lineNameColorDtos = new ArrayList<>();
-            do {
-                lineNameColorDtos.add(
-                        new LineNameColorDto(
-                                rs.getLong("line_id"),
-                                rs.getString("line_name"),
-                                rs.getString("line_color"))
-                );
-            } while (!rs.isLast() && rs.next() && stationId.equals(rs.getLong("id")));
+            List<LineNameColorDto> lineNameColorDtos = extractLine(rs, stationId);
             stationTransferLinesDtos.add(new StationTransferLinesDto(stationId, stationName, lineNameColorDtos));
         }
-
         return stationTransferLinesDtos;
     };
+
+
+    private List<LineNameColorDto> extractLine(ResultSet result, Long stationId) throws SQLException {
+        List<LineNameColorDto> lineNameColorDtos = new ArrayList<>();
+        do {
+            lineNameColorDtos.add(
+                    new LineNameColorDto(
+                            result.getLong("line_id"),
+                            result.getString("line_name"),
+                            result.getString("line_color"))
+            );
+        } while (!result.isLast() && result.next() && stationId.equals(result.getLong("id")));
+        return lineNameColorDtos;
+    }
 }
