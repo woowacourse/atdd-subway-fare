@@ -1,6 +1,7 @@
 package wooteco.subway.line.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.badrequest.DuplicateLineException;
 import wooteco.subway.exception.notfound.NoLineException;
 import wooteco.subway.line.dao.LineDao;
@@ -18,7 +19,6 @@ import java.util.stream.Collectors;
 public class LineService {
     private LineDao lineDao;
     private SectionDao sectionDao;
-
     private StationService stationService;
 
     public LineService(LineDao lineDao, SectionDao sectionDao, StationService stationService) {
@@ -27,6 +27,7 @@ public class LineService {
         this.stationService = stationService;
     }
 
+    @Transactional
     public LineResponse saveLine(LineRequest request) {
         if (lineDao.findByName(request.getName()).isPresent()) {
             throw new DuplicateLineException();
@@ -68,6 +69,7 @@ public class LineService {
         return lineDao.findById(id);
     }
 
+    @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         validateExistLine(id);
 
@@ -85,11 +87,13 @@ public class LineService {
                 .orElseThrow(NoLineException::new);
     }
 
+    @Transactional
     public void deleteLineById(Long id) {
         validateExistLine(id);
         lineDao.deleteById(id);
     }
 
+    @Transactional
     public SectionResponse addLineStation(Long lineId, SectionRequest request) {
         Line line = findValidLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
@@ -103,6 +107,7 @@ public class LineService {
         return SectionResponse.of(section);
     }
 
+    @Transactional
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findValidLineById(lineId);
         Station station = stationService.findStationById(stationId);

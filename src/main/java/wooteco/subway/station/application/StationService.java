@@ -1,6 +1,7 @@
 package wooteco.subway.station.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.badrequest.DuplicateStationException;
 import wooteco.subway.exception.badrequest.ExistStationInSectionException;
 import wooteco.subway.exception.notfound.NotFoundStationException;
@@ -23,6 +24,7 @@ public class StationService {
         this.sectionDao = sectionDao;
     }
 
+    @Transactional
     public StationResponse saveStation(StationRequest stationRequest) {
         stationDao.findByName(stationRequest.getName())
                 .ifPresent(station -> {
@@ -46,6 +48,7 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void deleteStationById(Long id) {
         findStationById(id);
 
@@ -56,6 +59,7 @@ public class StationService {
         stationDao.deleteById(id);
     }
 
+    @Transactional
     public StationResponse updateStationById(Long id, StationRequest stationRequest) {
         findStationById(id);
 
