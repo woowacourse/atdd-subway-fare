@@ -4,8 +4,8 @@ import org.springframework.http.HttpStatus;
 import wooteco.subway.exception.dto.ErrorResponse;
 
 public class SubwayException extends RuntimeException {
-    HttpStatus httpStatus;
-    ErrorResponse errorResponse;
+    private final HttpStatus httpStatus;
+    private final ErrorResponse errorResponse;
 
     public SubwayException(HttpStatus httpStatus, ErrorResponse errorResponse) {
         this.httpStatus = httpStatus;
