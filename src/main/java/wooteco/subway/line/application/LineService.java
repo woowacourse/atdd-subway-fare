@@ -54,7 +54,7 @@ public class LineService {
     public List<LineWithStationsResponse> findLineResponses() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
-                .map(this::getLineWithTransferLinesAndStationsResponse)
+                .map(this::getLineWithStationsResponse)
                 .collect(Collectors.toList());
     }
 
@@ -65,10 +65,10 @@ public class LineService {
 
     public LineWithStationsResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
-        return getLineWithTransferLinesAndStationsResponse(persistLine);
+        return getLineWithStationsResponse(persistLine);
     }
 
-    private LineWithStationsResponse getLineWithTransferLinesAndStationsResponse(Line persistLine) {
+    private LineWithStationsResponse getLineWithStationsResponse(Line persistLine) {
         List<Line> persistLines = lineDao.findAll();
         List<Station> stationInLine = persistLine.getStations();
 
@@ -87,9 +87,8 @@ public class LineService {
 
     private List<TransferLinesResponse> makeLineWithTransferLineResponse(Line persistLine, List<Line> persistLines, Station station) {
         List<Line> transferLine = persistLines.stream()
-                .filter(line -> line.contain(station))
+                .filter(line -> line.contain(station) && !line.isSameIdWith(persistLine.getId()))
                 .collect(Collectors.toList());
-        transferLine.remove(persistLine);
 
         return transferLine.stream()
                 .map(TransferLinesResponse::of)

@@ -93,6 +93,10 @@ public class Line {
         return sections.getStations();
     }
 
+    public boolean isSameIdWith(long id) {
+        return this.id == id;
+    }
+
     public Section findSectionByIds(Long upStationId, Long downStationId) {
         return sections.findSectionByIds(upStationId, downStationId);
     }

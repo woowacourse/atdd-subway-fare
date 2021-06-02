@@ -17,8 +17,8 @@ public class StationsResponseInLine {
         this.transferLines = transferLines;
     }
 
-    public static StationsResponseInLine of(Station station, int nextStationDistance, List<TransferLinesResponse> transferLinesRespons) {
-        return new StationsResponseInLine(station.getId(), station.getName(), nextStationDistance, transferLinesRespons);
+    public static StationsResponseInLine of(Station station, int nextStationDistance, List<TransferLinesResponse> transferLinesResponse) {
+        return new StationsResponseInLine(station.getId(), station.getName(), nextStationDistance, transferLinesResponse);
     }
 
     public Long getId() {
