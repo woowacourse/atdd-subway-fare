@@ -43,8 +43,8 @@ public class StationService {
     }
 
     public Station findStationById(Long id) {
-        final Optional<Station> station = stationDao.findById(id);
-        return station.orElseThrow(StationNotFoundException::new);
+        return stationDao.findById(id)
+                .orElseThrow(StationNotFoundException::new);
     }
 
     public List<StationResponse> findAllStationResponses() {
