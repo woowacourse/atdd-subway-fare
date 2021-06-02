@@ -58,6 +58,7 @@ public class FareCalculator {
 
     private static int getAgeDisCount(int fare, int age) {
         Age userAge = new Age(age);
+
         if (userAge.isAdult()) {
             return 0;
         }

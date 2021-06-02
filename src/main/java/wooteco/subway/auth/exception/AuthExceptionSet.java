@@ -1,9 +1,9 @@
 package wooteco.subway.auth.exception;
 
 import org.springframework.http.HttpStatus;
-import wooteco.subway.exception.SubwayException;
+import wooteco.subway.exception.SubwayExceptionSetInterface;
 
-public enum SubwayAuthException implements SubwayException {
+public enum AuthExceptionSet implements SubwayExceptionSetInterface {
 
     INVALID_JWT_EXCEPTION("유효하지 않은 토큰입니다.", HttpStatus.UNAUTHORIZED.value()),
     NOT_EXIST_TOKEN_EXCEPTION("로그인이 필요합니다.", HttpStatus.UNAUTHORIZED.value()),
@@ -14,7 +14,7 @@ public enum SubwayAuthException implements SubwayException {
     private final String message;
     private final int status;
 
-    SubwayAuthException(String message, int status) {
+    AuthExceptionSet(String message, int status) {
         this.message = message;
         this.status = status;
     }

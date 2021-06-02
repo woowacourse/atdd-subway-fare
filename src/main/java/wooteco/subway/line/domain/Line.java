@@ -3,8 +3,8 @@ package wooteco.subway.line.domain;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
-import wooteco.subway.exception.SubwayCustomException;
-import wooteco.subway.line.exception.SubwayLineException;
+import wooteco.subway.exception.SubwayException;
+import wooteco.subway.line.exception.LineExceptionSet;
 import wooteco.subway.station.domain.Station;
 
 public class Line {
@@ -55,7 +55,7 @@ public class Line {
 
     private void validateName(String name) {
         if (Objects.isNull(name) || !PATTERN.matcher(name.trim()).matches()) {
-            throw new SubwayCustomException(SubwayLineException.INVALID_LINE_EXCEPTION);
+            throw new SubwayException(LineExceptionSet.INVALID_LINE_EXCEPTION);
         }
     }
 

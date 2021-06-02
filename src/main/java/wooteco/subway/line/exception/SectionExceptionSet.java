@@ -1,9 +1,9 @@
 package wooteco.subway.line.exception;
 
 import org.springframework.http.HttpStatus;
-import wooteco.subway.exception.SubwayException;
+import wooteco.subway.exception.SubwayExceptionSetInterface;
 
-public enum SubwaySectionException implements SubwayException {
+public enum SectionExceptionSet implements SubwayExceptionSetInterface {
 
     INVALID_SECTION_DISTANCE_EXCEPTION("잘못된 노선 구간 거리입니다.", HttpStatus.BAD_REQUEST.value()),
     INVALID_SECTION_DATA_EXCEPTION("구간 추가에 필요한 정보가 잘못되었습니다.", HttpStatus.BAD_REQUEST.value()),
@@ -12,7 +12,7 @@ public enum SubwaySectionException implements SubwayException {
     private final String message;
     private final int status;
 
-    SubwaySectionException(String message, int status) {
+    SectionExceptionSet(String message, int status) {
         this.message = message;
         this.status = status;
     }

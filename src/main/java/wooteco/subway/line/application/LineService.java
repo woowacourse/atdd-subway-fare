@@ -5,7 +5,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.exception.SubwayCustomException;
+import wooteco.subway.exception.SubwayException;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
@@ -14,7 +14,7 @@ import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
 import wooteco.subway.line.dto.SimpleLineResponse;
-import wooteco.subway.line.exception.SubwayLineException;
+import wooteco.subway.line.exception.LineExceptionSet;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
@@ -40,13 +40,13 @@ public class LineService {
             persistLine.addSection(addInitSection(persistLine, request));
             return LineResponse.of(persistLine);
         } catch (DuplicateKeyException exception) {
-            throw new SubwayCustomException(SubwayLineException.DUPLICATE_LINE_NAME_EXCEPTION);
+            throw new SubwayException(LineExceptionSet.DUPLICATE_LINE_NAME_EXCEPTION);
         }
     }
 
     private void checkDuplicateLineColor(LineRequest request) {
         if (lineDao.existColor(request.getColor())) {
-            throw new SubwayCustomException(SubwayLineException.DUPLICATE_LINE_COLOR_EXCEPTION);
+            throw new SubwayException(LineExceptionSet.DUPLICATE_LINE_COLOR_EXCEPTION);
         }
     }
 
@@ -80,7 +80,7 @@ public class LineService {
         try {
             return lineDao.findById(id);
         } catch (EmptyResultDataAccessException exception) {
-            throw new SubwayCustomException(SubwayLineException.NOT_EXIST_LINE_EXCEPTION);
+            throw new SubwayException(LineExceptionSet.NOT_EXIST_LINE_EXCEPTION);
         }
     }
 
@@ -91,19 +91,19 @@ public class LineService {
                 .update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
             validateUpdate(updateRow);
         } catch (DuplicateKeyException exception) {
-            throw new SubwayCustomException(SubwayLineException.DUPLICATE_LINE_NAME_EXCEPTION);
+            throw new SubwayException(LineExceptionSet.DUPLICATE_LINE_NAME_EXCEPTION);
         }
     }
 
     private void checkUpdateDuplicateLineColor(Long id, LineRequest lineUpdateRequest) {
         if (lineDao.existColor(id, lineUpdateRequest.getColor())) {
-            throw new SubwayCustomException(SubwayLineException.DUPLICATE_LINE_COLOR_EXCEPTION);
+            throw new SubwayException(LineExceptionSet.DUPLICATE_LINE_COLOR_EXCEPTION);
         }
     }
 
     private void validateUpdate(int updateRow) {
         if (updateRow != 1) {
-            throw new SubwayCustomException(SubwayLineException.NOT_EXIST_LINE_EXCEPTION);
+            throw new SubwayException(LineExceptionSet.NOT_EXIST_LINE_EXCEPTION);
         }
     }
 

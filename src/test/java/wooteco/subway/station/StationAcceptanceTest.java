@@ -22,7 +22,7 @@ import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.line.LineAcceptanceTest;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
-import wooteco.subway.station.exception.SubwayStationException;
+import wooteco.subway.station.exception.StationExceptionSet;
 
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {
@@ -57,7 +57,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철역_생성_요청(강남역, tokenResponse);
 
         // then
-        에러가_발생한다(response, SubwayStationException.DUPLICATE_STATION_EXCEPTION);
+        에러가_발생한다(response, StationExceptionSet.DUPLICATE_STATION_EXCEPTION);
     }
 
     @DisplayName("2글자이상 20글자이하 한글,숫자가 아닌 이름으로 지하철역을 생성하면 에러가 발생한다.")
@@ -70,7 +70,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철역_생성_요청(name, tokenResponse);
 
         // then
-        에러가_발생한다(response, SubwayStationException.INVALID_STATION_NAME_EXCEPTION);
+        에러가_발생한다(response, StationExceptionSet.INVALID_STATION_NAME_EXCEPTION);
     }
 
     @DisplayName("지하철역을 조회한다.")
@@ -107,7 +107,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> response = 지하철역_수정_요청(stationResponse, stationRequest,
             tokenResponse);
-        에러가_발생한다(response, SubwayStationException.NOT_EXIST_STATION_EXCEPTION);
+        에러가_발생한다(response, StationExceptionSet.NOT_EXIST_STATION_EXCEPTION);
     }
 
     @DisplayName("이미 존재하는 역의 이름으로 수정하면 에러가 발생한다.")
@@ -120,7 +120,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> response = 지하철역_수정_요청(stationResponse, stationRequest,
             tokenResponse);
-        에러가_발생한다(response, SubwayStationException.DUPLICATE_STATION_EXCEPTION);
+        에러가_발생한다(response, StationExceptionSet.DUPLICATE_STATION_EXCEPTION);
     }
 
     @DisplayName("지하철역을 제거한다.")
@@ -146,7 +146,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철역_제거_요청(stationResponse, tokenResponse);
 
         // then
-        에러가_발생한다(response, SubwayStationException.NOT_EXIST_STATION_EXCEPTION);
+        에러가_발생한다(response, StationExceptionSet.NOT_EXIST_STATION_EXCEPTION);
     }
 
     @DisplayName("노선에 포함된 지하철역을 제거하면 에러가 발생한다.")
@@ -163,7 +163,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철역_제거_요청(stationResponse1, tokenResponse);
 
         // then
-        에러가_발생한다(response, SubwayStationException.DELETE_USE_STATION_EXCEPTION);
+        에러가_발생한다(response, StationExceptionSet.DELETE_USE_STATION_EXCEPTION);
     }
 
     public static StationResponse 지하철역_등록되어_있음(String name, TokenResponse tokenResponse) {

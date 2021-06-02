@@ -22,10 +22,10 @@ import wooteco.subway.auth.AuthAcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
-import wooteco.subway.line.exception.SubwayLineException;
-import wooteco.subway.line.exception.SubwaySectionException;
+import wooteco.subway.line.exception.LineExceptionSet;
+import wooteco.subway.line.exception.SectionExceptionSet;
 import wooteco.subway.station.dto.StationResponse;
-import wooteco.subway.station.exception.SubwayStationException;
+import wooteco.subway.station.exception.StationExceptionSet;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineAcceptanceTest extends AcceptanceTest {
@@ -72,7 +72,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest, tokenResponse);
 
         // then
-        에러가_발생한다(response, SubwayLineException.DUPLICATE_LINE_NAME_EXCEPTION);
+        에러가_발생한다(response, LineExceptionSet.DUPLICATE_LINE_NAME_EXCEPTION);
     }
 
     @DisplayName("2글자이상 10글자이하 한글,숫자가 아닌 이름으로 지하철 노선을 생성하면 에러가 발생한다.")
@@ -88,7 +88,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest, tokenResponse);
 
         // then
-        에러가_발생한다(response, SubwayLineException.INVALID_LINE_EXCEPTION);
+        에러가_발생한다(response, LineExceptionSet.INVALID_LINE_EXCEPTION);
     }
 
     @DisplayName("기존에 존재하는 지하철 노선 색상으로 지하철 노선을 생성하면 에러가 발생한다.")
@@ -103,7 +103,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest, tokenResponse);
 
         // then
-        에러가_발생한다(response, SubwayLineException.DUPLICATE_LINE_COLOR_EXCEPTION);
+        에러가_발생한다(response, LineExceptionSet.DUPLICATE_LINE_COLOR_EXCEPTION);
     }
 
     @DisplayName("0 이하의 구간 거리로 지하철 노선을 생성하면 에러가 발생한다.")
@@ -118,7 +118,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest, tokenResponse);
 
         // then
-        에러가_발생한다(response, SubwaySectionException.INVALID_SECTION_DISTANCE_EXCEPTION);
+        에러가_발생한다(response, SectionExceptionSet.INVALID_SECTION_DISTANCE_EXCEPTION);
     }
 
     @DisplayName("존재하지 않는 역으로 지하철 노선을 생성하면 에러가 발생한다.")
@@ -131,7 +131,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest, tokenResponse);
 
         // then
-        에러가_발생한다(response, SubwayStationException.NOT_EXIST_STATION_EXCEPTION);
+        에러가_발생한다(response, StationExceptionSet.NOT_EXIST_STATION_EXCEPTION);
     }
 
     @DisplayName("지하철 노선 목록을 조회한다.")
@@ -172,7 +172,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(lineResponse, tokenResponse);
 
         // then
-        에러가_발생한다(response, SubwayLineException.NOT_EXIST_LINE_EXCEPTION);
+        에러가_발생한다(response, LineExceptionSet.NOT_EXIST_LINE_EXCEPTION);
     }
 
     @DisplayName("지하철 노선을 수정한다.")
@@ -203,7 +203,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
             tokenResponse);
 
         // then
-        에러가_발생한다(response, SubwayLineException.DUPLICATE_LINE_NAME_EXCEPTION);
+        에러가_발생한다(response, LineExceptionSet.DUPLICATE_LINE_NAME_EXCEPTION);
     }
 
     @DisplayName("존재하는 지하철 노선 색상으로 수정하면 에러가 발생한다.")
@@ -220,7 +220,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
             tokenResponse);
 
         // then
-        에러가_발생한다(response, SubwayLineException.DUPLICATE_LINE_COLOR_EXCEPTION);
+        에러가_발생한다(response, LineExceptionSet.DUPLICATE_LINE_COLOR_EXCEPTION);
     }
 
     @DisplayName("존재하지 않는 지하철 노선을 수정하면 에러가 발생한다.")
@@ -234,7 +234,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
             tokenResponse);
 
         // then
-        에러가_발생한다(response, SubwayLineException.NOT_EXIST_LINE_EXCEPTION);
+        에러가_발생한다(response, LineExceptionSet.NOT_EXIST_LINE_EXCEPTION);
     }
 
     @DisplayName("지하철 노선을 제거한다.")
@@ -260,7 +260,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_노선_제거_요청(lineResponse, tokenResponse);
 
         // then
-        에러가_발생한다(response, SubwayLineException.NOT_EXIST_LINE_EXCEPTION);
+        에러가_발생한다(response, LineExceptionSet.NOT_EXIST_LINE_EXCEPTION);
     }
 
     public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation,

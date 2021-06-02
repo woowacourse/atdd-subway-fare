@@ -2,8 +2,8 @@ package wooteco.subway.station.domain;
 
 import java.util.Objects;
 import java.util.regex.Pattern;
-import wooteco.subway.exception.SubwayCustomException;
-import wooteco.subway.station.exception.SubwayStationException;
+import wooteco.subway.exception.SubwayException;
+import wooteco.subway.station.exception.StationExceptionSet;
 
 public class Station {
 
@@ -27,7 +27,7 @@ public class Station {
 
     private void validate(String name) {
         if (Objects.isNull(name) || !PATTERN.matcher(name.trim()).matches()) {
-            throw new SubwayCustomException(SubwayStationException.INVALID_STATION_NAME_EXCEPTION);
+            throw new SubwayException(StationExceptionSet.INVALID_STATION_NAME_EXCEPTION);
         }
     }
 

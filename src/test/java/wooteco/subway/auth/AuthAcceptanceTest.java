@@ -14,7 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
-import wooteco.subway.auth.exception.SubwayAuthException;
+import wooteco.subway.auth.exception.AuthExceptionSet;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
 
@@ -72,7 +72,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void showMemberInfoWithNotExistToken() {
         ExtractableResponse<Response> deleteResponse = 토큰없이_조회_요청();
-        에러가_발생한다(deleteResponse, SubwayAuthException.NOT_EXIST_TOKEN_EXCEPTION);
+        에러가_발생한다(deleteResponse, AuthExceptionSet.NOT_EXIST_TOKEN_EXCEPTION);
     }
 
     @DisplayName("이메일이 일치하지 않을 경우 에러가 발생한다.")
@@ -80,7 +80,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     void loginWithNotExistEmail() {
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
         ExtractableResponse<Response> response = 로그인_요청("abc@naver.com", PASSWORD);
-        에러가_발생한다(response, SubwayAuthException.NOT_EXIST_EMAIL_EXCEPTION);
+        에러가_발생한다(response, AuthExceptionSet.NOT_EXIST_EMAIL_EXCEPTION);
     }
 
     @DisplayName("이메일이 일치하지 않을 경우 에러가 발생한다.")
@@ -88,7 +88,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     void loginWithIllegalPassword() {
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
         ExtractableResponse<Response> response = 로그인_요청(EMAIL, "1234");
-        에러가_발생한다(response, SubwayAuthException.ILLEGAL_PASSWORD_EXCEPTION);
+        에러가_발생한다(response, AuthExceptionSet.ILLEGAL_PASSWORD_EXCEPTION);
     }
 
     public static ExtractableResponse<Response> 회원_등록되어_있음(String email, String password,

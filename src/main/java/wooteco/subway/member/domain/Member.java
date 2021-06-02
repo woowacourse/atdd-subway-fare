@@ -3,9 +3,9 @@ package wooteco.subway.member.domain;
 import java.util.Objects;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
-import wooteco.subway.auth.exception.SubwayAuthException;
-import wooteco.subway.exception.SubwayCustomException;
-import wooteco.subway.member.exception.SubwayMemberException;
+import wooteco.subway.auth.exception.AuthExceptionSet;
+import wooteco.subway.exception.SubwayException;
+import wooteco.subway.member.exception.MemberExceptionSet;
 
 public class Member {
 
@@ -41,19 +41,19 @@ public class Member {
 
     private void validateEmail(String email) {
         if (Objects.isNull(email) || !(PATTERN.matcher(email).matches())) {
-            throw new SubwayCustomException(SubwayMemberException.INVALID_EMAIL_EXCEPTION);
+            throw new SubwayException(MemberExceptionSet.INVALID_EMAIL_EXCEPTION);
         }
     }
 
     private void validatePassword(String password) {
         if (Objects.isNull(password) || password.length() < PASSWORD_MIN_LENGTH) {
-            throw new SubwayCustomException(SubwayMemberException.INVALID_PASSWORD_EXCEPTION);
+            throw new SubwayException(MemberExceptionSet.INVALID_PASSWORD_EXCEPTION);
         }
     }
 
     private void validateAge(Integer age) {
         if (Objects.isNull(age) || age <= 0) {
-            throw new SubwayCustomException(SubwayMemberException.INVALID_AGE_EXCEPTION);
+            throw new SubwayException(MemberExceptionSet.INVALID_AGE_EXCEPTION);
         }
     }
 
@@ -75,7 +75,7 @@ public class Member {
 
     public void checkPassword(String password) {
         if (!StringUtils.equals(this.password, password)) {
-            throw new SubwayCustomException(SubwayAuthException.ILLEGAL_PASSWORD_EXCEPTION);
+            throw new SubwayException(AuthExceptionSet.ILLEGAL_PASSWORD_EXCEPTION);
         }
     }
 }

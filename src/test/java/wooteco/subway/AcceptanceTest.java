@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import wooteco.subway.exception.SubwayException;
+import wooteco.subway.exception.SubwayExceptionSetInterface;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -26,8 +26,8 @@ public class AcceptanceTest {
     }
 
     protected void 에러가_발생한다(ExtractableResponse<Response> response,
-        SubwayException subwayException) {
-        assertThat(response.statusCode()).isEqualTo(subwayException.status());
-        assertThat(response.body().asString()).isEqualTo(subwayException.message());
+        SubwayExceptionSetInterface subwayExceptionSetInterface) {
+        assertThat(response.statusCode()).isEqualTo(subwayExceptionSetInterface.status());
+        assertThat(response.body().asString()).isEqualTo(subwayExceptionSetInterface.message());
     }
 }

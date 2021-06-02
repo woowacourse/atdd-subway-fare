@@ -17,7 +17,7 @@ import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
-import wooteco.subway.member.exception.SubwayMemberException;
+import wooteco.subway.member.exception.MemberExceptionSet;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
 
@@ -41,7 +41,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_생성을_요청(EMAIL, PASSWORD, AGE);
 
         ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
-        에러가_발생한다(createResponse, SubwayMemberException.DUPLICATE_EMAIL_EXCEPTION);
+        에러가_발생한다(createResponse, MemberExceptionSet.DUPLICATE_EMAIL_EXCEPTION);
     }
 
     @DisplayName("잘못된 이메일을 이용하여 사용자를 생성하면 에러가 발생한다.")
@@ -50,7 +50,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @ValueSource(strings = {"", "abc", "abc@jjj", "naver.com@abc", "abc@naver.", "ab @naver.com"})
     void createMemberWithInvalidEmail(String email) {
         ExtractableResponse<Response> createResponse = 회원_생성을_요청(email, PASSWORD, AGE);
-        에러가_발생한다(createResponse, SubwayMemberException.INVALID_EMAIL_EXCEPTION);
+        에러가_발생한다(createResponse, MemberExceptionSet.INVALID_EMAIL_EXCEPTION);
     }
 
     @DisplayName("잘못된 비밀번호를 이용하여 사용자를 생성하면 에러가 발생한다.")
@@ -59,7 +59,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @ValueSource(strings = {"", "a"})
     void createMemberWithInvalidPassword(String password) {
         ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, password, AGE);
-        에러가_발생한다(createResponse, SubwayMemberException.INVALID_PASSWORD_EXCEPTION);
+        에러가_발생한다(createResponse, MemberExceptionSet.INVALID_PASSWORD_EXCEPTION);
     }
 
     @DisplayName("잘못된 나이를 이용하여 사용자를 생성하면 에러가 발생한다.")
@@ -68,7 +68,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @ValueSource(ints = {-1, 0})
     void createMemberWithInvalidAge(Integer age) {
         ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, age);
-        에러가_발생한다(createResponse, SubwayMemberException.INVALID_AGE_EXCEPTION);
+        에러가_발생한다(createResponse, MemberExceptionSet.INVALID_AGE_EXCEPTION);
     }
 
     @DisplayName("토큰을 이용하여 정보를 조회한다.")
@@ -103,7 +103,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(사용자, NEW_EMAIL, NEW_PASSWORD,
             NEW_AGE);
-        에러가_발생한다(updateResponse, SubwayMemberException.DUPLICATE_EMAIL_EXCEPTION);
+        에러가_발생한다(updateResponse, MemberExceptionSet.DUPLICATE_EMAIL_EXCEPTION);
     }
 
     @DisplayName("토큰을 이용하여 회원정보를 삭제한다.")

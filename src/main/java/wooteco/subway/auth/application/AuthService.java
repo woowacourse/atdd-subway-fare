@@ -5,9 +5,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
-import wooteco.subway.auth.exception.SubwayAuthException;
+import wooteco.subway.auth.exception.AuthExceptionSet;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
-import wooteco.subway.exception.SubwayCustomException;
+import wooteco.subway.exception.SubwayException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Age;
 import wooteco.subway.member.domain.LoginMember;
@@ -30,7 +30,7 @@ public class AuthService {
             Member member = memberDao.findByEmail(request.getEmail());
             member.checkPassword(request.getPassword());
         } catch (EmptyResultDataAccessException e) {
-            throw new SubwayCustomException(SubwayAuthException.NOT_EXIST_EMAIL_EXCEPTION);
+            throw new SubwayException(AuthExceptionSet.NOT_EXIST_EMAIL_EXCEPTION);
         }
         String token = jwtTokenProvider.createToken(request.getEmail());
         return new TokenResponse(token);

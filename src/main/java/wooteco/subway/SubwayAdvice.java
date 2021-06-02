@@ -4,13 +4,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import wooteco.subway.exception.SubwayCustomException;
+import wooteco.subway.exception.SubwayException;
 
 @ControllerAdvice
 public class SubwayAdvice {
 
-    @ExceptionHandler(SubwayCustomException.class)
-    public ResponseEntity<String> handleSubwayCustomException(SubwayCustomException exception) {
+    @ExceptionHandler(SubwayException.class)
+    public ResponseEntity<String> handleSubwayCustomException(SubwayException exception) {
         return ResponseEntity.status(exception.status()).body(exception.message());
     }
 

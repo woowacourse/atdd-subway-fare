@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import wooteco.subway.exception.SubwayCustomException;
-import wooteco.subway.line.exception.SubwaySectionException;
+import wooteco.subway.exception.SubwayException;
+import wooteco.subway.line.exception.SectionExceptionSet;
 import wooteco.subway.station.domain.Station;
-import wooteco.subway.station.exception.SubwayStationException;
+import wooteco.subway.station.exception.StationExceptionSet;
 
 public class Sections {
 
@@ -64,7 +64,7 @@ public class Sections {
             .filter(upStationToSection::containsKey)
             .findFirst()
             .orElseThrow(() ->
-                new SubwayCustomException(SubwayStationException.NOT_EXIST_STATION_EXCEPTION));
+                new SubwayException(StationExceptionSet.NOT_EXIST_STATION_EXCEPTION));
     }
 
     public void addSection(Section section) {
@@ -86,7 +86,7 @@ public class Sections {
         List<Station> stations = getStations();
         if (!stations.contains(section.getUpStation()) && !stations
             .contains(section.getDownStation())) {
-            throw new SubwayCustomException(SubwaySectionException.INVALID_SECTION_DATA_EXCEPTION);
+            throw new SubwayException(SectionExceptionSet.INVALID_SECTION_DATA_EXCEPTION);
         }
     }
 
@@ -95,7 +95,7 @@ public class Sections {
         List<Station> stationsOfNewSection = Arrays
             .asList(section.getUpStation(), section.getDownStation());
         if (stations.containsAll(stationsOfNewSection)) {
-            throw new SubwayCustomException(SubwaySectionException.INVALID_SECTION_DATA_EXCEPTION);
+            throw new SubwayException(SectionExceptionSet.INVALID_SECTION_DATA_EXCEPTION);
         }
     }
 
@@ -115,7 +115,7 @@ public class Sections {
 
     private void replaceSectionWithUpStation(Section newSection, Section existSection) {
         if (existSection.getDistance() <= newSection.getDistance()) {
-            throw new SubwayCustomException(SubwaySectionException.INVALID_SECTION_DATA_EXCEPTION);
+            throw new SubwayException(SectionExceptionSet.INVALID_SECTION_DATA_EXCEPTION);
         }
         this.sections.add(new Section(existSection.getUpStation(), newSection.getUpStation(),
             existSection.getDistance() - newSection.getDistance()));
@@ -124,7 +124,7 @@ public class Sections {
 
     private void replaceSectionWithDownStation(Section newSection, Section existSection) {
         if (existSection.getDistance() <= newSection.getDistance()) {
-            throw new SubwayCustomException(SubwaySectionException.INVALID_SECTION_DATA_EXCEPTION);
+            throw new SubwayException(SectionExceptionSet.INVALID_SECTION_DATA_EXCEPTION);
         }
         this.sections.add(new Section(newSection.getDownStation(), existSection.getDownStation(),
             existSection.getDistance() - newSection.getDistance()));
@@ -157,8 +157,8 @@ public class Sections {
         return this.sections.stream()
             .filter(it -> !downStations.contains(it.getUpStation()))
             .findFirst()
-            .orElseThrow(() -> new SubwayCustomException(
-                SubwaySectionException.INVALID_SECTION_DATA_EXCEPTION));
+            .orElseThrow(() -> new SubwayException(
+                SectionExceptionSet.INVALID_SECTION_DATA_EXCEPTION));
     }
 
     private Section findSectionByNextUpStation(Station station) {
@@ -170,8 +170,8 @@ public class Sections {
 
     public void removeStation(Station station) {
         if (sections.size() <= 1) {
-            throw new SubwayCustomException(
-                SubwaySectionException.ILLEGAL_SECTION_DELETE_EXCEPTION);
+            throw new SubwayException(
+                SectionExceptionSet.ILLEGAL_SECTION_DELETE_EXCEPTION);
         }
 
         Optional<Section> upSection = sections.stream()

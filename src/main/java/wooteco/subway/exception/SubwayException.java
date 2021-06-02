@@ -1,8 +1,19 @@
 package wooteco.subway.exception;
 
-public interface SubwayException {
+public class SubwayException extends RuntimeException {
 
-    String message();
+    private final SubwayExceptionSetInterface subWayExceptionSetInterface;
 
-    int status();
+    public SubwayException(SubwayExceptionSetInterface subWayExceptionSetInterface) {
+        super(subWayExceptionSetInterface.message());
+        this.subWayExceptionSetInterface = subWayExceptionSetInterface;
+    }
+
+    public String message() {
+        return subWayExceptionSetInterface.message();
+    }
+
+    public int status() {
+        return subWayExceptionSetInterface.status();
+    }
 }

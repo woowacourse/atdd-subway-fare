@@ -23,7 +23,7 @@ import wooteco.subway.auth.AuthAcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
-import wooteco.subway.line.exception.SubwaySectionException;
+import wooteco.subway.line.exception.SectionExceptionSet;
 import wooteco.subway.station.dto.StationResponse;
 
 @DisplayName("지하철 구간 관련 기능")
@@ -78,7 +78,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_구간_생성_요청(신분당선, 강남역, 광교역, 3, tokenResponse);
 
         // then
-        에러가_발생한다(response, SubwaySectionException.INVALID_SECTION_DATA_EXCEPTION);
+        에러가_발생한다(response, SectionExceptionSet.INVALID_SECTION_DATA_EXCEPTION);
     }
 
     @DisplayName("지하철 노선에 등록되지 않은 역을 기준으로 등록한다.")
@@ -88,7 +88,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_구간_생성_요청(신분당선, 정자역, 양재역, 3, tokenResponse);
 
         // then
-        에러가_발생한다(response, SubwaySectionException.INVALID_SECTION_DATA_EXCEPTION);
+        에러가_발생한다(response, SectionExceptionSet.INVALID_SECTION_DATA_EXCEPTION);
     }
 
     @DisplayName("지하철 노선에 등록된 지하철역을 제외한다.")
@@ -112,7 +112,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 강남역, tokenResponse);
 
         // then
-        에러가_발생한다(removeResponse, SubwaySectionException.ILLEGAL_SECTION_DELETE_EXCEPTION);
+        에러가_발생한다(removeResponse, SectionExceptionSet.ILLEGAL_SECTION_DELETE_EXCEPTION);
     }
 
     @DisplayName("삽입되는 구간이 기존 구간보다 길이가 길거나 같으면 에러가 발생한다.")
@@ -124,7 +124,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
             tokenResponse);
 
         // then
-        에러가_발생한다(response, SubwaySectionException.INVALID_SECTION_DATA_EXCEPTION);
+        에러가_발생한다(response, SectionExceptionSet.INVALID_SECTION_DATA_EXCEPTION);
     }
 
     public static void 지하철_구간_등록되어_있음(LineResponse lineResponse, StationResponse upStation,

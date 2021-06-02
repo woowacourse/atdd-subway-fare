@@ -7,12 +7,12 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-import wooteco.subway.exception.SubwayCustomException;
+import wooteco.subway.exception.SubwayException;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
-import wooteco.subway.station.exception.SubwayStationException;
+import wooteco.subway.station.exception.StationExceptionSet;
 
 @Service
 public class StationService {
@@ -28,7 +28,7 @@ public class StationService {
             Station station = stationDao.insert(stationRequest.toStation());
             return StationResponse.of(station);
         } catch (DuplicateKeyException exception) {
-            throw new SubwayCustomException(SubwayStationException.DUPLICATE_STATION_EXCEPTION);
+            throw new SubwayException(StationExceptionSet.DUPLICATE_STATION_EXCEPTION);
         }
     }
 
@@ -36,7 +36,7 @@ public class StationService {
         try {
             return stationDao.findById(id);
         } catch (EmptyResultDataAccessException exception) {
-            throw new SubwayCustomException(SubwayStationException.NOT_EXIST_STATION_EXCEPTION);
+            throw new SubwayException(StationExceptionSet.NOT_EXIST_STATION_EXCEPTION);
         }
     }
 
@@ -54,7 +54,7 @@ public class StationService {
             int updateRow = stationDao.deleteById(id);
             validateUpdate(updateRow);
         } catch (DataIntegrityViolationException exception) {
-            throw new SubwayCustomException(SubwayStationException.DELETE_USE_STATION_EXCEPTION);
+            throw new SubwayException(StationExceptionSet.DELETE_USE_STATION_EXCEPTION);
         }
     }
 
@@ -64,13 +64,13 @@ public class StationService {
             int updateRow = stationDao.update(id, station);
             validateUpdate(updateRow);
         } catch (DuplicateKeyException exception) {
-            throw new SubwayCustomException(SubwayStationException.DUPLICATE_STATION_EXCEPTION);
+            throw new SubwayException(StationExceptionSet.DUPLICATE_STATION_EXCEPTION);
         }
     }
 
     private void validateUpdate(int updateRow) {
         if (updateRow != 1) {
-            throw new SubwayCustomException(SubwayStationException.NOT_EXIST_STATION_EXCEPTION);
+            throw new SubwayException(StationExceptionSet.NOT_EXIST_STATION_EXCEPTION);
         }
     }
 }
