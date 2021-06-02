@@ -9,13 +9,17 @@ public class Station {
     public Station() {
     }
 
+    public Station(String name) {
+        this(null, name);
+    }
+
     public Station(Long id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public Station(String name) {
-        this.name = name;
+    public boolean same(Station station) {
+        return this.equals(station);
     }
 
     public Long getId() {
@@ -31,11 +35,11 @@ public class Station {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Station station = (Station) o;
-        return name.equals(station.name);
+        return Objects.equals(id, station.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(id);
     }
 }

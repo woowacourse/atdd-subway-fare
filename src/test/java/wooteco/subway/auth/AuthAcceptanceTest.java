@@ -16,10 +16,11 @@ import java.util.Map;
 import static wooteco.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static wooteco.subway.member.MemberAcceptanceTest.회원_정보_조회됨;
 
+@DisplayName("요금 관련 기능")
 public class AuthAcceptanceTest extends AcceptanceTest {
-    private static final String EMAIL = "email@email.com";
-    private static final String PASSWORD = "password";
-    private static final Integer AGE = 20;
+    public static final String EMAIL = "email@email.com";
+    public static final String PASSWORD = "password";
+    public static final Integer AGE = 20;
 
     @DisplayName("Bearer Auth")
     @Test
@@ -35,14 +36,32 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         회원_정보_조회됨(response, EMAIL, AGE);
     }
 
-    @DisplayName("Bearer Auth 로그인 실패")
+    @DisplayName("Bearer Auth 로그인 실패 - 잘못된 이메일")
     @Test
-    void myInfoWithBadBearerAuth() {
+    void myInfoWithBadBearerAuthWrongEmail() {
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
 
         Map<String, String> params = new HashMap<>();
         params.put("email", EMAIL + "OTHER");
         params.put("password", PASSWORD);
+
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @DisplayName("Bearer Auth 로그인 실패 - 잘못된 비밀번호")
+    @Test
+    void myInfoWithBadBearerAuthWrongPassword() {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("email", EMAIL);
+        params.put("password", PASSWORD + "OTHER");
 
         RestAssured
                 .given().log().all()
