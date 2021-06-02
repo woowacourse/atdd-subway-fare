@@ -29,18 +29,14 @@ public class PathService {
     }
 
     public PathResponse findPath(Long source, Long target, LoginMember member) {
-        try {
-            List<Line> lines = lineService.findLines();
-            Station sourceStation = stationService.findStationById(source);
-            Station targetStation = stationService.findStationById(target);
-            SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
-            int distance = subwayPath.calculateDistance();
-            int extraFare = subwayPath.maximumExtraFare();
-            Fare fare = new Fare(distance, member, extraFare);
+        List<Line> lines = lineService.findLines();
+        Station sourceStation = stationService.findStationById(source);
+        Station targetStation = stationService.findStationById(target);
+        SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
+        int distance = subwayPath.calculateDistance();
+        int extraFare = subwayPath.maximumExtraFare();
+        Fare fare = new Fare(distance, member, extraFare);
 
-            return PathResponseAssembler.assemble(subwayPath, distance, fare);
-        } catch (Exception e) {
-            throw new InvalidPathException(e.getMessage());
-        }
+        return PathResponseAssembler.assemble(subwayPath, distance, fare);
     }
 }
