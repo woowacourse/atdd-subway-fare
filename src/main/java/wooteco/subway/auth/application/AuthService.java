@@ -2,14 +2,14 @@ package wooteco.subway.auth.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.auth.domain.AnonymousUser;
+import wooteco.subway.auth.domain.LoginUser;
+import wooteco.subway.auth.domain.User;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
-import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
-
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -34,19 +34,18 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
-    public Optional<LoginMember> findMemberByToken(String credentials) {
+    public User findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return Optional.empty();
+            return new AnonymousUser();
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
         try {
             Member member = memberDao.findByEmail(email)
                     .orElseThrow(AuthorizationException::new);
-            LoginMember loginMember = new LoginMember(member.getId(), member.getEmail(), member.getAge());
-            return Optional.of(loginMember);
+            return new LoginUser(member.getId(), member.getEmail(), member.getAge());
         } catch (Exception e) {
-            return Optional.empty();
+            return new AnonymousUser();
         }
     }
 

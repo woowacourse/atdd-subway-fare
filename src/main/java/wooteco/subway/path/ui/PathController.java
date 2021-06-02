@@ -7,11 +7,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
-import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.auth.domain.User;
 import wooteco.subway.path.application.PathService;
 import wooteco.subway.path.dto.PathResponse;
-
-import java.util.Optional;
 
 @Api(tags = "경로 관련 기능")
 @RestController
@@ -24,9 +22,9 @@ public class PathController {
     }
 
     @GetMapping("/paths")
-    public ResponseEntity<PathResponse> findPath(@AuthenticationPrincipal Optional<LoginMember> loginMember,
+    public ResponseEntity<PathResponse> findPath(@AuthenticationPrincipal User user,
                                                  @RequestParam Long source, @RequestParam Long target) {
-        final PathResponse pathResponse = pathService.findPath(loginMember, source, target);
+        final PathResponse pathResponse = pathService.findPath(user, source, target);
         return ResponseEntity.ok(pathResponse);
     }
 }

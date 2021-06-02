@@ -1,23 +1,21 @@
 package wooteco.subway.path.application;
 
 import org.springframework.stereotype.Service;
+import wooteco.subway.auth.domain.User;
 import wooteco.subway.line.domain.Line;
-import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.path.domain.FareByDistance;
 import wooteco.subway.path.domain.FareDiscountByAge;
 import wooteco.subway.path.domain.SectionEdge;
 import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.path.exception.FareCalculationException;
 
-import java.util.Optional;
-
 @Service
 public class FareCalculator {
-    public int calculateFare(Optional<LoginMember> loginMember, SubwayPath subwayPath) {
+    public int calculateFare(User user, SubwayPath subwayPath) {
         final int fareByDistance = calculateFareByDistance(subwayPath);
         final int lineExtraFare = calculateLineExtraFare(subwayPath);
         final int totalFare = fareByDistance + lineExtraFare;
-        return applyDiscountByMemberAge(loginMember, totalFare);
+        return applyDiscountByMemberAge(user, totalFare);
     }
 
     private int calculateFareByDistance(SubwayPath subwayPath) {
@@ -34,8 +32,10 @@ public class FareCalculator {
                 .orElseThrow(FareCalculationException::new);
     }
 
-    private int applyDiscountByMemberAge(Optional<LoginMember> loginMember, int totalFare) {
-        return loginMember.map(member -> FareDiscountByAge.calculate(member.getAge(), totalFare))
-                .orElse(totalFare);
+    private int applyDiscountByMemberAge(User user, int totalFare) {
+        if (user.isLoggedIn()) {
+            return FareDiscountByAge.calculate(user.getAge(), totalFare);
+        }
+        return totalFare;
     }
 }

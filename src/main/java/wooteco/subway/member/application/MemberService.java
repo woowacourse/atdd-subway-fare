@@ -3,8 +3,8 @@ package wooteco.subway.member.application;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.auth.application.AuthorizationException;
+import wooteco.subway.auth.domain.User;
 import wooteco.subway.member.dao.MemberDao;
-import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.EmailRequest;
 import wooteco.subway.member.dto.MemberRequest;
@@ -39,20 +39,20 @@ public class MemberService {
         }
     }
 
-    public MemberResponse findMember(LoginMember loginMember) {
-        Member member = memberDao.findByEmail(loginMember.getEmail())
+    public MemberResponse findMember(User user) {
+        Member member = memberDao.findByEmail(user.getEmail())
                 .orElseThrow(AuthorizationException::new);
         return MemberResponse.of(member);
     }
 
-    public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
-        Member member = memberDao.findByEmail(loginMember.getEmail())
+    public void updateMember(User user, MemberRequest memberRequest) {
+        Member member = memberDao.findByEmail(user.getEmail())
                 .orElseThrow(AuthorizationException::new);
         memberDao.update(new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
     }
 
-    public void deleteMember(LoginMember loginMember) {
-        Member member = memberDao.findByEmail(loginMember.getEmail())
+    public void deleteMember(User user) {
+        Member member = memberDao.findByEmail(user.getEmail())
                 .orElseThrow(AuthorizationException::new);
         memberDao.deleteById(member.getId());
     }

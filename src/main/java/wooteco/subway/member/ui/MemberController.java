@@ -5,15 +5,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.auth.application.AuthorizationException;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
+import wooteco.subway.auth.domain.User;
 import wooteco.subway.member.application.MemberService;
-import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.dto.EmailRequest;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.Optional;
 
 @Api(tags = "회원 관련 기능")
 @RestController
@@ -38,30 +37,30 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal Optional<LoginMember> loginMember) {
-        final LoginMember memberLoggedIn = validateLoginMember(loginMember);
-        MemberResponse member = memberService.findMember(memberLoggedIn);
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal User user) {
+        validateLoginMember(user);
+        MemberResponse member = memberService.findMember(user);
         return ResponseEntity.ok().body(member);
     }
 
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal Optional<LoginMember> loginMember, @RequestBody MemberRequest param) {
-        final LoginMember memberLoggedIn = validateLoginMember(loginMember);
-        memberService.updateMember(memberLoggedIn, param);
+    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal User user, @RequestBody MemberRequest param) {
+        validateLoginMember(user);
+        memberService.updateMember(user, param);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/members/me")
-    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal Optional<LoginMember> loginMember) {
-        final LoginMember memberLoggedIn = validateLoginMember(loginMember);
-        memberService.deleteMember(memberLoggedIn);
+    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal User user) {
+        validateLoginMember(user);
+        memberService.deleteMember(user);
         return ResponseEntity.noContent().build();
     }
 
-    private LoginMember validateLoginMember(Optional<LoginMember> loginMember) {
-        if (!loginMember.isPresent()) {
-            throw new AuthorizationException();
+    private void validateLoginMember(User user) {
+        if (user.isLoggedIn()) {
+            return;
         }
-        return loginMember.get();
+        throw new AuthorizationException();
     }
 }
