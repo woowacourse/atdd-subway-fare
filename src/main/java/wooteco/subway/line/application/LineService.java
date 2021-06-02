@@ -34,7 +34,6 @@ public class LineService {
 
     @Transactional
     public LineResponse saveLine(LineRequest request) {
-        validateLineDistance(request);
         validateDuplicatedName(request.getName());
         validateDuplicatedColor(request.getColor());
 
@@ -44,11 +43,11 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
-    private void validateLineDistance(LineRequest request) {
-        if (request.getDistance() < 1) {
-            throw new LineDistanceException();
-        }
-    }
+//    private void validateLineDistance(LineRequest request) {
+//        if (request.getDistance() < 1) {
+//            throw new LineDistanceException();
+//        }
+//    }
 
     private void validateDuplicatedName(String name) {
         if (lineDao.countByName(name) > 0) {

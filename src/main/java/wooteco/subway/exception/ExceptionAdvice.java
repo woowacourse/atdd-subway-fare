@@ -24,8 +24,8 @@ public class ExceptionAdvice {
                 .body(message);
     }
 
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSqlException(SQLException sqlException) {
+    @ExceptionHandler({SQLException.class, InternalLogicException.class})
+    public ResponseEntity<Void> handleSqlException(RuntimeException e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .build();
     }

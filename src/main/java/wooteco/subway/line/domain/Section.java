@@ -1,12 +1,13 @@
 package wooteco.subway.line.domain;
 
+import wooteco.subway.exception.addition.LineDistanceException;
 import wooteco.subway.station.domain.Station;
 
 public class Section {
     private Long id;
     private Station upStation;
     private Station downStation;
-    private int distance;
+    private Distance distance;
 
     public Section() {
     }
@@ -15,14 +16,13 @@ public class Section {
         this.id = id;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = distance;
+        this.distance = new Distance(distance);
     }
 
     public Section(Station upStation, Station downStation, int distance) {
-        this.upStation = upStation;
-        this.downStation = downStation;
-        this.distance = distance;
+        this(null, upStation, downStation, distance);
     }
+
 
     public Long getId() {
         return id;
@@ -37,6 +37,6 @@ public class Section {
     }
 
     public int getDistance() {
-        return distance;
+        return distance.toInt();
     }
 }
