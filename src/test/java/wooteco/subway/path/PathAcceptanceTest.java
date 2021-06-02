@@ -24,9 +24,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.subway.auth.AuthAcceptanceTest.*;
+import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
+import static wooteco.subway.auth.AuthAcceptanceTest.회원_등록되어_있음;
 import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
-import static wooteco.subway.line.LineFactory.신분당선_추가요금;
 import static wooteco.subway.line.SectionAcceptanceTest.지하철_구간_등록되어_있음;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
@@ -43,6 +43,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 에어포츈바다우기검프사랑해역;
     private StationResponse 우린모두취업할거야역;
     private StationResponse 리뷰잘부탁해요역;
+    private int 신분당선_추가요금 = 900;
     private TokenResponse tokenResponse;
 
     /**

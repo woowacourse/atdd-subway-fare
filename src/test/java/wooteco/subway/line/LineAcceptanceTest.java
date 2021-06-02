@@ -22,13 +22,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.subway.auth.AuthAcceptanceTest.*;
-import static wooteco.subway.line.LineFactory.구신분당선_추가요금;
-import static wooteco.subway.line.LineFactory.신분당선_추가요금;
+import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
+import static wooteco.subway.auth.AuthAcceptanceTest.회원_등록되어_있음;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineAcceptanceTest extends AcceptanceTest {
+    private int 신분당선_추가요금 = 900;
+    private int 구신분당선_추가요금 = 700;
     private StationResponse 강남역;
     private StationResponse downStation;
     private LineRequest lineRequest1;

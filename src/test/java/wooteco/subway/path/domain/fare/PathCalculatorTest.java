@@ -93,7 +93,7 @@ public class PathCalculatorTest {
     void childAgeTest(final int age) {
         int lineExtraFare = 0;
         int distance = 10;
-        int expectedFare = (int)((FarePolicy.DEFAULT_FARE.getFare() - FarePolicy.MINOR_DISCOUNT_FARE.getFare() + lineExtraFare) * 0.5);
+        int expectedFare = (int) ((FarePolicy.DEFAULT_FARE.getFare() - FarePolicy.MINOR_DISCOUNT_FARE.getFare() + lineExtraFare) * 0.5);
 
         given(subwayPath.getDistance()).willReturn(distance);
         given(subwayPath.getMaximumExtraFareByLine()).willReturn(lineExtraFare);
@@ -107,7 +107,7 @@ public class PathCalculatorTest {
     void teenAgeTest(final int age) {
         int lineExtraFare = 0;
         int distance = 10;
-        int expectedFare = (int)((FarePolicy.DEFAULT_FARE.getFare() - FarePolicy.MINOR_DISCOUNT_FARE.getFare() + lineExtraFare) * 0.8);
+        int expectedFare = (int) ((FarePolicy.DEFAULT_FARE.getFare() - FarePolicy.MINOR_DISCOUNT_FARE.getFare() + lineExtraFare) * 0.8);
 
         given(subwayPath.getDistance()).willReturn(distance);
         given(subwayPath.getMaximumExtraFareByLine()).willReturn(lineExtraFare);

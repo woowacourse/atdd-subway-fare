@@ -19,10 +19,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.subway.auth.AuthAcceptanceTest.*;
+import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
+import static wooteco.subway.auth.AuthAcceptanceTest.회원_등록되어_있음;
 import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_조회_요청;
-import static wooteco.subway.line.LineFactory.신분당선_추가요금;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
 @DisplayName("지하철 구간 관련 기능")
@@ -32,6 +32,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 정자역;
     private StationResponse 광교역;
+    private int 신분당선_추가요금 = 900;
     private TokenResponse tokenResponse;
 
     public static void 지하철_구간_등록되어_있음(LineResponse lineResponse, StationResponse upStation, StationResponse downStation, int distance, TokenResponse tokenResponse) {
