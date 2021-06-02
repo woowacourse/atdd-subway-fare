@@ -1,6 +1,7 @@
 package wooteco.subway.line.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.DuplicateException;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
@@ -14,9 +15,9 @@ import wooteco.subway.station.domain.Station;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class LineService {
     private LineDao lineDao;
     private SectionDao sectionDao;
@@ -28,6 +29,7 @@ public class LineService {
         this.stationService = stationService;
     }
 
+    @Transactional
     public LineResponse saveLine(LineRequest request) {
         if (lineDao.isExistByName(request.getName())) {
             throw new DuplicateException("이미 존재하는 노선입니다.");
@@ -54,9 +56,7 @@ public class LineService {
 
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
-        return persistLines.stream()
-                .map(line -> LineResponse.of(line))
-                .collect(Collectors.toList());
+        return LineResponse.listOf(persistLines);
     }
 
     public List<Line> findLines() {
@@ -75,6 +75,7 @@ public class LineService {
         throw new NoSuchElementException("존재하지 않는 노선입니다.");
     }
 
+    @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         if (lineDao.isExistById(id)) {
             Line originalLine = lineDao.findById(id);
@@ -109,6 +110,7 @@ public class LineService {
         return originalLine.hasDifferentColor(lineUpdateRequest);
     }
 
+    @Transactional
     public void deleteLineById(Long id) {
         if (lineDao.isExistById(id)) {
             sectionDao.deleteByLineId(id);
@@ -118,6 +120,7 @@ public class LineService {
         throw new NoSuchElementException("존재하지 않는 노선입니다.");
     }
 
+    @Transactional
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
@@ -128,6 +131,7 @@ public class LineService {
         sectionDao.insertSections(line);
     }
 
+    @Transactional
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
