@@ -1,24 +1,12 @@
 package wooteco.subway.path.application;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.DataLoader;
-import wooteco.subway.line.dao.LineDao;
-import wooteco.subway.line.dao.SectionDao;
-import wooteco.subway.line.domain.Line;
-import wooteco.subway.line.domain.Section;
-import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
-import wooteco.subway.member.domain.Member;
 import wooteco.subway.path.dto.PathResponse;
-import wooteco.subway.station.dao.StationDao;
-import wooteco.subway.station.domain.Station;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
