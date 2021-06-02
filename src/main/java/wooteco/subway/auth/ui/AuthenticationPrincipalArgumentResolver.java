@@ -8,9 +8,6 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
-import wooteco.subway.auth.exception.InvalidTokenException;
-import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
-import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.RequestUser;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
@@ -28,7 +25,9 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     @Override
     public RequestUser resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
-        RequestUser authentication = (RequestUser) request.getAttribute("authentication");
+        String credentials = (String) request.getAttribute("credentials");
+        RequestUser authentication = authService.findMemberByToken(credentials);
+
         return authentication;
     }
 }

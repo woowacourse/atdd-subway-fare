@@ -33,8 +33,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         if (isNotFindPathRequest(request) && !authService.validateToken(credentials)) {
             throw new InvalidTokenException();
         }
-        RequestUser authentication = authService.findMemberByToken(credentials);
-        request.setAttribute("authentication", authentication);
+        request.setAttribute("credentials", credentials);
 
         return true;
     }
