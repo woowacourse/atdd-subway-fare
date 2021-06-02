@@ -2,6 +2,7 @@ package wooteco.subway.path.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.exception.InvalidPathException;
 import wooteco.subway.fare.domain.FareByAge;
 import wooteco.subway.fare.domain.FareByDistance;
 import wooteco.subway.line.application.LineService;

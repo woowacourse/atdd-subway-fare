@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import wooteco.subway.exception.AuthorizationException;
 import wooteco.subway.exception.DuplicateException;
 import wooteco.subway.exception.ErrorResponse;
+import wooteco.subway.exception.InvalidPathException;
 
 import java.util.NoSuchElementException;
 
@@ -30,6 +31,11 @@ public class SubwayAdvice {
 
     @ExceptionHandler(UnsupportedOperationException.class)
     public ResponseEntity<ErrorResponse> handleUnsupportedOperation(UnsupportedOperationException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(InvalidPathException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidPath(InvalidPathException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
     }
 
