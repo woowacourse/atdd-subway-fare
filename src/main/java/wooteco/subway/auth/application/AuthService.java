@@ -31,10 +31,6 @@ public class AuthService {
     }
 
     public LoginMember findMemberByToken(String credentials) {
-        if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
-        }
-
         Long id = Long.parseLong(jwtTokenProvider.getPayload(credentials));
         try {
             Member member = memberDao.findById(id).orElseThrow(MemberNotFoundException::new);
