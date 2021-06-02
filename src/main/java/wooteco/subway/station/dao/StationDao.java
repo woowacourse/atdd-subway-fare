@@ -1,5 +1,7 @@
 package wooteco.subway.station.dao;
 
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +11,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import wooteco.subway.exception.DuplicateStationNameException;
 import wooteco.subway.exception.NoSuchStationException;
 import wooteco.subway.station.domain.Station;
 
@@ -33,12 +36,14 @@ public class StationDao {
     }
 
     public Station insert(Station station) {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", station.getName());
-
-        Long id = jdbcInsert.executeAndReturnKey(params).longValue();
-
-        return new Station(id, station.getName());
+        try {
+            Map<String, String> params = new HashMap<>();
+            params.put("name", station.getName());
+            Long id = jdbcInsert.executeAndReturnKey(params).longValue();
+            return new Station(id, station.getName());
+        } catch (Exception e) {
+            throw new DuplicateStationNameException();
+        }
     }
 
     public List<Station> findAll() {
