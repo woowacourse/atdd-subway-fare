@@ -4,15 +4,13 @@ public class SubwayFare {
 
     private static final int BASIC_FARE = 1250;
 
-    private final SubwayPath subwayPath;
-    private final int passengerAge;
+    private final int value;
 
     public SubwayFare(SubwayPath subwayPath, int passengerAge) {
-        this.subwayPath = subwayPath;
-        this.passengerAge = passengerAge;
+        this.value = fare(subwayPath, passengerAge);
     }
 
-    public int value() {
+    private int fare(SubwayPath subwayPath, int passengerAge) {
         int fare = BASIC_FARE;
 
         fare = DistanceFarePolicy.distancePolicyAppliedFare(fare, subwayPath.distance());
@@ -22,4 +20,7 @@ public class SubwayFare {
         return fare;
     }
 
+    public int getValue() {
+        return value;
+    }
 }

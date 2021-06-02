@@ -13,7 +13,7 @@ public class PathResponseAssembler {
             .map(StationResponse::of)
             .collect(Collectors.toList());
 
-        return new PathResponse(stationResponses, subwayPath.distance(), subwayFare.value());
+        return new PathResponse(stationResponses, subwayPath.distance(), subwayFare.getValue());
     }
 
 }

@@ -21,14 +21,14 @@ public enum DistanceFarePolicy {
         this.distancePerFare = distancePerFare;
     }
 
-    public static int distancePolicyAppliedFare(int fare, int totalDistance) {
+    public static int distancePolicyAppliedFare(int originFare, int totalDistance) {
         Map<DistanceFarePolicy, Integer> distanceOfDistanceFarePolicy = distanceOfDistanceFarePolicy(
             totalDistance);
 
         for (Entry<DistanceFarePolicy, Integer> entry : distanceOfDistanceFarePolicy.entrySet()) {
-            fare += entry.getKey().calculateOverFare(entry.getValue());
+            originFare += entry.getKey().calculateOverFare(entry.getValue());
         }
-        return fare;
+        return originFare;
     }
 
     private static Map<DistanceFarePolicy, Integer> distanceOfDistanceFarePolicy(

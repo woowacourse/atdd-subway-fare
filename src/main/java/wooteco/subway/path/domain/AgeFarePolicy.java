@@ -17,16 +17,16 @@ public enum AgeFarePolicy {
         this.basicDiscountAmount = basicDiscountAmount;
     }
 
-    public static int agePolicyAppliedFare(int fare, int age) {
+    public static int agePolicyAppliedFare(int originFare, int age) {
         for (AgeFarePolicy ageFarePolicy : AgeFarePolicy.values()) {
             if (ageFarePolicy.policy.test(age)) {
-                return ageFarePolicy.calculateAgeFare(fare);
+                return ageFarePolicy.calculateAgeFare(originFare);
             }
         }
-        return fare;
+        return originFare;
     }
 
-    public int calculateAgeFare(int fare) {
+    private int calculateAgeFare(int fare) {
         return (int) ((fare - basicDiscountAmount) * ageDiscountRate);
     }
 
