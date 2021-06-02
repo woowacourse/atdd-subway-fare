@@ -2,14 +2,42 @@ package wooteco.subway.fare.domain.farestrategy;
 
 import wooteco.subway.fare.domain.Money;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FarePolicy {
     private final List<FareStrategy> policies;
 
-    public FarePolicy(FareStrategy... strategies) {
-        this.policies = Arrays.asList(strategies);
+    private FarePolicy(Builder builder) {
+        policies = builder.policies;
+    }
+
+    public static class Builder {
+        private final List<FareStrategy> policies;
+
+        public Builder() {
+            this.policies = new ArrayList<>();
+        }
+
+        public Builder distancePolicy(DistanceFare distanceFare) {
+            policies.add(distanceFare);
+            return this;
+        }
+
+
+        public Builder agePolicy(AgeFare ageFare) {
+            policies.add(ageFare);
+            return this;
+        }
+
+        public Builder linePolicy(LineFare lineFare) {
+            policies.add(lineFare);
+            return this;
+        }
+
+        public FarePolicy build() {
+            return new FarePolicy(this);
+        }
     }
 
     public Money calculateTotalFare(Money value) {

@@ -46,7 +46,9 @@ class FareTest {
                 int distance = subwayPath.calculateDistance();
 
                 // when
-                FarePolicy farePolicy = new FarePolicy(new DistanceFare(distance));
+                FarePolicy farePolicy = new FarePolicy.Builder()
+                        .distancePolicy(new DistanceFare(distance))
+                        .build();
                 int fareValue = new Fare(Money.DEFAULT_MONEY, farePolicy).calculate();
 
                 // then
@@ -68,7 +70,10 @@ class FareTest {
                 int lineExtraFare = subwayPath.calculateLineFare();
 
                 // when
-                FarePolicy farePolicy = new FarePolicy(new DistanceFare(distance), new LineFare(lineExtraFare));
+                FarePolicy farePolicy = new FarePolicy.Builder()
+                        .distancePolicy(new DistanceFare(distance))
+                        .linePolicy(new LineFare(lineExtraFare))
+                        .build();
                 int fareValue = new Fare(Money.DEFAULT_MONEY, farePolicy).calculate();
 
                 // then
@@ -92,7 +97,9 @@ class FareTest {
                 int distance = subwayPath.calculateDistance();
 
                 // when
-                FarePolicy farePolicy = new FarePolicy(new DistanceFare(distance));
+                FarePolicy farePolicy = new FarePolicy.Builder()
+                        .distancePolicy(new DistanceFare(distance))
+                        .build();
                 int fareValue = new Fare(Money.DEFAULT_MONEY, farePolicy).calculate();
 
                 // then
@@ -111,7 +118,9 @@ class FareTest {
                 int distance = subwayPath.calculateDistance();
 
                 // when
-                FarePolicy farePolicy = new FarePolicy(new DistanceFare(distance));
+                FarePolicy farePolicy = new FarePolicy.Builder()
+                        .distancePolicy(new DistanceFare(distance))
+                        .build();
                 int fareValue = new Fare(Money.DEFAULT_MONEY, farePolicy).calculate();
 
                 // then
@@ -136,7 +145,9 @@ class FareTest {
                 int distance = subwayPath.calculateDistance();
 
                 // when
-                FarePolicy farePolicy = new FarePolicy(new DistanceFare(distance));
+                FarePolicy farePolicy = new FarePolicy.Builder()
+                        .distancePolicy(new DistanceFare(distance))
+                        .build();
                 int fareValue = new Fare(Money.DEFAULT_MONEY, farePolicy).calculate();
 
                 // then
@@ -164,7 +175,11 @@ class FareTest {
             int lineExtraFare = subwayPath.calculateLineFare();
 
             // when
-            FarePolicy farePolicy = new FarePolicy(new DistanceFare(distance), new LineFare(lineExtraFare), new AgeFare(5));
+            FarePolicy farePolicy = new FarePolicy.Builder()
+                    .distancePolicy(new DistanceFare(distance))
+                    .linePolicy(new LineFare(lineExtraFare))
+                    .agePolicy(new AgeFare(5))
+                    .build();
             int fareValue = new Fare(Money.DEFAULT_MONEY, farePolicy).calculate();
 
             // then
@@ -187,7 +202,11 @@ class FareTest {
             int lineExtraFare = subwayPath.calculateLineFare();
 
             // when
-            FarePolicy farePolicy = new FarePolicy(new LineFare(lineExtraFare), new DistanceFare(distance), new AgeFare(age));
+            FarePolicy farePolicy = new FarePolicy.Builder()
+                    .distancePolicy(new DistanceFare(distance))
+                    .linePolicy(new LineFare(lineExtraFare))
+                    .agePolicy(new AgeFare(age))
+                    .build();
             int fareValue = new Fare(Money.DEFAULT_MONEY, farePolicy).calculate();
 
             // then
@@ -210,7 +229,11 @@ class FareTest {
             int lineExtraFare = subwayPath.calculateLineFare();
 
             // when
-            FarePolicy farePolicy = new FarePolicy(new LineFare(lineExtraFare), new DistanceFare(distance), new AgeFare(age));
+            FarePolicy farePolicy = new FarePolicy.Builder()
+                    .distancePolicy(new DistanceFare(distance))
+                    .linePolicy(new LineFare(lineExtraFare))
+                    .agePolicy(new AgeFare(age))
+                    .build();
             int fareValue = new Fare(Money.DEFAULT_MONEY, farePolicy).calculate();
 
             // then
@@ -233,7 +256,11 @@ class FareTest {
             int lineExtraFare = subwayPath.calculateLineFare();
 
             // when
-            FarePolicy farePolicy = new FarePolicy(new LineFare(lineExtraFare), new DistanceFare(distance), new AgeFare(age));
+            FarePolicy farePolicy = new FarePolicy.Builder()
+                    .distancePolicy(new DistanceFare(distance))
+                    .linePolicy(new LineFare(lineExtraFare))
+                    .agePolicy(new AgeFare(age))
+                    .build();
             int fareValue = new Fare(Money.DEFAULT_MONEY, farePolicy).calculate();
 
             // then

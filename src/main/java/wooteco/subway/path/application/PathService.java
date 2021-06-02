@@ -47,11 +47,19 @@ public class PathService {
         int distance = subwayPath.calculateDistance();
         int lineExtraFare = subwayPath.calculateLineFare();
         if (Objects.isNull(loginMember)) {
-            FarePolicy farePolicy = new FarePolicy(new LineFare(lineExtraFare), new DistanceFare(distance));
+            FarePolicy farePolicy = new FarePolicy.Builder()
+                    .linePolicy(new LineFare(lineExtraFare))
+                    .distancePolicy(new DistanceFare(distance))
+                    .build();
             Fare fare = new Fare(Money.DEFAULT_MONEY, farePolicy);
             return PathResponseAssembler.assemble(stations, distance, fare.calculate());
         }
-        FarePolicy farePolicy = new FarePolicy(new LineFare(lineExtraFare), new DistanceFare(distance), new AgeFare(loginMember.getAge()));
+
+        FarePolicy farePolicy = new FarePolicy.Builder()
+                .linePolicy(new LineFare(lineExtraFare))
+                .distancePolicy(new DistanceFare(distance))
+                .agePolicy(new AgeFare(loginMember.getAge()))
+                .build();
         Fare fare = new Fare(Money.DEFAULT_MONEY, farePolicy);
         return PathResponseAssembler.assemble(stations, distance, fare.calculate());
     }

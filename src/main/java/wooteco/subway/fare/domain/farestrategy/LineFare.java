@@ -13,6 +13,6 @@ public class LineFare implements FareStrategy {
 
     @Override
     public Money calculate(Money value) {
-        return value.add(BigDecimal.valueOf(lineExtraFare));
+        return value.add(lineExtraFare);
     }
 }
