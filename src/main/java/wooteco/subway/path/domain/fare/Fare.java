@@ -13,7 +13,7 @@ public class Fare {
         return new Fare(calculator.calculateByDistance(distance) + extraFare);
     }
 
-    public int apply(DiscountPolicy discountPolicy) {
-        return (int) ((fare - discountPolicy.staticDiscount()) * discountPolicy.discountRate());
+    public int toInt() {
+        return fare;
     }
 }

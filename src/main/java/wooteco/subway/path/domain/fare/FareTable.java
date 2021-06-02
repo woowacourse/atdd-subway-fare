@@ -2,55 +2,39 @@ package wooteco.subway.path.domain.fare;
 
 import wooteco.subway.member.domain.User;
 
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import static wooteco.subway.path.domain.fare.DiscountPolicy.*;
 
 public class FareTable {
-    private final int adultFare;
-    private final int teenagerFare;
-    private final int childFare;
-    private final int babyFare;
+    private Map<String, Integer> fareTable;
     private final int defaultFare;
 
-    private FareTable(int adultFare, int teenagerFare, int childFare, int babyFare, int defaultFare) {
-        this.adultFare = adultFare;
-        this.teenagerFare = teenagerFare;
-        this.childFare = childFare;
-        this.babyFare = babyFare;
+    private FareTable(Map<String, Integer> fareTable, int defaultFare) {
+        this.fareTable = fareTable;
         this.defaultFare = defaultFare;
     }
 
     public static FareTable of(Fare fare, User member) {
-        return new FareTable(
-                fare.apply(ADULT),
-                fare.apply(TEENAGER),
-                fare.apply(CHILD),
-                fare.apply(BABY),
-                findByAge(fare, member)
-        );
+        Map<String, Integer> fareTable = new LinkedHashMap<>();
+        Arrays.stream(values())
+                .forEach(policy -> fareTable.put(policy.getKorean(), policy.apply(fare)));
+
+        return new FareTable(fareTable, findByAge(fare, member));
     }
 
     private static int findByAge(Fare fare, User member) {
         if (member.isGuest()) {
-            return fare.apply(ADULT);
+            return ADULT.apply(fare);
         }
         DiscountPolicy memberDiscount = DiscountPolicy.findByAge(member.getAge());
-        return fare.apply(memberDiscount);
+        return memberDiscount.apply(fare);
     }
 
-    public int getAdultFare() {
-        return adultFare;
-    }
-
-    public int getTeenager() {
-        return teenagerFare;
-    }
-
-    public int getChild() {
-        return childFare;
-    }
-
-    public int getBaby() {
-        return babyFare;
+    public Map<String, Integer> getFareTable() {
+        return fareTable;
     }
 
     public int getDefaultFare() {

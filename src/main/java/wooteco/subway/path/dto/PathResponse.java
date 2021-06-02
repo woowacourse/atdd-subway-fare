@@ -4,12 +4,13 @@ import wooteco.subway.path.domain.fare.FareTable;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.List;
+import java.util.Map;
 
 public class PathResponse {
     private List<StationResponse> stations;
     private int distance;
     private int defaultFare;
-    private FareResponse fareResponse;
+    private Map<String, Integer> fare;
 
     public PathResponse() {
     }
@@ -18,7 +19,7 @@ public class PathResponse {
         this.stations = stations;
         this.distance = distance;
         this.defaultFare = fareTable.getDefaultFare();
-        this.fareResponse = FareResponse.of(fareTable);
+        this.fare = fareTable.getFareTable();
     }
 
     public List<StationResponse> getStations() {
@@ -31,5 +32,9 @@ public class PathResponse {
 
     public int getDefaultFare() {
         return defaultFare;
+    }
+
+    public Map<String, Integer> getFare() {
+        return fare;
     }
 }
