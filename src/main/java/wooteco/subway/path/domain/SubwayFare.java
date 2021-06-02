@@ -19,8 +19,6 @@ public class SubwayFare {
     }
 
     public int findFare() {
-        System.out.println(AgeFareCalculator.of(loginMember.getAge(), DistanceFareCalculator.from(distance), findExtraFare(lines)));
-
         return AgeFareCalculator.of(
                 loginMember.getAge(),
                 DistanceFareCalculator.from(distance),
@@ -31,7 +29,6 @@ public class SubwayFare {
     private int findExtraFare(Set<Line> lines) {
 
         return lines.stream()
-                .peek(line -> System.out.println(line.getName()))
                 .mapToInt(Line::getExtraFare)
                 .max()
                 .orElse(0);

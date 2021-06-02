@@ -21,9 +21,6 @@ public enum AgeFareCalculator {
     }
 
     public static int of(int age, int fare, int lineFare) {
-        System.out.println("age = " + age);
-        System.out.println("fare = " + fare);
-        System.out.println("lineFare = " + lineFare);
         return Arrays.stream(values())
                 .filter(it -> it.minAge <= age && age < it.maxAge)
                 .mapToInt(it -> it.adjuster.apply(fare, lineFare))
