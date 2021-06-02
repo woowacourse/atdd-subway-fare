@@ -7,6 +7,8 @@ import java.util.regex.Pattern;
 
 public class Station {
     private static final String NAME_PATTERN = "^[가-힣|0-9]*$";
+    private static final String BLANK = " ";
+    private static final int MINIMUM_NAME_LENGTH = 2;
 
     private Long id;
     private String name;
@@ -31,13 +33,13 @@ public class Station {
     }
 
     private void validateNameLength(String name) {
-        if (name.length() < 2) {
+        if (name.length() < MINIMUM_NAME_LENGTH) {
             throw new InvalidStationNameException();
         }
     }
 
     private void validateNameContainsBlank(String name) {
-        if (name.contains(" ")) {
+        if (name.contains(BLANK)) {
             throw new InvalidStationNameException();
         }
     }

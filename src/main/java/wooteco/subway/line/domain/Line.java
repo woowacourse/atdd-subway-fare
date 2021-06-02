@@ -9,6 +9,8 @@ import java.util.regex.Pattern;
 
 public class Line {
     private static final String NAME_PATTERN = "^[가-힣|0-9]*$";
+    private static final String BLANK = " ";
+    private static final int MINIMUM_NAME_LENGTH = 2;
 
     private Long id;
     private String name;
@@ -52,13 +54,13 @@ public class Line {
     }
 
     private void validateNameLength(String name) {
-        if (name.length() < 2) {
+        if (name.length() < MINIMUM_NAME_LENGTH) {
             throw new InvalidLineNameException();
         }
     }
 
     private void validateNameContainsBlank(String name) {
-        if (name.contains(" ")) {
+        if (name.contains(BLANK)) {
             throw new InvalidLineNameException();
         }
     }
@@ -70,7 +72,7 @@ public class Line {
     }
 
     private void validateColor(String color) {
-        if (color.contains(" ")) {
+        if (color.contains(BLANK)) {
             throw new InvalidLineColorException();
         }
     }
