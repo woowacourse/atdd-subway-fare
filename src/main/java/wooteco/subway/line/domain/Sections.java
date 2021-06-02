@@ -1,28 +1,27 @@
 package wooteco.subway.line.domain;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import wooteco.subway.exception.ValidationFailureException;
 import wooteco.subway.line.exception.LineCompositionException;
 import wooteco.subway.line.exception.LineRemovalException;
 import wooteco.subway.station.domain.Station;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 public class Sections {
-    private List<Section> sections = new ArrayList<>();
 
-    public List<Section> getSections() {
-        return sections;
-    }
+    private final List<Section> sections;
 
     public Sections() {
+        this(new ArrayList<>());
     }
 
     public Sections(List<Section> sections) {
-        this.sections = sections;
+        this.sections = new ArrayList<>(sections);
     }
 
     public void addSection(Section section) {
@@ -57,23 +56,26 @@ public class Sections {
 
     private void addSectionUpToUp(Section section) {
         this.sections.stream()
-                .filter(it -> it.getUpStation().equals(section.getUpStation()))
-                .findFirst()
-                .ifPresent(it -> replaceSectionWithDownStation(section, it));
+            .filter(existentSection -> existentSection.getUpStation().equals(section.getUpStation()))
+            .findFirst()
+            .ifPresent(existentSection -> replaceSectionWithDownStation(section, existentSection));
     }
 
     private void addSectionDownToDown(Section section) {
         this.sections.stream()
-                .filter(it -> it.getDownStation().equals(section.getDownStation()))
-                .findFirst()
-                .ifPresent(it -> replaceSectionWithUpStation(section, it));
+            .filter(existentSection -> existentSection.getDownStation().equals(section.getDownStation()))
+            .findFirst()
+            .ifPresent(existentSection -> replaceSectionWithUpStation(section, existentSection));
     }
 
     private void replaceSectionWithUpStation(Section newSection, Section existSection) {
         if (existSection.getDistance() <= newSection.getDistance()) {
             throw new ValidationFailureException("추가하려는 구간의 거리가 기존의 구간보다 크거나 같습니다.");
         }
-        this.sections.add(new Section(existSection.getUpStation(), newSection.getUpStation(), existSection.getDistance() - newSection.getDistance()));
+        this.sections.add(
+            new Section(existSection.getUpStation(), newSection.getUpStation(),
+                existSection.getDistance() - newSection.getDistance())
+        );
         this.sections.remove(existSection);
     }
 
@@ -81,13 +83,14 @@ public class Sections {
         if (existSection.getDistance() <= newSection.getDistance()) {
             throw new ValidationFailureException("추가하려는 구간의 거리가 기존의 구간보다 크거나 같습니다.");
         }
-        this.sections.add(new Section(newSection.getDownStation(), existSection.getDownStation(), existSection.getDistance() - newSection.getDistance()));
+        this.sections.add(new Section(newSection.getDownStation(), existSection.getDownStation(),
+            existSection.getDistance() - newSection.getDistance()));
         this.sections.remove(existSection);
     }
 
     public List<Station> getStations() {
         if (sections.isEmpty()) {
-            return Arrays.asList();
+            return Collections.emptyList();
         }
 
         List<Station> stations = new ArrayList<>();
@@ -95,7 +98,7 @@ public class Sections {
         stations.add(upEndSection.getUpStation());
 
         Section nextSection = upEndSection;
-        while (nextSection != null) {
+        while (Objects.nonNull(nextSection)) {
             stations.add(nextSection.getDownStation());
             nextSection = findSectionByNextUpStation(nextSection.getDownStation());
         }
@@ -105,20 +108,20 @@ public class Sections {
 
     private Section findUpEndSection() {
         List<Station> downStations = this.sections.stream()
-                .map(it -> it.getDownStation())
-                .collect(Collectors.toList());
+            .map(Section::getDownStation)
+            .collect(Collectors.toList());
 
         return this.sections.stream()
-                .filter(it -> !downStations.contains(it.getUpStation()))
-                .findFirst()
-                .orElseThrow(() -> new LineCompositionException("상행 종점을 찾지 못했습니다."));
+            .filter(it -> !downStations.contains(it.getUpStation()))
+            .findFirst()
+            .orElseThrow(() -> new LineCompositionException("상행 종점을 찾지 못했습니다."));
     }
 
     private Section findSectionByNextUpStation(Station station) {
         return this.sections.stream()
-                .filter(it -> it.getUpStation().equals(station))
-                .findFirst()
-                .orElse(null);
+            .filter(it -> it.getUpStation().equals(station))
+            .findFirst()
+            .orElse(null);
     }
 
     public void removeStation(Station station) {
@@ -127,11 +130,11 @@ public class Sections {
         }
 
         Optional<Section> upSection = sections.stream()
-                .filter(it -> it.getUpStation().equals(station))
-                .findFirst();
+            .filter(it -> it.getUpStation().equals(station))
+            .findFirst();
         Optional<Section> downSection = sections.stream()
-                .filter(it -> it.getDownStation().equals(station))
-                .findFirst();
+            .filter(it -> it.getDownStation().equals(station))
+            .findFirst();
 
         if (upSection.isPresent() && downSection.isPresent()) {
             Station newUpStation = downSection.get().getUpStation();
@@ -140,7 +143,11 @@ public class Sections {
             sections.add(new Section(newUpStation, newDownStation, newDistance));
         }
 
-        upSection.ifPresent(it -> sections.remove(it));
-        downSection.ifPresent(it -> sections.remove(it));
+        upSection.ifPresent(sections::remove);
+        downSection.ifPresent(sections::remove);
+    }
+
+    public List<Section> getSections() {
+        return Collections.unmodifiableList(sections);
     }
 }

@@ -32,9 +32,9 @@ public class MapResponse {
             stations, sections);
     }
 
-    public static List<LineResponse> listOf(List<Line> lines) {
+    public static List<MapResponse> listOf(List<Line> lines) {
         return lines.stream()
-            .map(LineResponse::of)
+            .map(MapResponse::of)
             .collect(Collectors.toList());
     }
 

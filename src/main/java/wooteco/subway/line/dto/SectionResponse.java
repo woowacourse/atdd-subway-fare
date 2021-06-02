@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.domain.Sections;
-import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationResponse;
 
 public class SectionResponse {
@@ -12,6 +11,12 @@ public class SectionResponse {
     private StationResponse upStation;
     private StationResponse downStation;
     private int distance;
+
+    public SectionResponse(StationResponse upStation, StationResponse downStation, int distance) {
+        this.upStation = upStation;
+        this.downStation = downStation;
+        this.distance = distance;
+    }
 
     public static SectionResponse from(Section section) {
         return new SectionResponse(
@@ -25,12 +30,6 @@ public class SectionResponse {
         return sections.getSections().stream()
             .map(SectionResponse::from)
             .collect(Collectors.toList());
-    }
-
-    public SectionResponse(StationResponse upStation, StationResponse downStation, int distance) {
-        this.upStation = upStation;
-        this.downStation = downStation;
-        this.distance = distance;
     }
 
     public StationResponse getUpStation() {
