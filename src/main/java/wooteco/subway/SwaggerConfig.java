@@ -16,6 +16,7 @@ public class SwaggerConfig {
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
+            .host("choonsik.n-e.kr")
             .select()
             .apis(RequestHandlerSelectors.basePackage("wooteco.subway"))
             .paths(PathSelectors.ant("/**"))

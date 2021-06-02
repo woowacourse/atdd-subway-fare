@@ -52,6 +52,7 @@ public class MapAcceptanceTest extends AcceptanceTest {
     @Test
     void findMap() {
         ExtractableResponse<Response> response = 노선도_정보_조회();
+
         List<StationMapResponse> lineStations1 = Arrays
             .asList(new StationMapResponse(강남역.getId(), 강남역.getName(), 10, Arrays.asList(
                 TransferLineResponse.of(경의중앙선.getId(), 경의중앙선.getName(), 경의중앙선.getColor()))),
@@ -71,7 +72,8 @@ public class MapAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 노선도_정보_조회() {
-        return RestAssured.given().log().all()
+        return RestAssured
+            .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when().get("/map")
             .then().log().all()

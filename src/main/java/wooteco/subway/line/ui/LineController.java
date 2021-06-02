@@ -1,12 +1,11 @@
 package wooteco.subway.line.ui;
 
 import java.net.URI;
-import java.sql.SQLException;
 import java.util.List;
+import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,7 +33,7 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity createLine(@RequestBody LineRequest lineRequest) {
+    public ResponseEntity createLine(@RequestBody @Valid LineRequest lineRequest) {
         LineResponse line = lineService.saveLine(lineRequest);
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
@@ -51,7 +50,7 @@ public class LineController {
 
     @PutMapping("/{id}")
     public ResponseEntity updateLine(@PathVariable Long id,
-        @RequestBody LineRequest lineUpdateRequest) {
+        @RequestBody @Valid LineRequest lineUpdateRequest) {
         lineService.updateLine(id, lineUpdateRequest);
         return ResponseEntity.ok().build();
     }
@@ -69,14 +68,14 @@ public class LineController {
 
     @PostMapping("/{lineId}/sections")
     public ResponseEntity addLineStation(@PathVariable Long lineId,
-        @RequestBody SectionRequest sectionRequest) {
+        @RequestBody @Valid SectionRequest sectionRequest) {
         lineService.addLineStation(lineId, sectionRequest);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{lineId}/sections")
     public ResponseEntity<Void> updateLineStation(@PathVariable Long lineId,
-        @RequestBody SectionDistanceRequest sectionDistanceRequest, Long upStationId,
+        @RequestBody @Valid SectionDistanceRequest sectionDistanceRequest, Long upStationId,
         Long downStationId) {
         lineService.updateLineStation(lineId, upStationId, downStationId, sectionDistanceRequest);
         return ResponseEntity.ok().build();
