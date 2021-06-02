@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.dto.TokenRequest;
@@ -14,6 +15,7 @@ import wooteco.subway.auth.ui.AuthController;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -39,6 +41,16 @@ public class AuthControllerTest extends ControllerTest {
                 .andExpect(jsonPath("$.accessToken")
                         .value(tokenResponse.getAccessToken()))
                 .andDo(print())
-                .andDo(document("auth-token"));
+                .andDo(document("auth-token",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                fieldWithPath("email").type(JsonFieldType.STRING).description("EMAIL"),
+                                fieldWithPath("password").type(JsonFieldType.STRING).description("PASSWORD")
+                        ),
+                        responseFields(
+                                fieldWithPath("accessToken").type(JsonFieldType.STRING).description("TOKEN")
+                        )
+                ));
     }
 }

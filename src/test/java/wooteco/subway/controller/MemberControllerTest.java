@@ -6,6 +6,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.payload.JsonFieldType;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.LoginMember;
@@ -17,6 +18,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -43,7 +46,40 @@ public class MemberControllerTest extends ControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(header().string("Location", "/members/" + 1L))
                 .andDo(print())
-                .andDo(document("member-create"));
+                .andDo(document("member-create",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                fieldWithPath("email").type(JsonFieldType.STRING).description("EMAIL"),
+                                fieldWithPath("password").type(JsonFieldType.STRING).description("PASSWORD"),
+                                fieldWithPath("age").type(JsonFieldType.NUMBER).description("AGE")
+                        )
+                ));
+    }
+
+
+    @DisplayName("조회 - 성공")
+    @Test
+    public void find() throws Exception {
+        LoginMember loginMember = new LoginMember(1L, "email@email.com", 20);
+        MemberResponse memberResponse = new MemberResponse(1L, "email@email.com", 20);
+        given(authService.findMemberByToken("secrettokentoken")).willReturn(loginMember);
+        given(memberService.findMember(loginMember)).willReturn(memberResponse);
+
+        mockMvc.perform(get("/members/me")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer secrettokentoken"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(memberResponse)))
+                .andDo(print())
+                .andDo(document("members-findme",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        responseFields(
+                                fieldWithPath("id").type(JsonFieldType.NUMBER).description("ID"),
+                                fieldWithPath("email").type(JsonFieldType.STRING).description("EMAIL"),
+                                fieldWithPath("age").type(JsonFieldType.NUMBER).description("AGE")
+                        )
+                ));
     }
 
     @DisplayName("수정 - 성공")
@@ -59,7 +95,15 @@ public class MemberControllerTest extends ControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andDo(document("members-updateme"));
+                .andDo(document("member-create",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                fieldWithPath("email").type(JsonFieldType.STRING).description("EMAIL"),
+                                fieldWithPath("password").type(JsonFieldType.STRING).description("PASSWORD"),
+                                fieldWithPath("age").type(JsonFieldType.NUMBER).description("AGE")
+                        )
+                ));
     }
 
     @DisplayName("삭제 - 성공")
@@ -73,22 +117,9 @@ public class MemberControllerTest extends ControllerTest {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer secrettokentoken"))
                 .andExpect(status().isNoContent())
                 .andDo(print())
-                .andDo(document("members-deleteme"));
-    }
-
-    @DisplayName("조회 - 성공")
-    @Test
-    public void find() throws Exception {
-        LoginMember loginMember = new LoginMember(1L, "email@email.com", 20);
-        MemberResponse memberResponse = new MemberResponse(1L, "email@email.com", 20);
-        given(authService.findMemberByToken("secrettokentoken")).willReturn(loginMember);
-        given(memberService.findMember(loginMember)).willReturn(memberResponse);
-
-        mockMvc.perform(get("/members/me")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer secrettokentoken"))
-                .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(memberResponse)))
-                .andDo(print())
-                .andDo(document("members-findme"));
+                .andDo(document("members-deleteme",
+                        getDocumentRequest(),
+                        getDocumentResponse()
+                ));
     }
 }

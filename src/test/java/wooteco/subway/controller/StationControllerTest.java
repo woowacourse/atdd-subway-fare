@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.payload.FieldDescriptor;
+import org.springframework.restdocs.payload.JsonFieldType;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.dto.StationRequest;
@@ -20,6 +22,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -46,23 +49,26 @@ public class StationControllerTest extends ControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(content().json(objectMapper.writeValueAsString(stationResponse)))
                 .andDo(print())
-                .andDo(document("station-create"));
-    }
-
-    @Test
-    @DisplayName("삭제 - 성공")
-    public void deleteStation() throws Exception {
-        willDoNothing().given(stationService).deleteStationById(1L);
-
-        mockMvc.perform(delete("/stations/1"))
-                .andExpect(status().isNoContent())
-                .andDo(print())
-                .andDo(document("station-delete"));
+                .andDo(document("station-create",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                fieldWithPath("name").type(JsonFieldType.STRING).description("역 이름")
+                        ),
+                        responseFields(
+                                fieldWithPath("id").type(JsonFieldType.NUMBER).description("ID"),
+                                fieldWithPath("name").type(JsonFieldType.STRING).description("역 이름")
+                        )
+                ));
     }
 
     @Test
     @DisplayName("조회 - 성공")
     public void showStations() throws Exception {
+        FieldDescriptor[] station = new FieldDescriptor[]{
+                fieldWithPath("id").type(JsonFieldType.NUMBER).description("ID"),
+                fieldWithPath("name").type(JsonFieldType.STRING).description("역 이름")};
+
         //given
         List<StationResponse> stationResponses = Arrays.asList(
                 new StationResponse(1L, "테스트1"),
@@ -81,6 +87,25 @@ public class StationControllerTest extends ControllerTest {
                 .andExpect(jsonPath("$.*.name").value(Matchers.containsInAnyOrder("테스트1", "테스트2", "테스트3", "테스트4",
                         "테스트5")))
                 .andDo(print())
-                .andDo(document("station-find"));
+                .andDo(document("station-find",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        responseFields(
+                                fieldWithPath("[]").description("역 목록"))
+                                .andWithPrefix("[].", station)));
+    }
+
+    @Test
+    @DisplayName("삭제 - 성공")
+    public void deleteStation() throws Exception {
+        willDoNothing().given(stationService).deleteStationById(1L);
+
+        mockMvc.perform(delete("/stations/1"))
+                .andExpect(status().isNoContent())
+                .andDo(print())
+                .andDo(document("station-delete",
+                        getDocumentRequest(),
+                        getDocumentResponse()
+                ));
     }
 }

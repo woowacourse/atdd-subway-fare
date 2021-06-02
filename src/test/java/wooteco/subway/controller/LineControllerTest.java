@@ -5,6 +5,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.restdocs.payload.FieldDescriptor;
+import org.springframework.restdocs.payload.JsonFieldType;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.dto.LineRequest;
@@ -20,6 +22,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -31,6 +34,13 @@ public class LineControllerTest extends ControllerTest {
     private LineService lineService;
     @MockBean
     private AuthService authService;
+
+    public static final FieldDescriptor[] LINE = new FieldDescriptor[]{
+            fieldWithPath("id").type(JsonFieldType.NUMBER).description("ID"),
+            fieldWithPath("name").type(JsonFieldType.STRING).description("노선 이름"),
+            fieldWithPath("color").type(JsonFieldType.STRING).description("노선 색깔"),
+            fieldWithPath("stations").type(JsonFieldType.ARRAY).description("역 목록"),
+            fieldWithPath("sections").type(JsonFieldType.ARRAY).description("구간 목록")};
 
     @Test
     @DisplayName("생성 - 성공")
@@ -47,12 +57,31 @@ public class LineControllerTest extends ControllerTest {
                 .andExpect(header().string("Location", "/lines/" + lineId))
                 .andExpect(content().json(objectMapper.writeValueAsString(lineResponse)))
                 .andDo(print())
-                .andDo(document("line-create"));
+                .andDo(document("line-create",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                fieldWithPath("name").type(JsonFieldType.STRING).description("노선 이름"),
+                                fieldWithPath("color").type(JsonFieldType.STRING).description("노선 색깔"),
+                                fieldWithPath("upStationId").type(JsonFieldType.NUMBER).description("상행 역 ID"),
+                                fieldWithPath("downStationId").type(JsonFieldType.NUMBER).description("하행 역 ID"),
+                                fieldWithPath("distance").type(JsonFieldType.NUMBER).description("거리"),
+                                fieldWithPath("extraFare").type(JsonFieldType.NUMBER).description("추가 요금")
+                        ),
+                        responseFields(
+                                fieldWithPath("id").type(JsonFieldType.NUMBER).description("ID"),
+                                fieldWithPath("name").type(JsonFieldType.STRING).description("노선 이름"),
+                                fieldWithPath("color").type(JsonFieldType.STRING).description("노선 색깔"),
+                                fieldWithPath("stations").type(JsonFieldType.ARRAY).description("역 목록"),
+                                fieldWithPath("sections").type(JsonFieldType.ARRAY).description("구간 목록")
+                        )
+                ));
     }
 
     @Test
     @DisplayName("전체 조회 - 성공")
     void findAllLines() throws Exception {
+
         List<LineResponse> lineResponses = Arrays.asList(
                 new LineResponse(1L, "테스트1선", "주황색", Collections.emptyList(), Collections.emptyList()),
                 new LineResponse(2L, "테스트2선", "주황색", Collections.emptyList(), Collections.emptyList())
@@ -63,7 +92,12 @@ public class LineControllerTest extends ControllerTest {
                 .andExpect(jsonPath("$.*").isArray())
                 .andExpect(jsonPath("$.*", hasSize(2)))
                 .andDo(print())
-                .andDo(document("line-find"));
+                .andDo(document("line-find",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        responseFields(
+                                fieldWithPath("[]").description("노선 목록"))
+                                .andWithPrefix("[].", LINE)));
     }
 
     @Test
@@ -76,7 +110,31 @@ public class LineControllerTest extends ControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(lineResponse)))
                 .andDo(print())
-                .andDo(document("line-findbyid"));
+                .andDo(document("line-findbyid",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        responseFields(
+                                fieldWithPath("id").type(JsonFieldType.NUMBER).description("ID"),
+                                fieldWithPath("name").type(JsonFieldType.STRING).description("노선 이름"),
+                                fieldWithPath("color").type(JsonFieldType.STRING).description("노선 색깔"),
+                                fieldWithPath("stations").type(JsonFieldType.ARRAY).description("역 목록"),
+                                fieldWithPath("sections").type(JsonFieldType.ARRAY).description("구간 목록")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("삭제 - 성공")
+    void deleteLine() throws Exception {
+        long lineId = 1L;
+        mockMvc.perform(delete("/lines/" + lineId))
+                .andExpect(status().isNoContent())
+                .andDo(print())
+                .andDo(document("line-delete",
+                        getDocumentRequest(),
+                        getDocumentResponse()
+                ));
+
     }
 
     @Test
@@ -90,17 +148,17 @@ public class LineControllerTest extends ControllerTest {
                 .header("Content-Type", "application/json"))
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andDo(document("line-update"));
-    }
-
-    @Test
-    @DisplayName("삭제 - 성공")
-    void deleteLine() throws Exception {
-        long lineId = 1L;
-        mockMvc.perform(delete("/lines/" + lineId))
-                .andExpect(status().isNoContent())
-                .andDo(print())
-                .andDo(document("line-delete"));
+                .andDo(document("line-update",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                fieldWithPath("name").type(JsonFieldType.STRING).description("노선 이름"),
+                                fieldWithPath("color").type(JsonFieldType.STRING).description("노선 색깔"),
+                                fieldWithPath("upStationId").type(JsonFieldType.NUMBER).description("상행 역 ID"),
+                                fieldWithPath("downStationId").type(JsonFieldType.NUMBER).description("하행 역 ID"),
+                                fieldWithPath("distance").type(JsonFieldType.NUMBER).description("거리"),
+                                fieldWithPath("extraFare").type(JsonFieldType.NUMBER).description("추가 요금")
+                        )));
     }
 
     @Test
@@ -114,7 +172,14 @@ public class LineControllerTest extends ControllerTest {
                 .header("Content-Type", "application/json"))
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andDo(document("section-create"));
+                .andDo(document("section-create",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                fieldWithPath("upStationId").type(JsonFieldType.NUMBER).description("상행 역 ID"),
+                                fieldWithPath("downStationId").type(JsonFieldType.NUMBER).description("하행 역 ID"),
+                                fieldWithPath("distance").type(JsonFieldType.NUMBER).description("거리")
+                        )));
     }
 
     @Test
@@ -125,6 +190,9 @@ public class LineControllerTest extends ControllerTest {
         mockMvc.perform(delete("/lines/" + lineId + "/sections?stationId=" + stationId))
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andDo(document("section-delete"));
+                .andDo(document("section-delete",
+                        getDocumentRequest(),
+                        getDocumentResponse()
+                ));
     }
 }
