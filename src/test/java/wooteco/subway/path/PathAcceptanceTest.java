@@ -98,44 +98,44 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("최단거리가 40km 일 때 나이에 따른 비용 테스트")
     @ParameterizedTest
     @CsvSource(value = {"20:1850", "15:1550", "8:1100"}, delimiter = ':')
-    void findPathByDistanceByForty(String age, String fare) {
-        TokenResponse token = getTokenResponse(Integer.parseInt(age));
+    void findPathByDistanceByForty(int age, int fare) {
+        TokenResponse token = getTokenResponse(age);
 
         //when
         ExtractableResponse<Response> response = 거리_경로_조회_요청(5L, 6L, token);
 
         //then
         총_거리가_응답됨(response, 40);
-        총_가격이_응답됨(response, Integer.parseInt(fare));
+        총_가격이_응답됨(response, fare);
     }
 
     @DisplayName("최단거리가 59km 일때 나이에 따른 비용 테스트")
     @ParameterizedTest
     @CsvSource(value = {"20:2250", "15:1870", "8:1300"}, delimiter = ':')
-    void findPathByDistanceByOverFifty(String age, String fare) {
+    void findPathByDistanceByOverFifty(int age, int fare) {
         // given
-        TokenResponse token = getTokenResponse(Integer.parseInt(age));
+        TokenResponse token = getTokenResponse(age);
 
         // when
         ExtractableResponse<Response> response = 거리_경로_조회_요청(5L, 7L, token);
 
         총_거리가_응답됨(response, 59);
-        총_가격이_응답됨(response, Integer.parseInt(fare));
+        총_가격이_응답됨(response, fare);
     }
 
     @DisplayName("여러 노선을 이용할 때 제일 높은 노선의 요금을 추가하는데 나이에 따른 비용 테스트")
     @ParameterizedTest
     @CsvSource(value = {"20:1550", "15:1310", "8:950"}, delimiter = ':')
-    void expensiveExtraFareLine(String age, String fare) {
+    void expensiveExtraFareLine(int age, int fare) {
         // given
-        TokenResponse token = getTokenResponse(Integer.parseInt(age));
+        TokenResponse token = getTokenResponse(age);
 
         // when
         ExtractableResponse<Response> response = 거리_경로_조회_요청(5L, 3L, token);
 
         // then
         총_거리가_응답됨(response, 11);
-        총_가격이_응답됨(response, Integer.parseInt(fare));
+        총_가격이_응답됨(response, fare);
     }
 
     private ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target,
