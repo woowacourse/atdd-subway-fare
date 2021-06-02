@@ -1,5 +1,9 @@
 package wooteco.subway.path.domain;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Predicate;
 
 public enum DistanceFarePolicy {
@@ -18,20 +22,37 @@ public enum DistanceFarePolicy {
     }
 
     public static int distancePolicyAppliedFare(int fare, int totalDistance) {
-        for (DistanceFarePolicy distanceFarePolicy : DistanceFarePolicy.values()) {
-            fare += distanceFarePolicy.calculateOverFare(totalDistance);
+        Map<DistanceFarePolicy, Integer> distanceOfDistanceFarePolicy = distanceOfDistanceFarePolicy(
+            totalDistance);
+
+        for (Entry<DistanceFarePolicy, Integer> entry : distanceOfDistanceFarePolicy.entrySet()) {
+            fare += entry.getKey().calculateOverFare(entry.getValue());
         }
         return fare;
     }
 
-    public int calculateOverFare(int totalDistance) {
-        int distance = 0;
-
-        for (int i = 1; i <= totalDistance; i++) {
-            if (policy.test(i)) {
-                distance++;
-            }
+    private static Map<DistanceFarePolicy, Integer> distanceOfDistanceFarePolicy(
+        int totalDistance) {
+        Map<DistanceFarePolicy, Integer> distanceOfDistanceFarePolicy = new HashMap<>();
+        for (int distance = 1; distance <= totalDistance; distance++) {
+            putDistanceOfDistanceFarePolicy(distanceOfDistanceFarePolicy, distance);
         }
+        return distanceOfDistanceFarePolicy;
+    }
+
+    private static void putDistanceOfDistanceFarePolicy(Map<DistanceFarePolicy, Integer> map,
+        int distance) {
+        Arrays.stream(DistanceFarePolicy.values())
+            .filter(distanceFarePolicy -> distanceFarePolicy.test(distance))
+            .forEach(distanceFarePolicy -> map
+                .put(distanceFarePolicy, map.getOrDefault(distanceFarePolicy, 0) + 1));
+    }
+
+    private boolean test(int distance) {
+        return policy.test(distance);
+    }
+
+    private int calculateOverFare(int distance) {
         if (distance == 0) {
             return 0;
         }
