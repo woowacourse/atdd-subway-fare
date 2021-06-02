@@ -79,10 +79,14 @@ public class Sections {
 
     private void checkAlreadyExisted(Section section) {
         List<Station> stations = getStations();
-        if (!stations.contains(section.getUpStation()) && !stations
-            .contains(section.getDownStation())) {
+        if (notExistStation(section, stations)) {
             throw new RuntimeException();
         }
+    }
+
+    private boolean notExistStation(Section section, List<Station> stations) {
+        return !stations.contains(section.getUpStation()) &&
+            !stations.contains(section.getDownStation());
     }
 
     private void checkExistedAny(Section section) {
