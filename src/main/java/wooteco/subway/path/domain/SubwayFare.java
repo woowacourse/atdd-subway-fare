@@ -21,12 +21,8 @@ public class SubwayFare {
     }
 
     private int calculateFareByDistance(int distance) {
-        return DEFAULT_FARE + distanceTenToFifty(distance) + distanceMoreThanFifty(distance) + getExpensiveFare();
-    }
-
-    private int getDiscountMoney(int fare, int age) {
-        Age discountAge = Age.of(age);
-        return discountAge.calculateFareByAge(fare);
+        DistanceFare distanceFare = DistanceFare.of(distance);
+        return distanceFare.calculateFareByDistance(distance) + getExpensiveFare();
     }
 
     private int getExpensiveFare() {
@@ -41,20 +37,8 @@ public class SubwayFare {
         return fare;
     }
 
-    private int distanceTenToFifty(int distance) {
-        distance = Math.min(distance, EXTRA_DISTANCE) - DEFAULT_DISTANCE;
-        if (distance <= 0) {
-            return 0;
-        }
-        return (int) ((Math.ceil((distance - 1) / 5) + 1) * 100);
+    private int getDiscountMoney(int fare, int age) {
+        Age discountAge = Age.of(age);
+        return discountAge.calculateFareByAge(fare);
     }
-
-    private int distanceMoreThanFifty(int distance) {
-        distance -= EXTRA_DISTANCE;
-        if (distance <= 0) {
-            return 0;
-        }
-        return (int) ((Math.ceil((distance - 1) / 8) + 1) * 100);
-    }
-
 }
