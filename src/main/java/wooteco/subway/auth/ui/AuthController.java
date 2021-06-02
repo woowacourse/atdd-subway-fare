@@ -1,5 +1,6 @@
 package wooteco.subway.auth.ui;
 
+import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +21,7 @@ public class AuthController {
     }
 
     @PostMapping("/login/token")
-    public ResponseEntity<TokenResponse> login(@RequestBody TokenRequest request) {
+    public ResponseEntity<TokenResponse> login(@Valid @RequestBody TokenRequest request) {
         TokenResponse token = authService.login(request);
         return ResponseEntity.ok(token);
     }

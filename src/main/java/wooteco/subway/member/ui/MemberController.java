@@ -1,6 +1,7 @@
 package wooteco.subway.member.ui;
 
 import java.net.URI;
+import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,7 +28,7 @@ public class MemberController {
     }
 
     @PostMapping("/members")
-    public ResponseEntity<Void> createMember(@RequestBody MemberRequest request) {
+    public ResponseEntity<Void> createMember(@Valid @RequestBody MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
         URI createdUri = URI.create("/members/" + member.getId());
         return ResponseEntity.created(createdUri)
@@ -42,7 +43,7 @@ public class MemberController {
 
     @PutMapping("/members/me")
     public ResponseEntity<Void> updateMemberOfMine(@AuthenticationRequired LoginMember loginMember,
-        @RequestBody MemberRequest param) {
+        @Valid @RequestBody MemberRequest param) {
 
         memberService.updateMember(loginMember, param);
         return ResponseEntity.noContent()
@@ -57,7 +58,7 @@ public class MemberController {
     }
 
     @PostMapping("/members/email-check")
-    public ResponseEntity<Void> verifyUniqueEmail(@RequestBody EmailRequest emailRequest) {
+    public ResponseEntity<Void> verifyUniqueEmail(@Valid @RequestBody EmailRequest emailRequest) {
         memberService.validateUniqueEmail(emailRequest.getEmail());
         return ResponseEntity.ok().build();
     }

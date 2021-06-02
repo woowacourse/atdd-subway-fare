@@ -3,6 +3,8 @@ package wooteco.subway;
 import java.nio.file.InvalidPathException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wooteco.subway.auth.application.AuthorizationException;
@@ -41,5 +43,17 @@ public class SubwayControllerAdvice {
     public ResponseEntity<ErrorResponse> handleDuplicatedEmailAddressException(DuplicatedEmailAddressException e) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
             .body(new ErrorResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleRequestValidationException(final MethodArgumentNotValidException e) {
+        final StringBuffer stringBuffer = new StringBuffer();
+        e.getBindingResult().getAllErrors().forEach((error) -> {
+            final String fieldName = ((FieldError) error).getField();
+            final String errorMessage = error.getDefaultMessage();
+            stringBuffer.append(String.format("%s 검증 실패: %s %n", fieldName, errorMessage));
+        });
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(new ErrorResponse(stringBuffer.toString()));
     }
 }
