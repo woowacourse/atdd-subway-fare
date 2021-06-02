@@ -5,11 +5,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import wooteco.subway.auth.application.AuthorizationException;
+import wooteco.subway.exception.AuthorizationException;
 import wooteco.subway.exception.DuplicateException;
 import wooteco.subway.exception.ErrorResponse;
 
-import javax.validation.ConstraintViolationException;
 import java.util.NoSuchElementException;
 
 @ControllerAdvice
