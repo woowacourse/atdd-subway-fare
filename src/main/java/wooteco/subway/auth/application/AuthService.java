@@ -35,7 +35,7 @@ public class AuthService {
     }
 
     public RequestUser findMemberByToken(String credentials) {
-        if (!jwtTokenProvider.validateToken(credentials)) {
+        if (credentials == null) {
             return new Anonymous();
         }
 
@@ -46,5 +46,9 @@ public class AuthService {
         } catch (Exception e) {
             return new Anonymous();
         }
+    }
+
+    public boolean validateToken(String jws) {
+        return jwtTokenProvider.validateToken(jws);
     }
 }

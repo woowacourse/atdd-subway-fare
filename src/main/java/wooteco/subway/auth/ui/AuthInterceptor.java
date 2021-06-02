@@ -8,10 +8,10 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.exception.InvalidTokenException;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
-import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.RequestUser;
 
 public class AuthInterceptor implements HandlerInterceptor {
+    private static final String PATH_REQUEST_URI = "/api/paths";
 
     private final AuthService authService;
 
@@ -20,20 +20,21 @@ public class AuthInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         if (isPreflightRequest(request)) {
             return true;
         }
 
-        if (isGetRequest(request)) {
+        if (isNotFindPathRequest(request) && isNotGetMemberInfoRequest(request) && isGetRequest(request)) {
             return true;
         }
 
         String credentials = AuthorizationExtractor.extract(request);
-        RequestUser member = authService.findMemberByToken(credentials);
-        if (member.isAnonymous()) {
+        if (isNotFindPathRequest(request) && !authService.validateToken(credentials)) {
             throw new InvalidTokenException();
         }
+        RequestUser authentication = authService.findMemberByToken(credentials);
+        request.setAttribute("authentication", authentication);
 
         return true;
     }
@@ -61,5 +62,13 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     private boolean isGetRequest(HttpServletRequest request) {
         return request.getMethod().equals(HttpMethod.GET.name());
+    }
+
+    private boolean isNotFindPathRequest(HttpServletRequest request) {
+        return !request.getRequestURI().equals(PATH_REQUEST_URI);
+    }
+
+    private boolean isNotGetMemberInfoRequest(HttpServletRequest request) {
+        return !request.getRequestURI().equals("/api/members/me");
     }
 }

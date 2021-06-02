@@ -14,8 +14,6 @@ import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.RequestUser;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
-    private static final String PATH_REQUEST_URI = "/api/paths";
-
     private AuthService authService;
 
     public AuthenticationPrincipalArgumentResolver(AuthService authService) {
@@ -28,21 +26,9 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+    public RequestUser resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
-        String credentials = AuthorizationExtractor.extract(request);
-        RequestUser member = authService.findMemberByToken(credentials);
-
-        if (!member.isAnonymous()) {
-            return member;
-        }
-        if (isFindPathRequest(request)) {
-            return member;
-        }
-        throw new InvalidTokenException();
-    }
-
-    private boolean isFindPathRequest(HttpServletRequest request) {
-        return request.getRequestURI().equals(PATH_REQUEST_URI);
+        RequestUser authentication = (RequestUser) request.getAttribute("authentication");
+        return authentication;
     }
 }
