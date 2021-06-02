@@ -12,8 +12,8 @@ import wooteco.subway.auth.application.AuthorizationException;
 import wooteco.subway.exception.SubwayException;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler {
-    private final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+public class SubwayControllerAdvice {
+    private final Logger logger = LoggerFactory.getLogger(SubwayControllerAdvice.class);
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> unValidBinding(final MethodArgumentNotValidException exception) {
