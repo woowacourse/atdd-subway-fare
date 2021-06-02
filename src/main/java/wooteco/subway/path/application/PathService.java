@@ -4,10 +4,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.fare.domain.Fare;
 import wooteco.subway.fare.domain.Money;
-import wooteco.subway.fare.domain.farestrategy.AgeFare;
-import wooteco.subway.fare.domain.farestrategy.DistanceFare;
 import wooteco.subway.fare.domain.farestrategy.FarePolicy;
-import wooteco.subway.fare.domain.farestrategy.LineFare;
+import wooteco.subway.fare.domain.userstrategy.UserStrategyImpl;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.member.domain.LoginMember;
@@ -18,7 +16,6 @@ import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @Transactional
@@ -46,21 +43,11 @@ public class PathService {
         List<Station> stations = subwayPath.getStations();
         int distance = subwayPath.calculateDistance();
         int lineExtraFare = subwayPath.calculateLineFare();
-        if (Objects.isNull(loginMember)) {
-            FarePolicy farePolicy = new FarePolicy.Builder()
-                    .linePolicy(new LineFare(lineExtraFare))
-                    .distancePolicy(new DistanceFare(distance))
-                    .build();
-            Fare fare = new Fare(Money.DEFAULT_MONEY, farePolicy);
-            return PathResponseAssembler.assemble(stations, distance, fare.calculate());
-        }
 
-        FarePolicy farePolicy = new FarePolicy.Builder()
-                .linePolicy(new LineFare(lineExtraFare))
-                .distancePolicy(new DistanceFare(distance))
-                .agePolicy(new AgeFare(loginMember.getAge()))
-                .build();
+        UserStrategyImpl userStrategy = new UserStrategyImpl(lineExtraFare, distance, loginMember);
+        FarePolicy farePolicy = userStrategy.selectFarePolicy();
         Fare fare = new Fare(Money.DEFAULT_MONEY, farePolicy);
+
         return PathResponseAssembler.assemble(stations, distance, fare.calculate());
     }
 }
