@@ -2,7 +2,7 @@ package wooteco.subway.path;
 
 import java.util.Arrays;
 import wooteco.subway.exception.SubwayException;
-import wooteco.subway.path.exception.PathExceptionSet;
+import wooteco.subway.member.exception.MemberExceptionSet;
 
 public enum AgeSet {
 
@@ -64,7 +64,9 @@ public enum AgeSet {
     public static AgeSet of(int age) {
         return Arrays.stream(AgeSet.values())
             .filter(item -> item.isContainAge(age))
-            .findAny().orElseThrow(() -> new SubwayException(PathExceptionSet.AGE_NOT_FOUND));
+            .findAny().orElseThrow(() ->
+                new SubwayException(MemberExceptionSet.INVALID_AGE_EXCEPTION)
+            );
     }
 
     abstract boolean isContainAge(int age);

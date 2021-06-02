@@ -80,7 +80,19 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //then
         적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
         총_거리가_응답됨(response, 5);
-        총_가격이_응답됨(response, 1250 + 300);
+    }
+
+    @DisplayName("두 역의 최단 거리가 10km 이하일때 나이에 따른 비용 테스트")
+    @ParameterizedTest
+    @CsvSource(value = {"20:1550", "15:1310", "8:950"}, delimiter = ':')
+    void findPathByDistanceByDefaultDistance(int age, int fare) {
+        TokenResponse token = getTokenResponse(age);
+
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(3L, 2L, token);
+
+        총_거리가_응답됨(response, 5);
+        총_가격이_응답됨(response, fare);
     }
 
     @DisplayName("최단거리가 40km 일 때 나이에 따른 비용 테스트")
