@@ -2,7 +2,7 @@ package wooteco.subway.path.domain;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 import wooteco.subway.line.domain.Line;
-import wooteco.subway.line.domain.Section;
+import wooteco.subway.section.domain.Section;
 
 public class SectionEdge extends DefaultWeightedEdge {
     private Section section;
@@ -33,6 +33,6 @@ public class SectionEdge extends DefaultWeightedEdge {
 
     @Override
     protected double getWeight() {
-        return this.section.getDistance();
+        return this.section.getDistanceValue();
     }
 }
