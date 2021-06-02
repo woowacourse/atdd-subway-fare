@@ -8,7 +8,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import wooteco.auth.acceptance.AuthAcceptanceTest;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.web.dto.request.LineRequest;
 import wooteco.subway.web.dto.response.LineResponse;
@@ -19,7 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.auth.acceptance.AuthAcceptanceTest.*;
+import static wooteco.auth.acceptance.AuthAcceptanceTest.토큰;
 import static wooteco.subway.acceptance.StationAcceptanceTest.지하철역_등록되어_있음;
 
 @DisplayName("지하철 노선 관련 기능")

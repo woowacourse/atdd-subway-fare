@@ -13,10 +13,10 @@ import wooteco.auth.domain.LoginMember;
 import wooteco.auth.util.JwtTokenProvider;
 import wooteco.auth.web.api.LoginInterceptor;
 import wooteco.subway.TestDataLoader;
+import wooteco.subway.domain.FareCalculator;
 import wooteco.subway.domain.Station;
 import wooteco.subway.service.AgeDiscountFareCalculator;
 import wooteco.subway.service.DefaultFareCalculator;
-import wooteco.subway.domain.FareCalculator;
 import wooteco.subway.service.PathService;
 import wooteco.subway.web.api.PathController;
 import wooteco.subway.web.dto.response.PathResponse;
@@ -111,6 +111,7 @@ class PathControllerTest {
                 .andExpect(jsonPath("distance").value(10))
                 .andExpect(jsonPath("fare").value(0));
     }
+
     @DisplayName("구간 검색 - 성공(6-13세 요금 할인)")
     @Test
     public void findPath_3() throws Exception {
@@ -139,6 +140,7 @@ class PathControllerTest {
                 .andExpect(jsonPath("distance").value(10))
                 .andExpect(jsonPath("fare").value(450));
     }
+
     @DisplayName("구간 검색 - 성공(14-19세 요금 할인)")
     @Test
     public void findPath_4() throws Exception {

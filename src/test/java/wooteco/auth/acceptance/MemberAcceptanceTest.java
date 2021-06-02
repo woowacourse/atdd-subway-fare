@@ -7,10 +7,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import wooteco.subway.AcceptanceTest;
-import wooteco.auth.web.dto.response.TokenResponse;
 import wooteco.auth.web.dto.request.MemberRequest;
 import wooteco.auth.web.dto.response.MemberResponse;
+import wooteco.auth.web.dto.response.TokenResponse;
+import wooteco.subway.AcceptanceTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.auth.acceptance.AuthAcceptanceTest.로그인되어_있음;

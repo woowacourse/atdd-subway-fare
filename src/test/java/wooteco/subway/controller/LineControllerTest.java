@@ -21,14 +21,12 @@ import wooteco.subway.web.dto.request.LineRequest;
 import wooteco.subway.web.dto.request.LineUpdateRequest;
 import wooteco.subway.web.dto.request.SectionRequest;
 import wooteco.subway.web.dto.response.LineResponse;
-import wooteco.subway.web.dto.response.SectionResponse;
 import wooteco.subway.web.dto.response.StationResponse;
 import wooteco.subway.web.dto.response.StationWithDistanceResponse;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;

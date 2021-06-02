@@ -19,10 +19,10 @@ import wooteco.common.exception.unauthorizationexception.UnAuthorizationExceptio
 import wooteco.subway.domain.Line;
 import wooteco.subway.domain.Station;
 import wooteco.subway.service.StationService;
+import wooteco.subway.web.api.StationController;
 import wooteco.subway.web.dto.request.StationRequest;
 import wooteco.subway.web.dto.response.SimpleLineResponse;
 import wooteco.subway.web.dto.response.StationResponse;
-import wooteco.subway.web.api.StationController;
 
 import java.util.Arrays;
 import java.util.Collections;
