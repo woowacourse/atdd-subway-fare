@@ -9,9 +9,9 @@ import wooteco.subway.auth.exception.AuthExceptionSet;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.exception.SubwayException;
 import wooteco.subway.member.dao.MemberDao;
-import wooteco.subway.member.domain.Age;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
+import wooteco.subway.path.AgeSet;
 
 @Service
 @Transactional
@@ -38,7 +38,7 @@ public class AuthService {
 
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember(Age.ADULT);
+            return new LoginMember(AgeSet.ADULT.getReferenceAge());
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
@@ -46,7 +46,7 @@ public class AuthService {
             Member member = memberDao.findByEmail(email);
             return new LoginMember(member.getId(), member.getEmail(), member.getAge());
         } catch (Exception e) {
-            return new LoginMember(Age.ADULT);
+            return new LoginMember(AgeSet.ADULT.getReferenceAge());
         }
     }
 }
