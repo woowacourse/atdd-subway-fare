@@ -32,7 +32,7 @@ public class AuthService {
         }
     }
 
-    public LoginMember findMemberByToken(String token) {
+    public LoginMember findLoginMemberByToken(String token) {
         if (!jwtTokenProvider.validateToken(token)) {
             return new LoginMember();
         }

@@ -13,6 +13,11 @@ import java.util.NoSuchElementException;
 
 @ControllerAdvice
 public class SubwayAdvice {
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleUnExpected(Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse("예기치 못한 오류가 발생했습니다."));
+    }
+
     @ExceptionHandler(DuplicateException.class)
     public ResponseEntity<ErrorResponse> handleDuplicateName(DuplicateException e) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponse(e.getMessage()));
