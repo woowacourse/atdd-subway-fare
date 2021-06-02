@@ -45,9 +45,10 @@ public enum DistanceAppliedRule {
             .applyAsInt(distance);
     }
 
-    private static int calculateBothIntervalFare(int distance){
+    private static int calculateBothIntervalFare(int distance) {
         int longIntervalQuantity = distance - LONG_INTERVAL_CRITERION;
-        return calculateShortIntervalFare(distance - longIntervalQuantity) + calculateLongIntervalFare(longIntervalQuantity);
+        return calculateShortIntervalFare(distance - longIntervalQuantity)
+            + calculateLongIntervalFare(longIntervalQuantity);
     }
 
     private static int calculateShortIntervalFare(int distance) {
