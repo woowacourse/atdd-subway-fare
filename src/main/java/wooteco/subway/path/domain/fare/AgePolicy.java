@@ -3,6 +3,7 @@ package wooteco.subway.path.domain.fare;
 import java.util.Arrays;
 
 public enum AgePolicy {
+    BABY_POLICY(0, 5, FarePolicy.DEFAULT_DISCOUNT_FARE, 0.0),
     CHILD_POLICY(6, 12, FarePolicy.MINOR_DISCOUNT_FARE, 0.5),
     TEENAGE_POLICY(13, 18, FarePolicy.MINOR_DISCOUNT_FARE, 0.8),
     DEFAULT_POLICY(19, 200, FarePolicy.DEFAULT_DISCOUNT_FARE, 1.0);
