@@ -1,18 +1,20 @@
 package wooteco.subway.line.dto;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import wooteco.subway.line.domain.Line;
+import wooteco.subway.section.domain.Sections;
 import wooteco.subway.station.dto.StationResponse;
 
 public class CustomLineResponse {
 
-    private final Long id;
-    private final String name;
-    private final String color;
-    private final StationResponse startStation;
-    private final StationResponse endStation;
-    private final int distance;
+    private Long id;
+    private String name;
+    private String color;
+    private StationResponse startStation;
+    private StationResponse endStation;
+    private int distance;
+
+    public CustomLineResponse() {
+    }
 
     public CustomLineResponse(Long id, String name, String color, StationResponse startStation, StationResponse endStation, int distance) {
         this.id = id;
@@ -23,17 +25,15 @@ public class CustomLineResponse {
         this.distance = distance;
     }
 
-    public static CustomLineResponse of(Line line) {
-        StationResponse startStation = StationResponse.of(line.getStartStation());
-        StationResponse endStation = StationResponse.of(line.getEndStation());
-        int distance = line.getTotalDistance();
-        return new CustomLineResponse(line.getId(), line.getName(), line.getColor(), startStation, endStation, distance);
-    }
-
-    public static List<CustomLineResponse> listOf(List<Line> lines) {
-        return lines.stream()
-            .map(CustomLineResponse::of)
-            .collect(Collectors.toList());
+    public static CustomLineResponse of(Line line, Sections sections) {
+        return new CustomLineResponse(
+            line.getId(),
+            line.getName(),
+            line.getColor(),
+            StationResponse.of(sections.startStation()),
+            StationResponse.of(sections.endStation()),
+            sections.totalDistanceValue()
+        );
     }
 
     public Long getId() {

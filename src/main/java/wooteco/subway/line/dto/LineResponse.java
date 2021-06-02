@@ -12,6 +12,13 @@ public class LineResponse {
     private String color;
     private List<StationResponse> stations;
 
+    public LineResponse() {
+    }
+
+    public LineResponse(Long id, String name, String color) {
+        this(id, name, color, null);
+    }
+
     public LineResponse(Long id, String name, String color, List<StationResponse> stations) {
         this.id = id;
         this.name = name;
@@ -20,16 +27,11 @@ public class LineResponse {
     }
 
     public static LineResponse of(Line line) {
-        List<StationResponse> stations = line.getStations().stream()
-                .map(it -> StationResponse.of(it))
-                .collect(Collectors.toList());
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), stations);
+        return new LineResponse(line.getId(), line.getName(), line.getColor());
     }
 
-    public static List<LineResponse> listOf(List<Line> lines) {
-        return lines.stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList());
+    public static LineResponse of(Line line, List<StationResponse> stationResponses) {
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), stationResponses);
     }
 
     public Long getId() {
