@@ -1,4 +1,4 @@
-package wooteco.subway.line;
+package wooteco.subway.section;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -177,7 +177,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 지하철_노선에_지하철역_제외_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static StationResponse 지하철역_등록되어_있음(String name) {

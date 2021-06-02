@@ -1,4 +1,4 @@
-package wooteco.subway.line.domain;
+package wooteco.subway.section.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -14,6 +14,8 @@ import wooteco.subway.exception.BothStationAlreadyRegisteredInLineException;
 import wooteco.subway.exception.BothStationNotRegisteredInLineException;
 import wooteco.subway.exception.NoSuchSectionException;
 import wooteco.subway.exception.NoSuchStationException;
+import wooteco.subway.exception.OnlyOneSectionExistsException;
+import wooteco.subway.line.domain.Line;
 import wooteco.subway.section.domain.Distance;
 import wooteco.subway.section.domain.Section;
 import wooteco.subway.section.domain.Sections;
@@ -38,22 +40,6 @@ class SectionsTest {
 
         sections = new Sections(Arrays.asList(section1, section2, section3));
     }
-
-    @Test
-    @DisplayName("구간 생성시 원소 개수에 따른 예외처리")
-    void validateMinimumCount() {
-        // given
-        Section 정상_생성_구간 = new Section(칠호선, 상봉역, 면목역, 거리);
-
-        // when
-
-        // then
-        assertThat(new Sections(Collections.singletonList(정상_생성_구간)))
-            .isInstanceOf(Sections.class);
-        assertThatThrownBy(() -> new Sections(new ArrayList<>()))
-            .isInstanceOf(IllegalStateException.class);
-    }
-
 
     @Test
     @DisplayName("제공된 구간이 노선의 상/하행 끝 구간으로 등록될 것인지 확인")
@@ -140,7 +126,7 @@ class SectionsTest {
 
         // then
         assertThatThrownBy(sections::validateDeletableCount)
-            .isInstanceOf(IllegalStateException.class);
+            .isInstanceOf(OnlyOneSectionExistsException.class);
     }
 
     @Test
