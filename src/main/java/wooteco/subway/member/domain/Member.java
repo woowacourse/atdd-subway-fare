@@ -32,6 +32,10 @@ public class Member implements User {
         this.age = age;
     }
 
+    public Member update(String email, String password, Integer age) {
+        return new Member(id, email, password, age);
+    }
+
     public Long getId() {
         return id;
     }

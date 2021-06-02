@@ -40,9 +40,10 @@ public class MemberService {
         if (!memberDao.isExistByEmail(user.getEmail())) {
             throw new MemberNotFoundException("회원을 찾을 수 없습니다.");
         }
-        Member member = memberDao.findByEmail(user.getEmail());
-        memberDao.update(
-                new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
+        final Member member = memberDao.findByEmail(user.getEmail());
+        final Member updateMember = member.update(memberRequest.getEmail(),
+                memberRequest.getPassword(), memberRequest.getAge());
+        memberDao.update(updateMember);
     }
 
     public void deleteMember(User user) {
