@@ -26,28 +26,28 @@ public class Money {
 
     public static Money calculateFareByDistance(int distance) {
         if (isOverSecondBound(distance)) {
-            return DEFAULT_FARE.addFirstBound(SECOND_BOUND).addSecondBound(distance);
+            return DEFAULT_FARE.plusFirstBound(SECOND_BOUND).plusSecondBound(distance);
         }
-        return DEFAULT_FARE.addFirstBound(distance);
+        return DEFAULT_FARE.plusFirstBound(distance);
     }
 
     private static boolean isOverSecondBound(int distance) {
         return distance > SECOND_BOUND;
     }
 
-    private Money addFirstBound(int distance) {
+    private Money plusFirstBound(int distance) {
         if (isDefaultFareDistance(distance)) {
-            return this.add(ZERO);
+            return this.plus(ZERO);
         }
-        return this.add(calculateFarePerDistance(distance, FIRST_BOUND, FIRST_BOUND_REFERENCE_PER_DISTANCE, FARE_PER_DISTANCE));
+        return this.plus(calculateFarePerDistance(distance, FIRST_BOUND, FIRST_BOUND_REFERENCE_PER_DISTANCE, FARE_PER_DISTANCE));
     }
 
     private static boolean isDefaultFareDistance(int distance) {
         return distance < FIRST_BOUND;
     }
 
-    private Money addSecondBound(int distance) {
-        return this.add(calculateFarePerDistance(distance, SECOND_BOUND, SECOND_BOUND_REFERENCE_PER_DISTANCE, FARE_PER_DISTANCE));
+    private Money plusSecondBound(int distance) {
+        return this.plus(calculateFarePerDistance(distance, SECOND_BOUND, SECOND_BOUND_REFERENCE_PER_DISTANCE, FARE_PER_DISTANCE));
     }
 
     private Money calculateFarePerDistance(int distance, int startingPoint, double perDistance, Money additionalFare) {
@@ -55,10 +55,22 @@ public class Money {
     }
 
     public Money applyDiscount(DiscountPolicy discountPolicy) {
-        return new Money((int) ((this.value - discountPolicy.getStaticDiscount()) * discountPolicy.getDiscountRate()));
+        return this.minus(discountPolicy.getStaticDiscount()).multiple(discountPolicy.getDiscountRate());
     }
 
-    public Money add(Money money) {
+    public boolean afterDiscountIsNegative(Money staticDiscount) {
+        return (this.value - staticDiscount.value) < 0;
+    }
+
+    public Money multiple(double discountRate) {
+        return new Money((int) (this.value * discountRate));
+    }
+
+    public Money minus(Money money) {
+        return new Money(this.value - money.value);
+    }
+
+    public Money plus(Money money) {
         return new Money(this.value + money.value);
     }
 

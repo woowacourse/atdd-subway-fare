@@ -14,7 +14,7 @@ public class Fare {
     }
 
     public static Fare calculateFare(int distance, Fare extraFare) {
-        return new Fare(Money.calculateFareByDistance(distance).add(extraFare.money));
+        return new Fare(Money.calculateFareByDistance(distance).plus(extraFare.money));
     }
 
     public int money() {
@@ -22,6 +22,9 @@ public class Fare {
     }
 
     public Fare discount(DiscountPolicy discountPolicy) {
+        if (this.money.afterDiscountIsNegative(discountPolicy.getStaticDiscount())) {
+            return new Fare(Money.zero());
+        }
         return new Fare(money.applyDiscount(discountPolicy));
     }
 
