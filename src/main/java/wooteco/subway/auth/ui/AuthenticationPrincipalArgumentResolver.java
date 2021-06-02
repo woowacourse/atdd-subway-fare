@@ -1,6 +1,7 @@
 package wooteco.subway.auth.ui;
 
 import org.springframework.core.MethodParameter;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -11,6 +12,7 @@ import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
 
 import javax.servlet.http.HttpServletRequest;
 
+@Component
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
     private AuthService authService;
 

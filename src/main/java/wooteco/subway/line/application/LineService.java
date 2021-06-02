@@ -2,7 +2,6 @@ package wooteco.subway.line.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.exception.addition.LineDistanceException;
 import wooteco.subway.exception.duplication.LineColorDuplicatedException;
 import wooteco.subway.exception.duplication.LineNameDuplicatedException;
 import wooteco.subway.exception.notfound.LineNotFoundException;
@@ -42,12 +41,6 @@ public class LineService {
 
         return LineResponse.of(persistLine);
     }
-
-//    private void validateLineDistance(LineRequest request) {
-//        if (request.getDistance() < 1) {
-//            throw new LineDistanceException();
-//        }
-//    }
 
     private void validateDuplicatedName(String name) {
         if (lineDao.countByName(name) > 0) {
