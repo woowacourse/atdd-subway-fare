@@ -2,13 +2,10 @@ package wooteco.subway.member.domain;
 
 public class Member {
 
-    private Id id;
-    private Email email;
-    private Password password;
-    private Age age;
-
-    public Member() {
-    }
+    private final Id id;
+    private final Email email;
+    private final Password password;
+    private final Age age;
 
     public Member(Long id, String email, Integer age) {
         this(new Id(id), new Email(email), null, new Age(age));
