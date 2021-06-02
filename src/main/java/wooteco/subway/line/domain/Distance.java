@@ -6,10 +6,8 @@ import wooteco.subway.exception.addition.LineDistanceException;
 public class Distance {
     private static final int DEFAULT_FARE_RANGE = 10;
     private static final int FIRST_FARE_RANGE_DISTANCE = 50;
-    private static final int MIN_POSITIVE = 1;
-
     public static final int DEFAULT_TO_FIRST_RANGE_DISTANCE = FIRST_FARE_RANGE_DISTANCE - DEFAULT_FARE_RANGE;
-
+    private static final int MIN_POSITIVE = 1;
     private final int distance;
 
     public Distance(int distance) {

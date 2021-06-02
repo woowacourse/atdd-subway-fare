@@ -2,8 +2,6 @@ package wooteco.subway.fare.domain.farestrategy;
 
 import wooteco.subway.fare.domain.Money;
 
-import java.math.BigDecimal;
-
 public class LineFare implements FareStrategy {
     private final int lineExtraFare;
 

@@ -11,11 +11,11 @@ public abstract class CustomException extends RuntimeException {
         this.body = body;
     }
 
-    public HttpStatus statusCode(){
+    public HttpStatus statusCode() {
         return this.statusCode;
     }
 
-    public String body(){
+    public String body() {
         return this.body;
     }
 

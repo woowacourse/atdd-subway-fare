@@ -12,6 +12,14 @@ public class FarePolicy {
         policies = builder.policies;
     }
 
+    public Money calculateTotalFare(Money value) {
+        Money result = value;
+        for (FareStrategy policy : policies) {
+            result = policy.calculate(result);
+        }
+        return result;
+    }
+
     public static class Builder {
         private final List<FareStrategy> policies;
 
@@ -38,13 +46,5 @@ public class FarePolicy {
         public FarePolicy build() {
             return new FarePolicy(this);
         }
-    }
-
-    public Money calculateTotalFare(Money value) {
-        Money result = value;
-        for (FareStrategy policy : policies) {
-            result = policy.calculate(result);
-        }
-        return result;
     }
 }
