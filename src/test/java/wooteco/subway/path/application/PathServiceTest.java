@@ -44,7 +44,8 @@ class PathServiceTest {
         Station station1 = new Station(1L, "1역");
         Station station2 = new Station(2L, "2역");
         Section section = new Section(station1, station2, 2);
-        Line line = new Line(1L, "1호선", "red", 0, new Sections(Arrays.asList(section)));
+        Line line = new Line(1L, "1호선", "red", 0,
+                new Sections(Arrays.asList(section)));
         List<Line> lines = Arrays.asList(line);
         SubwayPath subwayPath = new SubwayPath(
                 Arrays.asList(new SectionEdge(section, line)),
@@ -56,7 +57,7 @@ class PathServiceTest {
         given(pathFinder.findPath(lines, station1, station2)).willReturn(subwayPath);
 
         // when
-        PathResponse path = pathService.findPath(1L, 2L, new NonLoginMember());
+        PathResponse pathResult = pathService.findPath(1L, 2L, new NonLoginMember());
 
         // then
         PathResponse expectedPathResponse = new PathResponse(
@@ -64,6 +65,8 @@ class PathServiceTest {
                         new StationResponse(1L, "1역"),
                         new StationResponse(2L, "2역")),
                 2, 1250);
-        assertThat(path).usingRecursiveComparison().isEqualTo(expectedPathResponse);
+
+        assertThat(pathResult).usingRecursiveComparison()
+                .isEqualTo(expectedPathResponse);
     }
 }
