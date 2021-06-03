@@ -8,6 +8,7 @@ plugins {
 ext {
     snippetsDir = file('build/generated-snippets')
 }
+
 asciidoctor {
     inputs.dir snippetsDir
     dependsOn test

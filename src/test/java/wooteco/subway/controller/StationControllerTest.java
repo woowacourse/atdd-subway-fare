@@ -209,7 +209,7 @@ public class StationControllerTest {
                 .content(objectMapper.writeValueAsString(stationRequest))
         )
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("새로운역은 이미 존재하는 역 이름입니다."))
+                .andExpect(jsonPath("message").value("새로운역은 이미 존재하는 역 이름입니다."))
                 .andDo(document("station-update-duplicate",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint())
