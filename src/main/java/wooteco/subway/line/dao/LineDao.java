@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import wooteco.subway.exception.LineNotFoundException;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.domain.Sections;
@@ -58,7 +59,7 @@ public class LineDao {
             "left outer join STATION DST on S.down_station_id = DST.id " +
             "WHERE L.id = ?";
 
-        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, id);
+        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, new Object[]{id});
         return mapLine(result);
     }
 
@@ -89,7 +90,7 @@ public class LineDao {
 
     private Line mapLine(List<Map<String, Object>> result) {
         if (result.size() == 0) {
-            throw new RuntimeException();
+            throw new LineNotFoundException();
         }
 
         List<Section> sections = extractSections(result);

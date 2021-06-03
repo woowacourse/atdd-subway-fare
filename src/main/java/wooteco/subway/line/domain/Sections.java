@@ -5,6 +5,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import wooteco.subway.exception.CannotRemoveStationException;
+import wooteco.subway.exception.InvalidDistanceException;
+import wooteco.subway.exception.SectionExistException;
+import wooteco.subway.exception.StationNotExistForSectionException;
+import wooteco.subway.exception.StationNotFoundException;
 import wooteco.subway.station.domain.Station;
 
 public class Sections {
@@ -41,7 +46,7 @@ public class Sections {
         List<Station> stations = getStations();
         if (!stations.contains(section.getUpStation()) && !stations
             .contains(section.getDownStation())) {
-            throw new RuntimeException();
+            throw new StationNotExistForSectionException();
         }
     }
 
@@ -50,7 +55,7 @@ public class Sections {
         List<Station> stationsOfNewSection = Arrays
             .asList(section.getUpStation(), section.getDownStation());
         if (stations.containsAll(stationsOfNewSection)) {
-            throw new RuntimeException();
+            throw new SectionExistException();
         }
     }
 
@@ -70,7 +75,7 @@ public class Sections {
 
     private void replaceSectionWithUpStation(Section newSection, Section existSection) {
         if (existSection.getDistance() <= newSection.getDistance()) {
-            throw new RuntimeException();
+            throw new InvalidDistanceException();
         }
         this.sections.add(new Section(existSection.getUpStation(), newSection.getUpStation(),
             existSection.getDistance() - newSection.getDistance()));
@@ -79,7 +84,7 @@ public class Sections {
 
     private void replaceSectionWithDownStation(Section newSection, Section existSection) {
         if (existSection.getDistance() <= newSection.getDistance()) {
-            throw new RuntimeException();
+            throw new InvalidDistanceException();
         }
         this.sections.add(new Section(newSection.getDownStation(), existSection.getDownStation(),
             existSection.getDistance() - newSection.getDistance()));
@@ -112,7 +117,7 @@ public class Sections {
         return this.sections.stream()
             .filter(it -> !downStations.contains(it.getUpStation()))
             .findFirst()
-            .orElseThrow(RuntimeException::new);
+            .orElseThrow(StationNotFoundException::new);
     }
 
     private Section findSectionByNextUpStation(Station station) {
@@ -124,7 +129,7 @@ public class Sections {
 
     public void removeStation(Station station) {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new CannotRemoveStationException();
         }
 
         Optional<Section> upSection = sections.stream()

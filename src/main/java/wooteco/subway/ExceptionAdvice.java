@@ -7,6 +7,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import wooteco.subway.exception.AuthorizationException;
+import wooteco.subway.exception.CannotAddSectionException;
 import wooteco.subway.exception.CannotRemoveStationException;
 import wooteco.subway.exception.DuplicatedNameException;
 import wooteco.subway.exception.InvalidPathException;
@@ -46,6 +47,11 @@ public class ExceptionAdvice {
     public ResponseEntity<String> handleCannotRemoveStationException(
         CannotRemoveStationException e
     ) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler(CannotAddSectionException.class)
+    public ResponseEntity<String> handleCannotAddSectionException(CannotAddSectionException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
