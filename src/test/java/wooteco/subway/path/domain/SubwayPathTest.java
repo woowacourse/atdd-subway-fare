@@ -5,6 +5,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.domain.Sections;
+import wooteco.subway.member.domain.Age;
 import wooteco.subway.path.application.PathFinder;
 import wooteco.subway.station.domain.Station;
 
@@ -28,7 +29,7 @@ public class SubwayPathTest {
         SubwayPath subwayPath = new PathFinder().findPath(Collections.singletonList(line), station1, station2);
 
         // when
-        final int fare = subwayPath.calculateFare(age);
+        final int fare = subwayPath.calculateFare(Age.of(age));
 
         // then
         assertThat(fare).isEqualTo(expected);
@@ -46,7 +47,7 @@ public class SubwayPathTest {
         SubwayPath subwayPath = new PathFinder().findPath(Collections.singletonList(line), station1, station2);
 
         // when
-        final int fare = subwayPath.calculateFare(age);
+        final int fare = subwayPath.calculateFare(Age.of(age));
 
         // then
         assertThat(fare).isEqualTo(expected);

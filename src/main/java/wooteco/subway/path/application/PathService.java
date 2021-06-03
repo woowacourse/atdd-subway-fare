@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
+import wooteco.subway.member.domain.Age;
 import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.path.dto.PathResponseAssembler;
@@ -27,7 +28,7 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse findPath(Long source, Long target, Integer age) {
+    public PathResponse findPath(Long source, Long target, Age age) {
         try {
             List<Line> lines = lineService.findLines();
             Station sourceStation = stationService.findStationById(source);

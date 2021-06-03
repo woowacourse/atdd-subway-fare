@@ -1,5 +1,6 @@
 package wooteco.subway.path.domain;
 
+import wooteco.subway.member.domain.Age;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public class SubwayPath {
         return sectionEdges.stream().mapToInt(it -> it.getSection().getDistance()).sum();
     }
 
-    public int calculateFare(Integer age) {
+    public int calculateFare(Age age) {
         int extraFare = findExtraFare();
         final int fare = DEFAULT_FARE + extraFare + DistanceExtraFarePolicy.apply(calculateDistance());
         return fare - DiscountPolicy.apply(age, fare);
