@@ -1,6 +1,6 @@
 package wooteco.subway.path.domain;
 
-import wooteco.subway.path.domain.strategy.additional.AgeDiscountFactory;
+import wooteco.subway.path.domain.strategy.additional.AgeDiscountPolicies;
 import wooteco.subway.path.domain.strategy.discount.DistanceAdditionFactory;
 import wooteco.subway.station.domain.Station;
 
@@ -30,7 +30,7 @@ public class SubwayPath {
 
     public int calculateFare(Integer age) {
         Fare fare = new Fare(DistanceAdditionFactory.create(calculateDistance(), DEFAULT_FARE),
-                AgeDiscountFactory.create(age, DEFAULT_DISCOUNT_FARE),
+                AgeDiscountPolicies.instanceOf(age),
                 findMaximumExtraFare()
         );
         return fare.calculateFare();

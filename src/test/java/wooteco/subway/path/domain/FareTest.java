@@ -4,11 +4,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import wooteco.subway.path.domain.strategy.discount.DistanceAdditionFactory;
-import wooteco.subway.path.domain.strategy.discount.DistanceAdditionPolicy;
-import wooteco.subway.path.domain.strategy.additional.AgeDiscountFactory;
+import wooteco.subway.path.domain.strategy.additional.AgeDiscountPolicies;
 import wooteco.subway.path.domain.strategy.additional.AgeDiscountPolicy;
 import wooteco.subway.path.domain.strategy.additional.NoDiscount;
+import wooteco.subway.path.domain.strategy.discount.DistanceAdditionFactory;
+import wooteco.subway.path.domain.strategy.discount.DistanceAdditionPolicy;
 
 import java.util.stream.Stream;
 
@@ -60,7 +60,7 @@ class FareTest {
     void calculateByDistanceWithAge(int distance, int extraFare, int age, int result) {
         //given
         DistanceAdditionPolicy distanceAdditionPolicy = DistanceAdditionFactory.create(distance, DEFAULT_FARE);
-        AgeDiscountPolicy ageDiscountPolicy = AgeDiscountFactory.create(age, DEFAULT_DISCOUNT_FARE);
+        AgeDiscountPolicy ageDiscountPolicy = AgeDiscountPolicies.instanceOf(age);
         //when
         Fare fare = new Fare(distanceAdditionPolicy, ageDiscountPolicy, extraFare);
         int calculateFare = fare.calculateFare();

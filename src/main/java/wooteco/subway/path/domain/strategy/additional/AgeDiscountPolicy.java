@@ -12,4 +12,5 @@ public abstract class AgeDiscountPolicy {
     }
 
     public abstract int calculateFare(int fare);
+    public abstract boolean match(int age);
 }
