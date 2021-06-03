@@ -9,7 +9,7 @@ import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.application.AuthorizationException;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
-import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.domain.User;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -29,14 +29,15 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
         String token = AuthorizationExtractor.extract(request);
-        LoginMember member = authService.findMemberByToken(token);
-        if (member.getId() == null) {
-            if (isGetPathByNonMember(request)) {
-                return LoginMember.guest();
-            }
-            throw new AuthorizationException();
+        User member = authService.findMemberByToken(token);
+
+        if (member.isLoginMember()) {
+            return member;
         }
-        return member;
+        if (isGetPathByNonMember(request)) {
+            return member;
+        }
+        throw new AuthorizationException();
     }
 
     private boolean isGetPathByNonMember(HttpServletRequest request) {

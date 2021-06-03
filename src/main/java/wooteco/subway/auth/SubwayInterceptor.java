@@ -3,6 +3,7 @@ package wooteco.subway.auth;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
+import wooteco.subway.auth.application.AuthorizationException;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 
@@ -26,9 +27,12 @@ public class SubwayInterceptor implements HandlerInterceptor {
         if (isGet(request) && isNotMembersMe(request)) {
             return true;
         }
+
         String token = AuthorizationExtractor.extract(request);
-        jwtTokenProvider.validateToken(token);
-        return true;
+        if (jwtTokenProvider.validateToken(token)) {
+            return true;
+        }
+        throw new AuthorizationException();
     }
 
     private boolean isPreflightRequest(HttpServletRequest request) {

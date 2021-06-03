@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.domain.User;
 import wooteco.subway.path.domain.DiscountPolicy;
 import wooteco.subway.path.domain.FareTable;
 import wooteco.subway.path.domain.SubwayPath;
@@ -28,7 +29,7 @@ public class PathService {
         this.pathFinder = pathFinder;
     }
 
-    public PathResponse findPath(LoginMember loginMember, Long source, Long target) {
+    public PathResponse findPath(User member, Long source, Long target) {
         try {
             List<Line> lines = lineService.findLines();
             Station sourceStation = stationService.findStationById(source);
@@ -38,7 +39,7 @@ public class PathService {
             FareTable fareTable = getFareTable(subwayPath);
 
             int distance = subwayPath.calculateDistance();
-            int defaultFare = fareTable.calculateByAgeType(DiscountPolicy.findAge(loginMember.getAge()).getKorean());
+            int defaultFare = fareTable.calculateByAgeType(DiscountPolicy.findAge(member.getAge()).getKorean());
             Map<String, Integer> fare = fareTable.getFareTable();
 
             return PathResponse.of(subwayPath, distance, defaultFare, fare);
