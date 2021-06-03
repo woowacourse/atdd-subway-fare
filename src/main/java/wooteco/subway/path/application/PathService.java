@@ -23,12 +23,15 @@ public class PathService {
     private final LineService lineService;
     private final StationService stationService;
     private final PathFinder pathFinder;
+    private final Fare fare;
 
     public PathService(LineService lineService, StationService stationService,
         PathFinder pathFinder) {
         this.lineService = lineService;
         this.stationService = stationService;
         this.pathFinder = pathFinder;
+        this.fare = new Fare(FarePolicyFactory.createExtraFarePolicy(),
+            FarePolicyFactory.createDiscountPolicy());
     }
 
     public PathResponse findPath(Long source, Long target, LoginMember loginMember) {
@@ -36,10 +39,8 @@ public class PathService {
             List<Line> lines = lineService.findLines();
             Station sourceStation = stationService.findStationById(source);
             Station targetStation = stationService.findStationById(target);
-            SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
 
-            Fare fare = new Fare(FarePolicyFactory.createExtraFarePolicy(),
-                FarePolicyFactory.createDiscountPolicy());
+            SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
             BigDecimal calculatedFare = fare.calculate(subwayPath, loginMember);
 
             return PathResponseAssembler.assemble(subwayPath, calculatedFare.intValue());
