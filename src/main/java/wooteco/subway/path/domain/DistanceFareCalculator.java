@@ -27,6 +27,6 @@ public enum DistanceFareCalculator {
                 .filter(it -> (it.minDistance <= distance && distance < it.maxDistance))
                 .map(it -> it.calculator.apply(distance))
                 .findFirst()
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new NoSuchElementException("거리를 확인해주세요 해당하는 요금 구간을 찾을 수 없습니다."));
     }
 }

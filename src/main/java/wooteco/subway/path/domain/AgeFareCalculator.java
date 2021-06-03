@@ -25,6 +25,6 @@ public enum AgeFareCalculator {
                 .filter(it -> it.minAge <= age && age < it.maxAge)
                 .mapToInt(it -> it.adjuster.apply(fare, lineFare))
                 .findAny()
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new NoSuchElementException("나이를 확인해주세요 해당하는 요금을 찾을 수 없습니다."));
     }
 }
