@@ -74,7 +74,6 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
     public List<Line> findLines() {
         return lineDao.findAll();
     }
@@ -94,12 +93,10 @@ public class LineService {
         return lineDao.findById(id);
     }
 
-    @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
-    @Transactional
     public void deleteLineById(Long id) {
         lineDao.deleteById(id);
     }
