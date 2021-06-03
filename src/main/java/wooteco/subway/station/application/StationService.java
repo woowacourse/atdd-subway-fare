@@ -17,11 +17,9 @@ import java.util.stream.Collectors;
 @Service
 public class StationService {
     private StationDao stationDao;
-    private SectionDao sectionDao;
 
-    public StationService(StationDao stationDao, SectionDao sectionDao) {
+    public StationService(StationDao stationDao) {
         this.stationDao = stationDao;
-        this.sectionDao = sectionDao;
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {

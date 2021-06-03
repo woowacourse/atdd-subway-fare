@@ -55,14 +55,4 @@ public class SectionDao {
 
         simpleJdbcInsert.executeBatch(batchValues.toArray(new Map[sections.size()]));
     }
-
-    public Optional<Section> findByStationId(Long stationId) {
-        String sql = "select * from SECTION where up_station_id = ? or down_station_id = ?";
-        List<Section> result = jdbcTemplate.query(sql, (rs, rowNum) ->
-                new Section(rs.getLong("id"),
-                        rs.getLong("up_station_id"),
-                        rs.getLong("down_station_id"),
-                        rs.getInt("distance")), stationId);
-        return Optional.ofNullable(DataAccessUtils.singleResult(result));
-    }
 }
