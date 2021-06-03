@@ -2,7 +2,6 @@ package wooteco.subway.line.dto;
 
 import wooteco.subway.line.domain.Line;
 
-// todo validation
 public class LineRequest {
     private String name;
     private String color;
