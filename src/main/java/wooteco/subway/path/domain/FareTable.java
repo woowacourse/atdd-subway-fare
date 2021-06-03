@@ -32,10 +32,10 @@ public class FareTable {
     }
 
     private int calculateFareByDistanceAndLine(int distance, List<SectionEdge> sectionEdges) {
-        int fare = fareChain.calculate(distance);
-        fare += calculateAdditionalFareByLine(sectionEdges);
+        int defaultFare = fareChain.calculate(distance);
+        defaultFare += calculateAdditionalFareByLine(sectionEdges);
 
-        return fare;
+        return defaultFare;
     }
 
     private int calculateAdditionalFareByLine(List<SectionEdge> sectionEdges) {
