@@ -8,7 +8,6 @@ import java.util.List;
 
 public class SubwayPath {
     private static final int DEFAULT_FARE = 1250;
-    private static final int DEFAULT_DISCOUNT_FARE = 350;
 
     private final List<SectionEdge> sectionEdges;
     private final List<Station> stations;

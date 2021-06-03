@@ -42,7 +42,7 @@ public class Sections {
     private void checkExistedAny(Section section) {
         List<Station> stations = getStations();
         if (!stations.contains(section.getUpStation()) && !stations.contains(section.getDownStation())) {
-            throw new InvalidInputException("노선에 등록하려는 구간의 역들이 포함되어있지 않습니다.");
+            throw new InvalidInputException(String.format("노선에 등록하려는 구간의 역들이 포함되어있지 않습니다. 입력한 역 이름: %s, %s", section.getUpStation().getName(), section.getDownStation().getName() ));
         }
     }
 

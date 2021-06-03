@@ -31,12 +31,6 @@ public class LineResponse {
         return new LineResponse(line.getId(), line.getName(), line.getColor(), stations, line.getExtraFare());
     }
 
-    public static List<LineResponse> listOf(List<Line> lines) {
-        return lines.stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList());
-    }
-
     public Long getId() {
         return id;
     }
@@ -45,15 +39,7 @@ public class LineResponse {
         return name;
     }
 
-    public String getColor() {
-        return color;
-    }
-
     public List<StationResponse> getStations() {
         return stations;
-    }
-
-    public int getExtraFare() {
-        return extraFare;
     }
 }

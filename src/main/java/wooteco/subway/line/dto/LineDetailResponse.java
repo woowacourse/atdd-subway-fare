@@ -38,12 +38,6 @@ public class LineDetailResponse {
         return new LineDetailResponse(line.getId(), line.getName(), line.getColor(), line.getDistance(), stations, sections);
     }
 
-    public static List<LineDetailResponse> listOf(List<Line> lines) {
-        return lines.stream()
-                .map(LineDetailResponse::of)
-                .collect(Collectors.toList());
-    }
-
     public Long getId() {
         return id;
     }
@@ -52,19 +46,11 @@ public class LineDetailResponse {
         return name;
     }
 
-    public String getColor() {
-        return color;
-    }
-
     public int getDistance() {
         return distance;
     }
 
     public List<StationResponse> getStations() {
         return stations;
-    }
-
-    public List<SectionResponse> getSections() {
-        return sections;
     }
 }

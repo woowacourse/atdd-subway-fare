@@ -9,7 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wooteco.subway.auth.application.AuthorizationException;
-import wooteco.subway.exception.SubwayException;
+import wooteco.subway.exception.CommonException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -21,8 +21,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(bindingResultMessage(exception)));
     }
 
-    @ExceptionHandler(SubwayException.class)
-    public ResponseEntity<ErrorResponse> subwayExceptionHandler(final SubwayException exception) {
+    @ExceptionHandler(CommonException.class)
+    public ResponseEntity<ErrorResponse> subwayExceptionHandler(final CommonException exception) {
         logger.error(exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(exception.getMessage()));
     }

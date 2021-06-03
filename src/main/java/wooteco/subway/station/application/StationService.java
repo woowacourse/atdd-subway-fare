@@ -1,16 +1,18 @@
 package wooteco.subway.station.application;
 
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.DuplicateException;
 import wooteco.subway.exception.InvalidInputException;
+import wooteco.subway.exception.NotFoundException;
+import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,9 +20,11 @@ import java.util.stream.Collectors;
 public class StationService {
 
     private final StationDao stationDao;
+    private final SectionDao sectionDao;
 
-    public StationService(StationDao stationDao) {
+    public StationService(StationDao stationDao, SectionDao sectionDao) {
         this.stationDao = stationDao;
+        this.sectionDao = sectionDao;
     }
 
     @Transactional
@@ -47,10 +51,12 @@ public class StationService {
 
     @Transactional
     public void deleteStationById(Long id) {
-        try {
-            stationDao.deleteById(id);
-        } catch (DataAccessException e) {
+        if (sectionDao.existsByStationId(id)) {
             throw new InvalidInputException("노선에 등록된 역은 삭제할 수 없습니다.");
         }
+        if (Objects.isNull(findStationById(id))) {
+            throw new NotFoundException("삭제할 역이 등록되어 있지 않습니다.");
+        }
+        stationDao.deleteById(id);
     }
 }

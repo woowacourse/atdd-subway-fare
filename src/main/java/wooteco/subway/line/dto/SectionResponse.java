@@ -21,14 +21,6 @@ public class SectionResponse {
         return new SectionResponse(StationResponse.of(section.getUpStation()), StationResponse.of(section.getDownStation()), section.getDistance());
     }
 
-    public StationResponse getUpStation() {
-        return upStation;
-    }
-
-    public StationResponse getDownStation() {
-        return downStation;
-    }
-
     public int getDistance() {
         return distance;
     }

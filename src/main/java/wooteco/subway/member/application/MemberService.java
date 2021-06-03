@@ -2,8 +2,8 @@ package wooteco.subway.member.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.auth.application.AuthorizationException;
 import wooteco.subway.exception.DuplicateException;
+import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
@@ -22,7 +22,7 @@ public class MemberService {
     @Transactional
     public MemberResponse createMember(MemberRequest request) {
         if (memberDao.existsEmail(request.getEmail())) {
-            throw new DuplicateException("이미 존재하는 이메일임!");
+            throw new DuplicateException("이미 존재하는 이메일입니다. 입력값: " + request.getEmail());
         }
         Member member = memberDao.insert(request.toMember());
         return MemberResponse.of(member);
@@ -47,7 +47,7 @@ public class MemberService {
 
     private Member findByEmail(LoginMember loginMember) {
         if (!memberDao.existsEmail(loginMember.getEmail())) {
-            throw new AuthorizationException("존재하지 않는 이메일입니다.");
+            throw new NotFoundException("존재하지 않는 이메일입니다. 입력값: " + loginMember.getEmail());
         }
         return memberDao.findByEmail(loginMember.getEmail());
     }

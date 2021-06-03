@@ -1,8 +1,8 @@
 package wooteco.subway.path.application;
 
-import wooteco.subway.exception.SubwayException;
+import wooteco.subway.exception.CommonException;
 
-public class InvalidPathException extends SubwayException {
+public class InvalidPathException extends CommonException {
     public InvalidPathException(String message) {
         super(message);
     }
