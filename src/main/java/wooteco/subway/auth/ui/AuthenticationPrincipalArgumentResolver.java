@@ -31,7 +31,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String credentials = AuthorizationExtractor.extract(Objects.requireNonNull(webRequest.getNativeRequest(HttpServletRequest.class)));
         if (credentials == null || credentials.isEmpty()) {
-            return LoginMember.guest();
+            return LoginMember.GUEST;
         }
         LoginMember member = authService.findMemberByToken(credentials);
         if (member.getId() == null) {
