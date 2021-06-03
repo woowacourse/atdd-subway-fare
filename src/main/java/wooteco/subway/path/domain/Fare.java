@@ -23,6 +23,12 @@ public class Fare {
         }
     }
 
+    public static Fare ofSubwayFare(int distance, Fare maxExtraFare, int age) {
+        Fare fareOfDistance = DistanceFareRule.calculateRate(distance);
+        Fare totalFare = fareOfDistance.add(maxExtraFare);
+        return AgeDiscountRule.discountByAge(age, totalFare);
+    }
+
     public static Fare calculateRate(int distance, Fare maxExtraFare) {
         validatePositiveDistance(distance);
         Fare fareOfDistance = DistanceFareRule.calculateRate(distance);
@@ -49,10 +55,6 @@ public class Fare {
 
     public int getValue() {
         return value;
-    }
-
-    public Fare discountByAge(int age) {
-        return AgeDiscountRule.discountByAge(age, this);
     }
 
     @Override

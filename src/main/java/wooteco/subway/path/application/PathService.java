@@ -21,7 +21,8 @@ public class PathService {
     private StationService stationService;
     private PathFinder pathFinder;
 
-    public PathService(LineService lineService, StationService stationService, PathFinder pathFinder) {
+    public PathService(LineService lineService, StationService stationService,
+        PathFinder pathFinder) {
         this.lineService = lineService;
         this.stationService = stationService;
         this.pathFinder = pathFinder;
@@ -34,9 +35,12 @@ public class PathService {
             Station targetStation = stationService.findStationById(target);
             SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
 
-            List<StationResponse> stationResponses = StationResponse.listOf(subwayPath.getStations());
+            List<StationResponse> stationResponses = StationResponse
+                .listOf(subwayPath.getStations());
             int distance = subwayPath.calculateDistance();
-            Fare totalFare = subwayPath.fareOf(loginMember);
+            Fare maxExtraFare = subwayPath.calculateMaxExtraFare();
+            Fare totalFare = Fare.ofSubwayFare(distance, maxExtraFare, loginMember.getAge());
+//            Fare totalFare = subwayPath.fareOf(loginMember);
 
             return new PathResponse(stationResponses, distance, totalFare);
         } catch (Exception e) {
