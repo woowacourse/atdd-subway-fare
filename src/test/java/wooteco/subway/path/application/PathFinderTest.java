@@ -3,8 +3,13 @@ package wooteco.subway.path.application;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
+import wooteco.subway.path.domain.SectionEdge;
 import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.path.domain.fare.AdultFarePrincipal;
 import wooteco.subway.path.domain.fare.KidFarePrincipal;
@@ -16,7 +21,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
 
+@ExtendWith(MockitoExtension.class)
 class PathFinderTest {
     private Station 잠실역;
     private Station 강남역;
@@ -31,6 +38,8 @@ class PathFinderTest {
     private Section 강남역_수서역;
     private Section 수서역_교대역;
     private List<Line> lines;
+
+    @InjectMocks
     private PathFinder pathFinder;
 
     @BeforeEach
@@ -57,51 +66,29 @@ class PathFinderTest {
         pathFinder = new PathFinder();
     }
 
-    @DisplayName("경로를 탐색한다.")
+    @DisplayName("경로 등록을 확인한다.")
     @Test
     void findPath() {
         SubwayPath path = pathFinder.findPath(lines, 잠실역, 석촌역);
 
-        assertThat(path.calculateDistance()).isEqualTo(20);
+        assertThat(path.getSectionEdges().get(0).getSection())
+                .usingRecursiveComparison()
+                .isEqualTo(잠실역_강남역);
+        assertThat(path.getSectionEdges().get(1).getSection())
+                .usingRecursiveComparison()
+                .isEqualTo(강남역_석촌역);
     }
 
-    @DisplayName("성인 요금을 확인한다.")
+    @DisplayName("환승 여부를 확인한다.")
     @Test
-    void fareAdult() {
-        SubwayPath path = pathFinder.findPath(lines, 잠실역, 석촌역);
+    void findPathByTransfer() {
+        SubwayPath path = pathFinder.findPath(lines, 잠실역, 수서역);
 
-        assertThat(path.calculateFare(new AdultFarePrincipal())).isEqualTo(1450);
-    }
-
-    @DisplayName("학생 요금을 확인한다.")
-    @Test
-    void fareTeenager() {
-        SubwayPath path = pathFinder.findPath(lines, 잠실역, 석촌역);
-
-        assertThat(path.calculateFare(new TeenagerFarePrincipal())).isEqualTo(1230);
-    }
-
-    @DisplayName("어린이 요금을 확인한다.")
-    @Test
-    void fareKid() {
-        SubwayPath path = pathFinder.findPath(lines, 잠실역, 석촌역);
-
-        assertThat(path.calculateFare(new KidFarePrincipal())).isEqualTo(900);
-    }
-
-    @DisplayName("유아 요금을 확인한다.")
-    @Test
-    void fareToddler() {
-        SubwayPath path = pathFinder.findPath(lines, 잠실역, 석촌역);
-
-        assertThat(path.calculateFare(new ToddlerFarePrincipal())).isEqualTo(0);
-    }
-
-    @DisplayName("환승 추가요금을 확인한다.")
-    @Test
-    void transferLineFare() {
-        SubwayPath path = pathFinder.findPath(lines, 잠실역, 교대역);
-
-        assertThat(path.calculateFare(new AdultFarePrincipal())).isEqualTo(2150);
+        assertThat(path.getSectionEdges().get(0).getSection())
+                .usingRecursiveComparison()
+                .isEqualTo(잠실역_강남역);
+        assertThat(path.getSectionEdges().get(1).getSection())
+                .usingRecursiveComparison()
+                .isEqualTo(강남역_수서역);
     }
 }
