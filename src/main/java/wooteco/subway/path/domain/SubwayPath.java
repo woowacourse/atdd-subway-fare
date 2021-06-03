@@ -22,6 +22,8 @@ public class SubwayPath {
     }
 
     public int calculateDistance() {
-        return sectionEdges.stream().mapToInt(it -> it.getSection().getDistanceValue()).sum();
+        return sectionEdges.stream()
+            .mapToInt(it -> it.getSection().getDistanceValue())
+            .sum();
     }
 }
