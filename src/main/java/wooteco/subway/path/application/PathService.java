@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.fare.AgeFarePolicy;
+import wooteco.subway.member.domain.User;
 import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.path.dto.PathResponseAssembler;
@@ -26,12 +27,13 @@ public class PathService {
         this.pathFinder = pathFinder;
     }
 
-    public PathResponse findPath(Long source, Long target, AgeFarePolicy ageFarePolicy) {
+    public PathResponse findPath(Long source, Long target, User member) {
         List<Line> lines = lineService.findLines();
         Station sourceStation = stationService.findStationById(source);
         Station targetStation = stationService.findStationById(target);
         SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
 
+        AgeFarePolicy ageFarePolicy = member.farePolicy();
         return PathResponseAssembler.assemble(subwayPath, ageFarePolicy);
     }
 }

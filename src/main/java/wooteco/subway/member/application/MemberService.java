@@ -5,8 +5,8 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.notfound.NoMemberException;
 import wooteco.subway.exception.unprocessableentity.DuplicateEmailException;
 import wooteco.subway.member.dao.MemberDao;
-import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
+import wooteco.subway.member.domain.User;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
@@ -24,21 +24,21 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public MemberResponse findMember(LoginMember loginMember) {
+    public MemberResponse findMember(User loginMember) {
         Member member = memberDao.findByEmail(loginMember.getEmail())
                 .orElseThrow(NoMemberException::new);
         return MemberResponse.of(member);
     }
 
     @Transactional
-    public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
+    public void updateMember(User loginMember, MemberRequest memberRequest) {
         Member member = memberDao.findByEmail(loginMember.getEmail())
                 .orElseThrow(NoMemberException::new);
         memberDao.update(new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
     }
 
     @Transactional
-    public void deleteMember(LoginMember loginMember) {
+    public void deleteMember(User loginMember) {
         Member member = memberDao.findByEmail(loginMember.getEmail())
                 .orElseThrow(NoMemberException::new);
         memberDao.deleteById(member.getId());

@@ -1,0 +1,31 @@
+package wooteco.subway.member.domain;
+
+import wooteco.subway.exception.unauthorized.AuthorizationException;
+import wooteco.subway.line.domain.fare.AgeFarePolicy;
+
+public class Guest implements User {
+    @Override
+    public Long getId() {
+        throw new AuthorizationException();
+    }
+
+    @Override
+    public String getEmail() {
+        throw new AuthorizationException();
+    }
+
+    @Override
+    public Integer getAge() {
+        throw new AuthorizationException();
+    }
+
+    @Override
+    public boolean isOverThan(int age) {
+        throw new AuthorizationException();
+    }
+
+    @Override
+    public AgeFarePolicy farePolicy() {
+        return AgeFarePolicy.ADULT;
+    }
+}

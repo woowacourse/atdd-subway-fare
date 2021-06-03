@@ -1,6 +1,7 @@
 package wooteco.subway.line.domain.fare;
 
 import wooteco.subway.exception.notfound.InvalidAgeException;
+import wooteco.subway.member.domain.User;
 
 import java.util.Arrays;
 import java.util.function.UnaryOperator;
@@ -19,9 +20,9 @@ public enum AgeFarePolicy {
         this.discountRate = discountRate;
     }
 
-    public static AgeFarePolicy of(int age) {
+    public static AgeFarePolicy of(User user) {
         return Arrays.stream(values())
-                .filter(agePolicy -> age >= agePolicy.minimumAge)
+                .filter(agePolicy -> user.isOverThan(agePolicy.minimumAge))
                 .findAny()
                 .orElseThrow(InvalidAgeException::new);
     }
