@@ -62,4 +62,8 @@ public class Member implements User {
             throw new AuthorizationException();
         }
     }
+
+    public boolean checkSameUserByEmail(String email) {
+        return this.email.equals(email);
+    }
 }
