@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.InvalidPathException;
 import wooteco.subway.line.application.LineService;
+import wooteco.subway.path.domain.Fare;
 import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.path.dto.PathResponseAssembler;
@@ -15,19 +16,22 @@ import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class PathService {
 
     private final SectionService sectionService;
     private final StationService stationService;
     private final LineService lineService;
     private final PathFinder pathFinder;
+    private final FareService fareService;
 
-    public PathService(SectionService sectionService, StationService stationService, LineService lineService, PathFinder pathFinder) {
+    public PathService(SectionService sectionService, StationService stationService, LineService lineService,
+        PathFinder pathFinder, FareService fareService) {
         this.sectionService = sectionService;
         this.stationService = stationService;
         this.lineService = lineService;
         this.pathFinder = pathFinder;
+        this.fareService = fareService;
     }
 
     public PathResponse findPath(Long source, Long target) {
@@ -40,7 +44,9 @@ public class PathService {
                 .collect(Collectors.toList());
 
             SubwayPath subwayPath = pathFinder.findPath(sectionsList, sourceStation, targetStation);
-            return PathResponseAssembler.assemble(subwayPath);
+            Fare fare = fareService.calculateFare(subwayPath.calculateDistance());
+
+            return PathResponseAssembler.assemble(subwayPath, fare);
         } catch (Exception e) {
             throw new InvalidPathException();
         }

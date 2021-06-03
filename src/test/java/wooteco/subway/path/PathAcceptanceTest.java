@@ -62,11 +62,17 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findPathByDistance() {
         //when
-        ExtractableResponse<Response> response = 토큰과_함께_거리_경로_조회_요청(3L, 2L);
+        ExtractableResponse<Response> response1 = 토큰과_함께_거리_경로_조회_요청(3L, 2L);
+        ExtractableResponse<Response> response2 = 토큰과_함께_거리_경로_조회_요청(1L, 4L);
 
         //then
-        적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
-        총_거리가_응답됨(response, 5);
+        적절한_경로_응답됨(response1, Lists.newArrayList(교대역, 남부터미널역, 양재역));
+        총_거리가_응답됨(response1, 5);
+        총_금액이_응답됨(response1, 1250);
+
+        적절한_경로_응답됨(response2, Lists.newArrayList(강남역, 양재역, 남부터미널역));
+        총_거리가_응답됨(response2, 12);
+        총_금액이_응답됨(response2, 1250 + 100);
     }
 
     public static ExtractableResponse<Response> 토큰과_함께_거리_경로_조회_요청(long source, long target) {
@@ -97,6 +103,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public static void 총_거리가_응답됨(ExtractableResponse<Response> response, int totalDistance) {
         PathResponse pathResponse = response.as(PathResponse.class);
         assertThat(pathResponse.getDistance()).isEqualTo(totalDistance);
+    }
+
+    private void 총_금액이_응답됨(ExtractableResponse<Response> response, int expectFare) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getFare()).isEqualTo(expectFare);
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
