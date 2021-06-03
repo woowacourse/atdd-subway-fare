@@ -13,10 +13,10 @@ import wooteco.subway.station.domain.Station;
 @Repository
 public class StationDao {
 
-    private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcInsert insertAction;
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<Station> rowMapper = (rs, rowNum) ->
+    private final RowMapper<Station> rowMapper = (rs, rowNum) ->
         new Station(
             rs.getLong("id"),
             rs.getString("name")
@@ -51,8 +51,8 @@ public class StationDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public int update(Long id, Station station) {
+    public int update(Station station) {
         String sql = "update STATION set name = ? where id = ?";
-        return jdbcTemplate.update(sql, station.getName(), id);
+        return jdbcTemplate.update(sql, station.getName(), station.getId());
     }
 }

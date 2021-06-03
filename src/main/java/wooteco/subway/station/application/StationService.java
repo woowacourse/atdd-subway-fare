@@ -59,9 +59,9 @@ public class StationService {
     }
 
     public void updateStation(Long id, StationRequest stationRequest) {
-        Station station = stationRequest.toStation();
+        Station station = new Station(id, stationRequest.getName());
         try {
-            int updateRow = stationDao.update(id, station);
+            int updateRow = stationDao.update(station);
             validateUpdate(updateRow);
         } catch (DuplicateKeyException exception) {
             throw new SubwayException(StationExceptionSet.DUPLICATE_STATION_EXCEPTION);
