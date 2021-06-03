@@ -3,7 +3,7 @@ package wooteco.subway.exception;
 import org.springframework.http.HttpStatus;
 import wooteco.subway.exception.dto.ErrorResponse;
 
-public class SubwayException extends RuntimeException {
+public abstract class SubwayException extends RuntimeException {
     private final HttpStatus httpStatus;
     private final ErrorResponse errorResponse;
 

@@ -10,7 +10,7 @@ public enum DefaultFare {
         this.defaultFare = defaultFare;
     }
 
-    int value()  {
+    int value() {
         return defaultFare;
     }
 }

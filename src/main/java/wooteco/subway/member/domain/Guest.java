@@ -1,6 +1,6 @@
 package wooteco.subway.member.domain;
 
-import wooteco.subway.exception.unauthorized.AuthorizationException;
+import wooteco.subway.auth.exception.AuthorizationException;
 import wooteco.subway.line.domain.fare.AgeFarePolicy;
 
 public class Guest implements User {

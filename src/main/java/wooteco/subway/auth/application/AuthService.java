@@ -4,14 +4,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
+import wooteco.subway.auth.exception.AuthorizationException;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
-import wooteco.subway.exception.notfound.NoMemberException;
-import wooteco.subway.exception.unauthorized.AuthorizationException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Guest;
 import wooteco.subway.member.domain.LoginUser;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.domain.User;
+import wooteco.subway.member.exception.NoMemberException;
 
 @Service
 @Transactional

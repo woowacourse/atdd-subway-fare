@@ -1,6 +1,6 @@
 package wooteco.subway.line.domain.fare;
 
-import wooteco.subway.exception.notfound.InvalidAgeException;
+import wooteco.subway.exception.InvalidAgeException;
 import wooteco.subway.member.domain.User;
 
 import java.util.Arrays;

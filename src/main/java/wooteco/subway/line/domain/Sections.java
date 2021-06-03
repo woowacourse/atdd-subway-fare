@@ -1,9 +1,9 @@
 package wooteco.subway.line.domain;
 
-import wooteco.subway.exception.badrequest.CannotRemoveSectionException;
-import wooteco.subway.exception.badrequest.InvalidStationsOfSectionException;
-import wooteco.subway.exception.notfound.NotFoundStationOfSectionException;
-import wooteco.subway.exception.badrequest.OverDistanceOfSectionException;
+import wooteco.subway.line.exception.CannotRemoveSectionException;
+import wooteco.subway.line.exception.InvalidStationsOfSectionException;
+import wooteco.subway.line.exception.NotFoundStationOfSectionException;
+import wooteco.subway.line.exception.OverDistanceOfSectionException;
 import wooteco.subway.station.domain.Station;
 
 import java.util.*;

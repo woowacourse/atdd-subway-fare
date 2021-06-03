@@ -2,13 +2,13 @@ package wooteco.subway.line.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.exception.badrequest.DuplicateLineException;
-import wooteco.subway.exception.notfound.NoLineException;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.dto.*;
+import wooteco.subway.line.exception.DuplicateLineException;
+import wooteco.subway.line.exception.NoLineException;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
