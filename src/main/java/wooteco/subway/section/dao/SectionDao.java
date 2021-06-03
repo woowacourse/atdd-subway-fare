@@ -63,14 +63,14 @@ public class SectionDao {
 
     public List<Section> findAllByLineId(Long lineId) {
         String sql =
-            "SELECT s.id AS section_id, line.id AS line_id, line.name AS line_name, line.color AS line_color, "
+            "SELECT s.id AS section_id, LINE.id AS line_id, LINE.name AS line_name, LINE.color AS line_color, "
                 + "up_station.id AS up_id, up_station.name AS up_name, "
                 + "down_station.id AS down_id, down_station.name AS down_name, "
                 + "distance "
-                + "FROM section AS s "
-                + "LEFT JOIN line ON s.line_id = line.id "
-                + "LEFT JOIN station AS up_station ON s.up_station_id = up_station.id "
-                + "LEFT JOIN station AS down_station ON s.down_station_id = down_station.id "
+                + "FROM SECTION AS s "
+                + "LEFT JOIN LINE ON s.line_id = LINE.id "
+                + "LEFT JOIN STATION AS up_station ON s.up_station_id = up_station.id "
+                + "LEFT JOIN STATION AS down_station ON s.down_station_id = down_station.id "
                 + "WHERE s.line_id = ?";
         return jdbcTemplate.query(sql, rowMapper, lineId);
     }
@@ -78,14 +78,14 @@ public class SectionDao {
     public Optional<Section> findByLineIdAndUpStationId(Long lineId, Long upStationId) {
         try {
             String sql =
-                "SELECT s.id AS section_id, line.id AS line_id, line.name AS line_name, line.color AS line_color, "
+                "SELECT s.id AS section_id, LINE.id AS line_id, LINE.name AS line_name, LINE.color AS line_color, "
                     + "up_station.id AS up_id, up_station.name AS up_name, "
                     + "down_station.id AS down_id, down_station.name AS down_name, "
                     + "distance "
-                    + "FROM section AS s "
-                    + "LEFT JOIN line ON s.line_id = line.id "
-                    + "LEFT JOIN station AS up_station ON s.up_station_id = up_station.id "
-                    + "LEFT JOIN station AS down_station ON s.down_station_id = down_station.id "
+                    + "FROM SECTION AS s "
+                    + "LEFT JOIN LINE ON s.line_id = LINE.id "
+                    + "LEFT JOIN STATION AS up_station ON s.up_station_id = up_station.id "
+                    + "LEFT JOIN STATION AS down_station ON s.down_station_id = down_station.id "
                     + "WHERE s.line_id = ? AND s.up_station_id = ?";
             return Optional
                 .ofNullable(
@@ -98,14 +98,14 @@ public class SectionDao {
     public Optional<Section> findByLineIdAndDownStationId(Long lineId, Long downStationId) {
         try {
             String sql =
-                "SELECT s.id AS section_id, line.id AS line_id, line.name AS line_name, line.color AS line_color, "
+                "SELECT s.id AS section_id, LINE.id AS line_id, LINE.name AS line_name, LINE.color AS line_color, "
                     + "up_station.id AS up_id, up_station.name AS up_name, "
                     + "down_station.id AS down_id, down_station.name AS down_name, "
                     + "distance "
-                    + "FROM section AS s "
-                    + "LEFT JOIN line ON s.line_id = line.id "
-                    + "LEFT JOIN station AS up_station ON s.up_station_id = up_station.id "
-                    + "LEFT JOIN station AS down_station ON s.down_station_id = down_station.id "
+                    + "FROM SECTION AS s "
+                    + "LEFT JOIN LINE ON s.line_id = LINE.id "
+                    + "LEFT JOIN STATION AS up_station ON s.up_station_id = up_station.id "
+                    + "LEFT JOIN STATION AS down_station ON s.down_station_id = down_station.id "
                     + "WHERE s.line_id = ? AND s.down_station_id = ?";
             return Optional
                 .ofNullable(
@@ -116,39 +116,39 @@ public class SectionDao {
     }
 
     public int deleteByLineIdAndUpStationId(Long lineId, Long upStationId) {
-        String sql = "DELETE FROM section WHERE line_id = ? AND up_station_id = ?";
+        String sql = "DELETE FROM SECTION WHERE line_id = ? AND up_station_id = ?";
         return jdbcTemplate.update(sql, lineId, upStationId);
     }
 
     public int deleteByLineIdAndDownStationId(Long lineId, Long downStationId) {
-        String sql = "DELETE FROM section WHERE line_id = ? AND down_station_id = ?";
+        String sql = "DELETE FROM SECTION WHERE line_id = ? AND down_station_id = ?";
         return jdbcTemplate.update(sql, lineId, downStationId);
     }
 
     public int delete(Section section) {
-        String sql = "DELETE FROM section WHERE id = ?";
+        String sql = "DELETE FROM SECTION WHERE id = ?";
         return jdbcTemplate.update(sql, section.getId());
     }
 
     public List<Section> findAll() {
         String sql = "SELECT s.id AS section_id, "
-            + "line.id AS line_id, line.name AS line_name, line.color AS line_color, "
+            + "LINE.id AS line_id, LINE.name AS line_name, LINE.color AS line_color, "
             + "up_station.id AS up_id, "
             + "up_station.name AS up_name, "
             + "down_station.id AS down_id, "
             + "down_station.name AS down_name, "
             + "distance "
-            + "FROM section AS s "
-            + "LEFT JOIN line ON s.line_id = line.id "
-            + "LEFT JOIN station AS up_station ON s.up_station_id = up_station.id "
-            + "LEFT JOIN station AS down_station ON s.down_station_id = down_station.id";
+            + "FROM SECTION AS s "
+            + "LEFT JOIN LINE ON s.line_id = LINE.id "
+            + "LEFT JOIN STATION AS up_station ON s.up_station_id = up_station.id "
+            + "LEFT JOIN STATION AS down_station ON s.down_station_id = down_station.id";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
     public List<Line> findIncludeStationLine(Long stationId) {
-        String sql = "SELECT DISTINCT line.id, line.name, line.color "
-            + "FROM line JOIN section ON line.id = section.line_id "
-            + "WHERE section.up_station_id = ? OR section.down_station_id = ?";
+        String sql = "SELECT DISTINCT LINE.id, LINE.name, LINE.color "
+            + "FROM LINE JOIN SECTION ON LINE.id = SECTION.line_id "
+            + "WHERE SECTION.up_station_id = ? OR SECTION.down_station_id = ?";
 
         return jdbcTemplate.query(sql,
             (rs, rowNum) -> new Line(

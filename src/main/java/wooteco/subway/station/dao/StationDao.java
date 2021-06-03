@@ -51,7 +51,7 @@ public class StationDao {
 
     public Station findById(Long id) {
         try {
-            String sql = "SELECT * FROM station WHERE id = ?";
+            String sql = "SELECT * FROM STATION WHERE id = ?";
             return jdbcTemplate.queryForObject(sql, rowMapper, id);
         } catch (EmptyResultDataAccessException e) {
             throw new NoSuchStationException();
@@ -59,7 +59,7 @@ public class StationDao {
     }
 
     public int delete(Long id) {
-        String sql = "DELETE FROM station WHERE id = ?";
+        String sql = "DELETE FROM STATION WHERE id = ?";
         return jdbcTemplate.update(sql, id);
     }
 }
