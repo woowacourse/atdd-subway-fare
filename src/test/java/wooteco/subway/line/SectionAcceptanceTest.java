@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SectionAcceptanceTest extends AcceptanceTest {
+class SectionAcceptanceTest extends AcceptanceTest {
 
     private LineResponse lineResponse;
     private StationResponse station1;
@@ -29,7 +29,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     private String loginToken;
 
     @BeforeEach
-    public void setUp() {
+    protected void setUp() {
         super.setUp();
         registerMember("kevin@naver.com", "123", 123);
         loginToken = login("kevin@naver.com", "123").getAccessToken();

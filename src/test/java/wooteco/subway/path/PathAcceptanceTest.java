@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PathAcceptanceTest extends AcceptanceTest {
+class PathAcceptanceTest extends AcceptanceTest {
 
     private LineResponse 신분당선;
     private LineResponse 이호선;
@@ -41,7 +41,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * 남부터미널역  --- *3호선* ---   양재
      */
     @BeforeEach
-    public void setUp() {
+    protected void setUp() {
         super.setUp();
         registerMember("kevin@naver.com", "123", 27);
         loginToken = login("kevin@naver.com", "123").getAccessToken();

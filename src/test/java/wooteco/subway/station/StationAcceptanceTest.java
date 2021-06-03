@@ -24,13 +24,13 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class StationAcceptanceTest extends AcceptanceTest {
+class StationAcceptanceTest extends AcceptanceTest {
 
     private String loginToken;
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
-    public void setUp() {
+    protected void setUp() {
         super.setUp();
         registerMember("kevin@naver.com", "123", 123);
         loginToken = login("kevin@naver.com", "123").getAccessToken();

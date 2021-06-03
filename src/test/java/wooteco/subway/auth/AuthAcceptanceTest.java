@@ -1,7 +1,6 @@
 package wooteco.subway.auth;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -16,12 +15,10 @@ import wooteco.subway.member.dto.MemberResponse;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AuthAcceptanceTest extends AcceptanceTest {
+class AuthAcceptanceTest extends AcceptanceTest {
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
     private static final Integer AGE = 20;
-
-    private ObjectMapper objectMapper = new ObjectMapper();
 
     @DisplayName("Bearer Auth 정상적으로 로그인한다.")
     @Test

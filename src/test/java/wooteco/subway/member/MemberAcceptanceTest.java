@@ -14,12 +14,12 @@ import wooteco.subway.member.dto.MemberResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MemberAcceptanceTest extends AcceptanceTest {
+class MemberAcceptanceTest extends AcceptanceTest {
 
     private String loginToken;
 
     @BeforeEach
-    public void setUp() {
+    protected void setUp() {
         super.setUp();
         registerMember("kevin@naver.com", "123", 123);
         loginToken = login("kevin@naver.com", "123").getAccessToken();

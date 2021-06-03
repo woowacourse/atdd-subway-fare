@@ -1,7 +1,6 @@
 package wooteco.subway.line;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -24,9 +23,8 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class LineAcceptanceTest extends AcceptanceTest {
+class LineAcceptanceTest extends AcceptanceTest {
 
-    private ObjectMapper objectMapper = new ObjectMapper();
     private StationResponse firstStation;
     private StationResponse secondStation;
     private LineRequest firstLineRequest;
@@ -34,7 +32,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     private String loginToken;
 
     @BeforeEach
-    public void setUp() {
+    protected void setUp() {
         super.setUp();
         registerMember("kevin@naver.com", "123", 123);
         loginToken = login("kevin@naver.com", "123").getAccessToken();

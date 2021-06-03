@@ -1,5 +1,6 @@
 package wooteco.subway;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -26,10 +27,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test")
 public class AcceptanceTest {
 
+    protected ObjectMapper objectMapper = new ObjectMapper();
+
     @LocalServerPort
     private int port;
 
-    public static ExtractableResponse<Response> registerMember(String email, String password, int age) {
+    @BeforeEach
+    protected void setUp() {
+        RestAssured.port = port;
+    }
+
+    protected ExtractableResponse<Response> registerMember(String email, String password, int age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -39,7 +47,7 @@ public class AcceptanceTest {
                 .extract();
     }
 
-    public static TokenResponse login(String email, String password) {
+    protected TokenResponse login(String email, String password) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("password", password);
@@ -53,7 +61,7 @@ public class AcceptanceTest {
     }
 
 
-    public static ExtractableResponse<Response> getMyMemberInfo(String token) {
+    protected ExtractableResponse<Response> getMyMemberInfo(String token) {
         return RestAssured.given().log().all()
                 .auth().oauth2(token)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -62,7 +70,7 @@ public class AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> createStation(String name, String token) {
+    protected ExtractableResponse<Response> createStation(String name, String token) {
         StationRequest stationRequest = new StationRequest(name);
         return RestAssured
                 .given().log().all()
@@ -74,7 +82,7 @@ public class AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> createLine(LineRequest params, String token) {
+    protected ExtractableResponse<Response> createLine(LineRequest params, String token) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .auth().oauth2(token)
@@ -84,7 +92,7 @@ public class AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> addSection(Long id, SectionRequest sectionRequest, String loginToken) {
+    protected ExtractableResponse<Response> addSection(Long id, SectionRequest sectionRequest, String loginToken) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(sectionRequest)
@@ -94,7 +102,7 @@ public class AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> findOneLine(long id, String token) {
+    protected ExtractableResponse<Response> findOneLine(long id, String token) {
         return RestAssured.given().log().all()
                 .auth().oauth2(token)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -103,16 +111,11 @@ public class AcceptanceTest {
                 .extract();
     }
 
-    public static void assertResponseStatus(ExtractableResponse<Response> response, HttpStatus httpStatus) {
+    protected void assertResponseStatus(ExtractableResponse<Response> response, HttpStatus httpStatus) {
         assertThat(response.statusCode()).isEqualTo(httpStatus.value());
     }
 
-    public static void assertResponseMessage(ExtractableResponse<Response> response, String message) {
+    protected void assertResponseMessage(ExtractableResponse<Response> response, String message) {
         assertThat(response.body().asString()).isEqualTo(message);
-    }
-
-    @BeforeEach
-    public void setUp() {
-        RestAssured.port = port;
     }
 }
