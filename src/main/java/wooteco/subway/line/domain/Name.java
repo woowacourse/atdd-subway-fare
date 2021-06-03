@@ -5,7 +5,7 @@ import wooteco.subway.exception.InvalidNameException;
 
 public class Name {
 
-    private static final String PATTERN = "^[가-힣0-9]+$";
+    private static final String PATTERN = "^[가-힣0-9]*$";
 
     private final String value;
 
