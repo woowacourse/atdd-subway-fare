@@ -11,9 +11,9 @@ public enum DistanceExtraFarePolicy {
     UNDER_50(distance -> distance > 10 && distance <= 50, 5, 100),
     OVER_50(distance -> distance > 50, 8, 100);
 
-    Predicate<Integer> distancePredicate;
-    int delimiter;
-    int additionalFare;
+    private final Predicate<Integer> distancePredicate;
+    private final int delimiter;
+    private final int additionalFare;
 
     DistanceExtraFarePolicy(Predicate<Integer> distancePredicate, int delimiter, int additionalFare) {
         this.distancePredicate = distancePredicate;

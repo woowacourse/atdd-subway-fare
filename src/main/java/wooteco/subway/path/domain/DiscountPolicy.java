@@ -12,9 +12,9 @@ public enum DiscountPolicy {
     YOUTH(age -> age >= 13 && age < 19, 350, 0.2),
     ADULT(age -> age >= 19, 0, 0);
 
-    Predicate<Integer> agePredicate;
-    int discountFare;
-    double discountRate;
+    private final Predicate<Integer> agePredicate;
+    private final int discountFare;
+    private final double discountRate;
 
     DiscountPolicy(Predicate<Integer> agePredicate, int discountFare, double discountRate) {
         this.agePredicate = agePredicate;
