@@ -1,4 +1,4 @@
-package wooteco.subway.path.domain;
+package wooteco.subway.path.domain.fare.ageStrategy;
 
 import java.util.Arrays;
 import java.util.function.IntPredicate;
@@ -6,7 +6,7 @@ import java.util.function.IntPredicate;
 public enum AgeAppliedRule {
     INFANT(0, 350, age -> (0 <= age) && (age < 6)),
     CHILD(0.5, 350, age -> (6 <= age) && (age < 13)),
-    JUVENILLE(0.80, 350, age -> (13 <= age) && (age < 19)),
+    JUVENILE(0.80, 350, age -> (13 <= age) && (age < 19)),
     OTHER(1.00, 0, age -> (19 <= age));
 
     private double appliedRate;
