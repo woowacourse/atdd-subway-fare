@@ -7,6 +7,9 @@ public class FarePrincipalFinder {
     public static final int FIRST_OVER_FARE_DISTANCE = 10;
     public static final int SECOND_OVER_FARE_DISTANCE = 50;
 
+    private FarePrincipalFinder() {
+    }
+
     public static FarePrincipal findFarePrincipal(Integer age) {
         if (age == null) {
             return new NoneLoginFarePrincipal();
