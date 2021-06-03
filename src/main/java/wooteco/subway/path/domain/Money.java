@@ -7,9 +7,9 @@ public class Money {
     private static final double SECOND_BOUND_REFERENCE_PER_DISTANCE = 8.0;
     private static final int FIRST_BOUND = 10;
     private static final int SECOND_BOUND = 50;
-    private static final Money ZERO = new Money(0);
     private static final Money FARE_PER_DISTANCE = new Money(100);
-    private static final Money DEFAULT_FARE = new Money(1250);
+    public static final Money ZERO = new Money(0);
+    public static final Money DEFAULT_FARE = new Money(1250);
 
     private final int value;
 
@@ -50,19 +50,19 @@ public class Money {
         return this.plus(calculateFarePerDistance(distance, SECOND_BOUND, SECOND_BOUND_REFERENCE_PER_DISTANCE, FARE_PER_DISTANCE));
     }
 
-    private Money calculateFarePerDistance(int distance, int startingPoint, double perDistance, Money additionalFare) {
-        return new Money((int) (Math.ceil((distance - startingPoint) / perDistance) * additionalFare.value));
+    private Money calculateFarePerDistance(int distance, int startingPoint, double perDistance, Money farePerDistance) {
+        return new Money((int) (Math.ceil((distance - startingPoint) / perDistance) * farePerDistance.value));
     }
 
     public Money applyDiscount(DiscountPolicy discountPolicy) {
-        return this.minus(discountPolicy.getStaticDiscount()).multiple(discountPolicy.getDiscountRate());
+        return this.minus(discountPolicy.getStaticDiscount()).multipleDiscountRate(discountPolicy.getDiscountRate());
     }
 
     public boolean afterDiscountIsNegative(Money staticDiscount) {
         return (this.value - staticDiscount.value) < 0;
     }
 
-    public Money multiple(double discountRate) {
+    public Money multipleDiscountRate(double discountRate) {
         return new Money((int) (this.value * discountRate));
     }
 
@@ -72,10 +72,6 @@ public class Money {
 
     public Money plus(Money money) {
         return new Money(this.value + money.value);
-    }
-
-    public static Money zero() {
-        return ZERO;
     }
 
     public int value() {

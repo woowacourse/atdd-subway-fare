@@ -23,7 +23,7 @@ public class Fare {
 
     public Fare discount(DiscountPolicy discountPolicy) {
         if (this.money.afterDiscountIsNegative(discountPolicy.getStaticDiscount())) {
-            return new Fare(Money.zero());
+            return new Fare(Money.ZERO);
         }
         return new Fare(money.applyDiscount(discountPolicy));
     }

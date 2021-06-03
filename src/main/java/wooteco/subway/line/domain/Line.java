@@ -14,7 +14,7 @@ public class Line {
     private Sections sections;
 
     public Line(String name, String color) {
-        this(null, name, color, Fare.of(Money.zero()), new Sections());
+        this(null, name, color, Fare.of(Money.ZERO), new Sections());
     }
 
     public Line(String name, String color, Fare extraFare) {
@@ -22,7 +22,7 @@ public class Line {
     }
 
     public Line(Long id, String name, String color) {
-        this(id, name, color, Fare.of(Money.zero()), new Sections());
+        this(id, name, color, Fare.of(Money.ZERO), new Sections());
     }
 
     public Line(Long id, String name, String color, Fare extraFare) {
@@ -30,7 +30,7 @@ public class Line {
     }
 
     public Line(Long id, String name, String color, Sections sections) {
-        this(id, name, color, Fare.of(Money.zero()), sections);
+        this(id, name, color, Fare.of(Money.ZERO), sections);
     }
 
     public Line(Long id, String name, String color, Fare extraFare, Sections sections) {
