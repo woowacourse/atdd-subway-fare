@@ -12,7 +12,6 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("/api/members")
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class MemberController {
     private final MemberService memberService;
 

@@ -10,7 +10,6 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/login")
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class AuthController {
     private final AuthService authService;
 

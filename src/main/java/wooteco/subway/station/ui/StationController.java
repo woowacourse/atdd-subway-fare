@@ -12,7 +12,6 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/api/stations")
 public class StationController {
     private final StationService stationService;

@@ -8,7 +8,6 @@ import wooteco.subway.path.application.PathService;
 import wooteco.subway.path.dto.PathResponse;
 
 @RestController
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/api/paths")
 public class PathController {
     private final PathService pathService;
