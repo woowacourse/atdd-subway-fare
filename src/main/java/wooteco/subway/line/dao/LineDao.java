@@ -106,7 +106,7 @@ public class LineDao {
 
     private List<Section> extractSections(List<Map<String, Object>> result) {
         if (result.isEmpty() || result.get(0).get("SECTION_ID") == null) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         return result.stream()
             .collect(Collectors.groupingBy(it -> it.get("SECTION_ID")))
