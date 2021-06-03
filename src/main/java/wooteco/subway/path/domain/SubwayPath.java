@@ -1,25 +1,15 @@
 package wooteco.subway.path.domain;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import wooteco.subway.exception.notfound.NotExistException;
-import wooteco.subway.fare.domain.farebydistancestrategy.AdditionalFareOver10Km;
-import wooteco.subway.fare.domain.farebydistancestrategy.AdditionalFareOver50km;
-import wooteco.subway.fare.domain.farebydistancestrategy.AdditionalFareStrategy;
-import wooteco.subway.fare.domain.farebydistancestrategy.AdditionalFareUnder10km;
+import wooteco.subway.fare.domain.FareStrategy;
 import wooteco.subway.member.domain.authmember.AuthMember;
 import wooteco.subway.station.domain.Station;
 
 public class SubwayPath {
 
     private static final int DEFAULT_FARE = 1250;
-    private static final List<AdditionalFareStrategy> additionalFareStrategies = Arrays.asList(
-        new AdditionalFareUnder10km(),
-        new AdditionalFareOver10Km(),
-        new AdditionalFareOver50km()
-    );
 
     private final List<SectionEdge> sectionEdges;
     private final List<Station> stations;
@@ -51,14 +41,8 @@ public class SubwayPath {
     }
 
     private int calculateAdditionalFare(int distance) {
-        return distinguishAdditionalFareStrategy(distance).calculateAdditionalFare(distance);
-    }
-
-    private AdditionalFareStrategy distinguishAdditionalFareStrategy(int distance) {
-        return additionalFareStrategies.stream()
-            .filter(additionalFareStrategy -> additionalFareStrategy.isInDistanceRange(distance))
-            .findAny()
-            .orElseThrow(NotExistException::new);
+        return FareStrategy.distinguishAdditionalFareStrategy(distance)
+            .calculateAdditionalFare(distance);
     }
 
     private int calculateAdditionalFareByLine() {
