@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -77,18 +76,17 @@ class AuthServiceTest {
 
         String token = "로키의토큰";
 
-        when(jwtTokenProvider.validateToken(token)).thenReturn(true);
         when(jwtTokenProvider.getPayload(token)).thenReturn(email);
         when(memberDao.findByEmail(email)).thenReturn(member);
 
         // when
-        Optional<LoginMember> loginMember = authService.findMemberByToken(token);
+        LoginMember loginMember = authService.findMemberByToken(token);
 
         // then
-        assertThat(loginMember.isPresent()).isTrue();
-        assertThat(loginMember.get()).extracting("id").isEqualTo(1L);
-        assertThat(loginMember.get()).extracting("email").isEqualTo(email);
-        assertThat(loginMember.get()).extracting("age").isEqualTo(20);
+        assertThat(loginMember).isNotNull();
+        assertThat(loginMember).extracting("id").isEqualTo(1L);
+        assertThat(loginMember).extracting("email").isEqualTo(email);
+        assertThat(loginMember).extracting("age").isEqualTo(20);
     }
 
     @DisplayName("토큰 검증 성공한다.")

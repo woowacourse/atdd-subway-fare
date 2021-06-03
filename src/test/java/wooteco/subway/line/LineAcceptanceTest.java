@@ -41,8 +41,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         강남역 = 지하철역_등록되어_있음("강남역", tokenResponse);
         downStation = 지하철역_등록되어_있음("광교역", tokenResponse);
 
-        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 10);
-        lineRequest2 = new LineRequest("구신분당선", "bg-orange-600", 강남역.getId(), downStation.getId(),
+        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 0, 10);
+        lineRequest2 = new LineRequest("구신분당선", "bg-orange-600", 강남역.getId(), downStation.getId(), 0,
                 15);
     }
 
@@ -90,6 +90,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 "bg-pink-600",
                 100L,
                 101L,
+                0,
                 10
         );
 
@@ -106,7 +107,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // given
         지하철_노선_등록되어_있음(lineRequest1, tokenResponse);
         LineRequest duplicatedLineNameRequest =
-                new LineRequest("신분당선", "bg-red-601", 강남역.getId(), downStation.getId(), 10);
+                new LineRequest("신분당선", "bg-red-601", 강남역.getId(), downStation.getId(), 0, 10);
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_생성_요청(duplicatedLineNameRequest,
@@ -122,7 +123,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // given
         지하철_노선_등록되어_있음(lineRequest1, tokenResponse);
         LineRequest duplicatedLineColorRequest =
-                new LineRequest("백기선", "bg-red-600", 강남역.getId(), downStation.getId(), 10);
+                new LineRequest("백기선", "bg-red-600", 강남역.getId(), downStation.getId(), 0, 10);
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_생성_요청(duplicatedLineColorRequest,

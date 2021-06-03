@@ -6,12 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class InvalidDistanceException extends RuntimeException {
 
-    public InvalidDistanceException() {
-
-    }
-
     public InvalidDistanceException(String message) {
         super(message);
     }
-
 }

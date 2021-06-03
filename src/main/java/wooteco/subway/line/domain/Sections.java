@@ -49,7 +49,7 @@ public class Sections {
         List<Station> stations = getStations();
         List<Station> stationsOfNewSection = Arrays.asList(section.getUpStation(), section.getDownStation());
         if (stations.containsAll(stationsOfNewSection)) {
-            throw new AlreadyExistsException("노선에 이미 포함된 구간입니다.");
+            throw new DuplicatedSectionException("노선에 이미 포함된 구간입니다.");
         }
     }
 
@@ -103,13 +103,13 @@ public class Sections {
 
     private Section findUpEndSection() {
         List<Station> downStations = this.sections.stream()
-                .map(it -> it.getDownStation())
+                .map(Section::getDownStation)
                 .collect(Collectors.toList());
 
         return this.sections.stream()
                 .filter(it -> !downStations.contains(it.getUpStation()))
                 .findFirst()
-                .orElseThrow(NotFoundException::new);
+                .orElseThrow(() -> new NotFoundException("구간을 찾을 수 없습니다."));
     }
 
     private Section findSectionByNextUpStation(Station station) {

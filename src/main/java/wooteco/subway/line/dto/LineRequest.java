@@ -1,5 +1,6 @@
 package wooteco.subway.line.dto;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -9,7 +10,7 @@ public class LineRequest {
 
     @NotBlank
     private String name;
-    @NotNull
+    @NotBlank
     private String color;
     @NotNull
     @Positive
@@ -17,16 +18,14 @@ public class LineRequest {
     @NotNull
     @Positive
     private Long downStationId;
+    @NotNull
     @PositiveOrZero
     private int extraFare;
+    @NotNull
     @Positive
     private int distance;
 
     public LineRequest() {
-    }
-
-    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance) {
-        this(name, color, upStationId, downStationId, 0, distance);
     }
 
     public LineRequest(String name, String color, Long upStationId, Long downStationId, int extraFare, int distance) {

@@ -7,6 +7,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
@@ -17,6 +19,7 @@ import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 
 @SpringBootTest
+@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 class LineServiceTest {
 
     @Autowired
@@ -37,16 +40,15 @@ class LineServiceTest {
         // given
         Station 잠실역 = stationDao.insert(new Station("잠실역"));
         Station 신림역 = stationDao.insert(new Station("신림역"));
-        String color = "covalt-blue";
+        String color = "cobalt-blue";
         String name = "2호선";
         int distance = 10;
-        LineRequest lineRequest = new LineRequest(name, color, 잠실역.getId(), 신림역.getId(), distance);
+        LineRequest lineRequest = new LineRequest(name, color, 잠실역.getId(), 신림역.getId(), 0, distance);
 
         // when
         LineResponse lineResponse = lineService.saveLine(lineRequest);
 
         // then
-//        assertThat(lineResponse.getId()).isEqualTo(1L);
         assertThat(lineResponse.getId()).isNotNull();
         assertThat(lineResponse.getColor()).isEqualTo(color);
         assertThat(lineResponse.getName()).isEqualTo(name);
@@ -73,10 +75,10 @@ class LineServiceTest {
     private LineResponse 라인을_생성한다() {
         Station 잠실역 = stationDao.insert(new Station("잠실역"));
         Station 신림역 = stationDao.insert(new Station("신림역"));
-        String color = "covalt-blue";
+        String color = "cobalt-blue";
         String name = "2호선";
         int distance = 10;
-        LineRequest lineRequest = new LineRequest(name, color, 잠실역.getId(), 신림역.getId(), distance);
+        LineRequest lineRequest = new LineRequest(name, color, 잠실역.getId(), 신림역.getId(), 0, distance);
         Line line = lineDao.insert(new Line(lineRequest.getName(), lineRequest.getColor(),
                 lineRequest.getExtraFare()));
         Section section = new Section(잠실역, 신림역, lineRequest.getDistance());

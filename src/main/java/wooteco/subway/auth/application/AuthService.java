@@ -1,6 +1,5 @@
 package wooteco.subway.auth.application;
 
-import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.auth.dto.TokenRequest;
@@ -26,29 +25,25 @@ public class AuthService {
             Member member = memberDao.findByEmail(request.getEmail());
             member.checkPassword(request.getPassword());
         } catch (Exception e) {
-            throw new AuthorizationException();
+            throw new AuthorizationException("로그인을 할 수 없습니다.");
         }
         String token = jwtTokenProvider.createToken(request.getEmail());
         return new TokenResponse(token);
     }
 
-    public Optional<LoginMember> findMemberByToken(String credentials) {
-        if (!jwtTokenProvider.validateToken(credentials)) {
-            return Optional.empty();
-        }
-
-        String email = jwtTokenProvider.getPayload(credentials);
+    public LoginMember findMemberByToken(String credentials) {
         try {
+            String email = jwtTokenProvider.getPayload(credentials);
             Member member = memberDao.findByEmail(email);
-            return Optional.of(LoginMember.of(member));
+            return LoginMember.of(member);
         } catch (Exception e) {
-            return Optional.empty();
+            return LoginMember.ofGuest();
         }
     }
 
     public void validateToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            throw new AuthorizationException();
+            throw new AuthorizationException("로그인을 할 수 없습니다.");
         }
     }
 }

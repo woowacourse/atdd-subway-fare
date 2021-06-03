@@ -29,9 +29,6 @@ public class PathService {
 
     public PathResponse findPath(LoginMember loginMember, Long source, Long target) {
         try {
-            if (source.equals(target)) {
-                throw new InvalidPathException();
-            }
             List<Line> lines = lineService.findLines();
             Station sourceStation = stationService.findStationById(source);
             Station targetStation = stationService.findStationById(target);
@@ -43,7 +40,7 @@ public class PathService {
 
             return new PathResponse(stationResponses, distance, totalFare);
         } catch (Exception e) {
-            throw new InvalidPathException();
+            throw new InvalidPathException("출발지와 도착지는 같을 수 없습니다.");
         }
     }
 }

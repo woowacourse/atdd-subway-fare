@@ -32,12 +32,6 @@ public enum AgeDiscountRule {
     }
 
     public static Fare discountByAge(int age, Fare fare) {
-        for (AgeDiscountRule value : values()) {
-            if (value.canDiscount.test(age)) {
-                return value.ageDiscountStrategy.apply(fare);
-            }
-        }
-
         return Arrays.stream(values())
                 .filter(ageDiscountRule -> ageDiscountRule.canDiscount(age))
                 .findAny()

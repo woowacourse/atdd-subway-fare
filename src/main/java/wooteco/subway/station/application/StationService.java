@@ -30,7 +30,7 @@ public class StationService {
 
     public Station findStationById(Long id) {
         return stationDao.findById(id)
-                .orElseThrow(() -> new NotFoundException("존재하지 않는 StationID 입니다."));
+                .orElseThrow(() -> new NotFoundException("존재하지 않는 StationID 입니다. id: " + id));
     }
 
     public List<StationResponse> findAllStationResponses() {

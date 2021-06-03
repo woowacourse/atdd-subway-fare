@@ -149,8 +149,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         // given
         StationResponse stationResponse1 = 지하철역_등록되어_있음(강남역, tokenResponse);
         StationResponse stationResponse2 = 지하철역_등록되어_있음(역삼역, tokenResponse);
-        LineRequest lineRequest1 = new LineRequest("로키네선", "bg-pinkpink-600",
-                stationResponse1.getId(), stationResponse2.getId(), 10);
+        LineRequest lineRequest1 = new LineRequest("로키네선", "bg-pinkpink-600", stationResponse1.getId(), stationResponse2.getId(), 0, 10);
         지하철_노선_등록되어_있음(lineRequest1, tokenResponse);
 
         // when
