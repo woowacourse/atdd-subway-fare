@@ -47,18 +47,22 @@ public class Member implements User {
         }
     }
 
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public String getEmail() {
         return email;
     }
 
+    @Override
     public String getPassword() {
         return password;
     }
 
+    @Override
     public Integer getAge() {
         return age;
     }
