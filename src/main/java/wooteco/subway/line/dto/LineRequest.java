@@ -10,11 +10,9 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
 public class LineRequest {
-    @NotNull(message = "입력되지 않은 항목을 확인해주세요")
     @NotBlank(message = "입력되지 않은 항목을 확인해주세요")
     private String name;
 
-    @NotNull(message = "입력되지 않은 항목을 확인해주세요")
     @NotBlank(message = "입력되지 않은 항목을 확인해주세요")
     private String color;
 
