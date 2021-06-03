@@ -134,15 +134,11 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         return RestAssured
                 .given()
-                .log()
-                .all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(sectionRequest)
                 .when()
                 .post("/lines/{lineId}/sections", line.getId())
                 .then()
-                .log()
-                .all()
                 .extract();
     }
 
@@ -163,13 +159,9 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(LineResponse line, Long stationId) {
         return RestAssured
                 .given()
-                .log()
-                .all()
                 .when()
                 .delete("/lines/{lineId}/sections?stationId={stationId}", line.getId(), stationId)
                 .then()
-                .log()
-                .all()
                 .extract();
     }
 

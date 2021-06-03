@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class RouteFinder {
     public SubwayRoute find(List<Line> lines, Station source, Station target) {
         if (source.equals(target)) {
-            throw new InvalidPathException();
+            throw new InvalidPathException("source 와 target 의 같은 위치입니다.");
         }
         SubwayGraph graph = new SubwayGraph(SectionEdge.class);
         graph.addVertexWith(lines);
@@ -26,7 +26,7 @@ public class RouteFinder {
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
         GraphPath<Station, SectionEdge> path = dijkstraShortestPath.getPath(source, target);
         if (path == null) {
-            throw new InvalidPathException();
+            throw new InvalidPathException("경로가 존재하지 않습니다.");
         }
 
         return convertSubwayPath(path);

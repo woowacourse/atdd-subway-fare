@@ -61,15 +61,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
         RestAssured
                 .given()
-                .log()
-                .all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when()
                 .post("/login/token")
                 .then()
-                .log()
-                .all()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
@@ -84,15 +80,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
         RestAssured
                 .given()
-                .log()
-                .all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when()
                 .post("/login/token")
                 .then()
-                .log()
-                .all()
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
@@ -107,15 +99,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
         RestAssured
                 .given()
-                .log()
-                .all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when()
                 .post("/login/token")
                 .then()
-                .log()
-                .all()
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
@@ -126,16 +114,12 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
         RestAssured
                 .given()
-                .log()
-                .all()
                 .auth()
                 .oauth2(tokenResponse.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .get("/members/me")
                 .then()
-                .log()
-                .all()
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
@@ -154,31 +138,23 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         params.put("password", password);
 
         return RestAssured.given()
-                .log()
-                .all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when()
                 .post("/login/token")
                 .then()
-                .log()
-                .all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
     }
 
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {
         return RestAssured.given()
-                .log()
-                .all()
                 .auth()
                 .oauth2(tokenResponse.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .get("/members/me")
                 .then()
-                .log()
-                .all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
     }

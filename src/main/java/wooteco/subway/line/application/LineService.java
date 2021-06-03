@@ -84,13 +84,13 @@ public class LineService {
     }
 
     private void validateDuplicatedColor(LineRequest lineUpdateRequest) {
-        if (lineDao.isExistColor(lineUpdateRequest.getColor())) {
+        if (lineDao.isExistingColor(lineUpdateRequest.getColor())) {
             throw new LineException("이미 존재하는 노선 색상입니다.");
         }
     }
 
     private void validateDuplicatedName(LineRequest lineUpdateRequest) {
-        if (lineDao.isExistName(lineUpdateRequest.getName())) {
+        if (lineDao.isExistingName(lineUpdateRequest.getName())) {
             throw new LineException("이미 존재하는 노선 이름입니다.");
         }
     }

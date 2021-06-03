@@ -77,31 +77,23 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         return RestAssured
                 .given()
-                .log()
-                .all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(memberRequest)
                 .when()
                 .post("/members")
                 .then()
-                .log()
-                .all()
                 .extract();
     }
 
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {
         return RestAssured
                 .given()
-                .log()
-                .all()
                 .auth()
                 .oauth2(tokenResponse.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .get("/members/me")
                 .then()
-                .log()
-                .all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
     }
@@ -109,8 +101,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static Response 토큰_없이_내_회원_정보_조회_요청() {
         return RestAssured
                 .given()
-                .log()
-                .all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .get("/members/me");
@@ -121,8 +111,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         return RestAssured
                 .given()
-                .log()
-                .all()
                 .auth()
                 .oauth2(tokenResponse.getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -130,23 +118,17 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .when()
                 .put("/members/me")
                 .then()
-                .log()
-                .all()
                 .extract();
     }
 
     public static ExtractableResponse<Response> 내_회원_삭제_요청(TokenResponse tokenResponse) {
         return RestAssured
                 .given()
-                .log()
-                .all()
                 .auth()
                 .oauth2(tokenResponse.getAccessToken())
                 .when()
                 .delete("/members/me")
                 .then()
-                .log()
-                .all()
                 .extract();
     }
 

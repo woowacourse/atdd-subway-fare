@@ -42,7 +42,7 @@ public class MemberController {
     }
 
     @PutMapping("/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginUser loginUser,
+    public ResponseEntity<Void> updateMemberOfMine(@AuthenticationPrincipal LoginUser loginUser,
                                                              @Valid @RequestBody MemberRequest param) {
         memberService.updateMember(loginUser, param);
         return ResponseEntity.ok()
@@ -50,7 +50,7 @@ public class MemberController {
     }
 
     @DeleteMapping("/me")
-    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal LoginUser loginUser) {
+    public ResponseEntity<Void> deleteMemberOfMine(@AuthenticationPrincipal LoginUser loginUser) {
         memberService.deleteMember(loginUser);
         return ResponseEntity.noContent()
                 .build();

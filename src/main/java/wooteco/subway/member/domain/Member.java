@@ -64,7 +64,7 @@ public class Member {
         }
     }
 
-    public boolean isEmail(final String email) {
+    public boolean isSameEmail(final String email) {
         return this.email.equals(email);
     }
 }

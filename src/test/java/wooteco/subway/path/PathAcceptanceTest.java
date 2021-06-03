@@ -96,14 +96,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
         return RestAssured
                 .given()
-                .log()
-                .all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .get("/paths?source={sourceId}&target={targetId}", source, target)
                 .then()
-                .log()
-                .all()
                 .extract();
     }
 

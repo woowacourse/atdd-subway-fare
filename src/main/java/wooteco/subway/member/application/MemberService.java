@@ -36,7 +36,7 @@ public class MemberService {
 
         Member member = memberDao.findByEmail(loginUser.getEmail());
 
-        if (!member.isEmail(memberRequest.getEmail())) {
+        if (!member.isSameEmail(memberRequest.getEmail())) {
             throw new MemberException("이메일은 변경할 수 없습니다.");
         }
 
