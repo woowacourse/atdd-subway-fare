@@ -10,6 +10,7 @@ import wooteco.subway.member.dto.EmailRequest;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 import wooteco.subway.member.exception.DuplicateEmailException;
+import wooteco.subway.member.exception.EmailUpdateTrialException;
 
 import java.util.Optional;
 
@@ -48,7 +49,12 @@ public class MemberService {
     public void updateMember(User user, MemberRequest memberRequest) {
         Member member = memberDao.findByEmail(user.getEmail())
                 .orElseThrow(AuthorizationException::new);
-        memberDao.update(new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
+
+        if (!member.isSameEmail(memberRequest.getEmail())) {
+            throw new EmailUpdateTrialException();
+        }
+
+        memberDao.update(new Member(member.getId(), member.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
     }
 
     public void deleteMember(User user) {

@@ -115,6 +115,7 @@
 - [x] 구간 삭제 시 해당 Line의 구간들을 이어붙이기 
 - [x] 역 조회 시, 최근에 생성된 역 순서대로 반환할 것
 - [ ] 단위테스트 작성하기
+- [x] members/me에서 email을 수정하지 못하도록 수정
 - [x] 특정 계층에서 사용하는 예외를 다른 Layer 클래스에서 사용하지 않도록 리팩토링
     - [x] dao단의 에러는 dao에서만! 그냥 RuntimeException으로 바꾸는게 나을수도
 - [x] ArgumentResolver에서 다형성을 통해 Optional을 제거해보기
@@ -146,3 +147,4 @@
         - path 에서는 선택
     - 이러다 보니 Optional<LoginMember>를 반환해 필수로 들어와야 하는 members/me controller에서 validation
         - 좋은 방법인지?
+- 멤버 수정이 일어나면 토큰을 새로 발급해줘야 할까?

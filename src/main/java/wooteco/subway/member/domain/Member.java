@@ -30,6 +30,10 @@ public class Member {
         throw new AuthorizationException();
     }
 
+    public boolean isSameEmail(String email) {
+        return this.email.equals(email);
+    }
+
     public Long getId() {
         return id;
     }
