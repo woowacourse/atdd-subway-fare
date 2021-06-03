@@ -2,7 +2,6 @@ package wooteco.subway.path.domain;
 
 import wooteco.subway.exception.value.InvalidValueException;
 import wooteco.subway.exception.value.InvalidValueExceptionStatus;
-import wooteco.subway.line.domain.Line;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
@@ -30,9 +29,7 @@ public class SubwayPath {
 
     public int calculateLineMaxFare() {
         return sectionEdges.stream()
-                .map(SectionEdge::getLine)
-                .distinct()
-                .mapToInt(Line::getExtraFare)
+                .mapToInt(SectionEdge::getLineExtraFare)
                 .max()
                 .orElseThrow(() -> new InvalidValueException(InvalidValueExceptionStatus.INVALID_PATH));
     }
