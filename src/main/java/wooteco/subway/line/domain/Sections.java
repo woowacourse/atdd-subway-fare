@@ -13,6 +13,8 @@ import wooteco.subway.line.exception.InvalidSectionException;
 import wooteco.subway.station.domain.Station;
 
 public class Sections {
+    private static final int MIN_SECTION_SIZE = 1;
+
     private List<Section> sections = new ArrayList<>();
 
     public List<Section> getSections() {
@@ -159,7 +161,7 @@ public class Sections {
     }
 
     public void removeStation(Station station) {
-        if (sections.size() <= 1) {
+        if (sections.size() <= MIN_SECTION_SIZE) {
             throw new InvalidSectionException("유효하지 않는 요청 값입니다");
         }
 

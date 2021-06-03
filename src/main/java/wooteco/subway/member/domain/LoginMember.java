@@ -1,8 +1,6 @@
 package wooteco.subway.member.domain;
 
 public class LoginMember extends RequestUser {
-    public static final LoginMember DUMMY = new LoginMember(-1L, "dummy", 20);
-
     private Long id;
     private String email;
     private Integer age;

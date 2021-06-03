@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 public class FareTable {
+    private static final int DEFAULT_FARE = 1_250;
+
     private final Map<String, Integer> fareTable;
 
     public FareTable() {
@@ -20,7 +22,7 @@ public class FareTable {
     }
 
     private int calculateFareByDistanceAndLine(List<SectionEdge> sectionEdges, int distance) {
-        int fare = 1_250;
+        int fare = DEFAULT_FARE;
 
         fare += calculateAdditionalFareByDistance(distance);
         fare += calculateAdditionalLineFare(sectionEdges);
@@ -31,7 +33,7 @@ public class FareTable {
     private int calculateAdditionalLineFare(List<SectionEdge> sectionEdges) {
         return sectionEdges
             .stream()
-            .mapToInt(sectionEdge -> sectionEdge.getLine().getExtraFare())
+            .mapToInt(SectionEdge::getLineExtraFare)
             .max()
             .orElse(0);
     }
