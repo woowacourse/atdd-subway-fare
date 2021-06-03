@@ -15,12 +15,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Transactional
 public class PathServiceTest {
 
-    private final PathService pathService;
-
     @Autowired
-    public PathServiceTest(PathService pathService) {
-        this.pathService = pathService;
-    }
+    private PathService pathService;
 
     @DisplayName("경로 조회 확인")
     @Test
