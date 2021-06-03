@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wooteco.subway.exception.dto.ErrorResponse;
 import wooteco.subway.path.application.InvalidPathException;
 
-import java.util.Arrays;
-
 @RestControllerAdvice
 public class SubwayControllerAdvice {
 
@@ -24,23 +22,8 @@ public class SubwayControllerAdvice {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(e.getMessage()));
     }
 
-    @ExceptionHandler(StationException.class)
-    public ResponseEntity<ErrorResponse> handleStationException(StationException e) {
-        return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
-    }
-
-    @ExceptionHandler(LineException.class)
-    public ResponseEntity<ErrorResponse> handleLineException(LineException e) {
-        return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
-    }
-
-    @ExceptionHandler(SectionException.class)
-    public ResponseEntity<ErrorResponse> handleSectionException(SectionException e) {
-        return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
-    }
-
-    @ExceptionHandler(InvalidPathException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidPathException(InvalidPathException e) {
+    @ExceptionHandler({StationException.class, LineException.class, SectionException.class, InvalidPathException.class})
+    public ResponseEntity<ErrorResponse> handleStationException(Exception e) {
         return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
     }
 
@@ -49,13 +32,8 @@ public class SubwayControllerAdvice {
         return ResponseEntity.badRequest().body(new ErrorResponse("요청 필드에 해당하는 정보가 존재하지 않습니다."));
     }
 
-    @ExceptionHandler(DuplicateKeyException.class)
-    public ResponseEntity<ErrorResponse> handleDuplicateKeyException(DuplicateKeyException e) {
-        return ResponseEntity.badRequest().body(new ErrorResponse(e.getCause().getMessage()));
-    }
-
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ErrorResponse> handleDuplicateKeyException(DataIntegrityViolationException e) {
+    @ExceptionHandler({DuplicateKeyException.class, DataIntegrityViolationException.class})
+    public ResponseEntity<ErrorResponse> handleDuplicateKeyException(Exception e) {
         return ResponseEntity.badRequest().body(new ErrorResponse(e.getCause().getMessage()));
     }
 
