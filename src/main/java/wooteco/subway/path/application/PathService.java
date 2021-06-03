@@ -40,7 +40,6 @@ public class PathService {
             int distance = subwayPath.calculateDistance();
             Fare maxExtraFare = subwayPath.calculateMaxExtraFare();
             Fare totalFare = Fare.ofSubwayFare(distance, maxExtraFare, loginMember.getAge());
-//            Fare totalFare = subwayPath.fareOf(loginMember);
 
             return new PathResponse(stationResponses, distance, totalFare);
         } catch (Exception e) {
