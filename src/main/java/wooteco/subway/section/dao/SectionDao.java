@@ -1,13 +1,10 @@
 package wooteco.subway.section.dao;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import javax.sql.DataSource;
-import org.antlr.v4.runtime.atn.SemanticContext.AND;
-import org.antlr.v4.runtime.atn.SemanticContext.OR;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;

@@ -6,7 +6,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -20,7 +19,6 @@ import wooteco.subway.exception.NoSuchLineException;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.domain.Line;
-import wooteco.subway.line.domain.Lines;
 import wooteco.subway.line.dto.LineMapResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;

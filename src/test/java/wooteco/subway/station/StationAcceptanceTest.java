@@ -1,8 +1,13 @@
 package wooteco.subway.station;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -12,12 +17,6 @@ import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {
@@ -93,35 +92,35 @@ public class StationAcceptanceTest extends AcceptanceTest {
         StationRequest stationRequest = new StationRequest(name);
 
         return RestAssured
-                .given().log().all()
-                .body(stationRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .auth().oauth2(accessToken)
-                .when().post("/api/stations")
-                .then().log().all()
-                .extract();
+            .given().log().all()
+            .body(stationRequest)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .auth().oauth2(accessToken)
+            .when().post("/api/stations")
+            .then().log().all()
+            .extract();
     }
 
     public static ExtractableResponse<Response> 토큰과_함께_지하철역_목록_조회_요청() {
         String accessToken = 로그인_후_토큰_발급(new TokenRequest(EMAIL, PASSWORD)).jsonPath().get(ACCESS_TOKEN);
 
         return RestAssured
-                .given().log().all()
-                .auth().oauth2(accessToken)
-                .when().get("/api/stations")
-                .then().log().all()
-                .extract();
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .when().get("/api/stations")
+            .then().log().all()
+            .extract();
     }
 
     public static ExtractableResponse<Response> 토큰과_함께_지하철역_제거_요청(StationResponse stationResponse) {
         String accessToken = 로그인_후_토큰_발급(new TokenRequest(EMAIL, PASSWORD)).jsonPath().get(ACCESS_TOKEN);
 
         return RestAssured
-                .given().log().all()
-                .auth().oauth2(accessToken)
-                .when().delete("/api/stations/" + stationResponse.getId())
-                .then().log().all()
-                .extract();
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .when().delete("/api/stations/" + stationResponse.getId())
+            .then().log().all()
+            .extract();
     }
 
     public static void 지하철역_생성됨(ExtractableResponse response) {
@@ -143,12 +142,12 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철역_목록_포함됨(ExtractableResponse<Response> response, List<StationResponse> createdResponses) {
         List<Long> expectedLineIds = createdResponses.stream()
-                .map(it -> it.getId())
-                .collect(Collectors.toList());
+            .map(it -> it.getId())
+            .collect(Collectors.toList());
 
         List<Long> resultLineIds = response.jsonPath().getList(".", StationResponse.class).stream()
-                .map(StationResponse::getId)
-                .collect(Collectors.toList());
+            .map(StationResponse::getId)
+            .collect(Collectors.toList());
 
         assertThat(resultLineIds).containsAll(expectedLineIds);
     }

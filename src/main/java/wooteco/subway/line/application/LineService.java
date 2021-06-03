@@ -1,10 +1,8 @@
 package wooteco.subway.line.application;
 
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.springframework.stereotype.Service;
@@ -18,14 +16,10 @@ import wooteco.subway.line.dto.LineMapResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
-import wooteco.subway.line.dto.TransferLineResponse;
 import wooteco.subway.line.dto.UpdateLineRequest;
 import wooteco.subway.section.application.SectionService;
-import wooteco.subway.section.dao.SectionDao;
-import wooteco.subway.section.domain.Sections;
 import wooteco.subway.section.dto.SectionResponse;
 import wooteco.subway.section.dto.SectionServiceDto;
-import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationResponse;
 
 @Service

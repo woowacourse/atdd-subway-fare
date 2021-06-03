@@ -1,8 +1,13 @@
 package wooteco.subway.section;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,12 +21,6 @@ import wooteco.subway.line.dto.SectionRequest;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 구간 관련 기능")
 public class SectionAcceptanceTest extends AcceptanceTest {
@@ -118,29 +117,30 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         토큰과_함께_지하철_구간_생성_요청(lineResponse, upStation, downStation, distance);
     }
 
-    public static ExtractableResponse<Response> 토큰과_함께_지하철_구간_생성_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
+    public static ExtractableResponse<Response> 토큰과_함께_지하철_구간_생성_요청(LineResponse line, StationResponse upStation, StationResponse downStation,
+        int distance) {
         String accessToken = 로그인_후_토큰_발급(new TokenRequest(EMAIL, PASSWORD)).jsonPath().get(ACCESS_TOKEN);
         SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
 
         return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .auth().oauth2(accessToken)
-                .body(sectionRequest)
-                .when().post("/api/lines/{lineId}/sections", line.getId())
-                .then().log().all()
-                .extract();
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .auth().oauth2(accessToken)
+            .body(sectionRequest)
+            .when().post("/api/lines/{lineId}/sections", line.getId())
+            .then().log().all()
+            .extract();
     }
 
     public static void 지하철_노선에_지하철역_순서_정렬됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
         LineResponse line = response.as(LineResponse.class);
         List<Long> stationIds = line.getStations().stream()
-                .map(it -> it.getId())
-                .collect(Collectors.toList());
+            .map(it -> it.getId())
+            .collect(Collectors.toList());
 
         List<Long> expectedStationIds = expectedStations.stream()
-                .map(it -> it.getId())
-                .collect(Collectors.toList());
+            .map(it -> it.getId())
+            .collect(Collectors.toList());
 
         assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
     }
@@ -149,11 +149,11 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         String accessToken = 로그인_후_토큰_발급(new TokenRequest(EMAIL, PASSWORD)).jsonPath().get(ACCESS_TOKEN);
 
         return RestAssured
-                .given().log().all()
-                .auth().oauth2(accessToken)
-                .when().delete("/api/lines/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
-                .then().log().all()
-                .extract();
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .when().delete("/api/lines/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
+            .then().log().all()
+            .extract();
     }
 
     public static void 지하철_구간_생성됨(ExtractableResponse<Response> response) {

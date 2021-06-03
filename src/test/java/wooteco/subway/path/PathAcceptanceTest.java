@@ -1,9 +1,14 @@
 package wooteco.subway.path;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.google.common.collect.Lists;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,12 +22,6 @@ import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
@@ -40,11 +39,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 남부터미널역;
 
     /**
-     * 교대역    --- *2호선* ---   강남역
-     * |                        |
-     * *3호선*                   *신분당선*
-     * |                        |
-     * 남부터미널역  --- *3호선* ---   양재
+     * 교대역    --- *2호선* ---   강남역 |                        | *3호선*                   *신분당선* |                        | 남부터미널역  --- *3호선* ---   양재
      */
     @BeforeEach
     public void setUp() {
@@ -77,24 +72,24 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 토큰과_함께_거리_경로_조회_요청(long source, long target) {
         String accessToken = 로그인_후_토큰_발급(new TokenRequest(EMAIL, PASSWORD)).jsonPath().get(ACCESS_TOKEN);
         return RestAssured
-                .given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .auth().oauth2(accessToken)
-                .when().get("/api/paths?source={sourceId}&target={targetId}", source, target)
-                .then().log().all()
-                .extract();
+            .given().log().all()
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .auth().oauth2(accessToken)
+            .when().get("/api/paths?source={sourceId}&target={targetId}", source, target)
+            .then().log().all()
+            .extract();
     }
 
     public static void 적절한_경로_응답됨(ExtractableResponse<Response> response, ArrayList<StationResponse> expectedPath) {
         PathResponse pathResponse = response.as(PathResponse.class);
 
         List<Long> stationIds = pathResponse.getStations().stream()
-                .map(StationResponse::getId)
-                .collect(Collectors.toList());
+            .map(StationResponse::getId)
+            .collect(Collectors.toList());
 
         List<Long> expectedPathIds = expectedPath.stream()
-                .map(StationResponse::getId)
-                .collect(Collectors.toList());
+            .map(StationResponse::getId)
+            .collect(Collectors.toList());
 
         assertThat(stationIds).containsExactlyElementsOf(expectedPathIds);
     }
@@ -164,7 +159,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         토큰과_함께_지하철_구간_생성_요청(lineResponse, upStation, downStation, distance);
     }
 
-    public static ExtractableResponse<Response> 토큰과_함께_지하철_구간_생성_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
+    public static ExtractableResponse<Response> 토큰과_함께_지하철_구간_생성_요청(LineResponse line, StationResponse upStation, StationResponse downStation,
+        int distance) {
         String accessToken = 로그인_후_토큰_발급(new TokenRequest(EMAIL, PASSWORD)).jsonPath().get(ACCESS_TOKEN);
         SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
 

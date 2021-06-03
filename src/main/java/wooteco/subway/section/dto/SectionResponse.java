@@ -20,6 +20,7 @@ public class SectionResponse {
         this.distanceToNextStation = distanceToNextStation;
         this.transferLines = transferLines;
     }
+
     public static SectionResponse of(Section section, List<TransferLineResponse> transferLines) {
         return new SectionResponse(section.getUpStationId(), section.getUpStationName(), section.getDistanceValue(), transferLines);
     }

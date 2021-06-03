@@ -1,5 +1,8 @@
 package wooteco.subway.member;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -12,10 +15,8 @@ import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
-
 public class CustomMemberAcceptanceTest extends AcceptanceTest {
+
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
     public static final int AGE = 20;
@@ -46,7 +47,7 @@ public class CustomMemberAcceptanceTest extends AcceptanceTest {
     void validateJoinMemberEmail() {
         assertThat(회원_생성을_요청(null, PASSWORD, AGE).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat(회원_생성을_요청("", PASSWORD, AGE).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(회원_생성을_요청(" ", PASSWORD,  AGE).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(회원_생성을_요청(" ", PASSWORD, AGE).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat(회원_생성을_요청("mail.com", PASSWORD, AGE).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 

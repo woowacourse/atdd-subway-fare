@@ -5,6 +5,7 @@ import wooteco.subway.line.domain.Line;
 import wooteco.subway.station.domain.Station;
 
 public class Section {
+
     private final Id id;
     private final Line line;
     private final Station upStation;

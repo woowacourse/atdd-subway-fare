@@ -3,7 +3,6 @@ package wooteco.subway.section.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Deque;
@@ -16,9 +15,6 @@ import wooteco.subway.exception.NoSuchSectionException;
 import wooteco.subway.exception.NoSuchStationException;
 import wooteco.subway.exception.OnlyOneSectionExistsException;
 import wooteco.subway.line.domain.Line;
-import wooteco.subway.section.domain.Distance;
-import wooteco.subway.section.domain.Section;
-import wooteco.subway.section.domain.Sections;
 import wooteco.subway.station.domain.Station;
 
 class SectionsTest {

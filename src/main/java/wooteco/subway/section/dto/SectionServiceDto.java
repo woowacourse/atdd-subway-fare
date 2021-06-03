@@ -3,7 +3,6 @@ package wooteco.subway.section.dto;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import wooteco.subway.line.domain.Line;
-import wooteco.subway.line.dto.CreateLineDto;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.SectionRequest;
 import wooteco.subway.section.domain.Section;

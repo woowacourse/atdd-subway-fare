@@ -5,12 +5,12 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import wooteco.subway.line.dao.LineDao;
-import wooteco.subway.section.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
-import wooteco.subway.section.domain.Distance;
-import wooteco.subway.section.domain.Section;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
+import wooteco.subway.section.dao.SectionDao;
+import wooteco.subway.section.domain.Distance;
+import wooteco.subway.section.domain.Section;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 
