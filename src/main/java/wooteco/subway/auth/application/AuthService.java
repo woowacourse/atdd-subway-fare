@@ -24,7 +24,7 @@ public class AuthService {
     public TokenResponse login(TokenRequest request) {
         try {
             Member member = memberDao.findByEmail(request.getEmail())
-                    .orElseThrow(AuthorizationException::new);
+                    .orElseThrow(() -> new AuthorizationException("해당 email의 회원이 존재하지 않습니다."));
             member.checkPassword(request.getPassword());
         } catch (Exception e) {
             throw new AuthorizationException("이메일 또는 비밀번호를 잘못 입력하셨습니다.");
@@ -42,7 +42,7 @@ public class AuthService {
         String email = jwtTokenProvider.getPayload(credentials);
         try {
             Member member = memberDao.findByEmail(email)
-                    .orElseThrow(AuthorizationException::new);
+                    .orElseThrow(() -> new AuthorizationException("해당 email의 회원이 존재하지 않습니다."));
             return new LoginMember(member.getId(), member.getEmail(), member.getAge());
         } catch (Exception e) {
             return new LoginMember();

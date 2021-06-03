@@ -25,7 +25,7 @@ public class Member {
 
     public void checkPassword(String password) {
         if (!StringUtils.equals(this.password, password)) {
-            throw new AuthorizationException();
+            throw new AuthorizationException("비밀번호를 잘못 입력하셨습니다.");
         }
     }
 

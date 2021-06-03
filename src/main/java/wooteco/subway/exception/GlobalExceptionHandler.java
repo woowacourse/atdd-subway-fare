@@ -28,12 +28,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(exception.getStatus()).body(new ErrorResponse(exception.getMessage()));
     }
 
-    @ExceptionHandler(AuthorizationException.class)
-    public ResponseEntity<ErrorResponse> authorizeException(AuthorizationException exception) {
-        logger.warn(exception.getMessage());
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(exception.getMessage()));
-    }
-
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public ResponseEntity<ErrorResponse> unsupportedMediaType(HttpMediaTypeNotSupportedException exception) {
         logger.error(exception.getMessage());
