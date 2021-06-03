@@ -29,18 +29,6 @@ public class Fare {
         return AgeDiscountRule.discountByAge(age, totalFare);
     }
 
-    public static Fare calculateRate(int distance, Fare maxExtraFare) {
-        validatePositiveDistance(distance);
-        Fare fareOfDistance = DistanceFareRule.calculateRate(distance);
-        return fareOfDistance.add(maxExtraFare);
-    }
-
-    private static void validatePositiveDistance(int distance) {
-        if (distance <= 0) {
-            throw new IllegalArgumentException("거리는 0보다 커야합니다.");
-        }
-    }
-
     public Fare add(Fare other) {
         return new Fare(this.value + other.value);
     }
