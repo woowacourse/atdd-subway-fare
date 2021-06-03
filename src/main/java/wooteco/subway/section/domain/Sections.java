@@ -113,6 +113,14 @@ public class Sections {
             .orElseThrow(NoSuchSectionException::new);
     }
 
+    public int distanceValueWithNextStationOf(Station station) {
+        return sections.stream()
+            .filter(section -> section.isMatchUpStation(station))
+            .map(Section::getDistanceValue)
+            .findAny()
+            .orElse(0);
+    }
+
     public int totalDistanceValue() {
         return sections.stream()
             .mapToInt(Section::getDistanceValue)

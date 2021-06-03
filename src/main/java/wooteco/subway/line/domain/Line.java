@@ -38,6 +38,10 @@ public class Line {
         return color.getValue();
     }
 
+    public boolean isNotEqual(Line line) {
+        return !id.equals(line.id);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

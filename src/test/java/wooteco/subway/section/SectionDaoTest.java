@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.NoSuchSectionException;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.domain.Line;
@@ -186,5 +184,35 @@ public class SectionDaoTest {
         assertThat(제거된_역_개수).isEqualTo(1);
         assertThat(제거전_전체_역).hasSize(2);
         assertThat(제거후_전체_역).hasSize(1);
+    }
+
+    @Test
+    @DisplayName("지하철 역을 통해 환승 가능한 노선 찾기")
+    void findIncludeStationLine() {
+        // given
+        Line 이호선 = new Line(2L, "2호선", "bg-green-200");
+        Line 삼호선 = new Line(3L, "3호선", "bg-green-200");
+        lineDao.insert(이호선);
+        lineDao.insert(삼호선);
+
+        Station 잠실역 = new Station(4L, "잠실역");
+        Station 건대입구역 = new Station(5L, "건대입구역");
+        Station 면목역 = new Station(6L, "면목역");
+        stationDao.insert(잠실역);
+        stationDao.insert(건대입구역);
+        stationDao.insert(면목역);
+
+        Section 동묘역_잠실역 = new Section(이호선, 동묘역, 잠실역, 거리);
+        Section 면목역_잠실역 = new Section(삼호선, 면목역, 잠실역, 거리);
+        Section 잠실역_건대입구역 = new Section(삼호선, 잠실역, 건대입구역, 거리);
+        sectionDao.insert(동묘역_잠실역);
+        sectionDao.insert(면목역_잠실역);
+        sectionDao.insert(잠실역_건대입구역);
+
+        // when
+        List<Line> lines = sectionDao.findIncludeStationLine(4L); // 잠실역
+
+        // then
+        assertThat(lines).containsExactly(이호선, 삼호선);
     }
 }

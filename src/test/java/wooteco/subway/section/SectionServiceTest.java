@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Deque;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,6 +25,7 @@ import wooteco.subway.section.dao.SectionDao;
 import wooteco.subway.section.domain.Distance;
 import wooteco.subway.section.domain.Section;
 import wooteco.subway.section.domain.Sections;
+import wooteco.subway.section.dto.SectionResponse;
 import wooteco.subway.section.dto.SectionServiceDto;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
@@ -38,6 +40,8 @@ public class SectionServiceTest {
     private final Station 동묘역 = new Station(2L, "동묘역");
     private final Station 동대문역 = new Station(3L, "동대문역");
     private final Distance 거리 = new Distance(10);
+    private Section 신설역_동묘역_구간;
+    private Section 동묘역_동대문역_구간;
 
     @Autowired
     private SectionDao sectionDao;
@@ -55,8 +59,8 @@ public class SectionServiceTest {
         stationDao.insert(동묘역);
         stationDao.insert(동대문역);
 
-        Section 신설역_동묘역_구간 = new Section(일호선, 신설역, 동묘역, 거리);
-        Section 동묘역_동대문역_구간 = new Section(일호선, 동묘역, 동대문역, 거리);
+        신설역_동묘역_구간 = new Section(일호선, 신설역, 동묘역, 거리);
+        동묘역_동대문역_구간 = new Section(일호선, 동묘역, 동대문역, 거리);
         sectionDao.insert(신설역_동묘역_구간);
         sectionDao.insert(동묘역_동대문역_구간);
     }
@@ -171,5 +175,36 @@ public class SectionServiceTest {
         // then
         assertThatThrownBy(() -> sectionService.delete(일호선, 신설역.getId()))
             .isInstanceOf(OnlyOneSectionExistsException.class);
+    }
+
+    @Test
+    @DisplayName("전체 지하철 지도를 위한 노선별 구간값 반환")
+    void findSectionResponses() {
+        // given
+        Line 이호선 = lineDao.insert(new Line("2호선", "bg-green-100"));
+        Station 잠실역 = stationDao.insert(new Station("잠실역"));
+        Section 동대문역_잠실역_구간 = new Section(이호선, 동대문역, 잠실역, 거리);
+        sectionDao.insert(동대문역_잠실역_구간);
+
+        // when
+        List<SectionResponse> sectionResponses = sectionService.findSectionResponses(일호선);
+
+        // then
+        assertThat(sectionResponses.get(0).getId()).isEqualTo(신설역_동묘역_구간.getUpStationId());
+        assertThat(sectionResponses.get(0).getName()).isEqualTo(신설역_동묘역_구간.getUpStationName());
+        assertThat(sectionResponses.get(0).getDistanceToNextStation()).isEqualTo(신설역_동묘역_구간.getDistanceValue());
+        assertThat(sectionResponses.get(0).getTransferLines()).isEmpty();
+
+        assertThat(sectionResponses.get(1).getId()).isEqualTo(동묘역_동대문역_구간.getUpStationId());
+        assertThat(sectionResponses.get(1).getName()).isEqualTo(동묘역_동대문역_구간.getUpStationName());
+        assertThat(sectionResponses.get(1).getDistanceToNextStation()).isEqualTo(동묘역_동대문역_구간.getDistanceValue());
+        assertThat(sectionResponses.get(1).getTransferLines()).isEmpty();
+
+        assertThat(sectionResponses.get(2).getId()).isEqualTo(동묘역_동대문역_구간.getDownStationId());
+        assertThat(sectionResponses.get(2).getName()).isEqualTo(동묘역_동대문역_구간.getDownStation().getName());
+        assertThat(sectionResponses.get(2).getDistanceToNextStation()).isEqualTo(0);
+        assertThat(sectionResponses.get(2).getTransferLines().get(0).getId()).isEqualTo(이호선.getId());
+        assertThat(sectionResponses.get(2).getTransferLines().get(0).getName()).isEqualTo(이호선.getName());
+        assertThat(sectionResponses.get(2).getTransferLines().get(0).getColor()).isEqualTo(이호선.getColor());
     }
 }

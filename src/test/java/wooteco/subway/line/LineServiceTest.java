@@ -6,7 +6,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,10 +20,14 @@ import wooteco.subway.exception.NoSuchLineException;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.domain.Line;
+import wooteco.subway.line.domain.Lines;
+import wooteco.subway.line.dto.LineMapResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
+import wooteco.subway.line.dto.TransferLineResponse;
 import wooteco.subway.line.dto.UpdateLineRequest;
 import wooteco.subway.section.application.SectionService;
+import wooteco.subway.section.dto.SectionResponse;
 
 @ExtendWith(MockitoExtension.class)
 public class LineServiceTest {
@@ -141,5 +147,34 @@ public class LineServiceTest {
         // then
         assertThatThrownBy(() -> lineService.findOne(id))
             .isInstanceOf(NoSuchLineException.class);
+    }
+
+    @Test
+    @DisplayName("전체 지하철 지도를 위한 전체 노선 정보값 반환")
+    void findLineMapResponses() {
+        // given
+        Line 일호선 = new Line(1L, "1호선", "bg-blue-100");
+        Line 이호선 = new Line(2L, "2호선", "bg-green-100");
+        List<Line> lines = Arrays.asList(일호선, 이호선);
+
+        List<TransferLineResponse> transferLineResponses = Collections.singletonList(TransferLineResponse.from(이호선));
+        List<SectionResponse> sectionResponses = Arrays.asList(
+            new SectionResponse(1L, "면목역", 10, transferLineResponses),
+            new SectionResponse(2L, "상봉역", 15, transferLineResponses),
+            new SectionResponse(3L, "중화역", 0, transferLineResponses)
+        );
+
+        when(mockLineDao.findAll()).thenReturn(lines);
+        when(mockSectionService.findSectionResponses(일호선)).thenReturn(sectionResponses);
+
+        // when
+        List<LineMapResponse> lineMapResponses = lineService.findLineMapResponses();
+
+        // then
+        assertThat(lineMapResponses.get(0).getName()).isEqualTo(일호선.getName());
+        assertThat(lineMapResponses.get(0).getColor()).isEqualTo(일호선.getColor());
+        assertThat(lineMapResponses.get(0).getDistance()).isEqualTo(25);
+        assertThat(lineMapResponses.get(0).getSections().get(0).getTransferLines().get(0).getName()).isEqualTo(이호선.getName());
+        assertThat(lineMapResponses.get(0).getSections().get(0).getTransferLines().get(0).getColor()).isEqualTo(이호선.getColor());
     }
 }

@@ -85,6 +85,10 @@ public class Section {
         return upStation.getId();
     }
 
+    public String getUpStationName() {
+        return upStation.getName();
+    }
+
     public Station getDownStation() {
         return downStation;
     }

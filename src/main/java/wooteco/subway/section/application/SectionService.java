@@ -2,15 +2,18 @@ package wooteco.subway.section.application;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.springframework.stereotype.Service;
 import wooteco.subway.exception.NoSuchSectionException;
 import wooteco.subway.line.domain.Line;
+import wooteco.subway.line.dto.TransferLineResponse;
 import wooteco.subway.section.dao.SectionDao;
 import wooteco.subway.section.domain.Distance;
 import wooteco.subway.section.domain.Section;
 import wooteco.subway.section.domain.Sections;
+import wooteco.subway.section.dto.SectionResponse;
 import wooteco.subway.section.dto.SectionServiceDto;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
@@ -100,6 +103,27 @@ public class SectionService {
 
     public Sections findSectionsByLine(Line line) {
         return new Sections(sectionDao.findAllByLineId(line.getId()));
+    }
+
+    public List<SectionResponse> findSectionResponses(Line line) {
+        List<SectionResponse> sectionResponses = new ArrayList<>();
+        Sections sections = findSectionsByLine(line);
+
+        for (Station station : sections.sortedStations()) {
+            int distance = sections.distanceValueWithNextStationOf(station);
+            List<TransferLineResponse> transferLineResponses = findTransferLineResponses(station, line);
+            sectionResponses.add(new SectionResponse(station.getId(), station.getName(), distance, transferLineResponses));
+        }
+
+        return sectionResponses;
+    }
+
+    private List<TransferLineResponse> findTransferLineResponses(Station station, Line line) {
+        return sectionDao.findIncludeStationLine(station.getId())
+            .stream()
+            .filter(line::isNotEqual)
+            .map(TransferLineResponse::from)
+            .collect(Collectors.toList());
     }
 }
 

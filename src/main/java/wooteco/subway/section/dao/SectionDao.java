@@ -1,10 +1,13 @@
 package wooteco.subway.section.dao;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import javax.sql.DataSource;
+import org.antlr.v4.runtime.atn.SemanticContext.AND;
+import org.antlr.v4.runtime.atn.SemanticContext.OR;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -143,5 +146,18 @@ public class SectionDao {
             + "LEFT JOIN station AS up_station ON s.up_station_id = up_station.id "
             + "LEFT JOIN station AS down_station ON s.down_station_id = down_station.id";
         return jdbcTemplate.query(sql, rowMapper);
+    }
+
+    public List<Line> findIncludeStationLine(Long stationId) {
+        String sql = "SELECT DISTINCT line.id, line.name, line.color "
+            + "FROM line JOIN section ON line.id = section.line_id "
+            + "WHERE section.up_station_id = ? OR section.down_station_id = ?";
+
+        return jdbcTemplate.query(sql,
+            (rs, rowNum) -> new Line(
+                rs.getLong("id"),
+                rs.getString("name"),
+                rs.getString("color")),
+            stationId, stationId);
     }
 }

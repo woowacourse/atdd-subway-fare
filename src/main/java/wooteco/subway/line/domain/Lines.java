@@ -1,6 +1,8 @@
 package wooteco.subway.line.domain;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import wooteco.subway.exception.DuplicateLineNameException;
 
 public class Lines {
@@ -15,5 +17,11 @@ public class Lines {
         if (lines.stream().anyMatch(line::isDuplicate)) {
             throw new DuplicateLineNameException();
         }
+    }
+
+    public List<Line> sortedByName() {
+        return lines.stream()
+            .sorted(Comparator.comparing(Line::getName))
+            .collect(Collectors.toList());
     }
 }

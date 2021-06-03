@@ -171,4 +171,18 @@ class SectionsTest {
             .isInstanceOf(NoSuchSectionException.class);
     }
 
+    @Test
+    @DisplayName("다음 역까지 거리 찾기 테스트")
+    void distanceWithNextStationOf() {
+        // given
+
+        // when
+        int expect_10 = sections.distanceValueWithNextStationOf(사가정역);
+        int expect_0 = sections.distanceValueWithNextStationOf(용마산역);
+
+        // then
+        assertThat(expect_10).isEqualTo(거리.getValue());
+        assertThat(expect_0).isEqualTo(0);
+    }
+
 }

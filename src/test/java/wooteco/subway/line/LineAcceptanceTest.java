@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.line.dto.CustomLineResponse;
+import wooteco.subway.line.dto.LineMapResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.member.dto.MemberRequest;
@@ -33,103 +34,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
     private StationResponse 광교역;
     private StationResponse 상봉역;
     private StationResponse 면목역;
+    private StationResponse 용마산역;
 
     private LineRequest lineRequest1;
     private LineRequest lineRequest2;
-
-    @BeforeEach
-    public void setUp() {
-        super.setUp();
-
-        // given
-        회원_생성을_요청(EMAIL, PASSWORD, 10);
-        강남역 = 지하철역_등록되어_있음("강남역");
-        광교역 = 지하철역_등록되어_있음("광교역");
-        상봉역 = 지하철역_등록되어_있음("상봉역");
-        면목역 = 지하철역_등록되어_있음("면목역");
-
-        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
-        lineRequest2 = new LineRequest("7호선", "bg-green-600", 상봉역.getId(), 면목역.getId(), 15);
-    }
-
-    @DisplayName("지하철 노선을 생성한다.")
-    @Test
-    void createLine() {
-        // when
-        ExtractableResponse<Response> response = 토큰과_함께_지하철_노선_생성_요청(lineRequest1);
-
-        // then
-        지하철_노선_생성됨(response);
-    }
-
-    @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
-    @Test
-    void createLineWithDuplicateName() {
-        // given
-        지하철_노선_등록되어_있음(lineRequest1);
-
-        // when
-        ExtractableResponse<Response> response = 토큰과_함께_지하철_노선_생성_요청(lineRequest1);
-
-        // then
-        지하철_노선_생성_실패됨(response);
-    }
-
-    @DisplayName("지하철 노선 목록을 상,하행종점역과 총거리와 함께 조회한다.")
-    @Test
-    void findLinesWithStationsAndTotalDistance() {
-        // given
-        LineResponse lineResponse1 = 지하철_노선_등록되어_있음(lineRequest1);
-        LineResponse lineResponse2 = 지하철_노선_등록되어_있음(lineRequest2);
-
-        // when
-        ExtractableResponse<Response> response = 토큰과_함께_지하철_노선_목록_조회_요청();
-
-        // then
-        지하철_노선_목록_응답됨(response);
-        지하철_노선_목록_포함됨(response, Arrays.asList(lineResponse1, lineResponse2));
-        지하철_노선_목록_상하행종점역_일치함(response, Arrays.asList(lineResponse1, lineResponse2));
-        지하철_노선_총_거리_일치함(response, Arrays.asList(lineRequest1, lineRequest2));
-    }
-
-    @DisplayName("지하철 노선을 조회한다.")
-    @Test
-    void getLine() {
-        // given
-        LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1);
-
-        // when
-        ExtractableResponse<Response> response = 토큰과_함께_지하철_노선_조회_요청(lineResponse);
-
-        // then
-        지하철_노선_응답됨(response, lineResponse);
-    }
-
-    @DisplayName("지하철 노선을 수정한다.")
-    @Test
-    void updateLine() {
-        // given
-        LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1);
-
-        // when
-        ExtractableResponse<Response> response = 토큰과_함께_지하철_노선_수정_요청(lineResponse, lineRequest2);
-
-        // then
-        지하철_노선_수정됨(response);
-    }
-
-    @DisplayName("지하철 노선을 제거한다.")
-    @Test
-    void deleteLine() {
-        // given
-        LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1);
-
-        // when
-        ExtractableResponse<Response> response = 토큰과_함께_지하철_노선_제거_요청(lineResponse);
-
-        // then
-        지하철_노선_삭제됨(response);
-    }
+    private LineRequest lineRequest3;
 
     public static void 지하철_노선_생성됨(ExtractableResponse response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -258,6 +167,162 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(resultLineIds).containsAll(expectedLineIds);
     }
 
+    public static StationResponse 지하철역_등록되어_있음(String name) {
+        return 토큰과_함께_지하철역_생성_요청(name).as(StationResponse.class);
+    }
+
+    public static ExtractableResponse<Response> 토큰과_함께_지하철역_생성_요청(String name) {
+        String accessToken = 로그인_후_토큰_발급(new TokenRequest(EMAIL, PASSWORD)).jsonPath().get(ACCESS_TOKEN);
+        StationRequest stationRequest = new StationRequest(name);
+
+        return RestAssured
+            .given().log().all()
+            .body(stationRequest)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .auth().oauth2(accessToken)
+            .when().post("/api/stations")
+            .then().log().all()
+            .extract();
+    }
+
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+
+        // given
+        회원_생성을_요청(EMAIL, PASSWORD, 10);
+        강남역 = 지하철역_등록되어_있음("강남역");
+        광교역 = 지하철역_등록되어_있음("광교역");
+        상봉역 = 지하철역_등록되어_있음("상봉역");
+        면목역 = 지하철역_등록되어_있음("면목역");
+        용마산역 = 지하철역_등록되어_있음("용마산역");
+
+        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
+        lineRequest2 = new LineRequest("7호선", "bg-green-600", 상봉역.getId(), 면목역.getId(), 15);
+        lineRequest3 = new LineRequest("5호선", "bg-purple-600", 상봉역.getId(), 용마산역.getId(), 4);
+    }
+
+    @DisplayName("지하철 노선을 생성한다.")
+    @Test
+    void createLine() {
+        // when
+        ExtractableResponse<Response> response = 토큰과_함께_지하철_노선_생성_요청(lineRequest1);
+
+        // then
+        지하철_노선_생성됨(response);
+    }
+
+    @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
+    @Test
+    void createLineWithDuplicateName() {
+        // given
+        지하철_노선_등록되어_있음(lineRequest1);
+
+        // when
+        ExtractableResponse<Response> response = 토큰과_함께_지하철_노선_생성_요청(lineRequest1);
+
+        // then
+        지하철_노선_생성_실패됨(response);
+    }
+
+    @DisplayName("지하철 노선 목록을 상,하행종점역과 총거리와 함께 조회한다.")
+    @Test
+    void findLinesWithStationsAndTotalDistance() {
+        // given
+        LineResponse lineResponse1 = 지하철_노선_등록되어_있음(lineRequest1);
+        LineResponse lineResponse2 = 지하철_노선_등록되어_있음(lineRequest2);
+
+        // when
+        ExtractableResponse<Response> response = 토큰과_함께_지하철_노선_목록_조회_요청();
+
+        // then
+        지하철_노선_목록_응답됨(response);
+        지하철_노선_목록_포함됨(response, Arrays.asList(lineResponse1, lineResponse2));
+        지하철_노선_목록_상하행종점역_일치함(response, Arrays.asList(lineResponse1, lineResponse2));
+        지하철_노선_총_거리_일치함(response, Arrays.asList(lineRequest1, lineRequest2));
+    }
+
+    @DisplayName("지하철 노선을 조회한다.")
+    @Test
+    void getLine() {
+        // given
+        LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1);
+
+        // when
+        ExtractableResponse<Response> response = 토큰과_함께_지하철_노선_조회_요청(lineResponse);
+
+        // then
+        지하철_노선_응답됨(response, lineResponse);
+    }
+
+    @DisplayName("지하철 노선을 수정한다.")
+    @Test
+    void updateLine() {
+        // given
+        LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1);
+
+        // when
+        ExtractableResponse<Response> response = 토큰과_함께_지하철_노선_수정_요청(lineResponse, lineRequest2);
+
+        // then
+        지하철_노선_수정됨(response);
+    }
+
+    @DisplayName("지하철 노선을 제거한다.")
+    @Test
+    void deleteLine() {
+        // given
+        LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1);
+
+        // when
+        ExtractableResponse<Response> response = 토큰과_함께_지하철_노선_제거_요청(lineResponse);
+
+        // then
+        지하철_노선_삭제됨(response);
+    }
+
+    @DisplayName("지하철 지도 전체 정보를 가져온다.")
+    @Test
+    void findLineMapResponses() {
+        // given
+        지하철_노선_등록되어_있음(lineRequest1);
+        지하철_노선_등록되어_있음(lineRequest2);
+        지하철_노선_등록되어_있음(lineRequest3);
+
+        // when
+        ExtractableResponse<Response> response = 토근과_함께_지하철_전체_정보_요청();
+
+        // then
+        지하철_전체_정보_응답됨(response);
+        지하철_전체_노선_정보_확인(response, Arrays.asList(lineRequest3, lineRequest2, lineRequest1));
+    }
+
+    private void 지하철_전체_노선_정보_확인(ExtractableResponse<Response> response, List<LineRequest> expectOrderRequests) {
+        List<LineMapResponse> lineMapResponses = response.jsonPath().getList(".", LineMapResponse.class);
+
+        for (int i = 0; i < lineMapResponses.size(); i++) {
+            assertThat(lineMapResponses.get(i).getName()).isEqualTo(expectOrderRequests.get(i).getName());
+            assertThat(lineMapResponses.get(i).getColor()).isEqualTo(expectOrderRequests.get(i).getColor());
+            assertThat(lineMapResponses.get(i).getDistance()).isEqualTo(expectOrderRequests.get(i).getDistance());
+        }
+    }
+
+    private void 지하철_전체_정보_응답됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    private ExtractableResponse<Response> 토근과_함께_지하철_전체_정보_요청() {
+        String accessToken = 로그인_후_토큰_발급(new TokenRequest(EMAIL, PASSWORD)).jsonPath().get(ACCESS_TOKEN);
+
+        return RestAssured.given()
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .auth().oauth2(accessToken)
+            .when().get("/api/lines/map")
+            .then().log().all()
+            .extract();
+    }
+
     private void 지하철_노선_총_거리_일치함(ExtractableResponse<Response> response, List<LineRequest> lineRequests) {
         List<CustomLineResponse> customLineResponses = response.jsonPath().getList(".", CustomLineResponse.class);
         for (int i = 0; i < lineRequests.size(); i++) {
@@ -287,23 +352,5 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(customLineResponse.getEndStation())
             .usingRecursiveComparison()
             .isEqualTo(lineResponse.getStations().get(size - 1));
-    }
-
-    public static StationResponse 지하철역_등록되어_있음(String name) {
-        return 토큰과_함께_지하철역_생성_요청(name).as(StationResponse.class);
-    }
-
-    public static ExtractableResponse<Response> 토큰과_함께_지하철역_생성_요청(String name) {
-        String accessToken = 로그인_후_토큰_발급(new TokenRequest(EMAIL, PASSWORD)).jsonPath().get(ACCESS_TOKEN);
-        StationRequest stationRequest = new StationRequest(name);
-
-        return RestAssured
-            .given().log().all()
-            .body(stationRequest)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .auth().oauth2(accessToken)
-            .when().post("/api/stations")
-            .then().log().all()
-            .extract();
     }
 }
