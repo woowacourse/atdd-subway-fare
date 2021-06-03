@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
-import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.User;
 import wooteco.subway.path.domain.DiscountPolicy;
 import wooteco.subway.path.domain.FareTable;

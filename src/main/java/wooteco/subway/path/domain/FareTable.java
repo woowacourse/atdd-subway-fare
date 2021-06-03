@@ -1,5 +1,10 @@
 package wooteco.subway.path.domain;
 
+import wooteco.subway.path.domain.chain.FareChain;
+import wooteco.subway.path.domain.chain.FirstBoundChain;
+import wooteco.subway.path.domain.chain.SecondBoundChain;
+import wooteco.subway.path.domain.chain.ThirdBoundChain;
+
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -7,9 +12,11 @@ import java.util.Map;
 
 public class FareTable {
     private final Map<String, Integer> fareTable;
+    private final FareChain fareChain;
 
     public FareTable() {
         this.fareTable = new LinkedHashMap<>();
+        this.fareChain = new FirstBoundChain(new SecondBoundChain(new ThirdBoundChain()));
     }
 
     public Map<String, Integer> getFareTable() {
@@ -25,34 +32,10 @@ public class FareTable {
     }
 
     private int calculateFareByDistanceAndLine(int distance, List<SectionEdge> sectionEdges) {
-        int fare = 1_250;
-
-        fare += calculateAdditionalFareByDistance(distance);
+        int fare = fareChain.calculate(distance);
         fare += calculateAdditionalFareByLine(sectionEdges);
 
         return fare;
-    }
-
-    private int calculateAdditionalFareByDistance(int distance) {
-        if (distance <= 10) {
-            return 0;
-        }
-        if (distance <= 50) {
-            return calculateAdditionalFareByDistanceUnderFifty(distance);
-        }
-        return calculateAdditionalFareByDistanceOverFifty(distance);
-    }
-
-    private int calculateAdditionalFareByDistanceUnderFifty(int distance) {
-        return calculateOverFare(distance - 10, 5);
-    }
-
-    private int calculateAdditionalFareByDistanceOverFifty(int distance) {
-        return calculateAdditionalFareByDistanceUnderFifty(distance - (distance - 50)) + calculateOverFare(distance - 50, 8);
-    }
-
-    private int calculateOverFare(int distance, int overDistance) {
-        return (int) ((Math.ceil((distance - 1) / overDistance) + 1) * 100);
     }
 
     private int calculateAdditionalFareByLine(List<SectionEdge> sectionEdges) {
