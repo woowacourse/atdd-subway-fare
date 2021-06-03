@@ -34,7 +34,6 @@ public class PathService {
     @Cacheable(value = "cache::shortestPath", key = "#departure.toString() + '::' + #arrival.toString() +'::' + #loginMember.age")
     public PathResponse findPath(Long departure, Long arrival, LoginMember loginMember) {
         try {
-            logger.info("캐시 되에에엠~");
             List<Line> lines = lineService.findLines();
             Station departureStation = stationService.findStationById(departure);
             Station arrivalStation = stationService.findStationById(arrival);
