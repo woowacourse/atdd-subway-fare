@@ -1,5 +1,6 @@
 package wooteco.subway.path.ui;
 
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,6 +19,7 @@ public class PathController {
     }
 
     @GetMapping("/paths")
+    @ApiOperation(value = "역과 역 사이 경로 조회")
     public ResponseEntity<PathResponse> findPath(@RequestParam("source") Long source, @RequestParam("target") Long target,
                                                  @AuthPrincipal AuthMember authMember) {
         PathResponse path = pathService.findPath(source, target, authMember);

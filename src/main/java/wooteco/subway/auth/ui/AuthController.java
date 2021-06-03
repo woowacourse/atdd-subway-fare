@@ -1,5 +1,6 @@
 package wooteco.subway.auth.ui;
 
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +18,7 @@ public class AuthController {
     }
 
     @PostMapping("/login/token")
+    @ApiOperation(value = "로그인", notes = "Bearer 토큰 반환")
     public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest request) {
         TokenResponse token = authService.login(request);
         return ResponseEntity.ok().body(token);

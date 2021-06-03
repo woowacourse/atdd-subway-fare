@@ -9,7 +9,6 @@ import wooteco.subway.line.domain.Sections;
 import wooteco.subway.station.domain.Station;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,20 +18,20 @@ class SubwayPathTest {
     private SubwayPath subwayPath;
 
     /**
-     * 1호선
-     * A역 -- 3 -- B역
+     * 1호선 총5km
+     * [1역] <- 2km -> [2역] <- 3km -> [3역]
      */
     @BeforeEach
     void setUp() {
-        Station station1 = new Station("1역");
-        Station station2 = new Station("2역");
-        Station station3 = new Station("3역");
-        Section section1 = new Section(station1, station2, 2);
-        Section section2 = new Section(station2, station3, 3);
-        Line line = new Line(1L, "1호선", "red", 0, new Sections(Arrays.asList(section1, section2)));
+        Station 역1 = new Station("1역");
+        Station 역2 = new Station("2역");
+        Station 역3 = new Station("3역");
+        Section 구간1 = new Section(역1, 역2, 2);
+        Section 구간2 = new Section(역2, 역3, 3);
+        Line 노선 = new Line(1L, "1호선", "red", 0, new Sections(Arrays.asList(구간1, 구간2)));
 
-        List<Station> stations = Arrays.asList(station1, station2);
-        List<SectionEdge> sectionEdges = Arrays.asList(new SectionEdge(section1, line), new SectionEdge(section2, line));
+        List<Station> stations = Arrays.asList(역1, 역2);
+        List<SectionEdge> sectionEdges = Arrays.asList(new SectionEdge(구간1, 노선), new SectionEdge(구간2, 노선));
 
         subwayPath = new SubwayPath(sectionEdges, stations);
     }

@@ -1,6 +1,6 @@
 package wooteco.subway.station.ui;
 
-import org.springframework.http.MediaType;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.station.application.StationService;
@@ -19,17 +19,20 @@ public class StationController {
     }
 
     @PostMapping("/stations")
+    @ApiOperation(value = "역 생성")
     public ResponseEntity<StationResponse> createStation(@RequestBody StationRequest stationRequest) {
         StationResponse station = stationService.saveStation(stationRequest);
         return ResponseEntity.created(URI.create("/stations/" + station.getId())).body(station);
     }
 
-    @GetMapping(value = "/stations", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/stations")
+    @ApiOperation(value = "역 목록 조회")
     public ResponseEntity<List<StationResponse>> showStations() {
         return ResponseEntity.ok().body(stationService.findAllStationResponses());
     }
 
     @DeleteMapping("/stations/{id}")
+    @ApiOperation(value = "역 단일 조회")
     public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
         stationService.deleteStationById(id);
         return ResponseEntity.noContent().build();
