@@ -1,6 +1,7 @@
 package wooteco.subway.station.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.badrequest.DuplicateStationException;
 import wooteco.subway.exception.badrequest.ExistStationInSectionException;
 import wooteco.subway.exception.notfound.NotFoundStationException;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class StationService {
     private final StationDao stationDao;
     private final SectionDao sectionDao;
