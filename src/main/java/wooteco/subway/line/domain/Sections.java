@@ -137,6 +137,7 @@ public class Sections {
     }
 
     public void removeStation(Station station) {
+        checkExistStation(station);
         if (sections.size() <= 1) {
             throw new BadRequest("지하철 구간이 1개 이하일 때 더 이상 삭제할 수 없습니다.");
         }
@@ -157,6 +158,13 @@ public class Sections {
 
         upSection.ifPresent(it -> sections.remove(it));
         downSection.ifPresent(it -> sections.remove(it));
+    }
+
+    private void checkExistStation(Station station) {
+        getStations().stream()
+                .filter(it -> it.equals(station))
+                .findAny()
+                .orElseThrow(() -> new BadRequest("유효하지 않는 요청 값입니다"));
     }
 
     public Stream<Section> stream() {
