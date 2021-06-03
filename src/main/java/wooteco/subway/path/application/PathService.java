@@ -26,7 +26,6 @@ public class PathService {
     private final StationService stationService;
     private final PathFinder pathFinder;
 
-    @Autowired
     public PathService(LineService lineService, StationService stationService, PathFinder pathFinder) {
         this.lineService = lineService;
         this.stationService = stationService;
