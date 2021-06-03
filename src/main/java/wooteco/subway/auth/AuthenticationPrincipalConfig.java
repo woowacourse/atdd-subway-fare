@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.ui.AuthenticationPrincipalArgumentResolver;
-import wooteco.subway.auth.ui.OptionalAuthenticationPrincipalArgumentResolver;
+import wooteco.subway.auth.ui.LoingAuthenticationPrincipalArgumentResolver;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(List argumentResolvers) {
         argumentResolvers.add(createAuthenticationPrincipalArgumentResolver());
-        argumentResolvers.add(createOptionalAuthenticationPrincipalArgumentResolver());
+        argumentResolvers.add(createLoginAuthenticationPrincipalArgumentResolver());
     }
 
     @Bean
@@ -29,7 +29,7 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public OptionalAuthenticationPrincipalArgumentResolver createOptionalAuthenticationPrincipalArgumentResolver() {
-        return new OptionalAuthenticationPrincipalArgumentResolver(authService);
+    public LoingAuthenticationPrincipalArgumentResolver createLoginAuthenticationPrincipalArgumentResolver() {
+        return new LoingAuthenticationPrincipalArgumentResolver(authService);
     }
 }

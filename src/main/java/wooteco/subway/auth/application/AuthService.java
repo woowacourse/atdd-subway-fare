@@ -6,7 +6,7 @@ import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
-import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.domain.LoginUser;
 import wooteco.subway.member.domain.Member;
 
 import java.util.Optional;
@@ -30,7 +30,7 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
-    public Optional<LoginMember> findMemberByToken(String credentials) {
+    public Optional<LoginUser> findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
             return Optional.empty();
         }
@@ -38,7 +38,7 @@ public class AuthService {
         String email = jwtTokenProvider.getPayload(credentials);
         try {
             Member member = memberDao.findByEmail(email);
-            return Optional.of(new LoginMember(member.getId(), member.getEmail(), member.getAge()));
+            return Optional.of(new LoginUser(member.getId(), member.getEmail(), member.getAge()));
         } catch (Exception e) {
             return Optional.empty();
         }

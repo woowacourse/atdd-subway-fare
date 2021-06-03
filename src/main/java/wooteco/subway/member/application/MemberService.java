@@ -3,7 +3,7 @@ package wooteco.subway.member.application;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.member.dao.MemberDao;
-import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.domain.LoginUser;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.EmailExistsResponse;
 import wooteco.subway.member.dto.MemberRequest;
@@ -27,14 +27,14 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public MemberResponse findMember(LoginMember loginMember) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
+    public MemberResponse findMember(LoginUser loginUser) {
+        Member member = memberDao.findByEmail(loginUser.getEmail());
         return MemberResponse.of(member);
     }
 
-    public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
+    public void updateMember(LoginUser loginUser, MemberRequest memberRequest) {
 
-        Member member = memberDao.findByEmail(loginMember.getEmail());
+        Member member = memberDao.findByEmail(loginUser.getEmail());
 
         if (!member.isEmail(memberRequest.getEmail())) {
             throw new MemberException("이메일은 변경할 수 없습니다.");
@@ -43,8 +43,8 @@ public class MemberService {
         memberDao.update(new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
     }
 
-    public void deleteMember(LoginMember loginMember) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
+    public void deleteMember(LoginUser loginUser) {
+        Member member = memberDao.findByEmail(loginUser.getEmail());
         memberDao.deleteById(member.getId());
     }
 
