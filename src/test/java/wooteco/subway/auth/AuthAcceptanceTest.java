@@ -22,10 +22,17 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     private static final String PASSWORD = "password";
     private static final Integer AGE = 20;
 
+    @DisplayName("올바른 회원 가입 요청")
+    @Test
+    void validSingUp() {
+        ExtractableResponse<Response> response = 회원_등록되어_있음("email@email.com", PASSWORD, AGE);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
     @DisplayName("올바르지 않은 회원 가입 요청")
     @Test
-    void invalidSingIn() {
-        ExtractableResponse<Response> response = 회원_등록되어_있음("", PASSWORD, AGE);
+    void invalidSingUp() {
+        ExtractableResponse<Response> response = 회원_등록되어_있음("notEmail@", PASSWORD, AGE);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
@@ -149,46 +156,30 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         return RestAssured.given()
                 .log()
                 .all()
-                .
-                        contentType(MediaType.APPLICATION_JSON_VALUE)
-                .
-                        body(params)
-                .
-                        when()
-                .
-                        post("/login/token")
-                .
-                        then()
-                .
-                        log()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when()
+                .post("/login/token")
+                .then()
+                .log()
                 .all()
-                .
-                        statusCode(HttpStatus.OK.value())
-                .
-                        extract();
+                .statusCode(HttpStatus.OK.value())
+                .extract();
     }
 
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {
         return RestAssured.given()
                 .log()
                 .all()
-                .
-                        auth()
+                .auth()
                 .oauth2(tokenResponse.getAccessToken())
-                .
-                        accept(MediaType.APPLICATION_JSON_VALUE)
-                .
-                        when()
-                .
-                        get("/members/me")
-                .
-                        then()
-                .
-                        log()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .get("/members/me")
+                .then()
+                .log()
                 .all()
-                .
-                        statusCode(HttpStatus.OK.value())
-                .
-                        extract();
+                .statusCode(HttpStatus.OK.value())
+                .extract();
     }
 }

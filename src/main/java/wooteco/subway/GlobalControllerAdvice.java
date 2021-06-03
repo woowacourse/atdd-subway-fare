@@ -45,11 +45,4 @@ public class GlobalControllerAdvice {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(exceptionResponse);
     }
-
-//    @ExceptionHandler(Exception.class)
-//    public ResponseEntity<ExceptionResponse> handleUnhandledException() {
-//        ExceptionResponse exceptionResponse = new ExceptionResponse("Oops!! There's unhandled exception");
-//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                .body(exceptionResponse);
-//    }
 }

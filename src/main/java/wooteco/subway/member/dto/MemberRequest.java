@@ -2,13 +2,14 @@ package wooteco.subway.member.dto;
 
 import wooteco.subway.member.domain.Member;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 public class MemberRequest {
 
-    @NotBlank(message = "이메일은 빈칸일 수 없습니다.")
+    @Email(message = "이메일은 빈칸일 수 없습니다.")
     private String email;
 
     @NotBlank(message = "비밀번호는 빈칸일 수 없습니다.")
