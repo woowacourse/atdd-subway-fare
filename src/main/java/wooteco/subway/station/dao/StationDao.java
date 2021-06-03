@@ -4,6 +4,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -15,14 +16,12 @@ import wooteco.subway.station.dto.StationTransferLinesDto;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Repository
 public class StationDao {
     private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
     private final RowMapper<Station> rowMapper = (rs, rowNum) ->
@@ -34,9 +33,14 @@ public class StationDao {
 
     public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
+        this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
         this.insertAction = new SimpleJdbcInsert(dataSource)
                 .withTableName("station")
                 .usingGeneratedKeyColumns("id");
+    }
+
+    private SqlParameterSource parameterSource(Station station) {
+        return new BeanPropertySqlParameterSource(station);
     }
 
     public Station insert(Station station) {
@@ -47,12 +51,13 @@ public class StationDao {
 
     public List<Station> findAll() {
         String sql = "select * from station";
-        return jdbcTemplate.query(sql, rowMapper);
+        return namedParameterJdbcTemplate.query(sql, rowMapper);
     }
 
     public void deleteById(Long id) {
-        String sql = "delete from station where id = ?";
-        int count = jdbcTemplate.update(sql, id);
+        String sql = "delete from station where id = :id";
+        Map<String, Long> param = Collections.singletonMap("id", id);
+        int count = namedParameterJdbcTemplate.update(sql, param);
         if (count < 1) {
             throw new StationNotFoundException();
         }
@@ -60,16 +65,17 @@ public class StationDao {
 
     public Optional<Station> findById(Long id) {
         try {
-            String sql = "select * from station where id = ?";
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
+            String sql = "select * from station where id = :id";
+            Map<String, Long> param = Collections.singletonMap("id", id);
+            return Optional.ofNullable(namedParameterJdbcTemplate.queryForObject(sql, param, rowMapper));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
     }
 
     public void update(Station station) {
-        String sql = "update station set name = ? where id = ?";
-        int count = jdbcTemplate.update(sql, station.getName(), station.getId());
+        String sql = "update station set name = :name where id = :id";
+        int count = namedParameterJdbcTemplate.update(sql, parameterSource(station));
         if (count < 1) {
             throw new StationNotFoundException();
         }

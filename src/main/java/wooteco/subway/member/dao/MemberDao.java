@@ -28,15 +28,15 @@ public class MemberDao {
                     rs.getInt("age")
             );
 
-    private SqlParameterSource parameterSource(Member member) {
-        return new BeanPropertySqlParameterSource(member);
-    }
-
     public MemberDao(DataSource dataSource) {
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("member")
                 .usingGeneratedKeyColumns("id");
         this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+    }
+
+    private SqlParameterSource parameterSource(Member member) {
+        return new BeanPropertySqlParameterSource(member);
     }
 
     public Member insert(Member member) {

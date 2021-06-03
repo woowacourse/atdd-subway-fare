@@ -1,12 +1,13 @@
 package wooteco.subway.line.dao;
 
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 
 import javax.sql.DataSource;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,11 +15,11 @@ import java.util.stream.Collectors;
 
 @Repository
 public class SectionDao {
-    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
 
-    public SectionDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
-        this.jdbcTemplate = jdbcTemplate;
+    public SectionDao(DataSource dataSource) {
+        this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("SECTION")
                 .usingGeneratedKeyColumns("id");
@@ -40,7 +41,9 @@ public class SectionDao {
     }
 
     public void deleteByLineId(Long lineId) {
-        jdbcTemplate.update("delete from SECTION where line_id = ?", lineId);
+        String sql = "delete from SECTION where line_id = :lineId";
+        Map<String, Long> param = Collections.singletonMap("lineId", lineId);
+        namedParameterJdbcTemplate.update(sql, param);
     }
 
     public void insertSections(Line line) {
@@ -52,8 +55,11 @@ public class SectionDao {
     }
 
     public boolean existStation(Long stationId) {
-        String sql = "select count(*) from section where up_station_id = ? OR down_station_id = ? limit 1";
-        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, stationId, stationId);
+        String sql = "select count(*) from section where up_station_id = :upStationId OR down_station_id = :downStationId limit 1";
+        Map<String, Object> params = new HashMap<>();
+        params.put("upStationId", stationId);
+        params.put("downStationId", stationId);
+        Integer count = namedParameterJdbcTemplate.queryForObject(sql, params, Integer.class);
         return count > 0;
     }
 }
