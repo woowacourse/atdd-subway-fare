@@ -15,7 +15,7 @@ public class LineRequest {
     @NotNull(message = "입력되지 않은 항목을 확인해주세요")
     private Long downStationId;
     @Min(value = 1, message = "거리는 0 이상의 숫자를 입력해주세요")
-    private int distance;
+    private Integer distance;
 
     public LineRequest() {
     }

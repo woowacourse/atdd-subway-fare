@@ -7,7 +7,7 @@ public class ChangeAgeRequest {
 
     @Min(value = 0, message = "1부터 150 사이의 나이를 입력해주세요")
     @Max(value = 150, message = "1부터 150 사이의 나이를 입력해주세요")
-    private int age;
+    private Integer age;
 
     public ChangeAgeRequest() {
     }
