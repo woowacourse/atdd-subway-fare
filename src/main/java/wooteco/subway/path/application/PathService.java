@@ -6,7 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.member.domain.LoginMember;
-import wooteco.subway.path.domain.Fare;
+import wooteco.subway.path.domain.fare.Fare;
+import wooteco.subway.path.domain.fare.FareCalculator;
 import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.path.dto.PathResponseAssembler;
@@ -35,7 +36,8 @@ public class PathService {
         SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
         int distance = subwayPath.calculateDistance();
         int extraFare = subwayPath.maximumExtraFare();
-        Fare fare = new Fare(distance, member, extraFare);
+        FareCalculator fareCalculator = new FareCalculator();
+        Fare fare = fareCalculator.fare(distance, member, extraFare);
 
         return PathResponseAssembler.assemble(subwayPath, distance, fare);
     }

@@ -8,7 +8,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import wooteco.subway.member.domain.LoginMember;
-import wooteco.subway.member.domain.Member;
+import wooteco.subway.path.domain.fare.Fare;
+import wooteco.subway.path.domain.fare.FareCalculator;
 
 class FareTest {
 
@@ -16,8 +17,11 @@ class FareTest {
     @DisplayName("거리별 기본 요금 계산")
     @MethodSource("matchedFare")
     void defaultRate(int distance, int predictedFare, LoginMember member, int extraFare) {
+        //given
+        FareCalculator fareCalculator = new FareCalculator();
+
         //when
-        Fare fare = new Fare(distance, member, extraFare);
+        Fare fare = fareCalculator.fare(distance, member, extraFare);
 
         //then
         assertThat(fare.value()).isEqualTo(predictedFare);
@@ -35,8 +39,11 @@ class FareTest {
     @DisplayName("나이별 요금 계산")
     @MethodSource("ageFare")
     void ageRate(int distance, int predictedFare, LoginMember member, int extraFare) {
+        //given
+        FareCalculator fareCalculator = new FareCalculator();
+
         //when
-        Fare fare = new Fare(distance, member, extraFare);
+        Fare fare = fareCalculator.fare(distance, member, extraFare);
 
         //then
         assertThat(fare.value()).isEqualTo(predictedFare);
@@ -55,8 +62,11 @@ class FareTest {
     @DisplayName("노선별 추가 요금 계산")
     @MethodSource("extraFareByLine")
     void distanceRate(int distance, int predictedFare, LoginMember member, int extraFare) {
+        //given
+        FareCalculator fareCalculator = new FareCalculator();
+
         //when
-        Fare fare = new Fare(distance, member, extraFare);
+        Fare fare = fareCalculator.fare(distance, member, extraFare);
 
         //then
         assertThat(fare.value()).isEqualTo(predictedFare);
