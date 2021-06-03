@@ -5,11 +5,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import wooteco.subway.exception.notfound.NotExistException;
+import wooteco.subway.fare.domain.farebydistancestrategy.AdditionalFareOver10Km;
+import wooteco.subway.fare.domain.farebydistancestrategy.AdditionalFareOver50km;
+import wooteco.subway.fare.domain.farebydistancestrategy.AdditionalFareStrategy;
+import wooteco.subway.fare.domain.farebydistancestrategy.AdditionalFareUnder10km;
 import wooteco.subway.member.domain.authmember.AuthMember;
-import wooteco.subway.path.domain.CalculateAdditionalFare.AdditionalFareOver10Km;
-import wooteco.subway.path.domain.CalculateAdditionalFare.AdditionalFareOver50km;
-import wooteco.subway.path.domain.CalculateAdditionalFare.AdditionalFareStrategy;
-import wooteco.subway.path.domain.CalculateAdditionalFare.AdditionalFareUnder10km;
 import wooteco.subway.station.domain.Station;
 
 public class SubwayPath {

@@ -1,6 +1,6 @@
-package wooteco.subway.member.domain.agemember;
+package wooteco.subway.fare.domain.farebyagestrategy;
 
-public class Teenager implements AgeMember {
+public class DiscountFareWhenTeenagerStrategy implements DiscountFareByAgeStrategy {
 
     private static final int TEENAGER_AGE_LOWER_BOUNDARY = 13;
     private static final int TEENAGER_AGE_UPPER_BOUNDARY = 18;

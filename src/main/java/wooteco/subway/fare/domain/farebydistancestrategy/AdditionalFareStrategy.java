@@ -1,4 +1,4 @@
-package wooteco.subway.path.domain.CalculateAdditionalFare;
+package wooteco.subway.fare.domain.farebydistancestrategy;
 
 public interface AdditionalFareStrategy {
 

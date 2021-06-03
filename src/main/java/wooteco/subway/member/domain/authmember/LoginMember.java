@@ -3,15 +3,16 @@ package wooteco.subway.member.domain.authmember;
 import java.util.Arrays;
 import java.util.List;
 import wooteco.subway.exception.notfound.NotExistException;
-import wooteco.subway.member.domain.agemember.AgeMember;
-import wooteco.subway.member.domain.agemember.Baby;
-import wooteco.subway.member.domain.agemember.Child;
-import wooteco.subway.member.domain.agemember.Teenager;
+import wooteco.subway.fare.domain.farebyagestrategy.DiscountFareByAgeStrategy;
+import wooteco.subway.fare.domain.farebyagestrategy.DiscountFareWhenBabyStrategy;
+import wooteco.subway.fare.domain.farebyagestrategy.DiscountFareWhenChildStrategy;
+import wooteco.subway.fare.domain.farebyagestrategy.DiscountFareWhenTeenagerStrategy;
 
 public class LoginMember implements AuthMember {
 
-    private static final List<AgeMember> ageMembers
-        = Arrays.asList(new Baby(), new Child(), new Teenager());
+    private static final List<DiscountFareByAgeStrategy> DISCOUNT_FARE_BY_AGE_STRATEGIES
+        = Arrays.asList(new DiscountFareWhenBabyStrategy(), new DiscountFareWhenChildStrategy(),
+        new DiscountFareWhenTeenagerStrategy());
 
     private Long id;
     private String email;
@@ -43,9 +44,9 @@ public class LoginMember implements AuthMember {
         return distinguishAgeMember().discountFareByAge(fare);
     }
 
-    private AgeMember distinguishAgeMember() {
-        return ageMembers.stream()
-            .filter(ageMember -> ageMember.isInAgeRange(age))
+    private DiscountFareByAgeStrategy distinguishAgeMember() {
+        return DISCOUNT_FARE_BY_AGE_STRATEGIES.stream()
+            .filter(discountFareByAgeStrategy -> discountFareByAgeStrategy.isInAgeRange(age))
             .findAny()
             .orElseThrow(NotExistException::new);
     }
