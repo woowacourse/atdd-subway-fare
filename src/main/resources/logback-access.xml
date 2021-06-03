@@ -12,9 +12,9 @@
     <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" />
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${logPathName}/subway.log</file>
+        <file>${logPathName}/access.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${logPathName}subway.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
+            <fileNamePattern>${logPathName}access.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
             <maxHistory>1</maxHistory>
         </rollingPolicy>
 
