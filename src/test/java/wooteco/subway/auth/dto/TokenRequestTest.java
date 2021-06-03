@@ -38,7 +38,7 @@ class TokenRequestTest {
         TokenRequest tokenRequest = new TokenRequest("", "asdf");
         Set<ConstraintViolation<TokenRequest>> violations = validator.validate(tokenRequest);
         assertTrue(violations.stream()
-            .anyMatch(violation -> violation.getMessage().contains("이메일은 공백이 아닙니다.")));
+            .anyMatch(violation -> violation.getMessage().contains("INVALID_EMAIL")));
     }
 
     @Test
@@ -47,7 +47,7 @@ class TokenRequestTest {
         TokenRequest tokenRequest = new TokenRequest(null, "asdf");
         Set<ConstraintViolation<TokenRequest>> violations = validator.validate(tokenRequest);
         assertTrue(violations.stream()
-            .anyMatch(violation -> violation.getMessage().contains("이메일은 공백이 아닙니다.")));
+            .anyMatch(violation -> violation.getMessage().contains("INVALID_EMAIL")));
     }
 
     @ParameterizedTest
@@ -58,7 +58,7 @@ class TokenRequestTest {
         Set<ConstraintViolation<TokenRequest>> violations = validator.validate(tokenRequest);
         System.out.println(violations);
         assertTrue(violations.stream()
-            .anyMatch(violation -> violation.getMessage().contains("이메일에는 특수문자가 포함될 수 없습니다.")));
+            .anyMatch(violation -> violation.getMessage().contains("INVALID_EMAIL")));
     }
 
     @Test
@@ -67,7 +67,7 @@ class TokenRequestTest {
         TokenRequest tokenRequest = new TokenRequest("asdf@asdf.com", "");
         Set<ConstraintViolation<TokenRequest>> violations = validator.validate(tokenRequest);
         assertTrue(violations.stream()
-            .anyMatch(violation -> violation.getMessage().contains("비밀번호는 공백일 수 없습니다.")));
+            .anyMatch(violation -> violation.getMessage().contains("INVALID_PASSWORD")));
     }
 
     @Test
@@ -76,6 +76,6 @@ class TokenRequestTest {
         TokenRequest tokenRequest = new TokenRequest("asdf@asdf.com", null);
         Set<ConstraintViolation<TokenRequest>> violations = validator.validate(tokenRequest);
         assertTrue(violations.stream()
-            .anyMatch(violation -> violation.getMessage().contains("비밀번호는 공백일 수 없습니다.")));
+            .anyMatch(violation -> violation.getMessage().contains("INVALID_PASSWORD")));
     }
 }

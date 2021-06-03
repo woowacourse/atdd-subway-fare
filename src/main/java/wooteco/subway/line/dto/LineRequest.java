@@ -7,22 +7,22 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
 
 public class LineRequest {
-    @NotEmpty(message = "노선 이름은 공백이 아닙니다.")
-    @Pattern(regexp = "^[a-zA-Zㄱ-힣0-9]*$", message = "노선 이름에 특수문자가 들어올 수 없습니다.")
+    @NotEmpty(message = "INVALID_NAME")
+    @Pattern(regexp = "^[a-zA-Zㄱ-힣0-9]*$", message = "INVALID_NAME")
     private String name;
 
-    @NotEmpty(message = "노선 색상은 공백이 아닙니다.")
-    @NotBlank(message = "노선 색상에 문자열이 없습니다.")
+    @NotEmpty(message = "INVALID_INPUT")
+    @NotBlank(message = "INVALID_INPUT")
     private String color;
 
-    @NotNull(message = "상행 역은 공백이 아닙니다.")
+    @NotNull(message = "INVALID_INPUT")
     private Long upStationId;
 
-    @NotNull(message = "하행 역은 공백이 아닙니다.")
+    @NotNull(message = "INVALID_INPUT")
     private Long downStationId;
 
-    @NotNull(message = "구간 거리는 공백이 아닙니다.")
-    @Positive(message = "구간 거리는 0보다 커야 합니다.")
+    @NotNull(message = "INVALID_INPUT")
+    @Positive(message = "INVALID_DISTANCE")
     private int distance;
 
     private int extraFare;

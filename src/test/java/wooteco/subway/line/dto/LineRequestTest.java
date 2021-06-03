@@ -41,7 +41,7 @@ class LineRequestTest {
         LineRequest lineRequest = new LineRequest(name, "white", 1L, 2L, 19);
         Set<ConstraintViolation<LineRequest>> violations = validator.validate(lineRequest);
         assertTrue(violations.stream()
-            .anyMatch(violation -> violation.getMessage().contains("노선 이름")));
+            .anyMatch(violation -> violation.getMessage().contains("INVALID_NAME")));
     }
 
     @ParameterizedTest
@@ -52,7 +52,7 @@ class LineRequestTest {
         LineRequest lineRequest = new LineRequest("name", color, 1L, 2L, 19);
         Set<ConstraintViolation<LineRequest>> violations = validator.validate(lineRequest);
         assertTrue(violations.stream()
-            .anyMatch(violation -> violation.getMessage().contains("노선 색상")));
+            .anyMatch(violation -> violation.getMessage().contains("INVALID_INPUT")));
     }
 
     @ParameterizedTest
@@ -62,7 +62,7 @@ class LineRequestTest {
         LineRequest lineRequest = new LineRequest("name", "color", 1L, 2L, distance);
         Set<ConstraintViolation<LineRequest>> violations = validator.validate(lineRequest);
         assertTrue(violations.stream()
-            .anyMatch(violation -> violation.getMessage().contains("구간 거리")));
+            .anyMatch(violation -> violation.getMessage().contains("INVALID_DISTANCE")));
     }
 
     @Test
@@ -72,6 +72,6 @@ class LineRequestTest {
         LineRequest lineRequest = new LineRequest("name", "color", stationId, stationId, 100);
         Set<ConstraintViolation<LineRequest>> violations = validator.validate(lineRequest);
         assertTrue(violations.stream()
-            .anyMatch(violation -> violation.getMessage().contains("역")));
+            .anyMatch(violation -> violation.getMessage().contains("INVALID_INPUT")));
     }
 }

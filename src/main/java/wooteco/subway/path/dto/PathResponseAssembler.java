@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import wooteco.subway.path.domain.Fare;
-import wooteco.subway.path.domain.SubwayPath;
+import wooteco.subway.path.infrastructure.SubwayPath;
 import wooteco.subway.station.dto.StationResponse;
 
 public class PathResponseAssembler {

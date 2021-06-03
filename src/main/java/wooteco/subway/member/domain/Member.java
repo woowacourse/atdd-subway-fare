@@ -1,8 +1,9 @@
 package wooteco.subway.member.domain;
 
+import static wooteco.subway.exception.SubwayExceptions.*;
+
 import org.apache.commons.lang3.StringUtils;
 
-import wooteco.subway.exception.impossible.AuthorizationException;
 import wooteco.subway.member.dto.MemberRequest;
 
 public class Member {
@@ -21,12 +22,6 @@ public class Member {
         this.age = age;
     }
 
-    public Member(Long id, String email, Integer age) {
-        this.id = id;
-        this.email = email;
-        this.age = age;
-    }
-
     public Member(String email, String password, Integer age) {
         this.email = email;
         this.password = password;
@@ -39,7 +34,7 @@ public class Member {
 
     public void checkPassword(String password) {
         if (!StringUtils.equals(this.password, password)) {
-            throw new AuthorizationException("올바르지 않은 비밀번호입니다.");
+            throw INVALID_PASSWORD.makeException();
         }
     }
 

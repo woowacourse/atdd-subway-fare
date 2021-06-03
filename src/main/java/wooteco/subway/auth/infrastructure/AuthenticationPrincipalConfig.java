@@ -8,9 +8,6 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import wooteco.subway.auth.application.AuthService;
-import wooteco.subway.auth.infrastructure.JwtTokenProvider;
-import wooteco.subway.auth.infrastructure.UnAuthenticationPrincipalArgumentResolver;
-import wooteco.subway.auth.infrastructure.AuthenticationPrincipalArgumentResolver;
 import wooteco.subway.auth.ui.LoginInterceptor;
 
 @Configuration

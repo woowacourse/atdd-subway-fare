@@ -1,10 +1,11 @@
 package wooteco.subway.member.application;
 
+import static wooteco.subway.exception.SubwayExceptions.*;
+
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import wooteco.subway.exception.duplicated.DuplicatedEmailException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
@@ -48,7 +49,7 @@ public class MemberService {
     public void checkMemberNotExist(String email) {
         try {
             memberDao.findByEmail(email);
-            throw new DuplicatedEmailException();
+            throw DUPLICATED_ID.makeException();
         } catch (DataAccessException e) {
             return;
         }

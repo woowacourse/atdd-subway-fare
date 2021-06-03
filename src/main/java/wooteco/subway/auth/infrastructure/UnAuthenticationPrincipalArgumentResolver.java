@@ -11,9 +11,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import wooteco.subway.auth.application.AuthService;
-import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
-import wooteco.subway.auth.infrastructure.UnAuthenticationPrincipal;
-import wooteco.subway.exception.SubwayException;
+import wooteco.subway.exception.AuthorizationException;
 import wooteco.subway.member.domain.LoginMember;
 
 public class UnAuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
@@ -37,7 +35,7 @@ public class UnAuthenticationPrincipalArgumentResolver implements HandlerMethodA
             Objects.requireNonNull(webRequest.getNativeRequest(HttpServletRequest.class)));
         try {
             return authService.findLoginMemberByToken(credentials);
-        } catch (SubwayException e) {
+        } catch (AuthorizationException e) {
             return new LoginMember(DEFAULT_AGE);
         }
     }

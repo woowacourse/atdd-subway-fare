@@ -1,4 +1,4 @@
-package wooteco.subway.path.domain.shortestPath;
+package wooteco.subway.path.infrastructure.shortestPath;
 
 import java.util.List;
 
@@ -6,8 +6,8 @@ import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 
 import wooteco.subway.line.domain.Line;
-import wooteco.subway.path.domain.SectionEdge;
-import wooteco.subway.path.domain.SubwayGraph;
+import wooteco.subway.path.infrastructure.SectionEdge;
+import wooteco.subway.path.infrastructure.SubwayGraph;
 import wooteco.subway.station.domain.Station;
 
 public class ShortestPathWithDijkstra extends ShortestPath {

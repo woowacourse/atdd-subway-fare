@@ -89,7 +89,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("옳지 않은 이름으로 지하철 노선을 생성한다.")
     @ParameterizedTest
-    @CsvSource(value = {"!!:color:1:2:10", "name: :1:2:10", ":color:1:2:1"}, delimiter = ':')
+    @CsvSource(value = {"!!:color:1:2:10", "nam@e:color:1:2:10", ":color:1:2:1"}, delimiter = ':')
     void createInvalidStation(String name, String color, Long upStationId, Long downStationId, int distance) {
         // given
         LineRequest lineRequest = new LineRequest(name, color, upStationId, downStationId, distance);

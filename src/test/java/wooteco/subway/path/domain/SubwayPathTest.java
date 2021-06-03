@@ -1,19 +1,18 @@
 package wooteco.subway.path.domain;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.domain.Sections;
+import wooteco.subway.path.infrastructure.SectionEdge;
+import wooteco.subway.path.infrastructure.SubwayPath;
 import wooteco.subway.station.domain.Station;
 
 class SubwayPathTest {

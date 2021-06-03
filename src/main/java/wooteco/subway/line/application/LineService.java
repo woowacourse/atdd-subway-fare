@@ -1,5 +1,7 @@
 package wooteco.subway.line.application;
 
+import static wooteco.subway.exception.SubwayExceptions.*;
+
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -8,9 +10,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import wooteco.subway.exception.duplicated.DuplicatedLineException;
-import wooteco.subway.exception.nosuch.NoSuchLineException;
-import wooteco.subway.exception.nosuch.NoSuchSectionException;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
@@ -44,7 +43,7 @@ public class LineService {
             persistLine.addSection(addInitSection(persistLine, request));
             return LineResponse.of(persistLine);
         } catch (DataAccessException e) {
-            throw new DuplicatedLineException();
+            throw DUPLICATED_LINE_NAME.makeException();
         }
     }
 
@@ -78,7 +77,7 @@ public class LineService {
         try {
             return lineDao.findById(id);
         } catch (Exception e) {
-            throw new NoSuchLineException();
+            throw NO_SUCH_LINE.makeException();
         }
     }
 
@@ -86,14 +85,14 @@ public class LineService {
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line line = new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor());
         if (lineDao.update(line) == 0) {
-            throw new NoSuchLineException();
+            throw NO_SUCH_LINE.makeException();
         }
     }
 
     @Transactional
     public void deleteLineById(Long id) {
         if (lineDao.deleteById(id) == 0) {
-            throw new NoSuchLineException();
+            throw NO_SUCH_LINE.makeException();
         }
     }
 
@@ -105,7 +104,7 @@ public class LineService {
         line.addSection(upStation, downStation, request.getDistance());
 
         if (sectionDao.deleteByLineId(lineId) == 0) {
-            throw new NoSuchSectionException();
+            throw NO_SUCH_LINE.makeException();
         }
         sectionDao.insertSections(line);
     }
@@ -117,7 +116,7 @@ public class LineService {
         line.removeSection(station);
 
         if (sectionDao.deleteByLineId(lineId) == 0) {
-            throw new NoSuchSectionException();
+            throw NO_SUCH_SECTION.makeException();
         }
         sectionDao.insertSections(line);
     }
@@ -125,7 +124,7 @@ public class LineService {
     @Transactional
     public void deleteSectionsByLineId(Long id) {
         if (sectionDao.deleteByLineId(id) == 0) {
-            throw new NoSuchSectionException();
+            throw NO_SUCH_SECTION.makeException();
         }
     }
 

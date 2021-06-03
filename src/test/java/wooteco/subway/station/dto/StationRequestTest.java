@@ -41,6 +41,6 @@ class StationRequestTest {
         StationRequest stationRequest = new StationRequest(name);
         Set<ConstraintViolation<StationRequest>> violations = validator.validate(stationRequest);
         assertTrue(violations.stream()
-            .anyMatch(violation -> violation.getMessage().contains("역 이름")));
+            .anyMatch(violation -> violation.getMessage().contains("INVALID_NAME")));
     }
 }

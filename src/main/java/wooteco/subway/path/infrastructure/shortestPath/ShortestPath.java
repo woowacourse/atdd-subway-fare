@@ -1,14 +1,15 @@
-package wooteco.subway.path.domain.shortestPath;
+package wooteco.subway.path.infrastructure.shortestPath;
+
+import static wooteco.subway.exception.SubwayExceptions.*;
 
 import java.util.List;
 
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 
-import wooteco.subway.exception.invalid.InvalidPathException;
 import wooteco.subway.line.domain.Line;
-import wooteco.subway.path.domain.SectionEdge;
-import wooteco.subway.path.domain.SubwayGraph;
+import wooteco.subway.path.infrastructure.SectionEdge;
+import wooteco.subway.path.infrastructure.SubwayGraph;
 import wooteco.subway.station.domain.Station;
 
 public abstract class ShortestPath {
@@ -23,7 +24,7 @@ public abstract class ShortestPath {
     private void validatePath(GraphPath<Station, SectionEdge> path) {
         if(path == null) {
         if (path == null) {
-            throw new InvalidPathException();
+            throw INVALID_PATH.makeException();
         }
     }
 

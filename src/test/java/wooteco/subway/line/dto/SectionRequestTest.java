@@ -13,6 +13,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class SectionRequestTest {
@@ -39,16 +41,26 @@ class SectionRequestTest {
         SectionRequest sectionRequest = new SectionRequest(stationId, stationId, 100);
         Set<ConstraintViolation<SectionRequest>> violations = validator.validate(sectionRequest);
         assertTrue(violations.stream()
-            .anyMatch(violation -> violation.getMessage().contains("역은 공백일 수 없습니다.")));
+            .anyMatch(violation -> violation.getMessage().contains("INVALID_INPUT")));
     }
 
     @ParameterizedTest
     @ValueSource(ints = {0, -1})
     @DisplayName("구간 거리 옳지 않은 요청")
-    public void invalidDistance(int distance) {
+    public void invalidDistance(Integer distance) {
         SectionRequest sectionRequest = new SectionRequest(1L, 2L, distance);
         Set<ConstraintViolation<SectionRequest>> violations = validator.validate(sectionRequest);
         assertTrue(violations.stream()
-            .anyMatch(violation -> violation.getMessage().contains("구간 거리")));
+            .anyMatch(violation -> violation.getMessage().contains("INVALID_DISTANCE")));
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @DisplayName("구간 거리 옳지 않은 요청")
+    public void nullDistance(Integer distance) {
+        SectionRequest sectionRequest = new SectionRequest(1L, 2L, distance);
+        Set<ConstraintViolation<SectionRequest>> violations = validator.validate(sectionRequest);
+        assertTrue(violations.stream()
+            .anyMatch(violation -> violation.getMessage().contains("INVALID_INPUT")));
     }
 }
