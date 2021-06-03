@@ -13,6 +13,7 @@ spring:
     activate:
       on-profile: prod
 
+
 handlebars:
   suffix: .html
   enabled: true
@@ -21,3 +22,6 @@ security:
     token:
       secret-key: my_secret_is_secret
       expire-length: 3600000
+
+server:
+  shutdown: graceful
