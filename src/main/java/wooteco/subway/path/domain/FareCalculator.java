@@ -1,11 +1,9 @@
 package wooteco.subway.path.domain;
 
 import java.util.List;
-import org.springframework.stereotype.Component;
 import wooteco.subway.path.AgeSet;
 import wooteco.subway.path.DistanceSet;
 
-@Component
 public class FareCalculator {
 
     private FareCalculator() {}
