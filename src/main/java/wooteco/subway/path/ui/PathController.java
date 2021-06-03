@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.auth.domain.AnonymousPrincipal;
-import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.domain.User;
 import wooteco.subway.path.application.PathService;
 import wooteco.subway.path.dto.PathResponse;
 
@@ -21,8 +21,8 @@ public class PathController {
     }
 
     @GetMapping("/paths")
-    public ResponseEntity<PathResponse> findPath(@AnonymousPrincipal LoginMember loginMember, @RequestParam Long source, @RequestParam Long target) {
-        PathResponse path = pathService.findPath(source, target, loginMember);
+    public ResponseEntity<PathResponse> findPath(@AnonymousPrincipal User user, @RequestParam Long source, @RequestParam Long target) {
+        PathResponse path = pathService.findPath(source, target, user);
         return ResponseEntity.ok(path);
     }
 }

@@ -28,7 +28,7 @@ public class SubwayPath {
         return sectionEdges.stream().mapToInt(it -> it.getSection().getDistance()).sum();
     }
 
-    public int calculateLineFare() {
+    public int calculateLineMaxFare() {
         return sectionEdges.stream()
                 .map(SectionEdge::getLine)
                 .distinct()

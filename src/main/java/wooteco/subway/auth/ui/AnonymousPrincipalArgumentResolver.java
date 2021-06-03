@@ -8,6 +8,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.domain.AnonymousPrincipal;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
+import wooteco.subway.member.domain.AnonymousUser;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
@@ -30,7 +31,7 @@ public class AnonymousPrincipalArgumentResolver implements HandlerMethodArgument
         HttpServletRequest httpRequest = webRequest.getNativeRequest(HttpServletRequest.class);
         String credentials = AuthorizationExtractor.extract(httpRequest);
         if (Objects.isNull(credentials)) {
-            return null;
+            return new AnonymousUser();
         }
         return authService.findMemberByToken(credentials);
     }

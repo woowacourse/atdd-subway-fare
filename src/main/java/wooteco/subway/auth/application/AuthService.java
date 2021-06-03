@@ -8,7 +8,7 @@ import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.exception.auth.AuthorizationException;
 import wooteco.subway.exception.auth.AuthorizationExceptionStatus;
 import wooteco.subway.member.application.MemberService;
-import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.domain.LoginUser;
 import wooteco.subway.member.domain.Member;
 
 @Service
@@ -30,10 +30,10 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
-    public LoginMember findMemberByToken(String credentials) {
+    public LoginUser findMemberByToken(String credentials) {
         String email = jwtTokenProvider.getPayload(credentials);
         Member member = memberService.findMemberByEmail(email);
-        return new LoginMember(member.getId(), member.getEmail(), member.getAge());
+        return new LoginUser(member.getId(), member.getEmail(), member.getAge());
     }
 
     public void validate(String credentials) {

@@ -13,6 +13,7 @@ public enum AgeDiscountStrategy implements DiscountStrategy {
     ADOLESCENT(age -> 13 <= age && age < 19, fare -> (int) ((fare - AgeDiscountStrategy.DISCOUNT_FARE) * AgeDiscountStrategy.ADOLESCENT_DISCOUNT_RATE)),
     ADULT(age -> age >= 19, UnaryOperator.identity());
 
+    public static final int ADULT_AGE = 19;
     private static final int DISCOUNT_FARE = 350;
     private static final int CHILD_DISCOUNT_RATE = 2;
     private static final double ADOLESCENT_DISCOUNT_RATE = 0.8;

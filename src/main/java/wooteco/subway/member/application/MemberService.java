@@ -7,7 +7,7 @@ import wooteco.subway.exception.auth.AuthorizationExceptionStatus;
 import wooteco.subway.exception.value.InvalidValueException;
 import wooteco.subway.exception.value.InvalidValueExceptionStatus;
 import wooteco.subway.member.dao.MemberDao;
-import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.domain.LoginUser;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
@@ -36,8 +36,8 @@ public class MemberService {
                 });
     }
 
-    public MemberResponse findMember(LoginMember loginMember) {
-        Member member = findMemberByEmail(loginMember.getEmail());
+    public MemberResponse findMember(LoginUser loginUser) {
+        Member member = findMemberByEmail(loginUser.getEmail());
         return MemberResponse.of(member);
     }
 
@@ -47,8 +47,8 @@ public class MemberService {
     }
 
     @Transactional
-    public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
-        Member member = findMemberByEmail(loginMember.getEmail());
+    public void updateMember(LoginUser loginUser, MemberRequest memberRequest) {
+        Member member = findMemberByEmail(loginUser.getEmail());
         String currentEmail = member.getEmail();
         String newEmail = memberRequest.getEmail();
         if (!currentEmail.equals(newEmail)) {
@@ -59,8 +59,8 @@ public class MemberService {
     }
 
     @Transactional
-    public void deleteMember(LoginMember loginMember) {
-        Member member = findMemberByEmail(loginMember.getEmail());
+    public void deleteMember(LoginUser loginUser) {
+        Member member = findMemberByEmail(loginUser.getEmail());
         memberDao.deleteById(member.getId());
     }
 }
