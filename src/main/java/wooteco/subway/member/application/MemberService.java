@@ -2,7 +2,7 @@ package wooteco.subway.member.application;
 
 import org.springframework.stereotype.Service;
 import wooteco.subway.member.dao.MemberDao;
-import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.domain.LoginUser;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
@@ -21,18 +21,18 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public MemberResponse findMember(LoginMember loginMember) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
+    public MemberResponse findMember(LoginUser loginUser) {
+        Member member = memberDao.findByEmail(loginUser.getEmail());
         return MemberResponse.of(member);
     }
 
-    public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
+    public void updateMember(LoginUser loginUser, MemberRequest memberRequest) {
+        Member member = memberDao.findByEmail(loginUser.getEmail());
         memberDao.update(new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
     }
 
-    public void deleteMember(LoginMember loginMember) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
+    public void deleteMember(LoginUser loginUser) {
+        Member member = memberDao.findByEmail(loginUser.getEmail());
         memberDao.deleteById(member.getId());
     }
 

@@ -4,7 +4,8 @@ import org.springframework.core.MethodParameter;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.application.AuthorizationException;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
-import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.domain.LoginUser;
+import wooteco.subway.member.domain.User;
 
 public class AuthenticationPrincipalArgumentResolver extends AuthenticationArgumentResolver {
 
@@ -18,11 +19,11 @@ public class AuthenticationPrincipalArgumentResolver extends AuthenticationArgum
     }
 
     @Override
-    protected LoginMember validMember(LoginMember member) {
-        if (member.getId() == null) {
+    protected User validMember(User user) {
+        if (user.isGuest()) {
             throw new AuthorizationException("토큰 검증에 실패했습니다.");
         }
-        return member;
+        return user;
     }
 
 }

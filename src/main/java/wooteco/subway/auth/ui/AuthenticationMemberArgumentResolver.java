@@ -3,7 +3,8 @@ package wooteco.subway.auth.ui;
 import org.springframework.core.MethodParameter;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.domain.AuthenticationMember;
-import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.domain.GuestUser;
+import wooteco.subway.member.domain.User;
 
 public class AuthenticationMemberArgumentResolver extends AuthenticationArgumentResolver {
 
@@ -18,11 +19,11 @@ public class AuthenticationMemberArgumentResolver extends AuthenticationArgument
     }
 
     @Override
-    protected LoginMember validMember(LoginMember member) {
-        if (member.getId() == null) {
-            return new LoginMember(false);
+    protected User validMember(User user) {
+        if (user.isGuest()) {
+            return new GuestUser();
         }
-        return member;
+        return user;
     }
 
 }

@@ -7,7 +7,8 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
-import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.domain.LoginUser;
+import wooteco.subway.member.domain.User;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -20,15 +21,15 @@ public abstract class AuthenticationArgumentResolver implements HandlerMethodArg
     }
 
     @Override
-    public LoginMember resolveArgument(MethodParameter parameter,
-                                       ModelAndViewContainer mavContainer,
-                                       NativeWebRequest webRequest,
-                                       WebDataBinderFactory binderFactory) {
+    public User resolveArgument(MethodParameter parameter,
+                                     ModelAndViewContainer mavContainer,
+                                     NativeWebRequest webRequest,
+                                     WebDataBinderFactory binderFactory) {
         String credentials = AuthorizationExtractor
                 .extract(webRequest.getNativeRequest(HttpServletRequest.class));
-        LoginMember member = authService.findMemberByToken(credentials);
-        return validMember(member);
+        User user = authService.findMemberByToken(credentials);
+        return validMember(user);
     }
 
-    protected abstract LoginMember validMember(LoginMember member);
+    protected abstract User validMember(User user);
 }

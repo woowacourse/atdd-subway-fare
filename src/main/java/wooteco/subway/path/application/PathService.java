@@ -1,11 +1,11 @@
 package wooteco.subway.path.application;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
-import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.domain.LoginUser;
+import wooteco.subway.member.domain.User;
 import wooteco.subway.path.domain.SectionEdge;
 import wooteco.subway.path.domain.SubwayFare;
 import wooteco.subway.path.domain.SubwayPath;
@@ -32,7 +32,7 @@ public class PathService {
         this.pathFinder = pathFinder;
     }
 
-    public PathResponse findPath(Long source, Long target, LoginMember loginMember) {
+    public PathResponse findPath(Long source, Long target, User user) {
         try {
             List<Line> lines = lineService.findLines();
             Station sourceStation = stationService.findStationById(source);
@@ -40,7 +40,7 @@ public class PathService {
 
             SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
             SubwayFare subwayFare = new SubwayFare(
-                    existLines(subwayPath), subwayPath.calculateDistance(), loginMember
+                    existLines(subwayPath), subwayPath.calculateDistance(), user
             );
 
             return PathResponseAssembler.assemble(subwayPath, subwayFare);

@@ -5,7 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.auth.domain.AuthenticationMember;
 import wooteco.subway.dto.ErrorResponse;
-import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.domain.LoginUser;
+import wooteco.subway.member.domain.User;
 import wooteco.subway.path.application.InvalidPathException;
 import wooteco.subway.path.application.PathService;
 import wooteco.subway.path.dto.PathResponse;
@@ -22,9 +23,9 @@ public class PathController {
     }
 
     @GetMapping("/paths")
-    public ResponseEntity<PathResponse> findPath(@AuthenticationMember LoginMember loginMember,
+    public ResponseEntity<PathResponse> findPath(@AuthenticationMember User user,
                                                  @RequestParam Long source, @RequestParam Long target) {
-        return ResponseEntity.ok(pathService.findPath(source, target, loginMember));
+        return ResponseEntity.ok(pathService.findPath(source, target, user));
     }
 
     @ExceptionHandler(InvalidPathException.class)
