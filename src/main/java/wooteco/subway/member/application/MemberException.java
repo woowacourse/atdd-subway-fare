@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class MemberException extends RuntimeException {
 
-    public MemberException(String message) {
-        super(message);
+    public MemberException() {
+        super("이미 사용되고 있는 이메일입니다.");
     }
 }

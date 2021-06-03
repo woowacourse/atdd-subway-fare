@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class DuplicatedSectionException extends RuntimeException {
 
-    public DuplicatedSectionException(String message) {
-        super(message);
+    public DuplicatedSectionException() {
+        super("노선에 이미 포함된 구간입니다.");
     }
 }

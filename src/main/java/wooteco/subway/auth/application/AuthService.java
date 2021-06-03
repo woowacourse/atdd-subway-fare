@@ -25,7 +25,7 @@ public class AuthService {
             Member member = memberDao.findByEmail(request.getEmail());
             member.checkPassword(request.getPassword());
         } catch (Exception e) {
-            throw new AuthorizationException("로그인을 할 수 없습니다.");
+            throw new AuthorizationException();
         }
         String token = jwtTokenProvider.createToken(request.getEmail());
         return new TokenResponse(token);
@@ -43,7 +43,7 @@ public class AuthService {
 
     public void validateToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            throw new AuthorizationException("로그인을 할 수 없습니다.");
+            throw new AuthorizationException();
         }
     }
 }
