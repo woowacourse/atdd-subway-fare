@@ -8,8 +8,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.domain.AuthenticationAgePrincipal;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
-import wooteco.subway.line.domain.fare.FarePolicyFactory;
-import wooteco.subway.line.domain.fare.policy.FarePolicy;
+import wooteco.subway.line.domain.fare.AgeFarePolicy;
 import wooteco.subway.member.domain.LoginMember;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,16 +26,17 @@ public class AuthFareArgumentResolver implements HandlerMethodArgumentResolver {
     }
 
     @Override
-    public FarePolicy resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+    public AgeFarePolicy resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
         LoginMember member = authService.findMemberByToken(credentials);
         return findProperFarePolicy(member);
     }
 
-    private FarePolicy findProperFarePolicy(LoginMember member) {
+    private AgeFarePolicy findProperFarePolicy(LoginMember member) {
         if (member.getId() == null) {
-            return FarePolicyFactory.defaultPolicy();
+            return AgeFarePolicy.ADULT;
         }
-        return FarePolicyFactory.findPolicy(member);
+
+        return AgeFarePolicy.of(member.getAge());
     }
 }

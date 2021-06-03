@@ -1,7 +1,7 @@
 package wooteco.subway.path.domain;
 
+import wooteco.subway.line.domain.fare.AgeFarePolicy;
 import wooteco.subway.line.domain.fare.Fare;
-import wooteco.subway.line.domain.fare.policy.FarePolicy;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
@@ -23,14 +23,14 @@ public class SubwayPath {
         return stations;
     }
 
-    public int getExtraFare(FarePolicy farePolicy) {
+    public int getExtraFare(AgeFarePolicy ageFarePolicy) {
         int distance = calculateDistance();
         int maxExtraLineFare = sectionEdges.stream()
                 .mapToInt(sectionEdges -> sectionEdges.getLine().getExtraFare())
                 .max()
                 .orElse(0);
 
-        Fare fare = new Fare(farePolicy);
+        Fare fare = new Fare(ageFarePolicy);
         return fare.calculateTotalFare(distance, maxExtraLineFare);
     }
 

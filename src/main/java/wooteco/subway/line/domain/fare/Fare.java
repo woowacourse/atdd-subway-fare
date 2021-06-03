@@ -1,42 +1,16 @@
 package wooteco.subway.line.domain.fare;
 
-import wooteco.subway.line.domain.fare.policy.FarePolicy;
+import wooteco.subway.line.domain.fare.distance.DistanceFarePolicy;
 
 public class Fare {
-    public static final int DEFAULT_FARE_TEN_KM = 1250;
-    public static final int DEFAULT_FARE_FIFTY_KM = 2050;
+    private final AgeFarePolicy ageFarePolicy;
 
-    public static final int TEN_KM = 10;
-    public static final int FIFTY_KM = 50;
-
-    public static final int PER_EIGHT_KM = 8;
-    public static final int PER_FIVE_KM = 5;
-
-    private final FarePolicy farePolicy;
-
-    public Fare(FarePolicy farePolicy) {
-        this.farePolicy = farePolicy;
+    public Fare(AgeFarePolicy ageFarePolicy) {
+        this.ageFarePolicy = ageFarePolicy;
     }
 
     public int calculateTotalFare(int distance, int maxExtraLineFare) {
-        int fare = calculateTotalFareByDistance(distance);
-        return this.farePolicy.discount(fare + maxExtraLineFare);
-    }
-
-    private int calculateTotalFareByDistance(int distance) {
-        if (distance <= TEN_KM) {
-            return DEFAULT_FARE_TEN_KM;
-        }
-        if (distance <= FIFTY_KM) {
-            distance = distance - TEN_KM;
-            return additionalFareByPerKilo(DEFAULT_FARE_TEN_KM, PER_FIVE_KM, distance);
-        }
-
-        distance = distance - FIFTY_KM;
-        return additionalFareByPerKilo(DEFAULT_FARE_FIFTY_KM, PER_EIGHT_KM, distance);
-    }
-
-    private int additionalFareByPerKilo(int defaultFare, int perKm, int distance) {
-        return defaultFare + (((distance - 1) / perKm + 1) * 100);
+        int fare = DistanceFarePolicy.calculate(distance);
+        return this.ageFarePolicy.discount(fare + maxExtraLineFare);
     }
 }
