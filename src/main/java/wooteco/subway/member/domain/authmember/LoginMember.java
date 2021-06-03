@@ -1,6 +1,6 @@
 package wooteco.subway.member.domain.authmember;
 
-import wooteco.subway.fare.domain.FareStrategy;
+import wooteco.subway.fare.domain.farebyagestrategy.FareByAge;
 
 public class LoginMember implements AuthMember {
 
@@ -31,7 +31,8 @@ public class LoginMember implements AuthMember {
 
     @Override
     public int discountFareByAge(int fare) {
-        return FareStrategy.distinguishAgeMember(age).discountFareByAge(fare);
+        FareByAge fareByAge = new FareByAge(age);
+        return fareByAge.calculateDiscountFareByAge(fare);
     }
 
     @Override

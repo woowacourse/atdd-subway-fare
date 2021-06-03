@@ -3,7 +3,7 @@ package wooteco.subway.path.domain;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import wooteco.subway.fare.domain.FareStrategy;
+import wooteco.subway.fare.domain.farebydistancestrategy.FareByDistance;
 import wooteco.subway.member.domain.authmember.AuthMember;
 import wooteco.subway.station.domain.Station;
 
@@ -36,13 +36,12 @@ public class SubwayPath {
         fare += calculateAdditionalFare(distance);
         fare += calculateAdditionalFareByLine();
         fare = authMember.discountFareByAge(fare);
-
         return fare;
     }
 
     private int calculateAdditionalFare(int distance) {
-        return FareStrategy.distinguishAdditionalFareStrategy(distance)
-            .calculateAdditionalFare(distance);
+        FareByDistance fareByDistance = new FareByDistance(distance);
+        return fareByDistance.calculateAdditionalFare();
     }
 
     private int calculateAdditionalFareByLine() {
