@@ -112,7 +112,7 @@ public class Line {
     public int getNextStationDistance(Station station) {
         return sections.getSections()
             .stream()
-            .filter(section -> section.getUpStation().equals(station))
+            .filter(section -> section.isUpstationEqualsTo(station))
             .mapToInt(Section::getDistance)
             .findFirst()
             .orElse(0);

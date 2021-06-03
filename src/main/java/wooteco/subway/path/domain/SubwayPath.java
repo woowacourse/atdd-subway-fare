@@ -21,7 +21,7 @@ public class SubwayPath {
     }
 
     public int calculateDistance() {
-        return sectionEdges.stream().mapToInt(it -> it.getSection().getDistance()).sum();
+        return sectionEdges.stream().mapToInt(SectionEdge::getSectionDistance).sum();
     }
 
     public int calculateFare() {
@@ -37,7 +37,7 @@ public class SubwayPath {
     private int calculateAdditionalLineFare() {
         return sectionEdges
             .stream()
-            .mapToInt(sectionEdge -> sectionEdge.getLine().getExtraFare())
+            .mapToInt(SectionEdge::getLineExtraFare)
             .max()
             .orElse(0);
     }

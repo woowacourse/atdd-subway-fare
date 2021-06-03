@@ -58,20 +58,20 @@ public class Sections {
 
     private void addSectionUpToUp(Section section) {
         this.sections.stream()
-                .filter(it -> it.getUpStation().equals(section.getUpStation()))
+                .filter(it -> it.isUpstationEqualsTo(section.getUpStation()))
                 .findFirst()
                 .ifPresent(it -> replaceSectionWithDownStation(section, it));
     }
 
     private void addSectionDownToDown(Section section) {
         this.sections.stream()
-                .filter(it -> it.getDownStation().equals(section.getDownStation()))
+                .filter(it -> it.isDownStationEqualsTo(section.getDownStation()))
                 .findFirst()
                 .ifPresent(it -> replaceSectionWithUpStation(section, it));
     }
 
     private void replaceSectionWithUpStation(Section newSection, Section existSection) {
-        if (existSection.getDistance() <= newSection.getDistance()) {
+        if (existSection.isShorterThan(newSection)) {
             throw new InvalidSectionException("유효하지 않는 요청 값입니다");
         }
         this.sections.add(new Section(existSection.getUpStation(), newSection.getUpStation(), existSection.getDistance() - newSection.getDistance()));
@@ -79,7 +79,7 @@ public class Sections {
     }
 
     private void replaceSectionWithDownStation(Section newSection, Section existSection) {
-        if (existSection.getDistance() <= newSection.getDistance()) {
+        if (existSection.isShorterThan(newSection)) {
             throw new InvalidSectionException("유효하지 않는 요청 값입니다");
         }
         this.sections.add(new Section(newSection.getDownStation(), existSection.getDownStation(), existSection.getDistance() - newSection.getDistance()));
@@ -153,7 +153,7 @@ public class Sections {
 
     private Section findSectionByNextUpStation(Station station) {
         return this.sections.stream()
-                .filter(it -> it.getUpStation().equals(station))
+                .filter(it -> it.isUpstationEqualsTo(station))
                 .findFirst()
                 .orElse(null);
     }
@@ -164,10 +164,10 @@ public class Sections {
         }
 
         Optional<Section> upSection = sections.stream()
-                .filter(it -> it.getUpStation().equals(station))
+                .filter(it -> it.isUpstationEqualsTo(station))
                 .findFirst();
         Optional<Section> downSection = sections.stream()
-                .filter(it -> it.getDownStation().equals(station))
+                .filter(it -> it.isDownStationEqualsTo(station))
                 .findFirst();
 
         if (upSection.isPresent() && downSection.isPresent()) {

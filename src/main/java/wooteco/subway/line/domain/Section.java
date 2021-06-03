@@ -47,4 +47,16 @@ public class Section {
     public boolean isAfter(Section section) {
         return upStation.equals(section.getDownStation());
     }
+
+    public boolean isUpstationEqualsTo(Station station) {
+        return upStation.equals(station);
+    }
+
+    public boolean isDownStationEqualsTo(Station station) {
+        return downStation.equals(station);
+    }
+
+    public boolean isShorterThan(Section section) {
+        return distance <= section.getDistance();
+    }
 }
