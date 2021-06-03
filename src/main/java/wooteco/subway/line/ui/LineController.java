@@ -26,8 +26,8 @@ public class LineController {
     }
 
     @GetMapping
-    public ResponseEntity<List<LineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findLineResponses());
+    public ResponseEntity<List<LineResponse>> findAllStationsOfLine() {
+        return ResponseEntity.ok(lineService.findAllStationsOfLineResponses());
     }
 
     @GetMapping("/{id}")
@@ -59,7 +59,7 @@ public class LineController {
     }
 
     @GetMapping("/map")
-    public ResponseEntity<List<LinesResponse>> findAllInfo() {
-        return ResponseEntity.ok(lineService.findAllInfo());
+    public ResponseEntity<List<LinesResponse>> findAllSectionsOfLines() {
+        return ResponseEntity.ok(lineService.findAllSectionsOfLines());
     }
 }

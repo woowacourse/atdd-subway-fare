@@ -48,7 +48,7 @@ public class LineService {
         return null;
     }
 
-    public List<LineResponse> findLineResponses() {
+    public List<LineResponse> findAllStationsOfLineResponses() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
                 .map(LineResponse::of)
@@ -117,7 +117,7 @@ public class LineService {
         sectionDao.insertSections(line);
     }
 
-    public List<LinesResponse> findAllInfo() {
+    public List<LinesResponse> findAllSectionsOfLines() {
         List<Line> lines = lineDao.findAll();
         return lines.stream()
                 .map(LinesResponse::of)
