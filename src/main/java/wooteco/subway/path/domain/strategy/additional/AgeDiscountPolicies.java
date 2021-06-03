@@ -8,7 +8,7 @@ public class AgeDiscountPolicies {
 
     static {
         discountPolicies = List.of(new NoDiscount(DEFAULT_DISCOUNT_FARE), new InfancyDiscount(DEFAULT_DISCOUNT_FARE),
-                new ChildrenDiscount(DEFAULT_DISCOUNT_FARE), new AdolescenceDiscount(DEFAULT_DISCOUNT_FARE) );
+                new ChildrenDiscount(DEFAULT_DISCOUNT_FARE), new AdolescenceDiscount(DEFAULT_DISCOUNT_FARE));
     }
 
     public static AgeDiscountPolicy instanceOf(int age) {
