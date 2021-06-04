@@ -15,7 +15,7 @@ import wooteco.subway.station.domain.Station;
 @Service
 public class PathFinder {
     public SubwayPath findPath(List<Line> lines, Station source, Station target) {
-        if (source.equals(target)) {
+        if (lines.isEmpty() || source.equals(target)) {
             throw INVALID_PATH.makeException();
         }
 

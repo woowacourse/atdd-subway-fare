@@ -1,7 +1,5 @@
 package wooteco.subway.path.application;
 
-import static wooteco.subway.exception.SubwayExceptions.*;
-
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -31,19 +29,15 @@ public class PathService {
     }
 
     public PathResponse findPath(Long source, Long target, LoginMember loginMember) {
-        try {
-            List<Line> lines = lineService.findLines();
-            Station sourceStation = stationService.findStationById(source);
-            Station targetStation = stationService.findStationById(target);
+        List<Line> lines = lineService.findLines();
+        Station sourceStation = stationService.findStationById(source);
+        Station targetStation = stationService.findStationById(target);
 
-            SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
+        SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
 
-            Fare fare = new Fare(subwayPath.calculateFareByDistance());
-            fare.calculateFareByAge(loginMember);
+        Fare fare = new Fare(subwayPath.calculateFareByDistance());
+        fare.calculateFareByAge(loginMember);
 
-            return PathResponseAssembler.assemble(subwayPath, fare);
-        } catch (Exception e) {
-            throw INVALID_PATH.makeException();
-        }
+        return PathResponseAssembler.assemble(subwayPath, fare);
     }
 }
