@@ -1,6 +1,7 @@
 package wooteco.subway.member.dto;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 import wooteco.subway.member.domain.Member;
@@ -8,6 +9,7 @@ import wooteco.subway.member.domain.Member;
 public class MemberRequest {
 
     @Email
+    @NotBlank
     private String email;
     @Length(min = 4, max = 20)
     private String password;

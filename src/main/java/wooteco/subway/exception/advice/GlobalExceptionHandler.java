@@ -24,20 +24,14 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(new ErrorDto(e.getMessage()), HttpStatus.UNAUTHORIZED);
     }
 
-    @ExceptionHandler({DuplicateException.class,InvalidException.class, SubwayException.class})
-    public ResponseEntity<ErrorDto> handleDuplicateException(DuplicateException e) {
+    @ExceptionHandler({DuplicateException.class, InvalidException.class, SubwayException.class})
+    public ResponseEntity<ErrorDto> handleDuplicateException(RuntimeException e) {
         logger.warn(e.getMessage());
         return new ResponseEntity<>(new ErrorDto(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(DataAccessException.class)
-    public ResponseEntity<ErrorDto> handleSQLException(DataAccessException e) {
-        logger.error(e.getMessage());
-        return new ResponseEntity<>(new ErrorDto(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ErrorDto> handleRunTimeException(RuntimeException e) {
+    @ExceptionHandler({DataAccessException.class, RuntimeException.class})
+    public ResponseEntity<ErrorDto> handleSQLException(Exception e) {
         logger.error(e.getMessage());
         return new ResponseEntity<>(new ErrorDto(), HttpStatus.INTERNAL_SERVER_ERROR);
     }

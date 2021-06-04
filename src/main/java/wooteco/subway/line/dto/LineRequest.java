@@ -1,8 +1,10 @@
 package wooteco.subway.line.dto;
 
-import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import org.hibernate.validator.constraints.Length;
 
 public class LineRequest {
@@ -10,16 +12,18 @@ public class LineRequest {
     @Length(min = 2, max = 20)
     @Pattern(regexp = "^[가-힣]*$")
     private String name;
-    @NotNull
+    @NotEmpty
     private String color;
     @NotNull
     private Long upStationId;
     @NotNull
     private Long downStationId;
-    @Min(0)
-    private int fare;
-    @Min(1)
-    private int distance;
+    @PositiveOrZero
+    @NotNull
+    private Integer fare;
+    @Positive
+    @NotNull
+    private Integer distance;
 
     public LineRequest() {
     }
