@@ -12,6 +12,7 @@ import wooteco.subway.member.domain.Member;
 @Service
 @Transactional
 public class AuthService {
+
     private MemberDao memberDao;
     private JwtTokenProvider jwtTokenProvider;
 
@@ -25,7 +26,7 @@ public class AuthService {
             Member member = memberDao.findByEmail(request.getEmail());
             member.checkPassword(request.getPassword());
         } catch (Exception e) {
-            throw new AuthorizationException();
+            throw new AuthorizationException("이메일 혹은 비밀번호를 다시 확인해주세요.");
         }
         String token = jwtTokenProvider.createToken(request.getEmail());
         return new TokenResponse(token);

@@ -1,21 +1,23 @@
 package wooteco.subway.line.application;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
+import wooteco.subway.line.dto.MapResponse;
 import wooteco.subway.line.dto.SectionRequest;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
 public class LineService {
+
     private LineDao lineDao;
     private SectionDao sectionDao;
     private StationService stationService;
@@ -26,12 +28,15 @@ public class LineService {
         this.stationService = stationService;
     }
 
+    @Transactional
     public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
+        Line persistLine = lineDao
+            .insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);
     }
 
+    @Transactional
     private Section addInitSection(Line line, LineRequest request) {
         if (request.getUpStationId() != null && request.getDownStationId() != null) {
             Station upStation = stationService.findStationById(request.getUpStationId());
@@ -45,8 +50,8 @@ public class LineService {
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
-                .map(line -> LineResponse.of(line))
-                .collect(Collectors.toList());
+            .map(LineResponse::of)
+            .collect(Collectors.toList());
     }
 
     public List<Line> findLines() {
@@ -62,14 +67,19 @@ public class LineService {
         return lineDao.findById(id);
     }
 
+    @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor(),
+            lineUpdateRequest.getExtraFare()));
     }
 
+    @Transactional
     public void deleteLineById(Long id) {
+        sectionDao.deleteByLineId(id);
         lineDao.deleteById(id);
     }
 
+    @Transactional
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
@@ -80,6 +90,7 @@ public class LineService {
         sectionDao.insertSections(line);
     }
 
+    @Transactional
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
@@ -89,4 +100,10 @@ public class LineService {
         sectionDao.insertSections(line);
     }
 
+    public List<MapResponse> findMapResponse() {
+        List<Line> persistLines = findLines();
+        return persistLines.stream()
+            .map(MapResponse::of)
+            .collect(Collectors.toList());
+    }
 }

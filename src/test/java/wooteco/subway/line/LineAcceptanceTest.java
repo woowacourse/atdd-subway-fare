@@ -35,8 +35,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         강남역 = 지하철역_등록되어_있음("강남역");
         downStation = 지하철역_등록되어_있음("광교역");
 
-        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 10);
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 15);
+        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 10, 0);
+        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), downStation.getId(), 15, 0);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -47,6 +47,17 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_노선_생성됨(response);
+    }
+
+    @DisplayName("잘못된 이름으로 지하철 노선을 생성한다.")
+    @Test
+    void createLinWithWrongName() {
+        // when
+        LineRequest lineRequest = new LineRequest("구신분당", "bg-red-600", 강남역.getId(), downStation.getId(), 15, 0);
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest);
+
+        // then
+        지하철_노선_생성_실패됨(response);
     }
 
     @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
@@ -117,7 +128,12 @@ public class LineAcceptanceTest extends AcceptanceTest {
     }
 
     public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
-        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance);
+        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance, 0);
+        return 지하철_노선_등록되어_있음(lineRequest);
+    }
+
+    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance, int fare) {
+        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance, fare);
         return 지하철_노선_등록되어_있음(lineRequest);
     }
 

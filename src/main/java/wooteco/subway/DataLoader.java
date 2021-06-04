@@ -1,5 +1,6 @@
 package wooteco.subway;
 
+import java.util.List;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -15,12 +16,14 @@ import wooteco.subway.station.domain.Station;
 @Component
 @Profile("!test")
 public class DataLoader implements CommandLineRunner {
+
     private StationDao stationDao;
     private LineDao lineDao;
     private SectionDao sectionDao;
     private MemberDao memberDao;
 
-    public DataLoader(StationDao stationDao, LineDao lineDao, SectionDao sectionDao, MemberDao memberDao) {
+    public DataLoader(StationDao stationDao, LineDao lineDao, SectionDao sectionDao,
+        MemberDao memberDao) {
         this.stationDao = stationDao;
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
@@ -29,18 +32,27 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        List<Station> stations = stationDao.findAll();
+        List<Line> lines = lineDao.findAll();
+        if (stations.size() != 0 && lines.size() != 0) {
+            return;
+        }
+        setInitialData();
+    }
+
+    private void setInitialData() {
         Station 강남역 = stationDao.insert(new Station("강남역"));
         Station 판교역 = stationDao.insert(new Station("판교역"));
         Station 정자역 = stationDao.insert(new Station("정자역"));
         Station 역삼역 = stationDao.insert(new Station("역삼역"));
         Station 잠실역 = stationDao.insert(new Station("잠실역"));
 
-        Line 신분당선 = lineDao.insert(new Line("신분당선", "red lighten-1"));
+        Line 신분당선 = lineDao.insert(new Line("신분당선", "red lighten-1", 100));
         신분당선.addSection(new Section(강남역, 판교역, 10));
         신분당선.addSection(new Section(판교역, 정자역, 10));
         sectionDao.insertSections(신분당선);
 
-        Line 이호선 = lineDao.insert(new Line("2호선", "green lighten-1"));
+        Line 이호선 = lineDao.insert(new Line("2호선", "green lighten-1", 0));
         이호선.addSection(new Section(강남역, 역삼역, 10));
         이호선.addSection(new Section(역삼역, 잠실역, 10));
         sectionDao.insertSections(이호선);

@@ -1,6 +1,7 @@
 package wooteco.subway.member.domain;
 
-public class LoginMember {
+public class LoginMember implements User {
+
     private Long id;
     private String email;
     private Integer age;
@@ -24,5 +25,10 @@ public class LoginMember {
 
     public Integer getAge() {
         return age;
+    }
+
+    @Override
+    public boolean isGuest() {
+        return false;
     }
 }
