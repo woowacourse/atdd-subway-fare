@@ -96,7 +96,6 @@ class LineServiceTest {
         given(lineDao.findAll()).willReturn(Arrays.asList(line1, line2));
         final List<LineWithSectionsResponse> lineWithSectionsResponses = lineService.findLineWithSectionsResponses();
         assertThat(lineWithSectionsResponses.size()).isEqualTo(2);
-
     }
 
     @Test
