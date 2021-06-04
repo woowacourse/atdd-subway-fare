@@ -7,7 +7,7 @@ import wooteco.subway.station.dto.StationResponse;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class PathResponseAssembler {
+public final class PathResponseAssembler {
     public static PathResponse assemble(SubwayPath subwayPath, AgeFarePolicy ageFarePolicy) {
         List<StationResponse> stationResponses = subwayPath.getStations().stream()
                 .map(StationResponse::of)

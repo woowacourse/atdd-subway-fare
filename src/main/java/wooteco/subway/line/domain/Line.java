@@ -4,7 +4,7 @@ import wooteco.subway.station.domain.Station;
 
 import java.util.List;
 
-public class Line {
+public final class Line {
     private Long id;
     private String name;
     private String color;

@@ -2,7 +2,7 @@ package wooteco.subway.line.dto;
 
 import wooteco.subway.line.domain.Line;
 
-public class LineRequest {
+public final class LineRequest {
     private String name;
     private String color;
     private int extraFare;

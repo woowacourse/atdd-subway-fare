@@ -3,7 +3,7 @@ package wooteco.subway.member.domain;
 import wooteco.subway.auth.exception.AuthorizationException;
 import wooteco.subway.line.domain.fare.AgeFarePolicy;
 
-public class Guest implements User {
+public final class Guest implements User {
     @Override
     public Long getId() {
         throw new AuthorizationException();

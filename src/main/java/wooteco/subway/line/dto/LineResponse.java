@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class LineResponse {
+public final class LineResponse {
     private Long id;
     private String name;
     private String color;

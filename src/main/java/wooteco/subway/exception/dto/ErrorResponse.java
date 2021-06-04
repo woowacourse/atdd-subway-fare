@@ -1,6 +1,6 @@
 package wooteco.subway.exception.dto;
 
-public class ErrorResponse {
+public final class ErrorResponse {
     private String message;
 
     public ErrorResponse() {

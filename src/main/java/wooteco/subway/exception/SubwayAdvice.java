@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wooteco.subway.exception.dto.ErrorResponse;
 
 @RestControllerAdvice
-public class SubwayAdvice {
+public final class SubwayAdvice {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleApplicationException(Exception e) throws Exception {

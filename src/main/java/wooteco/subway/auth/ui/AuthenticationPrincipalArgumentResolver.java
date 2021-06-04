@@ -12,7 +12,7 @@ import wooteco.subway.member.domain.User;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
+public final class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
     private final AuthService authService;
 
     public AuthenticationPrincipalArgumentResolver(AuthService authService) {

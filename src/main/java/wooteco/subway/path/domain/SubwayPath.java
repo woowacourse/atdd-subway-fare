@@ -6,7 +6,7 @@ import wooteco.subway.station.domain.Station;
 
 import java.util.List;
 
-public class SubwayPath {
+public final class SubwayPath {
     private final List<SectionEdge> sectionEdges;
     private final List<Station> stations;
 

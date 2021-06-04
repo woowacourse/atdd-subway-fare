@@ -9,7 +9,7 @@ import wooteco.subway.station.domain.Station;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Sections {
+public final class Sections {
     private List<Section> sections = new ArrayList<>();
 
     public List<Section> getSections() {

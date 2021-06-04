@@ -4,7 +4,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 
-public class SectionEdge extends DefaultWeightedEdge {
+public final class SectionEdge extends DefaultWeightedEdge {
     private final Section section;
     private final Line line;
 

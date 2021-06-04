@@ -2,7 +2,7 @@ package wooteco.subway.member.domain;
 
 import wooteco.subway.line.domain.fare.AgeFarePolicy;
 
-public class LoginUser implements User {
+public final class LoginUser implements User {
     private Long id;
     private String email;
     private Integer age;

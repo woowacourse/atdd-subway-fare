@@ -1,6 +1,6 @@
 package wooteco.subway.auth.dto;
 
-public class TokenRequest {
+public final class TokenRequest {
     private String email;
     private String password;
 

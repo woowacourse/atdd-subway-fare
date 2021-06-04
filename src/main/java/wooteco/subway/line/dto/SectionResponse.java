@@ -3,7 +3,7 @@ package wooteco.subway.line.dto;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.station.dto.StationResponse;
 
-public class SectionResponse {
+public final class SectionResponse {
     private StationResponse upStation;
     private StationResponse downStation;
     private int distance;

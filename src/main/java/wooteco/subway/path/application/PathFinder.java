@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class PathFinder {
+public final class PathFinder {
     public SubwayPath findPath(List<Line> lines, Station source, Station target) {
         if (source.equals(target)) {
             throw new InvalidPathException();

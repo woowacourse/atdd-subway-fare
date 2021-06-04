@@ -4,7 +4,7 @@ import wooteco.subway.station.dto.StationResponse;
 
 import java.util.List;
 
-public class PathResponse {
+public final class PathResponse {
     private List<StationResponse> stations;
     private int distance;
     private int extraFare;

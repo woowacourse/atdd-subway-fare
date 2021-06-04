@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-public class StationController {
+public final class StationController {
     private final StationService stationService;
 
     public StationController(StationService stationService) {
