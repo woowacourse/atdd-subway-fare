@@ -8,10 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static wooteco.subway.member.MemberAcceptanceTest.회원_생성을_요청;
@@ -25,7 +23,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("올바른 회원 가입 요청")
     @Test
     void validSingUp() {
-        ExtractableResponse<Response> response = 회원_등록되어_있음("email@email.com", PASSWORD, AGE);
+        ExtractableResponse<Response> response = 회원_등록되어_있음(EMAIL, PASSWORD, AGE);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
@@ -55,14 +53,12 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     void InvalidEmailAddress() {
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
 
-        Map<String, String> params = new HashMap<>();
-        params.put("email", "");
-        params.put("password", PASSWORD);
+        TokenRequest tokenRequest = new TokenRequest("", PASSWORD);
 
         RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
+                .body(tokenRequest)
                 .when()
                 .post("/login/token")
                 .then()
@@ -74,14 +70,12 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     void myInfoWithNonExistEmailAddress() {
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
 
-        Map<String, String> params = new HashMap<>();
-        params.put("email", EMAIL + "other");
-        params.put("password", PASSWORD);
+        TokenRequest tokenRequest = new TokenRequest(EMAIL + "other", PASSWORD);
 
         RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
+                .body(tokenRequest)
                 .when()
                 .post("/login/token")
                 .then()
@@ -93,14 +87,12 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     void myInfoWithInvalidPassword() {
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
 
-        Map<String, String> params = new HashMap<>();
-        params.put("email", EMAIL);
-        params.put("password", PASSWORD + "other");
+        TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD + "other");
 
         RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
+                .body(tokenRequest)
                 .when()
                 .post("/login/token")
                 .then()
@@ -133,13 +125,12 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
+        TokenRequest tokenRequest = new TokenRequest(email, password);
 
-        return RestAssured.given()
+        return RestAssured
+                .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
+                .body(tokenRequest)
                 .when()
                 .post("/login/token")
                 .then()
@@ -148,7 +139,8 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {
-        return RestAssured.given()
+        return RestAssured
+                .given()
                 .auth()
                 .oauth2(tokenResponse.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
