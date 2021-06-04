@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.path.application.FareService;
 import wooteco.subway.path.domain.Fare;
+import wooteco.subway.section.domain.Distance;
 
 public class FareServiceTest {
 
@@ -18,17 +19,17 @@ public class FareServiceTest {
         // when
 
         // then
-        assertThat(fareService.calculateFare(2)).isEqualTo(new Fare(1250));
-        assertThat(fareService.calculateFare(9)).isEqualTo(new Fare(1250));
-        assertThat(fareService.calculateFare(10)).isEqualTo(new Fare(1250));
-        assertThat(fareService.calculateFare(11)).isEqualTo(new Fare(1250 + 100));
-        assertThat(fareService.calculateFare(15)).isEqualTo(new Fare(1250 + 100));
-        assertThat(fareService.calculateFare(20)).isEqualTo(new Fare(1250 + 200));
-        assertThat(fareService.calculateFare(25)).isEqualTo(new Fare(1250 + 300));
-        assertThat(fareService.calculateFare(50)).isEqualTo(new Fare(1250 + 800));
-        assertThat(fareService.calculateFare(51)).isEqualTo(new Fare(1250 + 900));
-        assertThat(fareService.calculateFare(58)).isEqualTo(new Fare(1250 + 900));
-        assertThat(fareService.calculateFare(59)).isEqualTo(new Fare(1250 + 1000));
-        assertThat(fareService.calculateFare(67)).isEqualTo(new Fare(1250 + 1100));
+        assertThat(fareService.calculateFare(new Distance(2))).isEqualTo(new Fare(1250));
+        assertThat(fareService.calculateFare(new Distance(9))).isEqualTo(new Fare(1250));
+        assertThat(fareService.calculateFare(new Distance(10))).isEqualTo(new Fare(1250));
+        assertThat(fareService.calculateFare(new Distance(11))).isEqualTo(new Fare(1250 + 100));
+        assertThat(fareService.calculateFare(new Distance(15))).isEqualTo(new Fare(1250 + 100));
+        assertThat(fareService.calculateFare(new Distance(20))).isEqualTo(new Fare(1250 + 200));
+        assertThat(fareService.calculateFare(new Distance(25))).isEqualTo(new Fare(1250 + 300));
+        assertThat(fareService.calculateFare(new Distance(50))).isEqualTo(new Fare(1250 + 800));
+        assertThat(fareService.calculateFare(new Distance(51))).isEqualTo(new Fare(1250 + 900));
+        assertThat(fareService.calculateFare(new Distance(58))).isEqualTo(new Fare(1250 + 900));
+        assertThat(fareService.calculateFare(new Distance(59))).isEqualTo(new Fare(1250 + 1000));
+        assertThat(fareService.calculateFare(new Distance(67))).isEqualTo(new Fare(1250 + 1100));
     }
 }

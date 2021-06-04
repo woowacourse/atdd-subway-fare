@@ -18,6 +18,10 @@ public class Fare {
         }
     }
 
+    public Fare addExtraFare(Fare fare) {
+        return new Fare(value + fare.value);
+    }
+
     public int getValue() {
         return value;
     }

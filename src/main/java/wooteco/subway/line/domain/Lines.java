@@ -4,6 +4,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import wooteco.subway.exception.DuplicateLineNameException;
+import wooteco.subway.exception.NoSuchLineException;
+import wooteco.subway.path.domain.Fare;
 
 public class Lines {
 
@@ -23,5 +25,16 @@ public class Lines {
         return lines.stream()
             .sorted(Comparator.comparing(Line::getName))
             .collect(Collectors.toList());
+    }
+
+    public Fare getMaxExtraFare() {
+        return new Fare(getMaxExtraFareValue());
+    }
+
+    private int getMaxExtraFareValue() {
+        return lines.stream()
+            .mapToInt(Line::getExtraFare)
+            .max()
+            .orElseThrow(NoSuchLineException::new);
     }
 }
