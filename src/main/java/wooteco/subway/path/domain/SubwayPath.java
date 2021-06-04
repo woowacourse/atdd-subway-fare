@@ -1,7 +1,7 @@
 package wooteco.subway.path.domain;
 
-import wooteco.subway.line.domain.fare.AgeFarePolicy;
-import wooteco.subway.line.domain.fare.Fare;
+import wooteco.subway.fare.domain.AgeFarePolicy;
+import wooteco.subway.fare.domain.Fare;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;

@@ -1,7 +1,7 @@
 package wooteco.subway.member.domain;
 
 import wooteco.subway.auth.exception.AuthorizationException;
-import wooteco.subway.line.domain.fare.AgeFarePolicy;
+import wooteco.subway.fare.domain.AgeFarePolicy;
 
 public final class Guest implements User {
     @Override

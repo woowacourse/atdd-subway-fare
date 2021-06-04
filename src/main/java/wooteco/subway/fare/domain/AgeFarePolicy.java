@@ -1,4 +1,4 @@
-package wooteco.subway.line.domain.fare;
+package wooteco.subway.fare.domain;
 
 import wooteco.subway.exception.InvalidAgeException;
 import wooteco.subway.member.domain.User;

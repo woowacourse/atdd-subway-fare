@@ -1,13 +1,13 @@
-package wooteco.subway.line.domain.fare.distance;
+package wooteco.subway.fare.domain.distance;
 
 import wooteco.subway.exception.InvalidDistanceException;
 
 import java.util.Arrays;
 import java.util.function.UnaryOperator;
 
-import static wooteco.subway.line.domain.fare.distance.DefaultFare.DEFAULT_FARE_FIFTY_KILO;
-import static wooteco.subway.line.domain.fare.distance.DefaultFare.DEFAULT_FARE_TEN_KILO;
-import static wooteco.subway.line.domain.fare.distance.MaxDistance.*;
+import static wooteco.subway.fare.domain.distance.DefaultFare.DEFAULT_FARE_FIFTY_KILO;
+import static wooteco.subway.fare.domain.distance.DefaultFare.DEFAULT_FARE_TEN_KILO;
+import static wooteco.subway.fare.domain.distance.MaxDistance.*;
 
 public enum DistanceFarePolicy {
     LESS_THAN_TEN_KILOMETER(TEN_KM,

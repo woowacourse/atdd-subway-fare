@@ -1,4 +1,4 @@
-package wooteco.subway.line.domain.fare.distance;
+package wooteco.subway.fare.domain.distance;
 
 public enum MaxDistance {
     TEN_KM(10),

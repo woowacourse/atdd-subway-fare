@@ -1,4 +1,4 @@
-package wooteco.subway.line.domain.fare.distance;
+package wooteco.subway.fare.domain.distance;
 
 public enum DefaultFare {
     DEFAULT_FARE_TEN_KILO(1250),

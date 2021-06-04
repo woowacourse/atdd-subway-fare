@@ -1,6 +1,6 @@
 package wooteco.subway.member.domain;
 
-import wooteco.subway.line.domain.fare.AgeFarePolicy;
+import wooteco.subway.fare.domain.AgeFarePolicy;
 
 public final class LoginUser implements User {
     private Long id;

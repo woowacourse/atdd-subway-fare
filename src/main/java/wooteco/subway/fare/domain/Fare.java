@@ -1,6 +1,6 @@
-package wooteco.subway.line.domain.fare;
+package wooteco.subway.fare.domain;
 
-import wooteco.subway.line.domain.fare.distance.DistanceFarePolicy;
+import wooteco.subway.fare.domain.distance.DistanceFarePolicy;
 
 public class Fare {
     private final AgeFarePolicy ageFarePolicy;
