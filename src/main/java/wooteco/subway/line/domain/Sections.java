@@ -5,11 +5,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import wooteco.subway.exception.CannotRemoveStationException;
-import wooteco.subway.exception.InvalidDistanceException;
-import wooteco.subway.exception.SectionExistException;
-import wooteco.subway.exception.StationNotExistForSectionException;
-import wooteco.subway.exception.StationNotFoundException;
+import wooteco.subway.exception.badrequest.CannotRemoveStationException;
+import wooteco.subway.exception.badrequest.InvalidDistanceException;
+import wooteco.subway.exception.badrequest.SectionExistException;
+import wooteco.subway.exception.badrequest.StationNotExistForSectionException;
+import wooteco.subway.exception.notfound.StationNotFoundException;
 import wooteco.subway.station.domain.Station;
 
 public class Sections {

@@ -31,7 +31,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.auth.infrastructure.LoginInterceptor;
 import wooteco.subway.exception.AuthorizationException;
-import wooteco.subway.exception.DuplicatedStationNameException;
+import wooteco.subway.exception.duplicate.DuplicatedStationNameException;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
