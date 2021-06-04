@@ -1,8 +1,5 @@
 package wooteco.subway.member.domain;
 
-import java.util.Objects;
-import wooteco.subway.exception.AuthorizationException;
-
 public class Member implements User {
 
     private Id id;

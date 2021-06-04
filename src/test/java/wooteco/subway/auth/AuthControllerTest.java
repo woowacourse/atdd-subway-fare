@@ -1,5 +1,14 @@
 package wooteco.subway.auth;
 
+import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,13 +24,6 @@ import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.ui.AuthController;
 import wooteco.subway.auth.ui.AuthenticationInterceptor;
-
-import static org.mockito.BDDMockito.given;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = AuthController.class)
 @ActiveProfiles("test")
@@ -42,7 +44,8 @@ public class AuthControllerTest {
     @DisplayName("로그인")
     public void login() throws Exception {
         TokenRequest tokenRequest = new TokenRequest("email@email.com", "password");
-        given(authService.login(tokenRequest)).willReturn(new TokenResponse("eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiaWF0IjoxNjIyMjAzOTU5LCJleHAiOjE2MjIyMDc1NTl9.Ft7GLR6K9osybNLVScma-j_t48WS4ZTKsvsjUFKpA78"));
+        given(authService.login(tokenRequest)).willReturn(new TokenResponse(
+            "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiaWF0IjoxNjIyMjAzOTU5LCJleHAiOjE2MjIyMDc1NTl9.Ft7GLR6K9osybNLVScma-j_t48WS4ZTKsvsjUFKpA78"));
 
         mockMvc.perform(post("/api/lines")
             .contentType(MediaType.APPLICATION_JSON_VALUE)

@@ -124,7 +124,6 @@ public class LineServiceTest {
         String updateColor = "녹담색";
         int extraFare = 2_000;
 
-
         when(mockLineDao.update(eq(id), any(Line.class))).thenReturn(1);
         when(mockLineDao.find(id)).thenReturn(new Line(id, updateName, updateColor, extraFare));
 
