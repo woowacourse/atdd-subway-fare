@@ -5,10 +5,10 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
+import wooteco.subway.exception.AuthorizationException;
 import wooteco.subway.exception.InvalidEmailException;
 import wooteco.subway.exception.MismatchIdPasswordException;
 import wooteco.subway.member.dao.MemberDao;
-import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
 
 @Service
@@ -32,18 +32,16 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
-    public LoginMember findMemberByToken(String credentials) {
+    public Member findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
+            throw new AuthorizationException();
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
         try {
-            Member member = memberDao.findByEmail(email)
-                .orElseThrow(InvalidEmailException::new);
-            return new LoginMember(member.getId(), member.getEmail(), member.getAge());
+            return memberDao.findByEmail(email).orElseThrow(InvalidEmailException::new);
         } catch (Exception e) {
-            return new LoginMember();
+            throw new AuthorizationException();
         }
     }
 }

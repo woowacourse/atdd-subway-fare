@@ -1,11 +1,17 @@
 package wooteco.subway.member.domain;
 
-public class Member {
+import java.util.Objects;
+import wooteco.subway.exception.AuthorizationException;
 
-    private final Id id;
-    private final Email email;
-    private final Password password;
-    private final Age age;
+public class Member implements User {
+
+    private Id id;
+    private Email email;
+    private Password password;
+    private Age age;
+
+    public Member() {
+    }
 
     public Member(Long id, String email, Integer age) {
         this(new Id(id), new Email(email), null, new Age(age));
@@ -26,19 +32,23 @@ public class Member {
         this.age = age;
     }
 
+    @Override
     public Long getId() {
         return id.getValue();
     }
 
+    @Override
     public String getEmail() {
         return email.getValue();
     }
 
+    @Override
     public String getPassword() {
         return password.getValue();
     }
 
-    public Integer getAge() {
+    @Override
+    public int getAge() {
         return age.getValue();
     }
 

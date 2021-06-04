@@ -5,8 +5,8 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.DuplicateEmailException;
 import wooteco.subway.exception.InvalidEmailException;
 import wooteco.subway.member.dao.MemberDao;
-import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
+import wooteco.subway.member.domain.User;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
@@ -21,15 +21,15 @@ public class MemberService {
 
     @Transactional
     public MemberResponse createMember(MemberRequest request) {
-        Member member = memberDao.insert(request.toMember());
-        return MemberResponse.of(member);
+        Member findMember = memberDao.insert(request.toMember());
+        return MemberResponse.of(findMember);
     }
 
-    public MemberResponse findMember(LoginMember loginMember) {
-        Member member = memberDao.findByEmail(loginMember.getEmail())
+    public MemberResponse findMember(User user) {
+        Member findMember = memberDao.findByEmail(user.getEmail())
             .orElseThrow(InvalidEmailException::new);
 
-        return MemberResponse.of(member);
+        return MemberResponse.of(findMember);
     }
 
     public void validateDuplicateEmail(String email) {
@@ -39,18 +39,18 @@ public class MemberService {
     }
 
     @Transactional
-    public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
-        Member member = memberDao.findByEmail(loginMember.getEmail())
+    public void updateMember(User user, MemberRequest memberRequest) {
+        Member findMember = memberDao.findByEmail(user.getEmail())
             .orElseThrow(InvalidEmailException::new);
 
-        memberDao.update(new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
+        memberDao.update(new Member(findMember.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
     }
 
     @Transactional
-    public void deleteMember(LoginMember loginMember) {
-        Member member = memberDao.findByEmail(loginMember.getEmail())
+    public void deleteMember(User user) {
+        Member findMember = memberDao.findByEmail(user.getEmail())
             .orElseThrow(InvalidEmailException::new);
 
-        memberDao.deleteById(member.getId());
+        memberDao.deleteById(findMember.getId());
     }
 }
