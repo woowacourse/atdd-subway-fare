@@ -1,24 +1,28 @@
 package wooteco.subway.line.application;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import wooteco.subway.exception.badrequest.DuplicateUniqueKeyException;
+import wooteco.subway.exception.notfound.LineNotFoundException;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
-import wooteco.subway.line.dto.LineRequest;
-import wooteco.subway.line.dto.LineResponse;
-import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.line.dto.*;
+import wooteco.subway.path.domain.Fare;
+import wooteco.subway.path.domain.Money;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
+import wooteco.subway.station.dto.StationTransferLinesDto;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class LineService {
-    private LineDao lineDao;
-    private SectionDao sectionDao;
-    private StationService stationService;
+    private final LineDao lineDao;
+    private final SectionDao sectionDao;
+    private final StationService stationService;
 
     public LineService(LineDao lineDao, SectionDao sectionDao, StationService stationService) {
         this.lineDao = lineDao;
@@ -27,9 +31,28 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
+        validateUniqueKey(request.getName(), request.getColor());
+        Line persistLine = lineDao.insert(request.toLine());
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);
+    }
+
+    private void validateUniqueKey(String name, String color) {
+        validateDuplicateName(name);
+        validateDuplicateColor(color);
+    }
+
+
+    private void validateDuplicateName(String name) {
+        if (lineDao.existLineName(name)) {
+            throw new DuplicateUniqueKeyException("지하철 노선 이름이 이미 존재합니다");
+        }
+    }
+
+    private void validateDuplicateColor(String color) {
+        if (lineDao.existLineColor(color)) {
+            throw new DuplicateUniqueKeyException("지하철 노선 색깔이 이미 존재합니다");
+        }
     }
 
     private Section addInitSection(Line line, LineRequest request) {
@@ -42,35 +65,54 @@ public class LineService {
         return null;
     }
 
-    public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
-        return persistLines.stream()
-                .map(line -> LineResponse.of(line))
-                .collect(Collectors.toList());
-    }
-
     public List<Line> findLines() {
         return lineDao.findAll();
     }
 
-    public LineResponse findLineResponseById(Long id) {
+    public List<LineStationWithTransferLinesResponse> findLinesWithStationsTransferLines() {
+        List<Line> persistLines = findLines();
+        List<StationTransferLinesDto> allStationWithTransferLines = stationService.findAllWithTransferLines();
+        return persistLines.stream()
+                .map(line -> LineStationWithTransferLinesResponse.of(line, allStationWithTransferLines))
+                .collect(Collectors.toList());
+    }
+
+    public LineStationWithTransferLinesResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
+        List<StationTransferLinesDto> allStationWithTransferLines = stationService.findAllWithTransferLines();
+        return LineStationWithTransferLinesResponse.of(persistLine, allStationWithTransferLines);
     }
 
     public Line findLineById(Long id) {
-        return lineDao.findById(id);
+        return lineDao.findById(id).orElseThrow(LineNotFoundException::new);
     }
 
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+    public LineNameColorResponse updateLine(Long id, LineUpdateRequest request) {
+        Line line = lineDao.findById(id).orElseThrow(LineNotFoundException::new);
+        try {
+            Line updatedLine = line.update(request.getName(), request.getColor(), Fare.of(new Money(request.getExtraFare())));
+            lineDao.update(updatedLine);
+            return new LineNameColorResponse(id, request.getName(), request.getColor());
+        } catch (DuplicateKeyException e) {
+            validateUpdateUniqueKey(line, request);
+        }
+        return null;
+    }
+
+    private void validateUpdateUniqueKey(Line line, LineUpdateRequest request) {
+        if (!line.getName().equals(request.getName())) {
+            validateDuplicateName(request.getName());
+        }
+        if (!line.getColor().equals(request.getColor())) {
+            validateDuplicateColor(request.getColor());
+        }
     }
 
     public void deleteLineById(Long id) {
         lineDao.deleteById(id);
     }
 
-    public void addLineStation(Long lineId, SectionRequest request) {
+    public SectionAddResponse addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
@@ -78,6 +120,8 @@ public class LineService {
 
         sectionDao.deleteByLineId(lineId);
         sectionDao.insertSections(line);
+
+        return new SectionAddResponse(request.getUpStationId(), request.getDownStationId(), request.getDistance());
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
@@ -88,5 +132,4 @@ public class LineService {
         sectionDao.deleteByLineId(lineId);
         sectionDao.insertSections(line);
     }
-
 }

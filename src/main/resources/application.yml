@@ -1,17 +1,63 @@
 spring:
-  datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:testdb
-    username: sa
-    password:
-  h2:
-    console:
-      enabled: true
+    profiles:
+        active: local
+---
+swagger:
+    host: localhost:8080
+spring:
+    config:
+        activate:
+            on-profile: local
+    datasource:
+        schema:
+            - classpath:schema.sql
+        initialization-mode: always
+        driver-class-name: org.h2.Driver
+        url: jdbc:h2:mem:subway
+        username: sa
+        password:
+    h2:
+        console:
+            enabled: true
+---
+swagger:
+    host: test
+spring:
+    config:
+        activate:
+            on-profile: test
+    datasource:
+        schema:
+            - classpath:schema.sql
+        initialization-mode: always
+        driver-class-name: org.h2.Driver
+        url: jdbc:h2:mem:testdb
+        username: sa
+        password:
+    h2:
+        console:
+            enabled: true
+---
+swagger:
+    host: woowasubway.kro.kr
+spring:
+    config:
+        activate:
+            on-profile: prod
+    datasource:
+        schema:
+            - classpath:schema.sql
+        initialization-mode: always
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/subway?useSSL=false&serverTimezone=UTC
+        username: root
+        password: 1234
+---
 handlebars:
-  suffix: .html
-  enabled: true
+    suffix: .html
+    enabled: true
 security:
-  jwt:
-    token:
-      secret-key: my_secret_is_secret
-      expire-length: 3600000
+    jwt:
+        token:
+            secret-key: my_secret_is_secret
+            expire-length: 3600000

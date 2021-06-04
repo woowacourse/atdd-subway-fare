@@ -5,6 +5,9 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
+import wooteco.subway.exception.badrequest.LoginFailException;
+import wooteco.subway.exception.notfound.MemberNotFoundException;
+import wooteco.subway.exception.unauthorized.AuthorizationException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
@@ -12,8 +15,8 @@ import wooteco.subway.member.domain.Member;
 @Service
 @Transactional
 public class AuthService {
-    private MemberDao memberDao;
-    private JwtTokenProvider jwtTokenProvider;
+    private final MemberDao memberDao;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public AuthService(MemberDao memberDao, JwtTokenProvider jwtTokenProvider) {
         this.memberDao = memberDao;
@@ -21,27 +24,26 @@ public class AuthService {
     }
 
     public TokenResponse login(TokenRequest request) {
-        try {
-            Member member = memberDao.findByEmail(request.getEmail());
-            member.checkPassword(request.getPassword());
-        } catch (Exception e) {
-            throw new AuthorizationException();
-        }
-        String token = jwtTokenProvider.createToken(request.getEmail());
+        Member member = memberDao.findByEmail(request.getEmail()).orElseThrow(LoginFailException::new);
+        member.checkPassword(request.getPassword());
+        String token = jwtTokenProvider.createToken(String.valueOf(member.getId()));
         return new TokenResponse(token);
     }
 
     public LoginMember findMemberByToken(String credentials) {
-        if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
-        }
-
-        String email = jwtTokenProvider.getPayload(credentials);
+        Long id = Long.parseLong(jwtTokenProvider.getPayload(credentials));
         try {
-            Member member = memberDao.findByEmail(email);
+            Member member = memberDao.findById(id).orElseThrow(MemberNotFoundException::new);
             return new LoginMember(member.getId(), member.getEmail(), member.getAge());
         } catch (Exception e) {
             return new LoginMember();
         }
+    }
+
+    public void validateToken(String accessToken) {
+        if (jwtTokenProvider.validateToken(accessToken)) {
+            return;
+        }
+        throw new AuthorizationException();
     }
 }

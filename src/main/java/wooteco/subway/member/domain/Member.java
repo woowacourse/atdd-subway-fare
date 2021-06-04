@@ -1,7 +1,11 @@
 package wooteco.subway.member.domain;
 
 import org.apache.commons.lang3.StringUtils;
-import wooteco.subway.auth.application.AuthorizationException;
+import wooteco.subway.exception.badrequest.LoginFailException;
+import wooteco.subway.exception.badrequest.PasswordMissMatchException;
+import wooteco.subway.exception.badrequest.UpdatePasswordException;
+
+import java.util.Objects;
 
 public class Member {
     private Long id;
@@ -49,7 +53,33 @@ public class Member {
 
     public void checkPassword(String password) {
         if (!StringUtils.equals(this.password, password)) {
-            throw new AuthorizationException();
+            throw new LoginFailException();
         }
+    }
+
+    public void validateUpdatePassword(String currentPassword, String newPassword) {
+        if (!this.password.equals(currentPassword)) {
+            throw new PasswordMissMatchException();
+        }
+        if (currentPassword.equals(newPassword)) {
+            throw new UpdatePasswordException();
+        }
+    }
+
+    public Member update(String email, String password, Integer age) {
+        return new Member(this.id, email, password, age);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Member member = (Member) o;
+        return Objects.equals(id, member.id) && Objects.equals(email, member.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, email);
     }
 }
