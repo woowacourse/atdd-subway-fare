@@ -1,19 +1,19 @@
 package wooteco.subway.path.domain.policy;
 
-public class ThirdLevelPolicy implements Policy {
+public class ThirdDistancePolicy implements DistancePolicy {
 
     private static final int DIVIDE_UNIT = 8;
     private static final int MIN_LIMIT = 50;
 
-    public ThirdLevelPolicy() {
+    public ThirdDistancePolicy() {
     }
 
     @Override
-    public void setNextLevelPolicy(Policy nextLevelPolicy) {
+    public void setNextPolicy(DistancePolicy nextDistancePolicy) {
     }
 
     @Override
-    public int calculateTotalFare(int distance) {
+    public int calculateFare(int distance) {
         return (int) ((Math.ceil((distance - MIN_LIMIT - 1) / DIVIDE_UNIT) + 1) * 100);
     }
 }
