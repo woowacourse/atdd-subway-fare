@@ -2,7 +2,8 @@ spring:
   profiles:
     active: local
 ---
-
+swagger:
+  host: localhost:8080
 spring:
   config:
     activate:
@@ -25,7 +26,8 @@ security:
       expire-length: 3600000
 
 ---
-
+swagger:
+  host: metro.r-e.kr
 spring:
   config:
     activate:
@@ -51,7 +53,8 @@ security:
       expire-length: 3600000
 
 ---
-
+swagger:
+  host: test
 spring:
   config:
     activate:
