@@ -1,6 +1,6 @@
 package wooteco.subway.line.dao;
 
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.line.domain.Line;
@@ -14,11 +14,11 @@ import java.util.stream.Collectors;
 
 @Repository
 public class SectionDao {
-    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
 
-    public SectionDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
-        this.jdbcTemplate = jdbcTemplate;
+    public SectionDao(NamedParameterJdbcTemplate namedParameterJdbcTemplate, DataSource dataSource) {
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("SECTION")
                 .usingGeneratedKeyColumns("id");
@@ -35,7 +35,11 @@ public class SectionDao {
     }
 
     public void deleteByLineId(Long lineId) {
-        jdbcTemplate.update("delete from SECTION where line_id = ?", lineId);
+        final String sql = "delete from SECTION where line_id = :id";
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", lineId);
+        namedParameterJdbcTemplate.update(sql, params);
     }
 
     public void insertSections(Line line) {

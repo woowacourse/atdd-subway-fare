@@ -123,7 +123,7 @@
 - [x] 확장성이 필요하지 않다고 생각하는 어플리케이션에서는 적당히 Validation
     - [x] 여기서 Valid된 필드에 대해서는 신뢰
     - [x] 가령... Dto에서는 Null만 확인, 후에는 Null 검사 할 필요 없음
-- [ ] NamedParameterJdbcTemplate 도입
+- [x] NamedParameterJdbcTemplate 도입
 - [x] 도메인 필드 값에 대해 원시값 포장
 - [x] 매직 넘버 상수화
 - [x] 디미터의 법칙 준수

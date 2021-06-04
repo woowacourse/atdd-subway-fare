@@ -5,7 +5,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import wooteco.subway.line.domain.Line;
@@ -22,8 +21,7 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFOR
 @JdbcTest
 @DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
 class SectionDaoTest {
-    @Autowired
-    JdbcTemplate jdbcTemplate;
+
     @Autowired
     DataSource dataSource;
     @Autowired
@@ -40,7 +38,7 @@ class SectionDaoTest {
 
     @BeforeEach
     void setUp() {
-        sectionDao = new SectionDao(jdbcTemplate, dataSource);
+        sectionDao = new SectionDao(namedParameterJdbcTemplate, dataSource);
         stationDao = new StationDao(namedParameterJdbcTemplate, dataSource);
         lineDao = new LineDao(namedParameterJdbcTemplate, dataSource);
 
