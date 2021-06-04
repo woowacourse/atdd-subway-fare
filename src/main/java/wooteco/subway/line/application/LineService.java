@@ -8,10 +8,14 @@ import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.line.exception.ExistLineColorException;
+import wooteco.subway.line.exception.ExistLineNameException;
+import wooteco.subway.line.exception.LineNotExistException;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,9 +31,19 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
+        checkExistInfo(request);
+        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);
+    }
+
+    private void checkExistInfo(LineRequest request) {
+        if (lineDao.findByName(request.getName()).isPresent()) {
+            throw new ExistLineNameException();
+        }
+        if (lineDao.findByColor(request.getColor()).isPresent()) {
+            throw new ExistLineColorException();
+        }
     }
 
     private Section addInitSection(Line line, LineRequest request) {
@@ -45,7 +59,7 @@ public class LineService {
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
-                .map(line -> LineResponse.of(line))
+                .map(LineResponse::of)
                 .collect(Collectors.toList());
     }
 
@@ -59,10 +73,19 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        return lineDao.findById(id);
+        return lineDao.findById(id)
+                .orElseThrow(LineNotExistException::new);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
+        Optional<Line> findWithNameLine = lineDao.findByName(lineUpdateRequest.getName());
+        if (findWithNameLine.isPresent() && !findWithNameLine.get().isSameId(id)) {
+            throw new ExistLineNameException();
+        }
+        Optional<Line> findWithColorLine = lineDao.findByColor(lineUpdateRequest.getColor());
+        if (findWithColorLine.isPresent() && !findWithColorLine.get().isSameId(id)) {
+            throw new ExistLineColorException();
+        }
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
@@ -74,6 +97,7 @@ public class LineService {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
+
         line.addSection(upStation, downStation, request.getDistance());
 
         sectionDao.deleteByLineId(lineId);
@@ -84,9 +108,7 @@ public class LineService {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
         line.removeSection(station);
-
         sectionDao.deleteByLineId(lineId);
         sectionDao.insertSections(line);
     }
-
 }

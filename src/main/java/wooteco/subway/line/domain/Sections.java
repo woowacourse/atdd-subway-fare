@@ -1,5 +1,9 @@
 package wooteco.subway.line.domain;
 
+import wooteco.subway.line.exception.NotAbleToAddStationInLineException;
+import wooteco.subway.line.exception.NotAbleToDeleteInSectionException;
+import wooteco.subway.line.exception.SameUpAndDownStationException;
+import wooteco.subway.line.exception.SectionDistanceInvalidException;
 import wooteco.subway.station.domain.Station;
 
 import java.util.ArrayList;
@@ -11,15 +15,15 @@ import java.util.stream.Collectors;
 public class Sections {
     private List<Section> sections = new ArrayList<>();
 
-    public List<Section> getSections() {
-        return sections;
-    }
-
     public Sections() {
     }
 
     public Sections(List<Section> sections) {
         this.sections = sections;
+    }
+
+    public List<Section> getSections() {
+        return sections;
     }
 
     public void addSection(Section section) {
@@ -40,7 +44,7 @@ public class Sections {
     private void checkAlreadyExisted(Section section) {
         List<Station> stations = getStations();
         if (!stations.contains(section.getUpStation()) && !stations.contains(section.getDownStation())) {
-            throw new RuntimeException();
+            throw new NotAbleToAddStationInLineException();
         }
     }
 
@@ -48,7 +52,7 @@ public class Sections {
         List<Station> stations = getStations();
         List<Station> stationsOfNewSection = Arrays.asList(section.getUpStation(), section.getDownStation());
         if (stations.containsAll(stationsOfNewSection)) {
-            throw new RuntimeException();
+            throw new NotAbleToAddStationInLineException();
         }
     }
 
@@ -68,7 +72,7 @@ public class Sections {
 
     private void replaceSectionWithUpStation(Section newSection, Section existSection) {
         if (existSection.getDistance() <= newSection.getDistance()) {
-            throw new RuntimeException();
+            throw new SectionDistanceInvalidException();
         }
         this.sections.add(new Section(existSection.getUpStation(), newSection.getUpStation(), existSection.getDistance() - newSection.getDistance()));
         this.sections.remove(existSection);
@@ -76,7 +80,7 @@ public class Sections {
 
     private void replaceSectionWithDownStation(Section newSection, Section existSection) {
         if (existSection.getDistance() <= newSection.getDistance()) {
-            throw new RuntimeException();
+            throw new SectionDistanceInvalidException();
         }
         this.sections.add(new Section(newSection.getDownStation(), existSection.getDownStation(), existSection.getDistance() - newSection.getDistance()));
         this.sections.remove(existSection);
@@ -104,11 +108,11 @@ public class Sections {
         List<Station> downStations = this.sections.stream()
                 .map(it -> it.getDownStation())
                 .collect(Collectors.toList());
-
+// 구간 추가시 발생함
         return this.sections.stream()
                 .filter(it -> !downStations.contains(it.getUpStation()))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(SameUpAndDownStationException::new);
     }
 
     private Section findSectionByNextUpStation(Station station) {
@@ -120,7 +124,7 @@ public class Sections {
 
     public void removeStation(Station station) {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new NotAbleToDeleteInSectionException();
         }
 
         Optional<Section> upSection = sections.stream()
