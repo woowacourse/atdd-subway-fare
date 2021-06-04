@@ -11,7 +11,7 @@ import wooteco.subway.station.domain.Station;
 
 class SectionTest {
 
-    private final Line 칠호선 = new Line(7L, "7호선", "bg-green-100");
+    private final Line 칠호선 = new Line(7L, "7호선", "bg-green-100", 0);
     private final Station 상봉역 = new Station(1L, "상봉역");
     private final Station 면목역 = new Station(2L, "면목역");
     private final Station 사가정역 = new Station(3L, "사가정역");

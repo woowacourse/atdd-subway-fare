@@ -197,9 +197,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
         면목역 = 지하철역_등록되어_있음("면목역");
         용마산역 = 지하철역_등록되어_있음("용마산역");
 
-        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
-        lineRequest2 = new LineRequest("7호선", "bg-green-600", 상봉역.getId(), 면목역.getId(), 15);
-        lineRequest3 = new LineRequest("5호선", "bg-purple-600", 상봉역.getId(), 용마산역.getId(), 4);
+        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10, 0);
+        lineRequest2 = new LineRequest("7호선", "bg-green-600", 상봉역.getId(), 면목역.getId(), 15, 0);
+        lineRequest3 = new LineRequest("5호선", "bg-purple-600", 상봉역.getId(), 용마산역.getId(), 4, 500);
     }
 
     @DisplayName("지하철 노선을 생성한다.")

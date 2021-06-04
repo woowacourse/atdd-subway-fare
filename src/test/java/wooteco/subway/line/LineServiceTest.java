@@ -30,9 +30,10 @@ import wooteco.subway.section.dto.SectionResponse;
 @ExtendWith(MockitoExtension.class)
 public class LineServiceTest {
 
-    private final long UPSTATION_ID = 1;
-    private final long DOWNSTATION_ID = 2;
+    private final long UP_STATION_ID = 1;
+    private final long DOWN_STATION_ID = 2;
     private final int DISTANCE = 10;
+    private final int EXTRA_FARE = 0;
 
     @Mock
     private LineDao mockLineDao;
@@ -45,20 +46,22 @@ public class LineServiceTest {
     @DisplayName("노선 만들기")
     void createLine() {
         // given
-        long id = 1;
+        Long id = 1L;
         String name = "1호선";
         String color = "파란색";
+        int extraFare = 0;
 
-        when(mockLineDao.insert(any(Line.class))).thenReturn(new Line(id, name, color));
+        when(mockLineDao.insert(any(Line.class))).thenReturn(new Line(id, name, color, extraFare));
         when(mockSectionService.saveByLineCreate(any(Line.class), any())).thenReturn(null);
 
         // when
-        LineRequest request = new LineRequest(name, color, UPSTATION_ID, DOWNSTATION_ID, DISTANCE);
+        LineRequest request = new LineRequest(name, color, UP_STATION_ID, DOWN_STATION_ID, DISTANCE, EXTRA_FARE);
         LineResponse response = lineService.createLine(request);
 
         // then
         assertThat(response.getName()).isEqualTo(name);
         assertThat(response.getColor()).isEqualTo(color);
+        assertThat(response.getExtraFare()).isEqualTo(extraFare);
     }
 
     @Test
@@ -66,9 +69,9 @@ public class LineServiceTest {
     void showAllLines() {
         // given
         List<Line> lineList = Arrays.asList(
-            new Line((long) 1, "1호선", "파란색"),
-            new Line((long) 2, "2호선", "초록색"),
-            new Line((long) 3, "3호선", "주황색")
+            new Line(1L, "1호선", "파란색", 1_000),
+            new Line(2L, "2호선", "초록색", 3_000),
+            new Line(3L, "3호선", "주황색", 500)
         );
 
         when(mockLineDao.findAll()).thenReturn(lineList);
@@ -80,12 +83,15 @@ public class LineServiceTest {
         assertThat(lines.get(0).getId()).isEqualTo(lines.get(0).getId());
         assertThat(lines.get(0).getName()).isEqualTo(lines.get(0).getName());
         assertThat(lines.get(0).getColor()).isEqualTo(lines.get(0).getColor());
+        assertThat(lines.get(0).getExtraFare()).isEqualTo(lines.get(0).getExtraFare());
         assertThat(lines.get(1).getId()).isEqualTo(lines.get(1).getId());
         assertThat(lines.get(1).getName()).isEqualTo(lines.get(1).getName());
         assertThat(lines.get(1).getColor()).isEqualTo(lines.get(1).getColor());
+        assertThat(lines.get(1).getExtraFare()).isEqualTo(lines.get(1).getExtraFare());
         assertThat(lines.get(2).getId()).isEqualTo(lines.get(2).getId());
         assertThat(lines.get(2).getName()).isEqualTo(lines.get(2).getName());
         assertThat(lines.get(2).getColor()).isEqualTo(lines.get(2).getColor());
+        assertThat(lines.get(2).getExtraFare()).isEqualTo(lines.get(2).getExtraFare());
     }
 
     @Test
@@ -95,8 +101,9 @@ public class LineServiceTest {
         Long id = 1L;
         String name = "1호선";
         String color = "파란색";
+        int extraFare = 1_000;
 
-        when(mockLineDao.find(id)).thenReturn(new Line(id, name, color));
+        when(mockLineDao.find(id)).thenReturn(new Line(id, name, color, extraFare));
 
         // when
         LineResponse response = lineService.findOne(id);
@@ -105,37 +112,38 @@ public class LineServiceTest {
         assertThat(response.getId()).isEqualTo(id);
         assertThat(response.getName()).isEqualTo(name);
         assertThat(response.getColor()).isEqualTo(color);
+        assertThat(response.getExtraFare()).isEqualTo(extraFare);
     }
 
     @Test
     @DisplayName("특정 노선 업데이트")
     void update() {
         // given
-        long id = 1;
+        Long id = 1L;
         String updateName = "7호선";
         String updateColor = "녹담색";
+        int extraFare = 2_000;
+
 
         when(mockLineDao.update(eq(id), any(Line.class))).thenReturn(1);
-        when(mockLineDao.find(id)).thenReturn(new Line(id, updateName, updateColor));
+        when(mockLineDao.find(id)).thenReturn(new Line(id, updateName, updateColor, extraFare));
 
         // when
-        lineService.update(id, new UpdateLineRequest(updateName, updateColor));
+        lineService.update(id, new UpdateLineRequest(updateName, updateColor, extraFare));
 
         // then
         LineResponse response = lineService.findOne(id);
         assertThat(response.getId()).isEqualTo(1);
         assertThat(response.getName()).isEqualTo(updateName);
         assertThat(response.getColor()).isEqualTo("녹담색");
+        assertThat(response.getExtraFare()).isEqualTo(2_000);
     }
 
     @Test
     @DisplayName("특정 노선 삭제")
     void delete() {
         // given
-        long id = 1;
-        String name = "1호선";
-        String color = "파란색";
-
+        Long id = 1L;
         when(mockLineDao.delete(id)).thenReturn(1);
         when(mockLineDao.find(id)).thenThrow(NoSuchLineException.class);
 
@@ -151,8 +159,8 @@ public class LineServiceTest {
     @DisplayName("전체 지하철 지도를 위한 전체 노선 정보값 반환")
     void findLineMapResponses() {
         // given
-        Line 일호선 = new Line(1L, "1호선", "bg-blue-100");
-        Line 이호선 = new Line(2L, "2호선", "bg-green-100");
+        Line 일호선 = new Line(1L, "1호선", "bg-blue-100", 1_000);
+        Line 이호선 = new Line(2L, "2호선", "bg-green-100", 2_000);
         List<Line> lines = Arrays.asList(일호선, 이호선);
 
         List<TransferLineResponse> transferLineResponses = Collections.singletonList(TransferLineResponse.from(이호선));
@@ -172,6 +180,7 @@ public class LineServiceTest {
         assertThat(lineMapResponses.get(0).getName()).isEqualTo(일호선.getName());
         assertThat(lineMapResponses.get(0).getColor()).isEqualTo(일호선.getColor());
         assertThat(lineMapResponses.get(0).getDistance()).isEqualTo(25);
+        assertThat(lineMapResponses.get(0).getExtraFare()).isEqualTo(1_000);
         assertThat(lineMapResponses.get(0).getSections().get(0).getTransferLines().get(0).getName()).isEqualTo(이호선.getName());
         assertThat(lineMapResponses.get(0).getSections().get(0).getTransferLines().get(0).getColor()).isEqualTo(이호선.getColor());
     }

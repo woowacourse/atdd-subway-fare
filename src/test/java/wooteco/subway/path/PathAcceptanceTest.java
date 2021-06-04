@@ -45,15 +45,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        회원_생성을_요청(EMAIL, PASSWORD, 10);
+        회원_생성을_요청(EMAIL, PASSWORD, 20);
         강남역 = 지하철역_등록되어_있음("강남역"); // 1
         양재역 = 지하철역_등록되어_있음("양재역"); // 2
         교대역 = 지하철역_등록되어_있음("교대역"); // 3
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역"); // 4
 
-        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10));
-        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10));
-        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5));
+        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, 0));
+        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10, 0));
+        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5, 0));
 
         지하철_구간_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
     }

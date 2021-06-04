@@ -45,7 +45,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         정자역 = 지하철역_등록되어_있음("정자역");
         광교역 = 지하철역_등록되어_있음("광교역");
 
-        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10));
+        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10, 0));
     }
 
     @DisplayName("지하철 구간을 등록한다.")

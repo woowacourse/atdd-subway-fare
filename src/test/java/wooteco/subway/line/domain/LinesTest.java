@@ -16,14 +16,14 @@ class LinesTest {
     void validateDuplicateName() {
         // given
         List<Line> lineList = Arrays.asList(
-            new Line("1호선", "bg-blue-100"),
-            new Line("2호선", "bg-red-300"),
-            new Line("3호선", "bg-orange-500")
+            new Line("1호선", "bg-blue-100", 0),
+            new Line("2호선", "bg-red-300", 0),
+            new Line("3호선", "bg-orange-500", 0)
         );
 
         Lines lines = new Lines(lineList);
 
-        Line duplicateNameLine = new Line("1호선", "bg-black-000");
+        Line duplicateNameLine = new Line("1호선", "bg-black-000", 0);
 
         // when
 
@@ -37,11 +37,11 @@ class LinesTest {
     void sortedByLineName() {
         // given
         List<Line> lineList = Arrays.asList(
-            new Line("후후선", "bg-blue-100"),
-            new Line("다라선", "bg-blue-100"),
-            new Line("가나선", "bg-blue-100"),
-            new Line("2호선", "bg-blue-100"),
-            new Line("1호선", "bg-blue-100")
+            new Line("후후선", "bg-blue-100", 0),
+            new Line("다라선", "bg-blue-100", 20),
+            new Line("가나선", "bg-blue-100", 30),
+            new Line("2호선", "bg-blue-100", 40),
+            new Line("1호선", "bg-blue-100", 500)
         );
 
         Lines lines = new Lines(lineList);

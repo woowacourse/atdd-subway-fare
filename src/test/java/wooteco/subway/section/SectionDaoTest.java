@@ -25,7 +25,7 @@ import wooteco.subway.station.domain.Station;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class SectionDaoTest {
 
-    private final Line 일호선 = new Line(1L, "1호선", "bg-blue-100");
+    private final Line 일호선 = new Line(1L, "1호선", "bg-blue-100", 0);
     private final Station 신설역 = new Station(1L, "신설역");
     private final Station 동묘역 = new Station(2L, "동묘역");
     private final Station 동대문역 = new Station(3L, "동대문역");
@@ -126,7 +126,7 @@ public class SectionDaoTest {
     public void findByLineIdAndStation() {
         // given
         Station 없는역 = new Station(9L, "없는역");
-        Line 없는노선 = new Line(2L, "없는노선", "bg-white-999");
+        Line 없는노선 = new Line(2L, "없는노선", "bg-white-999", 0);
 
         // when
 
@@ -190,8 +190,8 @@ public class SectionDaoTest {
     @DisplayName("지하철 역을 통해 환승 가능한 노선 찾기")
     void findIncludeStationLine() {
         // given
-        Line 이호선 = new Line(2L, "2호선", "bg-green-200");
-        Line 삼호선 = new Line(3L, "3호선", "bg-green-200");
+        Line 이호선 = new Line(2L, "2호선", "bg-green-200", 0);
+        Line 삼호선 = new Line(3L, "3호선", "bg-green-200", 0);
         lineDao.insert(이호선);
         lineDao.insert(삼호선);
 

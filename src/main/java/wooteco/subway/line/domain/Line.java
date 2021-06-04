@@ -1,25 +1,28 @@
 package wooteco.subway.line.domain;
 
 import java.util.Objects;
+import wooteco.subway.path.domain.Fare;
 
 public class Line {
 
     private final Id id;
     private final Name name;
     private final Color color;
+    private final Fare extraFare;
 
-    public Line(String name, String color) {
-        this(null, new Name(name), new Color(color));
+    public Line(String name, String color, int extraFare) {
+        this(null, new Name(name), new Color(color), new Fare(extraFare));
     }
 
-    public Line(Long id, String name, String color) {
-        this(new Id(id), new Name(name), new Color(color));
+    public Line(Long id, String name, String color, int extraFare) {
+        this(new Id(id), new Name(name), new Color(color), new Fare(extraFare));
     }
 
-    public Line(Id id, Name name, Color color) {
+    public Line(Id id, Name name, Color color, Fare extraFare) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
     }
 
     public boolean isDuplicate(Line line) {
@@ -36,6 +39,10 @@ public class Line {
 
     public String getColor() {
         return color.getValue();
+    }
+
+    public int getExtraFare() {
+        return extraFare.getValue();
     }
 
     public boolean isNotEqual(Line line) {

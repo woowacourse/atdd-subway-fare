@@ -32,7 +32,7 @@ import wooteco.subway.station.domain.Station;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class SectionServiceTest {
 
-    private final Line 일호선 = new Line(1L, "1호선", "bg-blue-100");
+    private final Line 일호선 = new Line(1L, "1호선", "bg-blue-100", 0);
     private final Station 신설역 = new Station(1L, "신설역");
     private final Station 동묘역 = new Station(2L, "동묘역");
     private final Station 동대문역 = new Station(3L, "동대문역");
@@ -178,7 +178,7 @@ public class SectionServiceTest {
     @DisplayName("전체 지하철 지도를 위한 노선별 구간값 반환")
     void findSectionResponses() {
         // given
-        Line 이호선 = lineDao.insert(new Line("2호선", "bg-green-100"));
+        Line 이호선 = lineDao.insert(new Line("2호선", "bg-green-100", 0));
         Station 잠실역 = stationDao.insert(new Station("잠실역"));
         Section 동대문역_잠실역_구간 = new Section(이호선, 동대문역, 잠실역, 거리);
         sectionDao.insert(동대문역_잠실역_구간);

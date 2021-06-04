@@ -20,8 +20,9 @@ public class LineDao {
         Long foundId = rs.getLong("id");
         String name = rs.getString("name");
         String color = rs.getString("color");
+        int extraFare = rs.getInt("extra_fare");
 
-        return new Line(foundId, name, color);
+        return new Line(foundId, name, color, extraFare);
     };
 
     public LineDao(JdbcTemplate jdbcTemplate, DataSource source) {
@@ -32,13 +33,14 @@ public class LineDao {
     }
 
     public Line insert(Line line) {
-        Map<String, String> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
         params.put("name", line.getName());
         params.put("color", line.getColor());
+        params.put("extra_fare", line.getExtraFare());
 
         long key = jdbcInsert.executeAndReturnKey(params).longValue();
 
-        return new Line(key, line.getName(), line.getColor());
+        return new Line(key, line.getName(), line.getColor(), line.getExtraFare());
     }
 
     public Line find(Long id) {
@@ -51,12 +53,12 @@ public class LineDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public int update(long id, Line line) {
-        String sql = "UPDATE LINE SET name = ?, color = ? WHERE id = ?";
-        return jdbcTemplate.update(sql, line.getName(), line.getColor(), id);
+    public int update(Long id, Line line) {
+        String sql = "UPDATE LINE SET name = ?, color = ?, extra_fare = ? WHERE id = ?";
+        return jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getExtraFare(), id);
     }
 
-    public int delete(long id) {
+    public int delete(Long id) {
         String sql = "DELETE FROM LINE WHERE id = ?";
         return jdbcTemplate.update(sql, id);
     }

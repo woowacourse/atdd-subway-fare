@@ -43,11 +43,11 @@ public class DataLoader implements CommandLineRunner {
             Station 역삼역 = stationDao.insert(new Station("역삼역"));
             Station 잠실역 = stationDao.insert(new Station("잠실역"));
 
-            Line 신분당선 = lineDao.insert(new Line("신분당선", "red lighten-1"));
+            Line 신분당선 = lineDao.insert(new Line("신분당선", "red lighten-1", 0));
             sectionDao.insert(new Section(신분당선, 강남역, 판교역, 기본거리));
             sectionDao.insert(new Section(신분당선, 판교역, 정자역, 기본거리));
 
-            Line 이호선 = lineDao.insert(new Line("2호선", "green lighten-1"));
+            Line 이호선 = lineDao.insert(new Line("2호선", "green lighten-1", 0));
             sectionDao.insert(new Section(이호선, 강남역, 역삼역, 기본거리));
             sectionDao.insert(new Section(이호선, 역삼역, 잠실역, 기본거리));
 

@@ -32,10 +32,11 @@ public class SectionDao {
         Long downStationId = rs.getLong("down_id");
         String downStationName = rs.getString("down_name");
         int distance = rs.getInt("distance");
+        int extraFare = rs.getInt("extra_fare");
 
         return new Section(
             new Id(sectionId),
-            new Line(lineId, lineName, lineColor),
+            new Line(lineId, lineName, lineColor, extraFare),
             new Station(upStationId, upStationName),
             new Station(downStationId, downStationName),
             new Distance(distance)
@@ -63,7 +64,7 @@ public class SectionDao {
 
     public List<Section> findAllByLineId(Long lineId) {
         String sql =
-            "SELECT s.id AS section_id, LINE.id AS line_id, LINE.name AS line_name, LINE.color AS line_color, "
+            "SELECT s.id AS section_id, LINE.id AS line_id, LINE.name AS line_name, LINE.color AS line_color, LINE.extra_fare AS extra_fare, "
                 + "up_station.id AS up_id, up_station.name AS up_name, "
                 + "down_station.id AS down_id, down_station.name AS down_name, "
                 + "distance "
@@ -78,7 +79,7 @@ public class SectionDao {
     public Optional<Section> findByLineIdAndUpStationId(Long lineId, Long upStationId) {
         try {
             String sql =
-                "SELECT s.id AS section_id, LINE.id AS line_id, LINE.name AS line_name, LINE.color AS line_color, "
+                "SELECT s.id AS section_id, LINE.id AS line_id, LINE.name AS line_name, LINE.color AS line_color, LINE.extra_fare AS extra_fare, "
                     + "up_station.id AS up_id, up_station.name AS up_name, "
                     + "down_station.id AS down_id, down_station.name AS down_name, "
                     + "distance "
@@ -98,7 +99,7 @@ public class SectionDao {
     public Optional<Section> findByLineIdAndDownStationId(Long lineId, Long downStationId) {
         try {
             String sql =
-                "SELECT s.id AS section_id, LINE.id AS line_id, LINE.name AS line_name, LINE.color AS line_color, "
+                "SELECT s.id AS section_id, LINE.id AS line_id, LINE.name AS line_name, LINE.color AS line_color, LINE.extra_fare AS extra_fare, "
                     + "up_station.id AS up_id, up_station.name AS up_name, "
                     + "down_station.id AS down_id, down_station.name AS down_name, "
                     + "distance "
@@ -132,7 +133,7 @@ public class SectionDao {
 
     public List<Section> findAll() {
         String sql = "SELECT s.id AS section_id, "
-            + "LINE.id AS line_id, LINE.name AS line_name, LINE.color AS line_color, "
+            + "LINE.id AS line_id, LINE.name AS line_name, LINE.color AS line_color, LINE.extra_fare AS extra_fare, "
             + "up_station.id AS up_id, "
             + "up_station.name AS up_name, "
             + "down_station.id AS down_id, "
@@ -146,7 +147,7 @@ public class SectionDao {
     }
 
     public List<Line> findIncludeStationLine(Long stationId) {
-        String sql = "SELECT DISTINCT LINE.id, LINE.name, LINE.color "
+        String sql = "SELECT DISTINCT LINE.id, LINE.name, LINE.color, LINE.extra_fare "
             + "FROM LINE JOIN SECTION ON LINE.id = SECTION.line_id "
             + "WHERE SECTION.up_station_id = ? OR SECTION.down_station_id = ?";
 
@@ -154,7 +155,8 @@ public class SectionDao {
             (rs, rowNum) -> new Line(
                 rs.getLong("id"),
                 rs.getString("name"),
-                rs.getString("color")),
-            stationId, stationId);
+                rs.getString("color"),
+                rs.getInt("extra_fare")
+            ), stationId, stationId);
     }
 }

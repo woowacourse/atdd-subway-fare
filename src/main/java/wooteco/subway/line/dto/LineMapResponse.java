@@ -10,16 +10,18 @@ public class LineMapResponse {
     private String name;
     private String color;
     private int distance;
+    private int extraFare;
     private List<SectionResponse> sections;
 
     public LineMapResponse() {
     }
 
-    public LineMapResponse(Long id, String name, String color, int distance, List<SectionResponse> sections) {
+    public LineMapResponse(Long id, String name, String color, int distance, int extraFare, List<SectionResponse> sections) {
         this.id = id;
         this.name = name;
         this.color = color;
         this.distance = distance;
+        this.extraFare = extraFare;
         this.sections = sections;
     }
 
@@ -28,7 +30,7 @@ public class LineMapResponse {
             .mapToInt(SectionResponse::getDistanceToNextStation)
             .sum();
 
-        return new LineMapResponse(line.getId(), line.getName(), line.getColor(), totalDistance, sectionResponses);
+        return new LineMapResponse(line.getId(), line.getName(), line.getColor(), totalDistance, line.getExtraFare(), sectionResponses);
     }
 
     public Long getId() {
@@ -45,6 +47,10 @@ public class LineMapResponse {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 
     public List<SectionResponse> getSections() {
