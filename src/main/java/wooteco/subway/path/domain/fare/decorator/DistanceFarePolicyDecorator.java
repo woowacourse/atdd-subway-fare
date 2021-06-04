@@ -13,7 +13,7 @@ public class DistanceFarePolicyDecorator extends FarePolicyDecorator {
     private static final int FIRST_ADDITIONAL_FARE_UNIT_DISTANCE = 5;
     private static final int SECOND_ADDITIONAL_FARE_UNIT_DISTANCE = 8;
 
-    int distance;
+    private final int distance;
 
     public DistanceFarePolicyDecorator(int distance, FarePolicy farePolicy) {
         super(farePolicy);

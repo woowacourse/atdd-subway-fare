@@ -8,7 +8,7 @@ import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
 
 public class AgeFarePolicyDecorator extends FarePolicyDecorator {
-    private int age;
+    private final int age;
 
     public AgeFarePolicyDecorator(int age, FarePolicy farePolicy) {
         super(farePolicy);

@@ -3,7 +3,7 @@ package wooteco.subway.path.domain.fare.decorator;
 import wooteco.subway.path.domain.fare.FarePolicy;
 
 public class ExtraFarePolicyDecorator extends FarePolicyDecorator {
-    int extraFare;
+   private final int extraFare;
 
     public ExtraFarePolicyDecorator(int extraFare, FarePolicy farePolicy) {
         super(farePolicy);
