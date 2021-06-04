@@ -33,14 +33,14 @@ public class LoginMember {
     }
 
     public boolean isAdult() {
-        return this.age >= ADULT.getValue();
+        return ADULT.getValue() <= age;
     }
 
     public boolean isTeenager() {
-        return this.age >= TEENAGER.getValue();
+        return TEENAGER.getValue() <= age && age < ADULT.getValue();
     }
 
     public boolean isChild() {
-        return this.age >= CHILD.getValue();
+        return CHILD.getValue() <= age && age < TEENAGER.getValue();
     }
 }
