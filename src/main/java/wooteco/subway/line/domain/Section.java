@@ -48,26 +48,24 @@ public class Section {
         this.distance = builder.distance;
     }
 
-//    private Section()
-//
-//    public Section(Long id, Station upStation, Station downStation, int distance) {
-//        this.id = id;
-//        this.upStation = upStation;
-//        this.downStation = downStation;
-//        this.distance = distance;
-//    }
-//
-//    public Section(Station upStation, Station downStation, int distance) {
-//        validate(upStation, downStation);
-//        this.upStation = upStation;
-//        this.downStation = downStation;
-//        this.distance = distance;
-//    }
-
     private static void validate(Station upStation, Station downStation) {
         if (upStation.hasEqualIdWith(downStation)) {
             throw new InvalidSectionRequestException("상행역과 하행역은 같을 수 없습니다.");
         }
+    }
+
+    public Section replaceSectionWithUpStation(Section newSection) {
+        return new Builder(id, distance - newSection.distance)
+                .upStation(upStation)
+                .downStation(newSection.upStation)
+                .build();
+    }
+
+    public Section replaceSectionWithDownStation(Section newSection) {
+        return new Builder(id, distance - newSection.distance)
+                .upStation(newSection.downStation)
+                .downStation(downStation)
+                .build();
     }
 
     public Long getId() {
