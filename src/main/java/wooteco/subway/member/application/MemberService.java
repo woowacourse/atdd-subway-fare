@@ -47,11 +47,8 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public void checkMemberNotExist(String email) {
-        try {
-            memberDao.findByEmail(email);
+        if(memberDao.isExistByEmail(email)){
             throw DUPLICATED_ID.makeException();
-        } catch (DataAccessException e) {
-            return;
         }
     }
 }

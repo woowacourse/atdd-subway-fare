@@ -124,4 +124,14 @@ public class LineDao {
     public int deleteById(Long id) {
         return jdbcTemplate.update("delete from LINE where id = ?", id);
     }
+
+    public boolean isExistByLineName(String name) {
+        String sql = "select count(*) from LINE where name = ?";
+        return jdbcTemplate.queryForObject(sql, Integer.class, name) == 1;
+    }
+
+    public boolean isExistByLineId(Long id) {
+        String sql = "select count(*) from LINE where id = ?";
+        return jdbcTemplate.queryForObject(sql, Integer.class, id) == 1;
+    }
 }

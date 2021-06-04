@@ -27,21 +27,16 @@ public class StationService {
 
     @Transactional
     public StationResponse saveStation(StationRequest stationRequest) {
-        try {
-            Station station = stationDao.insert(stationRequest.toStation());
-            return StationResponse.of(station);
-        } catch (DataAccessException e) {
+        if(stationDao.isExistByName(stationRequest.getName())) {
             throw DUPLICATED_STATION_NAME.makeException();
         }
+        Station station = stationDao.insert(stationRequest.toStation());
+        return StationResponse.of(station);
     }
 
     @Transactional(readOnly = true)
     public Station findStationById(Long id) {
-        try {
-            return stationDao.findById(id);
-        } catch (DataAccessException e) {
-            throw NO_SUCH_STATION.makeException();
-        }
+        return stationDao.findById(id).orElseThrow(NO_SUCH_STATION::makeException);
     }
 
     @Transactional(readOnly = true)

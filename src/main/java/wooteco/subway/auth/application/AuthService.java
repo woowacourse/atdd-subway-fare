@@ -25,14 +25,13 @@ public class AuthService {
     }
 
     public TokenResponse login(TokenRequest request) {
-        try {
+        if (memberDao.isExistByEmail(request.getEmail())) {
             Member member = memberDao.findByEmail(request.getEmail());
             member.checkPassword(request.getPassword());
-        } catch (Exception e) {
-            throw MISMATCH_ID_PASSWORD.makeException();
+            String token = jwtTokenProvider.createToken(request.getEmail());
+            return new TokenResponse(token);
         }
-        String token = jwtTokenProvider.createToken(request.getEmail());
-        return new TokenResponse(token);
+        throw MISMATCH_ID_PASSWORD.makeException();
     }
 
     public LoginMember findLoginMemberByToken(String credentials) {
@@ -41,11 +40,10 @@ public class AuthService {
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
-        try {
+        if (memberDao.isExistByEmail(email)) {
             Member member = memberDao.findByEmail(email);
             return new LoginMember(member.getId(), member.getEmail(), member.getAge());
-        } catch (Exception e) {
-            throw new AuthorizationException();
         }
+        throw new AuthorizationException();
     }
 }

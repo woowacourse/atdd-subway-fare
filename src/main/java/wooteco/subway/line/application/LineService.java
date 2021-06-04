@@ -6,7 +6,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,13 +37,12 @@ public class LineService {
 
     @Transactional
     public LineResponse saveLine(LineRequest request) {
-        try {
-            Line persistLine = lineDao.insert(new Line(request));
-            persistLine.addSection(addInitSection(persistLine, request));
-            return LineResponse.of(persistLine);
-        } catch (DataAccessException e) {
+        if (lineDao.isExistByLineName(request.getName())) {
             throw DUPLICATED_LINE_NAME.makeException();
         }
+        Line persistLine = lineDao.insert(new Line(request));
+        persistLine.addSection(addInitSection(persistLine, request));
+        return LineResponse.of(persistLine);
     }
 
     private Section addInitSection(Line line, LineRequest request) {
@@ -74,11 +72,10 @@ public class LineService {
 
     @Transactional(readOnly = true)
     public Line findLineById(Long id) {
-        try {
+        if (lineDao.isExistByLineId(id)) {
             return lineDao.findById(id);
-        } catch (Exception e) {
-            throw NO_SUCH_LINE.makeException();
         }
+        throw NO_SUCH_LINE.makeException();
     }
 
     @Transactional

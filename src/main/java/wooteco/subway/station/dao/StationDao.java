@@ -1,6 +1,7 @@
 package wooteco.subway.station.dao;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.sql.DataSource;
 
@@ -47,8 +48,14 @@ public class StationDao {
         return jdbcTemplate.update(sql, id);
     }
 
-    public Station findById(Long id) {
+    public Optional<Station> findById(Long id) {
         String sql = "select * from STATION where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        List<Station> matchStation = jdbcTemplate.query(sql, (rs, rowNum) -> new Station(rs.getLong("id"), rs.getString("name")), id);
+        return matchStation.stream().findAny();
+    }
+
+    public boolean isExistByName(String name) {
+        String sql = "select count(*) from STATION where name = ?";
+        return jdbcTemplate.queryForObject(sql, Integer.class, name) == 1;
     }
 }
