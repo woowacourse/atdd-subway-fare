@@ -43,4 +43,8 @@ public class LoginMember {
     public boolean isChild() {
         return CHILD.getValue() <= age && age < TEENAGER.getValue();
     }
+
+    public boolean isGuest() {
+        return id == null;
+    }
 }

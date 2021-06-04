@@ -5,12 +5,8 @@ import wooteco.subway.member.domain.LoginMember;
 
 public class FarePolicyFactory {
 
-    public static FarePolicy defaultPolicy() {
-        return new AdultFarePolicy();
-    }
-
     public static FarePolicy findPolicy(LoginMember member) {
-        if (member.isAdult()) {
+        if (member.isGuest() || member.isAdult()) {
             return new AdultFarePolicy();
         }
 
