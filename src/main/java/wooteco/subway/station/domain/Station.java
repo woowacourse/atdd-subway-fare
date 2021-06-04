@@ -18,6 +18,10 @@ public class Station {
         this.name = name;
     }
 
+    public boolean same(Station station) {
+        return this.equals(station);
+    }
+
     public Long getId() {
         return id;
     }

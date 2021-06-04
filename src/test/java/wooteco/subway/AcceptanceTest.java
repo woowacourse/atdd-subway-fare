@@ -11,6 +11,11 @@ import org.springframework.test.context.ActiveProfiles;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @ActiveProfiles("test")
 public class AcceptanceTest {
+
+    protected static final String EMAIL = "email@email.com";
+    protected static final String PASSWORD = "password";
+    protected static final Integer AGE = 20;
+
     @LocalServerPort
     int port;
 

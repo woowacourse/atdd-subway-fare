@@ -16,9 +16,9 @@ import java.util.List;
 @Service
 @Transactional
 public class PathService {
-    private LineService lineService;
-    private StationService stationService;
-    private PathFinder pathFinder;
+    private final LineService lineService;
+    private final StationService stationService;
+    private final PathFinder pathFinder;
 
     public PathService(LineService lineService, StationService stationService, PathFinder pathFinder) {
         this.lineService = lineService;
@@ -26,16 +26,16 @@ public class PathService {
         this.pathFinder = pathFinder;
     }
 
-    public PathResponse findPath(Long source, Long target) {
+    public PathResponse findPath(Long departure, Long arrival, LoginMember loginMember) {
         try {
             List<Line> lines = lineService.findLines();
-            Station sourceStation = stationService.findStationById(source);
-            Station targetStation = stationService.findStationById(target);
-            SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
+            Station departureStation = stationService.findStationById(departure);
+            Station arrivalStation = stationService.findStationById(arrival);
+            SubwayPath subwayPath = pathFinder.findPath(lines, departureStation, arrivalStation);
 
-            return PathResponseAssembler.assemble(subwayPath);
+            return PathResponseAssembler.assemble(subwayPath, loginMember);
         } catch (Exception e) {
-            throw new InvalidPathException();
+            throw new InvalidPathException(e.getMessage());
         }
     }
 }

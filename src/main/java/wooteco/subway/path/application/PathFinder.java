@@ -14,21 +14,19 @@ import java.util.stream.Collectors;
 
 @Service
 public class PathFinder {
-    public SubwayPath findPath(List<Line> lines, Station source, Station target) {
-        if (source.equals(target)) {
-            throw new InvalidPathException();
+    public SubwayPath findPath(List<Line> lines, Station departure, Station arrival) {
+        if (departure.equals(arrival)) {
+            throw new InvalidPathException("출발역과 도착역은 같을 수 없습니다!");
         }
         SubwayGraph graph = new SubwayGraph(SectionEdge.class);
         graph.addVertexWith(lines);
         graph.addEdge(lines);
 
-        // 다익스트라 최단 경로 찾기
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        GraphPath<Station, SectionEdge> path = dijkstraShortestPath.getPath(source, target);
+        GraphPath<Station, SectionEdge> path = dijkstraShortestPath.getPath(departure, arrival);
         if (path == null) {
-            throw new InvalidPathException();
+            throw new InvalidPathException("연결되어 있지 않은 경로입니다.");
         }
-
         return convertSubwayPath(path);
     }
 
