@@ -10,40 +10,10 @@ public class Section {
     private Station downStation;
     private int distance;
 
-    public static class Builder {
-        private Long id;
-        private Station upStation;
-        private Station downStation;
-        private final int distance;
-
-        public Builder(Long id, int distance) {
-            this.id = id;
-            this.distance = distance;
-        }
-
-        public Builder(int distance) {
-            this.distance = distance;
-        }
-
-        public Builder upStation(Station upStation) {
-            this.upStation = upStation;
-            return this;
-        }
-
-        public Builder downStation(Station downStation) {
-            this.downStation = downStation;
-            return this;
-        }
-
-        public Section build() {
-            validate(this.upStation, this.downStation);
-            return new Section(this);
-        }
-    }
-
     private Section(Builder builder) {
         this.id = builder.id;
-        this.upStation = builder.upStation;;
+        this.upStation = builder.upStation;
+        ;
         this.downStation = builder.downStation;
         this.distance = builder.distance;
     }
@@ -82,5 +52,36 @@ public class Section {
 
     public int getDistance() {
         return distance;
+    }
+
+    public static class Builder {
+        private final int distance;
+        private Long id;
+        private Station upStation;
+        private Station downStation;
+
+        public Builder(Long id, int distance) {
+            this.id = id;
+            this.distance = distance;
+        }
+
+        public Builder(int distance) {
+            this.distance = distance;
+        }
+
+        public Builder upStation(Station upStation) {
+            this.upStation = upStation;
+            return this;
+        }
+
+        public Builder downStation(Station downStation) {
+            this.downStation = downStation;
+            return this;
+        }
+
+        public Section build() {
+            validate(this.upStation, this.downStation);
+            return new Section(this);
+        }
     }
 }

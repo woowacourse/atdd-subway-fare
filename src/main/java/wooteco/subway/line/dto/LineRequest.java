@@ -1,11 +1,8 @@
 package wooteco.subway.line.dto;
 
-import net.bytebuddy.implementation.bind.annotation.Default;
 import org.hibernate.validator.constraints.Length;
 import wooteco.subway.line.domain.Line;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 public class LineRequest {
