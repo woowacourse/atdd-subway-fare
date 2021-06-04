@@ -85,7 +85,7 @@ class MemberServiceTest {
     void updateMember() {
         final Member member = new Member(1L, EMAIL, AGE);
         final MemberRequest memberRequest = new MemberRequest(EMAIL, PASSWORD, AGE);
-        given(memberDao.isExistByEmail(EMAIL)).willReturn(true);
+        given(memberDao.isNotExistByEmail(EMAIL)).willReturn(false);
         given(memberDao.findByEmail(EMAIL)).willReturn(new Member(1L, EMAIL, PASSWORD, AGE));
 
         assertThatCode(() -> memberService.updateMember(member, memberRequest))
@@ -97,7 +97,7 @@ class MemberServiceTest {
     void updateMemberWithInvalidEmail() {
         final Member member = new Member(1L, EMAIL + "!!!!!@  @@@", AGE);
         final MemberRequest memberRequest = new MemberRequest(EMAIL + "!!!!!@  @@@", PASSWORD, AGE);
-        given(memberDao.isExistByEmail(EMAIL + "!!!!!@  @@@")).willReturn(false);
+        given(memberDao.isNotExistByEmail(EMAIL + "!!!!!@  @@@")).willReturn(true);
 
         assertThatThrownBy(() -> memberService.updateMember(member, memberRequest))
                 .isInstanceOf(MemberNotFoundException.class);
@@ -107,7 +107,7 @@ class MemberServiceTest {
     @DisplayName("이메일로 회원 정보를 삭제한다.")
     void deleteMember() {
         final Member member = new Member(1L, EMAIL, AGE);
-        given(memberDao.isExistByEmail(EMAIL)).willReturn(true);
+        given(memberDao.isNotExistByEmail(EMAIL)).willReturn(false);
         assertThatCode(() -> memberService.deleteMember(member))
                 .doesNotThrowAnyException();
     }
@@ -116,7 +116,7 @@ class MemberServiceTest {
     @DisplayName("유효하지 않은 이메일로 회원 정보를 삭제할 경우 예외를 던진다.")
     void deleteMemberWithInvalidEmail() {
         final Member member = new Member(1L, EMAIL + "!!!!!@  @@@", AGE);
-        given(memberDao.isExistByEmail(EMAIL + "!!!!!@  @@@")).willReturn(false);
+        given(memberDao.isNotExistByEmail(EMAIL + "!!!!!@  @@@")).willReturn(true);
 
         assertThatThrownBy(() -> memberService.deleteMember(member))
                 .isInstanceOf(MemberNotFoundException.class);

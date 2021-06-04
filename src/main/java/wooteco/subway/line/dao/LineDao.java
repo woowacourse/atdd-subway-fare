@@ -127,4 +127,9 @@ public class LineDao {
         String sql = "select exists (select * from LINE where id = ?)";
         return jdbcTemplate.queryForObject(sql, Boolean.class, id);
     }
+
+    public boolean isNotExistById(Long id) {
+        String sql = "select exists (select * from LINE where id = ?)";
+        return !jdbcTemplate.queryForObject(sql, Boolean.class, id);
+    }
 }

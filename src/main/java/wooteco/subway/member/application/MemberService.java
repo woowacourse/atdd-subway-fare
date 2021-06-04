@@ -40,11 +40,11 @@ public class MemberService {
 
     @Transactional
     public void updateMember(User user, MemberRequest memberRequest) {
-        if (!memberDao.isExistByEmail(user.getEmail())) {
+        if (memberDao.isNotExistByEmail(user.getEmail())) {
             throw new MemberNotFoundException("회원을 찾을 수 없습니다.");
         }
         final Member member = memberDao.findByEmail(user.getEmail());
-        if (!member.checkSameUserByEmail(memberRequest.getEmail())) {
+        if (member.checkDifferentUserByEmail(memberRequest.getEmail())) {
             throw new MemberModifyNotAllowedException("이메일은 수정할 수 없습니다.");
         }
         final Member updateMember = member.update(memberRequest.getEmail(),
@@ -53,7 +53,7 @@ public class MemberService {
     }
 
     public void deleteMember(User user) {
-        if (!memberDao.isExistByEmail(user.getEmail())) {
+        if (memberDao.isNotExistByEmail(user.getEmail())) {
             throw new MemberNotFoundException(user.getEmail());
         }
         memberDao.deleteByEmail(user.getEmail());

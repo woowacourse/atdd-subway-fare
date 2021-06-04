@@ -64,6 +64,11 @@ public class StationDao {
         return jdbcTemplate.queryForObject(sql, Boolean.class, id);
     }
 
+    public boolean isNotExistById(Long id) {
+        String sql = "select EXISTS (select * from STATION where id = ?)";
+        return !jdbcTemplate.queryForObject(sql, Boolean.class, id);
+    }
+
     public List<StationWithTransferResponse> findAllStationWithTransfer() {
         String sql = "select S.id AS station_id, S.name AS station_name, L.id AS line_id, L.name AS line_name " +
                 "FROM STATION AS S " +

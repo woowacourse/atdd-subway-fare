@@ -63,7 +63,7 @@ public class Member implements User {
         }
     }
 
-    public boolean checkSameUserByEmail(String email) {
-        return this.email.equals(email);
+    public boolean checkDifferentUserByEmail(String email) {
+        return !this.email.equals(email);
     }
 }

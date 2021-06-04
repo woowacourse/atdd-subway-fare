@@ -74,14 +74,14 @@ public class LineService {
     }
 
     private Line findLineById(Long id) {
-        if (!lineDao.isExistById(id)) {
+        if (lineDao.isNotExistById(id)) {
             throw new LineNotFoundException(String.valueOf(id));
         }
         return lineDao.findById(id);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        if (!lineDao.isExistById(id)) {
+        if (lineDao.isNotExistById(id)) {
             throw new LineNotFoundException(String.valueOf(id));
         }
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
@@ -89,7 +89,7 @@ public class LineService {
 
     @Transactional
     public void deleteLineById(Long id) {
-        if (!lineDao.isExistById(id)) {
+        if (lineDao.isNotExistById(id)) {
             throw new LineNotFoundException(String.valueOf(id));
         }
         lineDao.deleteById(id);

@@ -102,7 +102,7 @@ class LineServiceTest {
     @Test
     @DisplayName("존재하는 아이디의 노선을 가져올 수 있다.")
     void findLineResponseById() {
-        given(lineDao.isExistById(1L)).willReturn(true);
+        given(lineDao.isNotExistById(1L)).willReturn(false);
         given(lineDao.findById(1L)).willReturn(new Line(1L, NAME, COLOR, EXTRA_FARE));
 
         final LineResponse lineResponse = lineService.findLineResponseById(1L);
@@ -114,7 +114,7 @@ class LineServiceTest {
     @Test
     @DisplayName("존재하지 않는 아이디의 노선을 가져올 수 없다.")
     void findLineResponseByInvalidId() {
-        given(lineDao.isExistById(1L)).willReturn(false);
+        given(lineDao.isNotExistById(1L)).willReturn(true);
         assertThatThrownBy(() -> lineService.findLineResponseById(1L))
                 .isInstanceOf(LineNotFoundException.class);
     }
@@ -125,7 +125,7 @@ class LineServiceTest {
     void updateLineWithInvalidId() {
         final LineRequest lineRequest = new LineRequest(NAME, COLOR, UP_STATION_ID,
                 DOWN_STATION_ID, DISTANCE, EXTRA_FARE);
-        given(lineDao.isExistById(1L)).willReturn(false);
+        given(lineDao.isNotExistById(1L)).willReturn(true);
         assertThatThrownBy(() -> lineService.updateLine(1L, lineRequest))
                 .isInstanceOf(LineNotFoundException.class);
     }
@@ -133,7 +133,7 @@ class LineServiceTest {
     @Test
     @DisplayName("존재하지 않는 아이디의 노선을 삭제할 수 없다.")
     void deleteLineByInvalidId() {
-        given(lineDao.isExistById(1L)).willReturn(false);
+        given(lineDao.isNotExistById(1L)).willReturn(true);
         assertThatThrownBy(() -> lineService.deleteLineById(1L))
                 .isInstanceOf(LineNotFoundException.class);
     }

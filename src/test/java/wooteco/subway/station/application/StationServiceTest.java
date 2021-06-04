@@ -61,7 +61,7 @@ class StationServiceTest {
     @Test
     @DisplayName("Id로 역을 조회한다.")
     void findStationById() {
-        given(stationDao.isExistById(1L)).willReturn(true);
+        given(stationDao.isNotExistById(1L)).willReturn(false);
         given(stationDao.findById(1L)).willReturn(new Station(1L, NAME));
 
         final Station station = stationService.findStationById(1L);
@@ -72,7 +72,7 @@ class StationServiceTest {
     @Test
     @DisplayName("존재하지 않는 Id로 역 조회 시 예외를 던진다.")
     void findStationByInvalidId() {
-        given(stationDao.isExistById(100L)).willReturn(false);
+        given(stationDao.isNotExistById(100L)).willReturn(true);
 
         assertThatThrownBy(() -> stationService.findStationById(100L)).
                 isInstanceOf(StationNotFoundException.class);
