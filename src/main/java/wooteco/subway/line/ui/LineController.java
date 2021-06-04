@@ -2,10 +2,12 @@ package wooteco.subway.line.ui;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import wooteco.subway.dto.ErrorResponse;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.line.exception.SectionRelatedException;
 
 import java.net.URI;
 import java.sql.SQLException;
@@ -16,7 +18,7 @@ import java.util.List;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class LineController {
 
-    private LineService lineService;
+    private final LineService lineService;
 
     public LineController(LineService lineService) {
         this.lineService = lineService;
@@ -65,5 +67,10 @@ public class LineController {
     @ExceptionHandler(SQLException.class)
     public ResponseEntity handleSQLException() {
         return ResponseEntity.badRequest().build();
+    }
+
+    @ExceptionHandler(SectionRelatedException.class)
+    public ResponseEntity sectionException(Exception e) {
+        return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
     }
 }

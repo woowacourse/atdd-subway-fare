@@ -29,11 +29,17 @@ dependencies {
 
 	runtimeOnly 'com.h2database:h2'
 
+	implementation 'mysql:mysql-connector-java:8.0.22'
+
 	// jgrapht
     implementation 'org.jgrapht:jgrapht-core:1.0.1'
 
 	// jwt
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
+	implementation 'javax.xml.bind:jaxb-api:2.1'
+
+	implementation 'org.springframework.boot:spring-boot-starter-validation:2.3.3.RELEASE'
 }
 
 test {

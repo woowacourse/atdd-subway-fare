@@ -9,6 +9,7 @@ public class Line {
     private String name;
     private String color;
     private Sections sections = new Sections();
+    private Integer extraFare;
 
     public Line() {
     }
@@ -18,10 +19,23 @@ public class Line {
         this.color = color;
     }
 
+    public Line(String name, String color, Integer extraFare) {
+        this.name = name;
+        this.color = color;
+        this.extraFare = extraFare;
+    }
+
     public Line(Long id, String name, String color) {
         this.id = id;
         this.name = name;
         this.color = color;
+    }
+
+    public Line(Long id, String name, String color, Integer extraFare) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
+        this.extraFare = extraFare;
     }
 
     public Line(Long id, String name, String color, Sections sections) {
@@ -31,20 +45,12 @@ public class Line {
         this.sections = sections;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public Sections getSections() {
-        return sections;
+    public Line(Long id, String name, String color, Sections sections, Integer extraFare) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
+        this.sections = sections;
+        this.extraFare = extraFare;
     }
 
     public void update(Line line) {
@@ -70,5 +76,28 @@ public class Line {
 
     public List<Station> getStations() {
         return sections.getStations();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public Sections getSections() {
+        return sections;
+    }
+
+    public Integer getExtraFare() {
+        if (extraFare == null) {
+             return 0;
+        }
+        return extraFare;
     }
 }
