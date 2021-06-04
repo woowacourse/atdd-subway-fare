@@ -23,15 +23,16 @@ public class PathService {
     private PathFinder pathFinder;
     private FareCalculator fareCalculator;
 
-
     public PathService(
         LineService lineService,
         StationService stationService,
+        MemberService memberService,
         PathFinder pathFinder,
         FareCalculator fareCalculator
     ) {
         this.lineService = lineService;
         this.stationService = stationService;
+        this.memberService = memberService;
         this.pathFinder = pathFinder;
         this.fareCalculator = fareCalculator;
     }
