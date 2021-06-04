@@ -1,6 +1,10 @@
 package wooteco.subway.line.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.line.domain.Line;
@@ -16,24 +20,22 @@ import java.util.stream.Collectors;
 
 @Repository
 public class LineDao {
-    private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcInsert insertAction;
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert insertAction;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    public LineDao(JdbcTemplate jdbcTemplate) {
+    public LineDao(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("LINE")
                 .usingGeneratedKeyColumns("id");
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
     public Line insert(Line line) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("name", line.getName());
-        params.put("color", line.getColor());
-        params.put("extra_fare", line.getExtraFare());
-
-        Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new Line(lineId, line.getName(), line.getColor(), line.getExtraFare());
+        SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(line);
+        Long lineId = insertAction.executeAndReturnKey(parameterSource).longValue();
+        return findById(lineId);
     }
 
     public Line findById(Long id) {
@@ -45,10 +47,11 @@ public class LineDao {
                 "left outer join SECTION S on L.id = S.line_id " +
                 "left outer join STATION UST on S.up_station_id = UST.id " +
                 "left outer join STATION DST on S.down_station_id = DST.id " +
-                "WHERE L.id = ?";
+                "WHERE L.id = :line_id";
 
-        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, new Object[]{id});
-        return mapLine(result);
+        SqlParameterSource namedParameters = new MapSqlParameterSource("line_id", id);
+        final List<Map<String, Object>> results = namedParameterJdbcTemplate.queryForList(sql, namedParameters);
+        return mapLine(results);
     }
 
     public void update(Line newLine) {
@@ -110,17 +113,17 @@ public class LineDao {
     }
 
     public boolean isExistByName(String name) {
-        String sql = "select EXISTS (select * from LINE where name = ?)";
+        String sql = "select exists (select * from LINE where name = ?)";
         return jdbcTemplate.queryForObject(sql, Boolean.class, name);
     }
 
     public boolean isExistByColor(String color) {
-        String sql = "select EXISTS (select * from LINE where color = ?)";
+        String sql = "select exists (select * from LINE where color = ?)";
         return jdbcTemplate.queryForObject(sql, Boolean.class, color);
     }
 
     public boolean isExistById(Long id) {
-        String sql = "select EXISTS (select * from LINE where id = ?)";
+        String sql = "select exists (select * from LINE where id = ?)";
         return jdbcTemplate.queryForObject(sql, Boolean.class, id);
     }
 }

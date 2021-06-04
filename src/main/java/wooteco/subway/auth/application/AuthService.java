@@ -35,7 +35,7 @@ public class AuthService {
     public Member findMemberByToken(String credentials) {
         String email = jwtTokenProvider.getPayload(credentials);
         if (!memberDao.isExistByEmail(email)) {
-            throw new AuthorizationException("유효하지 않은 토큰입니다.");
+            throw new AuthorizationException("유효하지 않은 이메일입니다.");
         }
         return memberDao.findByEmail(email);
     }
