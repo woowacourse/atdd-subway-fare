@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
@@ -13,7 +14,6 @@ import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 
 import javax.sql.DataSource;
-
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
@@ -26,6 +26,8 @@ class SectionDaoTest {
     JdbcTemplate jdbcTemplate;
     @Autowired
     DataSource dataSource;
+    @Autowired
+    NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     private SectionDao sectionDao;
     private StationDao stationDao;
@@ -39,7 +41,7 @@ class SectionDaoTest {
     @BeforeEach
     void setUp() {
         sectionDao = new SectionDao(jdbcTemplate, dataSource);
-        stationDao = new StationDao(jdbcTemplate, dataSource);
+        stationDao = new StationDao(namedParameterJdbcTemplate, dataSource);
         lineDao = new LineDao(jdbcTemplate, dataSource);
 
         테스트역1 = stationDao.insert(new Station("테스트역1"));

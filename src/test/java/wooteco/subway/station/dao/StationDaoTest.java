@@ -5,7 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import wooteco.subway.station.domain.Station;
 
@@ -22,7 +22,8 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFOR
 class StationDaoTest {
 
     @Autowired
-    JdbcTemplate jdbcTemplate;
+    NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
     @Autowired
     DataSource dataSource;
 
@@ -30,7 +31,7 @@ class StationDaoTest {
 
     @BeforeEach
     void setUp() {
-        stationDao = new StationDao(jdbcTemplate, dataSource);
+        stationDao = new StationDao(namedParameterJdbcTemplate, dataSource);
     }
 
     @Test
@@ -71,7 +72,7 @@ class StationDaoTest {
     void findById() {
         final Station 테스트역 = stationDao.insert(new Station("테스트역"));
         final Optional<Station> stationById = stationDao.findById(테스트역.getId());
-        
+
         assertThat(stationById.get().getName()).isEqualTo("테스트역");
         assertThat(stationById.get().getId()).isEqualTo(1L);
     }

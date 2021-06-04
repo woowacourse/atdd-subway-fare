@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
@@ -30,6 +31,8 @@ class LineDaoTest {
     JdbcTemplate jdbcTemplate;
     @Autowired
     DataSource dataSource;
+    @Autowired
+    NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     private LineDao lineDao;
     private StationDao stationDao;
@@ -38,7 +41,7 @@ class LineDaoTest {
     @BeforeEach
     void setUp() {
         lineDao = new LineDao(jdbcTemplate, dataSource);
-        stationDao = new StationDao(jdbcTemplate, dataSource);
+        stationDao = new StationDao(namedParameterJdbcTemplate, dataSource);
         sectionDao = new SectionDao(jdbcTemplate, dataSource);
     }
 
