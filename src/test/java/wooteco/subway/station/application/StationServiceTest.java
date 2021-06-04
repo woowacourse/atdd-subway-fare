@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import wooteco.subway.line.application.LineService;
+import wooteco.subway.line.dto.LineRequest;
+import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
@@ -25,6 +28,9 @@ class StationServiceTest {
 
     @Autowired
     private StationService stationService;
+
+    @Autowired
+    private LineService lineService;
 
     @Test
     @DisplayName("StationRequest를 넘겨받으면, 저장 후 StationResponse를 반환한다.")
@@ -64,15 +70,17 @@ class StationServiceTest {
     }
 
     @Test
-    @DisplayName("현재 DB에 등록된 모든 Station에 대해 StationWithTransferResponse를 반환한다.")
+    @DisplayName("DB에 등록되어 있는 Station 중에 노선에 등록된 역이라면, StationWithTransferResponse를 반환한다.")
     void findAllStationWithTransferInfoResponses() {
         List<StationWithTransferResponse> allStationResponses = stationService.findAllStationWithTransferInfoResponses();
         assertThat(allStationResponses.size()).isEqualTo(0);
 
-        stationService.saveStation(new StationRequest("테스트역"));
+        StationResponse 테스트역1 = stationService.saveStation(new StationRequest("테스트역1"));
+        StationResponse 테스트역2 = stationService.saveStation(new StationRequest("테스트역2"));
+        LineResponse 노선 = lineService.saveLine(new LineRequest("노선명", "노선색", 1L, 2L, 100));
 
-        allStationResponses = stationService.findAllStationWithTransferInfoResponses();
-        assertThat(allStationResponses.size()).isEqualTo(1);
+        List<StationWithTransferResponse> StationResponses = stationService.findAllStationWithTransferInfoResponses();
+        assertThat(StationResponses.size()).isEqualTo(2);
     }
 
     @Test
