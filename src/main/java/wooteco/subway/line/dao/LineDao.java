@@ -12,8 +12,8 @@ import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.domain.Sections;
 import wooteco.subway.station.domain.Station;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -55,8 +55,8 @@ public class LineDao {
     }
 
     public void update(Line newLine) {
-        String sql = "update LINE set name = ?, color = ?, extra_fare = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getExtraFare(), newLine.getId()});
+        String sql = "update LINE set name = :name, color = :color, extra_fare = :extraFare where id = :id";
+        namedParameterJdbcTemplate.update(sql, new BeanPropertySqlParameterSource(newLine));
     }
 
     public List<Line> findAll() {
@@ -93,18 +93,19 @@ public class LineDao {
 
     private List<Section> extractSections(List<Map<String, Object>> result) {
         if (result.isEmpty() || result.get(0).get("SECTION_ID") == null) {
-            return Collections.EMPTY_LIST;
+            return new ArrayList<>();
         }
         return result.stream()
                 .collect(Collectors.groupingBy(it -> it.get("SECTION_ID")))
                 .entrySet()
                 .stream()
                 .map(it ->
-                        new Section(
+                        new Section.Builder(
                                 (Long) it.getKey(),
-                                new Station((Long) it.getValue().get(0).get("UP_STATION_ID"), (String) it.getValue().get(0).get("UP_STATION_Name")),
-                                new Station((Long) it.getValue().get(0).get("DOWN_STATION_ID"), (String) it.getValue().get(0).get("DOWN_STATION_Name")),
-                                (int) it.getValue().get(0).get("SECTION_DISTANCE")))
+                                (int) it.getValue().get(0).get("SECTION_DISTANCE"))
+                                .upStation(new Station((Long) it.getValue().get(0).get("UP_STATION_ID"), (String) it.getValue().get(0).get("UP_STATION_Name")))
+                                .downStation(new Station((Long) it.getValue().get(0).get("DOWN_STATION_ID"), (String) it.getValue().get(0).get("DOWN_STATION_Name")))
+                                .build())
                 .collect(Collectors.toList());
     }
 
