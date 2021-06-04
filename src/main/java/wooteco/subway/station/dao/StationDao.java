@@ -1,5 +1,7 @@
 package wooteco.subway.station.dao;
 
+import java.util.List;
+import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -7,9 +9,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.station.domain.Station;
-
-import javax.sql.DataSource;
-import java.util.List;
+import wooteco.subway.station.exception.StationNotFoundException;
 
 @Repository
 public class StationDao {
@@ -26,7 +26,7 @@ public class StationDao {
     public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("station")
+                .withTableName("STATION")
                 .usingGeneratedKeyColumns("id");
     }
 
@@ -36,9 +36,19 @@ public class StationDao {
         return new Station(id, station.getName());
     }
 
+    public void update(Station station) {
+        String sql = "update STATION set name = ?  where id = ?";
+        jdbcTemplate.update(sql, station.getName(), station.getId());
+    }
+
     public List<Station> findAll() {
         String sql = "select * from STATION";
         return jdbcTemplate.query(sql, rowMapper);
+    }
+
+    public boolean existsByName(String name) {
+        String sql = "select exists (select * from STATION where name = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, name);
     }
 
     public void deleteById(Long id) {
@@ -48,6 +58,9 @@ public class StationDao {
 
     public Station findById(Long id) {
         String sql = "select * from STATION where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        return jdbcTemplate.query(sql, rowMapper, id)
+            .stream()
+            .findAny()
+            .orElseThrow(() -> new StationNotFoundException());
     }
 }

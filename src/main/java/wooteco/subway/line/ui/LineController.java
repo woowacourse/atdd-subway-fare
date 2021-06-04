@@ -1,18 +1,31 @@
 package wooteco.subway.line.ui;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import wooteco.subway.line.application.LineService;
-import wooteco.subway.line.dto.LineRequest;
-import wooteco.subway.line.dto.LineResponse;
-import wooteco.subway.line.dto.SectionRequest;
-
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
+import javax.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import wooteco.subway.line.application.LineService;
+import wooteco.subway.line.dto.LineRequest;
+import wooteco.subway.line.dto.LineResponse;
+import wooteco.subway.line.dto.LineUpdateRequest;
+import wooteco.subway.line.dto.LineUpdateResponse;
+import wooteco.subway.line.dto.LineWithTransferAndDistanceResponse;
+import wooteco.subway.line.dto.SectionRequest;
 
 @RestController
-@RequestMapping("/lines")
+@RequestMapping("/api/lines")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class LineController {
 
@@ -23,25 +36,27 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity createLine(@RequestBody LineRequest lineRequest) {
+    public ResponseEntity<LineResponse> createLine(@Valid @RequestBody LineRequest lineRequest) {
         LineResponse line = lineService.saveLine(lineRequest);
-        return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
+        return ResponseEntity.created(URI.create("/api/lines/" + line.getId())).body(line);
     }
 
     @GetMapping
-    public ResponseEntity<List<LineResponse>> findAllLines() {
+    public ResponseEntity<List<LineWithTransferAndDistanceResponse>> findAllLines() {
         return ResponseEntity.ok(lineService.findLineResponses());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
+    public ResponseEntity<LineWithTransferAndDistanceResponse> findLineById(@PathVariable Long id) {
         return ResponseEntity.ok(lineService.findLineResponseById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity updateLine(@PathVariable Long id, @RequestBody LineRequest lineUpdateRequest) {
+    public ResponseEntity<LineUpdateResponse> updateLine(@PathVariable Long id, @Valid @RequestBody LineUpdateRequest lineUpdateRequest) {
         lineService.updateLine(id, lineUpdateRequest);
-        return ResponseEntity.ok().build();
+        LineUpdateResponse lineUpdateResponse = new LineUpdateResponse(id,
+            lineUpdateRequest.getName(), lineUpdateRequest.getColor());
+        return ResponseEntity.ok().body(lineUpdateResponse);
     }
 
     @DeleteMapping("/{id}")
@@ -51,15 +66,15 @@ public class LineController {
     }
 
     @PostMapping("/{lineId}/sections")
-    public ResponseEntity addLineStation(@PathVariable Long lineId, @RequestBody SectionRequest sectionRequest) {
+    public ResponseEntity<SectionRequest> addLineStation(@PathVariable Long lineId, @Valid @RequestBody SectionRequest sectionRequest) {
         lineService.addLineStation(lineId, sectionRequest);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(sectionRequest);
     }
 
     @DeleteMapping("/{lineId}/sections")
     public ResponseEntity removeLineStation(@PathVariable Long lineId, @RequestParam Long stationId) {
         lineService.removeLineStation(lineId, stationId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @ExceptionHandler(SQLException.class)

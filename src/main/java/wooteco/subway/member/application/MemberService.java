@@ -1,13 +1,17 @@
 package wooteco.subway.member.application;
 
-import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
+import wooteco.subway.member.domain.RequestUser;
+import wooteco.subway.member.dto.ChangeAgeRequest;
+import wooteco.subway.member.dto.ChangePasswordRequest;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
+import wooteco.subway.member.exception.DuplicateEmailException;
+import wooteco.subway.member.exception.InvalidPasswordException;
+import wooteco.subway.member.exception.SamePasswordException;
 
 @Service
 public class MemberService {
@@ -18,22 +22,45 @@ public class MemberService {
     }
 
     public MemberResponse createMember(MemberRequest request) {
+        if (memberDao.exists(request.getEmail())) {
+            throw new DuplicateEmailException();
+        }
+
         Member member = memberDao.insert(request.toMember());
         return MemberResponse.of(member);
     }
 
-    public MemberResponse findMember(LoginMember loginMember) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
+    public MemberResponse findMember(RequestUser requestUser) {
+        Member member = memberDao.findByEmail(requestUser.getEmail());
         return MemberResponse.of(member);
     }
 
-    public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
-        memberDao.update(new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
+    public void changeAge(RequestUser requestUser, ChangeAgeRequest request) {
+        Member member = memberDao.findByEmail(requestUser.getEmail());
+        memberDao.update(new Member(member.getId(), member.getEmail(), member.getPassword(), request.getAge()));
     }
 
-    public void deleteMember(LoginMember loginMember) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
+    public void changePassword(RequestUser requestUser, ChangePasswordRequest request) {
+        Member member = memberDao.findByEmail(requestUser.getEmail());
+        if (!member.getPassword().equals(request.getCurrentPassword())) {
+            throw new InvalidPasswordException();
+        }
+
+        if (request.getCurrentPassword().equals(request.getNewPassword())) {
+            throw new SamePasswordException();
+        }
+
+        memberDao.update(new Member(member.getId(), member.getEmail(), request.getNewPassword(), member.getAge()));
+    }
+
+    public void deleteMember(RequestUser requestUser) {
+        Member member = memberDao.findByEmail(requestUser.getEmail());
         memberDao.deleteById(member.getId());
+    }
+
+    public void checkEmailExists(String email) {
+        if (memberDao.exists(email)) {
+            throw new DuplicateEmailException();
+        }
     }
 }

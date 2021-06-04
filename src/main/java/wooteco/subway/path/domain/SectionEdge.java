@@ -35,4 +35,12 @@ public class SectionEdge extends DefaultWeightedEdge {
     protected double getWeight() {
         return this.section.getDistance();
     }
+
+    public int getLineExtraFare() {
+        return line.getExtraFare();
+    }
+
+    public int getSectionDistance() {
+        return section.getDistance();
+    }
 }
