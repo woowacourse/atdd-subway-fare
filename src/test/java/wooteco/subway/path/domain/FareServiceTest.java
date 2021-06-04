@@ -67,6 +67,6 @@ class FareServiceTest {
     }
 
     private void assertFare(int distance, int extraFare, int age, int expectedFare) {
-        assertThat(fareService.calculate(distance, extraFare, age)).isEqualTo(expectedFare);
+        assertThat(fareService.loginUserFare(distance, extraFare, age)).isEqualTo(expectedFare);
     }
 }

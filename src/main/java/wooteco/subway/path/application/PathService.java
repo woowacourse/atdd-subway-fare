@@ -39,10 +39,7 @@ public class PathService {
     }
 
     private int calculate(User user, SubwayRoute route) {
-        if (user.isLogin()) {
-            return fareService.calculate(route.distance(), route.extraFare(), user.getAge());
-        }
-        return fareService.calculate(route.distance(), route.extraFare());
+        return fareService.calculate(user, route);
     }
 
     private SubwayRoute findRoute(Long source, Long target) {
