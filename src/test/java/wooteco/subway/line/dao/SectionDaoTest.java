@@ -42,7 +42,7 @@ class SectionDaoTest {
     void setUp() {
         sectionDao = new SectionDao(jdbcTemplate, dataSource);
         stationDao = new StationDao(namedParameterJdbcTemplate, dataSource);
-        lineDao = new LineDao(jdbcTemplate, dataSource);
+        lineDao = new LineDao(namedParameterJdbcTemplate, dataSource);
 
         테스트역1 = stationDao.insert(new Station("테스트역1"));
         테스트역2 = stationDao.insert(new Station("테스트역2"));

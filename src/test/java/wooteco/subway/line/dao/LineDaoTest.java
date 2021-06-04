@@ -40,7 +40,7 @@ class LineDaoTest {
 
     @BeforeEach
     void setUp() {
-        lineDao = new LineDao(jdbcTemplate, dataSource);
+        lineDao = new LineDao(namedParameterJdbcTemplate, dataSource);
         stationDao = new StationDao(namedParameterJdbcTemplate, dataSource);
         sectionDao = new SectionDao(jdbcTemplate, dataSource);
     }

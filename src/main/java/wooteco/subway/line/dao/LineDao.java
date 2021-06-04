@@ -1,6 +1,6 @@
 package wooteco.subway.line.dao;
 
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.line.domain.Line;
@@ -14,11 +14,11 @@ import java.util.stream.Collectors;
 
 @Repository
 public class LineDao {
-    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
-        this.jdbcTemplate = jdbcTemplate;
+    public LineDao(NamedParameterJdbcTemplate namedParameterJdbcTemplate, DataSource dataSource) {
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
                 .withTableName("LINE")
                 .usingGeneratedKeyColumns("id");
@@ -44,9 +44,12 @@ public class LineDao {
                 "left outer join SECTION S on L.id = S.line_id " +
                 "left outer join STATION UST on S.up_station_id = UST.id " +
                 "left outer join STATION DST on S.down_station_id = DST.id " +
-                "WHERE L.id = ?";
+                "WHERE L.id = :id";
 
-        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, id);
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+        List<Map<String, Object>> result = namedParameterJdbcTemplate.queryForList(sql, params);
         return mapLine(result);
     }
 
@@ -59,9 +62,11 @@ public class LineDao {
                 "left outer join SECTION S on L.id = S.line_id " +
                 "left outer join STATION UST on S.up_station_id = UST.id " +
                 "left outer join STATION DST on S.down_station_id = DST.id " +
-                "WHERE L.name = ?";
+                "WHERE L.name = :name";
 
-        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, name);
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", name);
+        List<Map<String, Object>> result = namedParameterJdbcTemplate.queryForList(sql, params);
         return mapLine(result);
     }
 
@@ -74,15 +79,23 @@ public class LineDao {
                 "left outer join SECTION S on L.id = S.line_id " +
                 "left outer join STATION UST on S.up_station_id = UST.id " +
                 "left outer join STATION DST on S.down_station_id = DST.id " +
-                "WHERE L.color = ?";
+                "WHERE L.color = :color";
 
-        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, color);
+        Map<String, Object> params = new HashMap<>();
+        params.put("color", color);
+        List<Map<String, Object>> result = namedParameterJdbcTemplate.queryForList(sql, params);
         return mapLine(result);
     }
 
     public void update(Line newLine) {
-        String sql = "update LINE set name = ?, color = ?, extra_fare = ? where id = ?";
-        jdbcTemplate.update(sql, newLine.getLineName(), newLine.getLineColor(), newLine.getExtraFare(), newLine.getId());
+        String sql = "update LINE set name = :name, color = :color, extra_fare = :extraFare where id = :id";
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", newLine.getLineName());
+        params.put("color", newLine.getLineColor());
+        params.put("extraFare", newLine.getExtraFare());
+        params.put("id", newLine.getId());
+        namedParameterJdbcTemplate.update(sql, params);
     }
 
     public List<Line> findAll() {
@@ -95,7 +108,7 @@ public class LineDao {
                 "left outer join STATION UST on S.up_station_id = UST.id " +
                 "left outer join STATION DST on S.down_station_id = DST.id ";
 
-        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql);
+        List<Map<String, Object>> result = namedParameterJdbcTemplate.queryForList(sql, Collections.emptyMap());
         return mapLines(result);
     }
 
@@ -110,9 +123,11 @@ public class LineDao {
                 "left outer join STATION DST on S.down_station_id = DST.id " +
                 "where L.name IN (select distinct LINE.name " +
                 "from LINE join SECTION on LINE.id = SECTION.line_id " +
-                "where SECTION.up_station_id = ? or SECTION.down_station_id = ?)";
+                "where SECTION.up_station_id = :stationId or SECTION.down_station_id = :stationId)";
 
-        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, stationId, stationId);
+        Map<String, Object> params = new HashMap<>();
+        params.put("stationId", stationId);
+        List<Map<String, Object>> result = namedParameterJdbcTemplate.queryForList(sql, params);
         return mapLines(result);
     }
 
@@ -158,6 +173,10 @@ public class LineDao {
     }
 
     public void deleteById(Long id) {
-        jdbcTemplate.update("delete from LINE where id = ?", id);
+        String sql = "delete from LINE where id = :id";
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+        namedParameterJdbcTemplate.update(sql, params);
     }
 }
