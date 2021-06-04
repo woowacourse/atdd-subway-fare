@@ -4,13 +4,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.AuthorizationException;
 import wooteco.subway.exception.DuplicatedException;
-import wooteco.subway.exception.NotPermittedException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.domain.User;
 import wooteco.subway.member.dto.EmailCheckRequest;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
+import wooteco.subway.member.exception.MemberModifyNotAllowedException;
 import wooteco.subway.member.exception.MemberNotFoundException;
 
 @Service
@@ -45,7 +45,7 @@ public class MemberService {
         }
         final Member member = memberDao.findByEmail(user.getEmail());
         if (!member.checkSameUserByEmail(memberRequest.getEmail())) {
-            throw new NotPermittedException("이메일은 수정할 수 없습니다.");
+            throw new MemberModifyNotAllowedException("이메일은 수정할 수 없습니다.");
         }
         final Member updateMember = member.update(memberRequest.getEmail(),
                 memberRequest.getPassword(), memberRequest.getAge());
@@ -56,8 +56,7 @@ public class MemberService {
         if (!memberDao.isExistByEmail(user.getEmail())) {
             throw new MemberNotFoundException(user.getEmail());
         }
-        Member member = memberDao.findByEmail(user.getEmail());
-        memberDao.deleteById(member.getId());
+        memberDao.deleteByEmail(user.getEmail());
     }
 
     public void confirmEmailIsValid(EmailCheckRequest emailCheckRequest) {

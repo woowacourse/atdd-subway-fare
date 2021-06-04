@@ -108,8 +108,6 @@ class MemberServiceTest {
     void deleteMember() {
         final Member member = new Member(1L, EMAIL, AGE);
         given(memberDao.isExistByEmail(EMAIL)).willReturn(true);
-        given(memberDao.findByEmail(EMAIL)).willReturn(new Member(1L, EMAIL, PASSWORD, AGE));
-
         assertThatCode(() -> memberService.deleteMember(member))
                 .doesNotThrowAnyException();
     }
