@@ -17,10 +17,22 @@ class SectionsTest {
     private static final Station NEW_UP_STATION = new Station(3L, "조w앤");
     private static final Station DOWN_STATION = new Station(2L, "이사");
     private static final Station NEW_DOWN_STATION = new Station(4L, "이2사");
-    private static final Section SECTION = new Section(1L, UP_STATION, DOWN_STATION, 10);
-    private static final Section SECTION_FOR_ADD = new Section(2L, UP_STATION, NEW_DOWN_STATION, 7);
-    private static final Section SECTION_WITH_INVALID_DISTANCE = new Section(3L, UP_STATION, NEW_DOWN_STATION, 100);
-    private static final Section SECTION_WITH_INVALID_ENDPOINTS = new Section(4L, NEW_UP_STATION, NEW_DOWN_STATION, 6);
+    private final static Section SECTION = new Section.Builder(1L, 10)
+            .upStation(UP_STATION)
+            .downStation(DOWN_STATION)
+            .build();
+    private final static Section SECTION_FOR_ADD = new Section.Builder(2L, 7)
+            .upStation(UP_STATION)
+            .downStation(NEW_DOWN_STATION)
+            .build();
+    private final static Section SECTION_WITH_INVALID_DISTANCE = new Section.Builder(3L, 100)
+            .upStation(UP_STATION)
+            .downStation(NEW_DOWN_STATION)
+            .build();
+    private final static Section SECTION_WITH_INVALID_ENDPOINTS = new Section.Builder(4L, 6)
+            .upStation(NEW_UP_STATION)
+            .downStation(NEW_DOWN_STATION)
+            .build();
 
     Sections sections;
 

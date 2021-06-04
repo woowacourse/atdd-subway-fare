@@ -70,7 +70,10 @@ public class Line {
     }
 
     public void addSection(Station upStation, Station downStation, int distance) {
-        Section section = new Section(upStation, downStation, distance);
+        Section section = new Section.Builder(distance)
+                .upStation(upStation)
+                .downStation(downStation)
+                .build();
         sections.addSection(section);
     }
 

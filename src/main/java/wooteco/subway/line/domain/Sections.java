@@ -11,9 +11,10 @@ import java.util.stream.Collectors;
 
 public class Sections {
 
-    private List<Section> sections = new ArrayList<>();
+    private final List<Section> sections;
 
     public Sections() {
+        sections = new ArrayList<>();
     }
 
     public Sections(List<Section> sections) {
@@ -72,8 +73,10 @@ public class Sections {
         if (existSection.getDistance() <= newSection.getDistance()) {
             throw new NotPermittedException("삽입하는 구간의 거리가 기존 구간보다 더 큽니다.");
         }
-        sections.add(new Section(existSection.getUpStation(), newSection.getUpStation(),
-                existSection.getDistance() - newSection.getDistance()));
+        sections.add(new Section.Builder(existSection.getDistance() - newSection.getDistance())
+                .upStation(existSection.getUpStation())
+                .downStation(newSection.getUpStation())
+                .build());
         sections.remove(existSection);
     }
 
@@ -86,7 +89,10 @@ public class Sections {
         final Station downStation = existSection.getDownStation();
         final int updatedDistance = existSection.getDistance() - newSection.getDistance();
 
-        sections.add(new Section(upStation, downStation, updatedDistance));
+        sections.add(new Section.Builder(updatedDistance)
+                .upStation(upStation)
+                .downStation(downStation)
+                .build());
         sections.remove(existSection);
     }
 
@@ -142,7 +148,10 @@ public class Sections {
             Station newUpStation = downSection.get().getUpStation();
             Station newDownStation = upSection.get().getDownStation();
             int newDistance = upSection.get().getDistance() + downSection.get().getDistance();
-            sections.add(new Section(newUpStation, newDownStation, newDistance));
+            sections.add(new Section.Builder(newDistance)
+                    .upStation(newUpStation)
+                    .downStation(newDownStation)
+                    .build());
         }
 
         upSection.ifPresent(it -> sections.remove(it));

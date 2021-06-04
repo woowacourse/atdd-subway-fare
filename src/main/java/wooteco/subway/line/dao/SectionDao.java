@@ -31,7 +31,11 @@ public class SectionDao {
         params.put("down_station_id", section.getDownStation().getId());
         params.put("distance", section.getDistance());
         Long sectionId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
-        return new Section(sectionId, section.getUpStation(), section.getDownStation(), section.getDistance());
+
+        return new Section.Builder(sectionId, section.getDistance())
+                .upStation(section.getUpStation())
+                .downStation(section.getDownStation())
+                .build();
     }
 
     public void deleteByLineId(Long lineId) {

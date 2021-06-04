@@ -28,8 +28,14 @@ class SectionDaoTest {
     private final static Station STATION2 = new Station(2L, "잠남역");
     private final static Line LINE = new Line(1L, "봉미선", "red");
     private final static Line LINE2 = new Line(2L, "봉미선선", "green");
-    private final static Section SECTION = new Section(1L, STATION1, STATION2, 10);
-    private final static Section SECTION2 = new Section(2L, STATION1, STATION2, 10);
+    private final static Section SECTION = new Section.Builder(1L, 10)
+            .upStation(STATION1)
+            .downStation(STATION2)
+            .build();
+    private final static Section SECTION2 = new Section.Builder(2L, 10)
+            .upStation(STATION1)
+            .downStation(STATION2)
+            .build();
     private final static Line LINE_WITH_SECTIONS = new Line(1L, "봉미선", "red", new Sections(Arrays.asList(SECTION)));
     SectionDao sectionDao;
     StationDao stationDao;

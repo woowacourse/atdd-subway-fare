@@ -48,7 +48,10 @@ public class LineService {
         if (request.getUpStationId() != null && request.getDownStationId() != null) {
             Station upStation = stationService.findStationById(request.getUpStationId());
             Station downStation = stationService.findStationById(request.getDownStationId());
-            Section section = new Section(upStation, downStation, request.getDistance());
+            Section section = new Section.Builder(request.getDistance())
+                    .upStation(upStation)
+                    .downStation(downStation)
+                    .build();
             return sectionDao.insert(line, section);
         }
         return null;
