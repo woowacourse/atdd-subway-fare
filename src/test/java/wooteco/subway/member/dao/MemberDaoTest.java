@@ -4,12 +4,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import wooteco.subway.member.domain.Member;
 
 import javax.sql.DataSource;
-
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -20,7 +19,7 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFOR
 class MemberDaoTest {
 
     @Autowired
-    JdbcTemplate jdbcTemplate;
+    NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     @Autowired
     DataSource dataSource;
 
@@ -28,7 +27,7 @@ class MemberDaoTest {
 
     @BeforeEach
     void setUp() {
-        memberDao = new MemberDao(jdbcTemplate, dataSource);
+        memberDao = new MemberDao(namedParameterJdbcTemplate, dataSource);
     }
 
     @Test
