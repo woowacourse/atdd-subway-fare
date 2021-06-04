@@ -34,6 +34,11 @@ public class Member {
         return this.email.equals(email);
     }
 
+    public void update(Integer age, String password) {
+        this.age = age;
+        this.password = password;
+    }
+
     public Long getId() {
         return id;
     }

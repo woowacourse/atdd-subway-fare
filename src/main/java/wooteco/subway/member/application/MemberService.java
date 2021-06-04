@@ -54,7 +54,8 @@ public class MemberService {
             throw new EmailUpdateTrialException();
         }
 
-        memberDao.update(new Member(member.getId(), member.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
+        member.update(memberRequest.getAge(), memberRequest.getPassword());
+        memberDao.update(member);
     }
 
     public void deleteMember(User user) {
