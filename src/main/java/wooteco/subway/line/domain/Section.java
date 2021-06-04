@@ -13,7 +13,6 @@ public class Section {
     private Section(Builder builder) {
         this.id = builder.id;
         this.upStation = builder.upStation;
-        ;
         this.downStation = builder.downStation;
         this.distance = builder.distance;
     }

@@ -23,7 +23,6 @@ public class Line {
         this(null, name, color, new Sections(), extraFare);
     }
 
-
     public Line(Long id, String name, String color) {
         this(id, name, color, new Sections(), 0);
     }
