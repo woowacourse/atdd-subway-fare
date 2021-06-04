@@ -58,7 +58,7 @@ public class PathService {
         Fare extraFare = fareService.calculateExtraFare(fare, subwayPath.getLines());
 
         try {
-            return fareService.discountFareByAge(user.getAge(), fare.getValue());
+            return fareService.discountFareByAge(user.getAge(), extraFare.getValue());
         } catch (AuthorizationException e) {
             return extraFare;
         }
