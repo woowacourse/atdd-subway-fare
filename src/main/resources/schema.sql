@@ -9,7 +9,8 @@ create table if not exists LINE
 (
     id bigint auto_increment not null,
     name varchar(255) not null unique,
-    color varchar(20) not null,
+    color varchar(255) not null unique,
+    extraFare int,
     primary key(id)
 );
 
@@ -22,7 +23,8 @@ create table if not exists SECTION
     distance int not null,
     primary key(id),
     foreign key (up_station_id) references station(id),
-    foreign key (down_station_id) references station(id)
+    foreign key (down_station_id) references station(id),
+    foreign key (line_id) references line(id) on delete cascade
 );
 
 create table if not exists MEMBER
