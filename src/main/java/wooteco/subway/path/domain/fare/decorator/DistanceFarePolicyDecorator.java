@@ -1,5 +1,6 @@
 package wooteco.subway.path.domain.fare.decorator;
 
+import wooteco.subway.path.application.PathException;
 import wooteco.subway.path.domain.fare.FarePolicy;
 
 import java.util.Arrays;
@@ -42,7 +43,7 @@ public class DistanceFarePolicyDecorator extends FarePolicyDecorator {
             return Arrays.stream(values())
                     .filter(farePolicyByDistance -> farePolicyByDistance.checkDistanceRange.test(distance))
                     .findFirst()
-                    .orElseThrow(IllegalArgumentException::new);
+                    .orElseThrow(() -> new PathException("해당 거리에 맞는 요금 정책이 없습니다."));
         }
 
         private static int fareInFirstSection(int distance) {
