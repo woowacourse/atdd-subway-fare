@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
+import wooteco.subway.line.domain.fare.FarePolicyFactory;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.path.dto.PathResponse;
@@ -16,9 +17,9 @@ import java.util.List;
 @Service
 @Transactional
 public class PathService {
-    private LineService lineService;
-    private StationService stationService;
-    private PathFinder pathFinder;
+    private final PathFinder pathFinder;
+    private final LineService lineService;
+    private final StationService stationService;
 
     public PathService(LineService lineService, StationService stationService, PathFinder pathFinder) {
         this.lineService = lineService;
@@ -26,16 +27,12 @@ public class PathService {
         this.pathFinder = pathFinder;
     }
 
-    public PathResponse findPath(Long source, Long target) {
-        try {
-            List<Line> lines = lineService.findLines();
-            Station sourceStation = stationService.findStationById(source);
-            Station targetStation = stationService.findStationById(target);
-            SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
+    public PathResponse findPath(Long source, Long target, LoginMember loginMember) {
+        List<Line> lines = lineService.findLines();
+        Station sourceStation = stationService.findStationById(source);
+        Station targetStation = stationService.findStationById(target);
+        SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
 
-            return PathResponseAssembler.assemble(subwayPath);
-        } catch (Exception e) {
-            throw new InvalidPathException();
-        }
+        return PathResponseAssembler.assemble(subwayPath, FarePolicyFactory.findPolicy(loginMember));
     }
 }

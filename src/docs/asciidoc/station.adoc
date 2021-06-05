@@ -1,0 +1,59 @@
+== 지하철 역 API
+
+=== 역 생성 성공
+==== Request
+
+include::{snippets}/station/create/success/http-request.adoc[]
+
+==== Response
+include::{snippets}/station/create/success/http-response.adoc[]
+
+=== 역 생성 실패
+==== Request
+
+include::{snippets}/station/create/fail/http-request.adoc[]
+
+==== Response
+include::{snippets}/station/create/fail/http-response.adoc[]
+
+
+=== 역 수정 성공
+==== Request
+
+include::{snippets}/station/edit/success/http-request.adoc[]
+
+==== Response
+include::{snippets}/station/edit/success/http-response.adoc[]
+
+=== 역 수정 실패
+==== Request
+
+include::{snippets}/station/edit/fail/http-request.adoc[]
+
+==== Response
+include::{snippets}/station/edit/fail/http-response.adoc[]
+
+=== 역 삭제 성공
+==== Request
+
+include::{snippets}/station/delete/success/http-request.adoc[]
+
+==== Response
+include::{snippets}/station/delete/success/http-response.adoc[]
+
+=== 역 삭제 실패
+==== Request
+
+include::{snippets}/station/delete/fail/http-request.adoc[]
+
+==== Response
+include::{snippets}/station/delete/fail/http-response.adoc[]
+
+=== 역 목록 조회
+==== Request
+
+include::{snippets}/station/list/http-request.adoc[]
+
+==== Response
+include::{snippets}/station/list/http-response.adoc[]
+

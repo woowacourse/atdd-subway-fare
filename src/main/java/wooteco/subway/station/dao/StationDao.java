@@ -1,5 +1,6 @@
 package wooteco.subway.station.dao;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -10,18 +11,18 @@ import wooteco.subway.station.domain.Station;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class StationDao {
-    private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcInsert insertAction;
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert insertAction;
 
     private RowMapper<Station> rowMapper = (rs, rowNum) ->
             new Station(
                     rs.getLong("id"),
                     rs.getString("name")
             );
-
 
     public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
@@ -46,8 +47,28 @@ public class StationDao {
         jdbcTemplate.update(sql, id);
     }
 
-    public Station findById(Long id) {
+    public Optional<Station> findById(Long id) {
         String sql = "select * from STATION where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, id));
+        } catch (DataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+    public Optional<Station> findByName(String name) {
+        String sql = "select * from STATION where name = ?";
+
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, name));
+        } catch (DataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+    public void update(Long id, Station newStation) {
+        String sql = "update STATION set name = ? where id = ?";
+        jdbcTemplate.update(sql, newStation.getName(), id);
     }
 }

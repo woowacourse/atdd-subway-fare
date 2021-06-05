@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.line.dto.SectionResponse;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.Arrays;
@@ -50,6 +51,14 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_구간_생성됨(response, 신분당선, Arrays.asList(강남역, 양재역, 광교역));
+        지하철_구간_등록_성공(response, 강남역, 양재역, 3);
+    }
+
+    private void 지하철_구간_등록_성공(ExtractableResponse<Response> response, StationResponse upStation, StationResponse downStation, int distance) {
+        SectionResponse sectionResponse = response.as(SectionResponse.class);
+        assertThat(sectionResponse.getUpStation().getId()).isEqualTo(upStation.getId());
+        assertThat(sectionResponse.getDownStation().getId()).isEqualTo(downStation.getId());
+        assertThat(sectionResponse.getDistance()).isEqualTo(distance);
     }
 
     @DisplayName("지하철 노선에 여러개의 역을 순서 상관 없이 등록한다.")
@@ -61,6 +70,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_구간_생성됨(response, 신분당선, Arrays.asList(정자역, 강남역, 양재역, 광교역));
+        지하철_구간_등록_성공(response, 정자역, 강남역, 5);
     }
 
     @DisplayName("지하철 노선에 이미 등록되어있는 역을 등록한다.")
@@ -71,9 +81,10 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_구간_등록_실패됨(response);
+        구간_실패_시_에러_메세지가_발생(response, "구간에 대한 지하철 역 입력이 잘못되었습니다.");
     }
 
-    @DisplayName("지하철 노선에 등록되지 않은 역을 기준으로 등록한다.")
+    @DisplayName("지하철 노선에 등록되지 않은 역을 기준으로 등록하는 경우 예외처리한다.")
     @Test
     void addLineSectionWithNoStation() {
         // when
@@ -81,6 +92,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_구간_등록_실패됨(response);
+        구간_실패_시_에러_메세지가_발생(response, "구간에 대한 지하철 역 입력이 잘못되었습니다.");
     }
 
     @DisplayName("지하철 노선에 등록된 지하철역을 제외한다.")
@@ -105,6 +117,18 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_노선에_지하철역_제외_실패됨(removeResponse);
+        구간_실패_시_에러_메세지가_발생(removeResponse, "구간이 하나인 노선에서는 구간을 삭제할 수 없습니다.");
+    }
+
+    @DisplayName("추가되는 구간의 길이가 기존 구간의 길이보다 긴 경우 예외 처리한다.")
+    @Test
+    void invalidDistanceSection() {
+        // when
+        ExtractableResponse<Response> response = 지하철_구간_생성_요청(신분당선, 강남역, 양재역, 15);
+
+        // then
+        지하철_구간_등록_실패됨(response);
+        구간_실패_시_에러_메세지가_발생(response, "추가할 구간의 길이가 기존 구간의 길이보다 클 수 없습니다.");
     }
 
     public static void 지하철_구간_등록되어_있음(LineResponse lineResponse, StationResponse upStation, StationResponse downStation, int distance) {
@@ -144,10 +168,6 @@ public class SectionAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static void 지하철_구간_생성됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
     private void 지하철_구간_생성됨(ExtractableResponse<Response> result, LineResponse lineResponse, List<StationResponse> stationResponses) {
         assertThat(result.statusCode()).isEqualTo(HttpStatus.OK.value());
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(lineResponse);
@@ -155,16 +175,20 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 지하철_노선에_지하철역_제외됨(ExtractableResponse<Response> result, LineResponse lineResponse, List<StationResponse> stationResponses) {
-        assertThat(result.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(result.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(lineResponse);
         지하철_노선에_지하철역_순서_정렬됨(response, stationResponses);
     }
 
     public static void 지하철_구간_등록_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static void 지하철_노선에_지하철역_제외_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    private void 구간_실패_시_에러_메세지가_발생(ExtractableResponse<Response> response, String errorMessage) {
+        assertThat((String) response.body().jsonPath().get("message")).isEqualTo(errorMessage);
     }
 }

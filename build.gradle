@@ -1,6 +1,7 @@
 plugins {
 	id 'org.springframework.boot' version '2.4.3'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'org.asciidoctor.convert' version '1.5.6'
 	id 'java'
 }
 
@@ -28,14 +29,42 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
 	runtimeOnly 'com.h2database:h2'
+	runtimeOnly 'mysql:mysql-connector-java'
 
 	// jgrapht
     implementation 'org.jgrapht:jgrapht-core:1.0.1'
 
 	// jwt
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
+	implementation 'jakarta.xml.bind:jakarta.xml.bind-api:2.3.2'
+
+	// rest docs
+	implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.5.4'
+	asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor:1.2.6.RELEASE'
+	testImplementation 'org.springframework.restdocs:spring-restdocs-restassured:2.0.5.RELEASE'
+}
+
+ext {
+	snippetsDir = file('build/generated-snippets')
+}
+asciidoctor {
+	inputs.dir snippetsDir
+	dependsOn test
+}
+
+task createDocument(type: Copy) {
+	dependsOn asciidoctor
+
+	from file("build/asciidoc/html5/index.html")
+	into file("src/main/resources/static/docs")
+}
+
+build {
+	dependsOn createDocument
 }
 
 test {
 	useJUnitPlatform()
 }
+

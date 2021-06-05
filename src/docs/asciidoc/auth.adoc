@@ -1,0 +1,36 @@
+== 로그인 API
+
+=== 로그인 성공
+==== Request
+
+include::{snippets}/login/me/http-request.adoc[]
+
+==== Response
+include::{snippets}/login/me/http-response.adoc[]
+
+=== 로그인 auth 인증 실패
+==== Request
+
+include::{snippets}/login/fail/http-request.adoc[]
+
+==== Response
+include::{snippets}/login/fail/http-response.adoc[]
+
+
+=== 토큰 유효성 검사 성공
+
+==== Request
+
+include::{snippets}/login/token/success/http-request.adoc[]
+
+==== Response
+include::{snippets}/login/token/success/http-response.adoc[]
+
+=== 토큰 유효성 검사 실패
+
+==== Request
+
+include::{snippets}/login/token/invalid/http-request.adoc[]
+
+==== Response
+include::{snippets}/login/token/invalid/http-response.adoc[]

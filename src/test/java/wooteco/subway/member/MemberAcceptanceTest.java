@@ -23,6 +23,43 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String NEW_PASSWORD = "new_password";
     public static final int NEW_AGE = 30;
 
+    @DisplayName("이메일이 중복되는 경우 실패를 반환한다.")
+    @Test
+    void duplicateEmail() {
+        // given
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성됨(createResponse);
+
+        // when
+        ExtractableResponse<Response> 이메일_중복_여부 = 이메일_중복_여부_확인_요청(EMAIL);
+
+        // then
+        assertThat(이메일_중복_여부.statusCode()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY.value());
+        assertThat((String) 이메일_중복_여부.jsonPath().get("message")).isEqualTo("이메일이 중복되었습니다.");
+    }
+
+    @DisplayName("이메일이 중복되지 않는 경우 성공을 반환한다.")
+    @Test
+    void newEmail() {
+        // given
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성됨(createResponse);
+
+        // when
+        ExtractableResponse<Response> 이메일_중복_여부 = 이메일_중복_여부_확인_요청(NEW_EMAIL);
+
+        // then
+        assertThat(이메일_중복_여부.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    private ExtractableResponse<Response> 이메일_중복_여부_확인_요청(String email) {
+        return RestAssured
+                .given().log().all()
+                .when().get("/members/check-validation?email={email}", email)
+                .then().log().all()
+                .extract();
+    }
+
     @DisplayName("회원 정보를 관리한다.")
     @Test
     void manageMember() {

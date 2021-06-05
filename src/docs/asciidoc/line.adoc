@@ -1,0 +1,65 @@
+== 지하철 노선 API
+
+=== 노선 생성 성공
+==== Request
+
+include::{snippets}/line/create/success/http-request.adoc[]
+
+==== Response
+include::{snippets}/line/create/success/http-response.adoc[]
+
+=== 노선 생성 실패
+==== Request
+
+include::{snippets}/line/create/fail/http-request.adoc[]
+
+==== Response
+include::{snippets}/line/create/fail/http-response.adoc[]
+
+=== 노선 수정 성공
+==== Request
+
+include::{snippets}/line/edit/success/http-request.adoc[]
+
+==== Response
+include::{snippets}/line/edit/success/http-response.adoc[]
+
+=== 노선 생성 실패
+==== Request
+
+include::{snippets}/line/edit/fail/http-request.adoc[]
+
+==== Response
+include::{snippets}/line/edit/fail/http-response.adoc[]
+
+=== 노선 삭제 성공
+==== Request
+
+include::{snippets}/line/delete/success/http-request.adoc[]
+
+==== Response
+include::{snippets}/line/delete/success/http-response.adoc[]
+
+=== 노선 삭제 실패
+==== Request
+
+include::{snippets}/line/delete/fail/http-request.adoc[]
+
+==== Response
+include::{snippets}/line/delete/fail/http-response.adoc[]
+
+=== 모든 노선 조회
+==== Request
+
+include::{snippets}/line/list/http-request.adoc[]
+
+==== Response
+include::{snippets}/line/list/http-response.adoc[]
+
+=== 전체 노선도 조회
+==== Request
+
+include::{snippets}/line/map/http-request.adoc[]
+
+==== Response
+include::{snippets}/line/map/http-response.adoc[]

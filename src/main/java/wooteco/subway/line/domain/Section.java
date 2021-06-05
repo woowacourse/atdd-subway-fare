@@ -39,4 +39,8 @@ public class Section {
     public int getDistance() {
         return distance;
     }
+
+    public boolean isOverDistance(Section newSection) {
+        return this.distance <= newSection.distance;
+    }
 }

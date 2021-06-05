@@ -1,18 +1,18 @@
 package wooteco.subway.line.dao;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import wooteco.subway.exception.notfound.NoLineException;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.domain.Sections;
 import wooteco.subway.station.domain.Station;
 
 import javax.sql.DataSource;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
@@ -32,13 +32,14 @@ public class LineDao {
         params.put("id", line.getId());
         params.put("name", line.getName());
         params.put("color", line.getColor());
+        params.put("extra_fare", line.getExtraFare());
 
         Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new Line(lineId, line.getName(), line.getColor());
+        return new Line(lineId, line.getName(), line.getColor(), line.getExtraFare());
     }
 
     public Line findById(Long id) {
-        String sql = "select L.id as line_id, L.name as line_name, L.color as line_color, " +
+        String sql = "select L.id as line_id, L.name as line_name, L.color as line_color, L.extra_fare as line_extra_fare, " +
                 "S.id as section_id, S.distance as section_distance, " +
                 "UST.id as up_station_id, UST.name as up_station_name, " +
                 "DST.id as down_station_id, DST.name as down_station_name " +
@@ -48,17 +49,17 @@ public class LineDao {
                 "left outer join STATION DST on S.down_station_id = DST.id " +
                 "WHERE L.id = ?";
 
-        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, new Object[]{id});
+        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, id);
         return mapLine(result);
     }
 
     public void update(Line newLine) {
-        String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
+        String sql = "update LINE set name = ?, color = ?, extra_fare = ? where id = ?";
+        jdbcTemplate.update(sql, newLine.getName(), newLine.getColor(), newLine.getExtraFare(), newLine.getId());
     }
 
     public List<Line> findAll() {
-        String sql = "select L.id as line_id, L.name as line_name, L.color as line_color, " +
+        String sql = "select L.id as line_id, L.name as line_name, L.color as line_color, L.extra_fare as line_extra_fare, " +
                 "S.id as section_id, S.distance as section_distance, " +
                 "UST.id as up_station_id, UST.name as up_station_name, " +
                 "DST.id as down_station_id, DST.name as down_station_name " +
@@ -76,7 +77,7 @@ public class LineDao {
 
     private Line mapLine(List<Map<String, Object>> result) {
         if (result.size() == 0) {
-            throw new RuntimeException();
+            throw new NoLineException();
         }
 
         List<Section> sections = extractSections(result);
@@ -85,6 +86,7 @@ public class LineDao {
                 (Long) result.get(0).get("LINE_ID"),
                 (String) result.get(0).get("LINE_NAME"),
                 (String) result.get(0).get("LINE_COLOR"),
+                (int) result.get(0).get("LINE_EXTRA_FARE"),
                 new Sections(sections));
     }
 
@@ -107,5 +109,34 @@ public class LineDao {
 
     public void deleteById(Long id) {
         jdbcTemplate.update("delete from Line where id = ?", id);
+    }
+
+    public Optional<Line> findByName(String name) {
+        String sql = "select * from Line where name = ?";
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(sql, getLineRowMapper(), name));
+        } catch (DataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+    public Optional<Line> findLineExceptSectionById(Long id) {
+        String sql = "select * from Line where id = ?";
+
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(sql, getLineRowMapper(), id));
+        } catch (DataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+    private RowMapper<Line> getLineRowMapper() {
+        return (rs, rowNum) -> {
+            Long lineId = rs.getLong(1);
+            String name = rs.getString(2);
+            String color = rs.getString(3);
+            int extraFare = rs.getInt(4);
+            return new Line(lineId, name, color, extraFare);
+        };
     }
 }
