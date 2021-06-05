@@ -10,11 +10,13 @@ import wooteco.subway.station.domain.Station;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class StationDao {
-    private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcInsert insertAction;
+
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert insertAction;
 
     private RowMapper<Station> rowMapper = (rs, rowNum) ->
             new Station(
@@ -22,11 +24,10 @@ public class StationDao {
                     rs.getString("name")
             );
 
-
     public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("station")
+                .withTableName("STATION")
                 .usingGeneratedKeyColumns("id");
     }
 
@@ -46,8 +47,27 @@ public class StationDao {
         jdbcTemplate.update(sql, id);
     }
 
-    public Station findById(Long id) {
+    public Optional<Station> findById(Long id) {
         String sql = "select * from STATION where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        return jdbcTemplate.query(sql, rowMapper, id)
+                .stream()
+                .findAny();
+    }
+
+    public Optional<Station> findByName(String name) {
+        String sql = "select * from STATION where name = ? ";
+        return jdbcTemplate.query(sql, rowMapper, name)
+                .stream()
+                .findAny();
+    }
+
+    public void update(String newName, Long id) {
+        String sql = "update STATION set name = ? where id = ?";
+        jdbcTemplate.update(sql, newName, id);
+    }
+
+    public int calculateRegisteredCountsById(Long id) {
+        String sql = "select count(*) from SECTION where ? in (up_station_id, down_station_id)";
+        return jdbcTemplate.queryForObject(sql, int.class, id);
     }
 }

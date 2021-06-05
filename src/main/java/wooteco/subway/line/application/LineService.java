@@ -1,6 +1,11 @@
 package wooteco.subway.line.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.exception.notfound.EntityExceptionStatus;
+import wooteco.subway.exception.notfound.EntityNotFoundException;
+import wooteco.subway.exception.value.InvalidValueException;
+import wooteco.subway.exception.value.InvalidValueExceptionStatus;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
@@ -12,13 +17,14 @@ import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class LineService {
-    private LineDao lineDao;
-    private SectionDao sectionDao;
-    private StationService stationService;
+
+    private final LineDao lineDao;
+    private final SectionDao sectionDao;
+    private final StationService stationService;
 
     public LineService(LineDao lineDao, SectionDao sectionDao, StationService stationService) {
         this.lineDao = lineDao;
@@ -26,10 +32,25 @@ public class LineService {
         this.stationService = stationService;
     }
 
+    @Transactional
     public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
+        validateNameDuplication(request.getName());
+        validateColorDuplication(request.getColor());
+        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);
+    }
+
+    private void validateNameDuplication(String name) {
+        if (lineDao.countLineByName(name) != 0) {
+            throw new InvalidValueException(InvalidValueExceptionStatus.DUPLICATED_LINE_NAME);
+        }
+    }
+
+    private void validateColorDuplication(String color) {
+        if (lineDao.countLineByColor(color) != 0) {
+            throw new InvalidValueException(InvalidValueExceptionStatus.DUPLICATED_LINE_COLOR);
+        }
     }
 
     private Section addInitSection(Line line, LineRequest request) {
@@ -43,10 +64,7 @@ public class LineService {
     }
 
     public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
-        return persistLines.stream()
-                .map(line -> LineResponse.of(line))
-                .collect(Collectors.toList());
+        return LineResponse.listOf(findLines());
     }
 
     public List<Line> findLines() {
@@ -59,17 +77,26 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        return lineDao.findById(id);
+        return lineDao.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(EntityExceptionStatus.LINE_NOT_FOUND));
     }
 
+    @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
+        findLineById(id);
+        validateNameDuplication(lineUpdateRequest.getName());
+        validateColorDuplication(lineUpdateRequest.getColor());
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
+    @Transactional
     public void deleteLineById(Long id) {
+        findLineById(id);
         lineDao.deleteById(id);
+        sectionDao.deleteByLineId(id);
     }
 
+    @Transactional
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
@@ -80,6 +107,7 @@ public class LineService {
         sectionDao.insertSections(line);
     }
 
+    @Transactional
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
@@ -88,5 +116,4 @@ public class LineService {
         sectionDao.deleteByLineId(lineId);
         sectionDao.insertSections(line);
     }
-
 }

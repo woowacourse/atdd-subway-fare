@@ -9,11 +9,13 @@ import org.springframework.stereotype.Repository;
 import wooteco.subway.member.domain.Member;
 
 import javax.sql.DataSource;
+import java.util.Optional;
 
 @Repository
 public class MemberDao {
-    private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcInsert simpleJdbcInsert;
+
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert simpleJdbcInsert;
 
     private RowMapper<Member> rowMapper = (rs, rowNum) ->
             new Member(
@@ -23,12 +25,18 @@ public class MemberDao {
                     rs.getInt("age")
             );
 
-
     public MemberDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
-                .withTableName("member")
+                .withTableName("MEMBER")
                 .usingGeneratedKeyColumns("id");
+    }
+
+    public Optional<Member> findByEmail(String email) {
+        String sql = "select * from MEMBER where email = ?";
+        return jdbcTemplate.query(sql, rowMapper, email)
+                .stream()
+                .findAny();
     }
 
     public Member insert(Member member) {
@@ -45,15 +53,5 @@ public class MemberDao {
     public void deleteById(Long id) {
         String sql = "delete from MEMBER where id = ?";
         jdbcTemplate.update(sql, id);
-    }
-
-    public Member findById(Long id) {
-        String sql = "select * from MEMBER where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
-    }
-
-    public Member findByEmail(String email) {
-        String sql = "select * from MEMBER where email = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, email);
     }
 }

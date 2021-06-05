@@ -8,26 +8,22 @@ public class Line {
     private Long id;
     private String name;
     private String color;
-    private Sections sections = new Sections();
+    private int extraFare;
+    private Sections sections;
 
-    public Line() {
-    }
-
-    public Line(String name, String color) {
-        this.name = name;
-        this.color = color;
+    public Line(String name, String color, int extraFare) {
+        this(null, name, color, extraFare, new Sections());
     }
 
     public Line(Long id, String name, String color) {
-        this.id = id;
-        this.name = name;
-        this.color = color;
+        this(id, name, color, 0, new Sections());
     }
 
-    public Line(Long id, String name, String color, Sections sections) {
+    public Line(Long id, String name, String color, int extraFare, Sections sections) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
         this.sections = sections;
     }
 
@@ -70,5 +66,9 @@ public class Line {
 
     public List<Station> getStations() {
         return sections.getStations();
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 }

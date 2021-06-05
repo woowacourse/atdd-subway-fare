@@ -9,7 +9,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.auth.dto.TokenResponse;
+import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
+import wooteco.subway.line.dto.SectionRequest;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.dto.StationResponse;
 
@@ -18,12 +21,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
-import static wooteco.subway.line.SectionAcceptanceTest.지하철_구간_등록되어_있음;
-import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
-@DisplayName("지하철 경로 조회")
-public class PathAcceptanceTest extends AcceptanceTest {
+class PathAcceptanceTest extends AcceptanceTest {
+
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
@@ -31,6 +31,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
+    private String loginToken;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -40,42 +41,83 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * 남부터미널역  --- *3호선* ---   양재
      */
     @BeforeEach
-    public void setUp() {
+    protected void setUp() {
         super.setUp();
+        registerMember("kevin@naver.com", "123", 27);
+        loginToken = login("kevin@naver.com", "123").getAccessToken();
 
-        강남역 = 지하철역_등록되어_있음("강남역");
-        양재역 = 지하철역_등록되어_있음("양재역");
-        교대역 = 지하철역_등록되어_있음("교대역");
-        남부터미널역 = 지하철역_등록되어_있음("남부터미널역");
+        강남역 = createStation("강남역", loginToken).as(StationResponse.class);
+        양재역 = createStation("양재역", loginToken).as(StationResponse.class);
+        교대역 = createStation("교대역", loginToken).as(StationResponse.class);
+        남부터미널역 = createStation("남부터미널역", loginToken).as(StationResponse.class);
 
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5);
+        신분당선 = createLine(new LineRequest("신분당선", "bg-redd-600", 강남역.getId(), 양재역.getId(), 10), loginToken).as(LineResponse.class);
+        이호선 = createLine(new LineRequest("이호선", "bg-redd-601", 교대역.getId(), 강남역.getId(), 10), loginToken).as(LineResponse.class);
+        삼호선 = createLine(new LineRequest("삼호선", "bg-redd-603", 교대역.getId(), 양재역.getId(), 5), loginToken).as(LineResponse.class);
 
-        지하철_구간_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
+        addSection(삼호선.getId(), new SectionRequest(교대역.getId(), 남부터미널역.getId(), 3), loginToken);
     }
 
-    @DisplayName("두 역의 최단 거리 경로를 조회한다.")
+    @DisplayName("비회원으로 두 역의 최단 거리 경로를 조회한다.")
     @Test
     void findPathByDistance() {
-        //when
-        ExtractableResponse<Response> response = 거리_경로_조회_요청(3L, 2L);
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/paths?source={sourceId}&target={targetId}", 3L, 2L)
+                .then().log().all()
+                .extract();
 
-        //then
-        적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
-        총_거리가_응답됨(response, 5);
+        assertPathContains(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
+        assertPathDistance(response, 5);
+        assertPathFare(response, 1250);
     }
 
-    public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
-        return RestAssured
-                .given().log().all()
+    @DisplayName("아동 나이 회원으로 경로 조회를 요청한다.")
+    @Test
+    void findPathWhenChildren() {
+        registerMember("abc@naver.com", "pass", 8);
+        TokenResponse token = login("abc@naver.com", "pass");
+
+        ExtractableResponse<Response> response = findPath(3L, 2L, token.getAccessToken());
+
+        assertPathContains(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
+        assertPathDistance(response, 5);
+        assertPathFare(response, 450);
+    }
+
+    @DisplayName("청소년 나이 회원으로 경로 조회를 요청한다.")
+    @Test
+    void findPathWhenTeenager() {
+        registerMember("abc@naver.com", "pass", 16);
+        TokenResponse token = login("abc@naver.com", "pass");
+
+        ExtractableResponse<Response> response = findPath(3L, 2L, token.getAccessToken());
+
+        assertPathContains(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
+        assertPathDistance(response, 5);
+        assertPathFare(response, 720);
+    }
+
+    @DisplayName("성인 나이 회원으로 경로 조회를 요청한다.")
+    @Test
+    void findPathWhenAdult() {
+        ExtractableResponse<Response> response = findPath(3L, 2L, loginToken);
+
+        assertPathContains(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
+        assertPathDistance(response, 5);
+        assertPathFare(response, 1250);
+    }
+
+    private ExtractableResponse<Response> findPath(long source, long target, String token) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(token)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/paths?source={sourceId}&target={targetId}", source, target)
                 .then().log().all()
                 .extract();
     }
 
-    public static void 적절한_경로_응답됨(ExtractableResponse<Response> response, ArrayList<StationResponse> expectedPath) {
+    private void assertPathContains(ExtractableResponse<Response> response, ArrayList<StationResponse> expectedPath) {
         PathResponse pathResponse = response.as(PathResponse.class);
 
         List<Long> stationIds = pathResponse.getStations().stream()
@@ -89,8 +131,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(stationIds).containsExactlyElementsOf(expectedPathIds);
     }
 
-    public static void 총_거리가_응답됨(ExtractableResponse<Response> response, int totalDistance) {
+    private void assertPathDistance(ExtractableResponse<Response> response, int totalDistance) {
         PathResponse pathResponse = response.as(PathResponse.class);
         assertThat(pathResponse.getDistance()).isEqualTo(totalDistance);
+    }
+
+    private void assertPathFare(ExtractableResponse<Response> response, int fare) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getFare()).isEqualTo(fare);
     }
 }

@@ -1,39 +1,66 @@
 package wooteco.subway.member.application;
 
-import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.exception.auth.AuthorizationException;
+import wooteco.subway.exception.auth.AuthorizationExceptionStatus;
+import wooteco.subway.exception.value.InvalidValueException;
+import wooteco.subway.exception.value.InvalidValueExceptionStatus;
 import wooteco.subway.member.dao.MemberDao;
-import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.domain.LoginUser;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
 @Service
+@Transactional(readOnly = true)
 public class MemberService {
-    private MemberDao memberDao;
+
+    private final MemberDao memberDao;
 
     public MemberService(MemberDao memberDao) {
         this.memberDao = memberDao;
     }
 
+    @Transactional
     public MemberResponse createMember(MemberRequest request) {
+        validateEmailDuplication(request.getEmail());
         Member member = memberDao.insert(request.toMember());
         return MemberResponse.of(member);
     }
 
-    public MemberResponse findMember(LoginMember loginMember) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
+    private void validateEmailDuplication(String email) {
+        memberDao.findByEmail(email)
+                .ifPresent(member -> {
+                    throw new InvalidValueException(InvalidValueExceptionStatus.DUPLICATED_EMAIL);
+                });
+    }
+
+    public MemberResponse findMember(LoginUser loginUser) {
+        Member member = findMemberByEmail(loginUser.getEmail());
         return MemberResponse.of(member);
     }
 
-    public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
-        memberDao.update(new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
+    public Member findMemberByEmail(String email) {
+        return memberDao.findByEmail(email)
+                .orElseThrow(() -> new AuthorizationException(AuthorizationExceptionStatus.WRONG_EMAIL));
     }
 
-    public void deleteMember(LoginMember loginMember) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
+    @Transactional
+    public void updateMember(LoginUser loginUser, MemberRequest memberRequest) {
+        Member member = findMemberByEmail(loginUser.getEmail());
+        String currentEmail = member.getEmail();
+        String newEmail = memberRequest.getEmail();
+        if (!currentEmail.equals(newEmail)) {
+            validateEmailDuplication(newEmail);
+        }
+        Member newMember = new Member(member.getId(), newEmail, memberRequest.getPassword(), memberRequest.getAge());
+        memberDao.update(newMember);
+    }
+
+    @Transactional
+    public void deleteMember(LoginUser loginUser) {
+        Member member = findMemberByEmail(loginUser.getEmail());
         memberDao.deleteById(member.getId());
     }
 }

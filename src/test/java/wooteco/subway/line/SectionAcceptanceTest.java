@@ -7,8 +7,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
 import wooteco.subway.station.dto.StationResponse;
@@ -18,153 +18,120 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
-import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_조회_요청;
-import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
-@DisplayName("지하철 구간 관련 기능")
-public class SectionAcceptanceTest extends AcceptanceTest {
-    private LineResponse 신분당선;
-    private StationResponse 강남역;
-    private StationResponse 양재역;
-    private StationResponse 정자역;
-    private StationResponse 광교역;
+class SectionAcceptanceTest extends AcceptanceTest {
+
+    private LineResponse lineResponse;
+    private StationResponse station1;
+    private StationResponse station2;
+    private StationResponse station3;
+    private StationResponse station4;
+    private String loginToken;
 
     @BeforeEach
-    public void setUp() {
+    protected void setUp() {
         super.setUp();
+        registerMember("kevin@naver.com", "123", 123);
+        loginToken = login("kevin@naver.com", "123").getAccessToken();
 
-        강남역 = 지하철역_등록되어_있음("강남역");
-        양재역 = 지하철역_등록되어_있음("양재역");
-        정자역 = 지하철역_등록되어_있음("정자역");
-        광교역 = 지하철역_등록되어_있음("광교역");
+        station1 = createStation("강남역", loginToken).as(StationResponse.class);
+        station2 = createStation("양재역", loginToken).as(StationResponse.class);
+        station3 = createStation("정자역", loginToken).as(StationResponse.class);
+        station4 = createStation("광교역", loginToken).as(StationResponse.class);
 
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 광교역, 10);
+        LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", station1.getId(), station4.getId(), 10);
+        lineResponse = createLine(lineRequest, loginToken)
+                .as(LineResponse.class);
     }
 
     @DisplayName("지하철 구간을 등록한다.")
     @Test
-    void addLineSection() {
-        // when
-        ExtractableResponse<Response> response = 지하철_구간_생성_요청(신분당선, 강남역, 양재역, 3);
+    void addSection() {
+        SectionRequest sectionRequest = new SectionRequest(station1.getId(), station2.getId(), 3);
 
-        // then
-        지하철_구간_생성됨(response, 신분당선, Arrays.asList(강남역, 양재역, 광교역));
+        ExtractableResponse<Response> response = addSection(lineResponse.getId(), sectionRequest, loginToken);
+
+        assertResponseStatus(response, HttpStatus.OK);
+        assertOrderedStations(lineResponse.getId(), Arrays.asList(station1, station2, station4));
     }
 
-    @DisplayName("지하철 노선에 여러개의 역을 순서 상관 없이 등록한다.")
+    @DisplayName("지하철 노선에 여러 개의 역을 순서 상관없이 등록한다.")
     @Test
-    void addLineSection2() {
-        // when
-        지하철_구간_생성_요청(신분당선, 강남역, 양재역, 2);
-        ExtractableResponse<Response> response = 지하철_구간_생성_요청(신분당선, 정자역, 강남역, 5);
+    void addSectionRegardlessOfOrder() {
+        SectionRequest sectionRequest1 = new SectionRequest(station1.getId(), station2.getId(), 3);
+        SectionRequest sectionRequest2 = new SectionRequest(station3.getId(), station1.getId(), 5);
+        addSection(lineResponse.getId(), sectionRequest1, loginToken);
 
-        // then
-        지하철_구간_생성됨(response, 신분당선, Arrays.asList(정자역, 강남역, 양재역, 광교역));
+        ExtractableResponse<Response> response = addSection(lineResponse.getId(), sectionRequest2, loginToken);
+
+        assertResponseStatus(response, HttpStatus.OK);
+        assertOrderedStations(lineResponse.getId(), Arrays.asList(station3, station1, station2, station4));
     }
 
-    @DisplayName("지하철 노선에 이미 등록되어있는 역을 등록한다.")
+    @DisplayName("지하철 노선에 이미 등록되어 있는 구간을 등록할 수 없다.")
     @Test
-    void addLineSectionWithSameStation() {
-        // when
-        ExtractableResponse<Response> response = 지하철_구간_생성_요청(신분당선, 강남역, 광교역, 3);
+    void cannotAddSectionWhenAlreadyExists() {
+        SectionRequest sectionRequest = new SectionRequest(station1.getId(), station4.getId(), 4);
 
-        // then
-        지하철_구간_등록_실패됨(response);
+        ExtractableResponse<Response> response = addSection(lineResponse.getId(), sectionRequest, loginToken);
+
+        assertResponseStatus(response, HttpStatus.BAD_REQUEST);
+        assertResponseMessage(response, "구간 추가에 필요한 정보가 잘못되었습니다.");
     }
 
-    @DisplayName("지하철 노선에 등록되지 않은 역을 기준으로 등록한다.")
+    @DisplayName("지하철 노선에 등록되지 않은 역들로 구성된 구간을 등록할 수 없다.")
     @Test
-    void addLineSectionWithNoStation() {
-        // when
-        ExtractableResponse<Response> response = 지하철_구간_생성_요청(신분당선, 정자역, 양재역, 3);
+    void cannotAddSectionWhenNotConnected() {
+        SectionRequest sectionRequest = new SectionRequest(station2.getId(), station3.getId(), 3);
 
-        // then
-        지하철_구간_등록_실패됨(response);
+        ExtractableResponse<Response> response = addSection(lineResponse.getId(), sectionRequest, loginToken);
+
+        assertResponseStatus(response, HttpStatus.BAD_REQUEST);
+        assertResponseMessage(response, "구간 추가에 필요한 정보가 잘못되었습니다.");
     }
 
-    @DisplayName("지하철 노선에 등록된 지하철역을 제외한다.")
+    @DisplayName("지하철 노선에 등록된 구간을 삭제한다.")
     @Test
-    void removeLineSection1() {
-        // given
-        지하철_구간_생성_요청(신분당선, 강남역, 양재역, 2);
-        지하철_구간_생성_요청(신분당선, 양재역, 정자역, 2);
+    void deleteSection() {
+        SectionRequest sectionRequest1 = new SectionRequest(station1.getId(), station2.getId(), 3);
+        SectionRequest sectionRequest2 = new SectionRequest(station3.getId(), station1.getId(), 5);
+        addSection(lineResponse.getId(), sectionRequest1, loginToken);
+        addSection(lineResponse.getId(), sectionRequest2, loginToken);
 
-        // when
-        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
+        ExtractableResponse<Response> response = deleteSection(lineResponse.getId(), station1.getId());
 
-        // then
-        지하철_노선에_지하철역_제외됨(removeResponse, 신분당선, Arrays.asList(강남역, 정자역, 광교역));
+        assertResponseStatus(response, HttpStatus.OK);
+        assertOrderedStations(lineResponse.getId(), Arrays.asList(station3, station2, station4));
     }
 
-    @DisplayName("지하철 노선에 등록된 지하철역이 두개일 때 한 역을 제외한다.")
+    @DisplayName("구간이 1개밖에 없는 노선의 구간을 삭제할 수 없다.")
     @Test
-    void removeLineSection2() {
-        // when
-        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 강남역);
+    void cannotDeleteOnlyOneSection() {
+        ExtractableResponse<Response> response = deleteSection(lineResponse.getId(), station1.getId());
 
-        // then
-        지하철_노선에_지하철역_제외_실패됨(removeResponse);
+        assertResponseStatus(response, HttpStatus.BAD_REQUEST);
+        assertResponseMessage(response, "노선에는 최소한 하나의 구간은 존재해야합니다.");
     }
 
-    public static void 지하철_구간_등록되어_있음(LineResponse lineResponse, StationResponse upStation, StationResponse downStation, int distance) {
-        지하철_구간_생성_요청(lineResponse, upStation, downStation, distance);
-    }
 
-    public static ExtractableResponse<Response> 지하철_구간_생성_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
-        SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
-
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(sectionRequest)
-                .when().post("/lines/{lineId}/sections", line.getId())
+    private ExtractableResponse<Response> deleteSection(long lineId, long stationId) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(loginToken)
+                .when().delete("/lines/{lineId}/sections?stationId={stationId}", lineId, stationId)
                 .then().log().all()
                 .extract();
+
     }
 
-    public static void 지하철_노선에_지하철역_순서_정렬됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
-        LineResponse line = response.as(LineResponse.class);
-        List<Long> stationIds = line.getStations().stream()
-                .map(it -> it.getId())
+    private void assertOrderedStations(long id, List<StationResponse> stationResponses) {
+        LineResponse lineResponse = findOneLine(id, loginToken)
+                .as(LineResponse.class);
+        List<Long> stationIds = lineResponse.getStations().stream()
+                .map(StationResponse::getId)
                 .collect(Collectors.toList());
-
-        List<Long> expectedStationIds = expectedStations.stream()
-                .map(it -> it.getId())
+        List<Long> expectedStationIds = stationResponses.stream()
+                .map(StationResponse::getId)
                 .collect(Collectors.toList());
-
         assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
-    }
-
-    public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(LineResponse line, StationResponse station) {
-        return RestAssured
-                .given().log().all()
-                .when().delete("/lines/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
-                .then().log().all()
-                .extract();
-    }
-
-    public static void 지하철_구간_생성됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    private void 지하철_구간_생성됨(ExtractableResponse<Response> result, LineResponse lineResponse, List<StationResponse> stationResponses) {
-        assertThat(result.statusCode()).isEqualTo(HttpStatus.OK.value());
-        ExtractableResponse<Response> response = 지하철_노선_조회_요청(lineResponse);
-        지하철_노선에_지하철역_순서_정렬됨(response, stationResponses);
-    }
-
-    public static void 지하철_노선에_지하철역_제외됨(ExtractableResponse<Response> result, LineResponse lineResponse, List<StationResponse> stationResponses) {
-        assertThat(result.statusCode()).isEqualTo(HttpStatus.OK.value());
-        ExtractableResponse<Response> response = 지하철_노선_조회_요청(lineResponse);
-        지하철_노선에_지하철역_순서_정렬됨(response, stationResponses);
-    }
-
-    public static void 지하철_구간_등록_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
-    }
-
-    public static void 지하철_노선에_지하철역_제외_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }
