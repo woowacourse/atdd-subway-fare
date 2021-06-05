@@ -16,7 +16,7 @@ public class FareTest {
     void BabyFareTest(int age) {
         LoginMember loginMember = new LoginMember(age);
         Fare fare = new Fare(1250);
-        fare.calculateFareByAge(loginMember);
+        fare.calculateFareByAge(loginMember.getAge());
         assertThat(fare.getFare()).isEqualTo(0);
     }
 
@@ -26,7 +26,7 @@ public class FareTest {
     void ChildrenFareTest(int age) {
         LoginMember loginMember = new LoginMember(age);
         Fare fare = new Fare(1250);
-        fare.calculateFareByAge(loginMember);
+        fare.calculateFareByAge(loginMember.getAge());
         assertThat(fare.getFare()).isEqualTo(450);
     }
 
@@ -36,7 +36,7 @@ public class FareTest {
     void TeenagerFareTest(int age) {
         LoginMember loginMember = new LoginMember(age);
         Fare fare = new Fare(1250);
-        fare.calculateFareByAge(loginMember);
+        fare.calculateFareByAge(loginMember.getAge());
         assertThat(fare.getFare()).isEqualTo(720);
     }
 
@@ -46,7 +46,7 @@ public class FareTest {
     void AdultFareTest(int age) {
         LoginMember loginMember = new LoginMember(age);
         Fare fare = new Fare(1250);
-        fare.calculateFareByAge(loginMember);
+        fare.calculateFareByAge(loginMember.getAge());
         assertThat(fare.getFare()).isEqualTo(1250);
     }
 }

@@ -24,9 +24,9 @@ public enum FareByAge {
         this.match = match;
     }
 
-    public static int calculate(int fare, LoginMember loginMember) {
+    public static int calculate(int fare, int age) {
         return Arrays.stream(values())
-            .filter(fareByAge -> fareByAge.match.test(loginMember.getAge()))
+            .filter(fareByAge -> fareByAge.match.test(age))
             .map(fareByAge -> fareByAge.agePolicy.calculate(fare))
             .findAny()
             .orElseThrow(RuntimeException::new);

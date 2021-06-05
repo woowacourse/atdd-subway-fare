@@ -36,7 +36,7 @@ public class PathService {
         SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
 
         Fare fare = new Fare(subwayPath.calculateFareByDistance());
-        fare.calculateFareByAge(loginMember);
+        fare.calculateFareByAge(loginMember.getAge());
 
         return PathResponseAssembler.assemble(subwayPath, fare);
     }
