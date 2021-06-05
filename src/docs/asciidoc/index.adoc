@@ -17,6 +17,13 @@
 
 include::{snippets}/invalid-token/http-response.adoc[]
 
+=== 응답 거절 형식
+
+400 ~ 500번대의 요청을 모종의 사유로 거절할 때, 그 사유를 'message'키에 담아 JSON 객체로 응답합니다.
+
+예시)
+include::{snippets}/station-create-fail-duplicate-name/http-response.adoc[]
+
 [[Member]]
 == 회원 관련 API
 
