@@ -1,17 +1,17 @@
 package wooteco.subway.member.application;
 
-import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.config.exception.ConflictException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
+import wooteco.subway.member.dto.EmailRequest;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
 @Service
 public class MemberService {
-    private MemberDao memberDao;
+    private final MemberDao memberDao;
 
     public MemberService(MemberDao memberDao) {
         this.memberDao = memberDao;
@@ -35,5 +35,11 @@ public class MemberService {
     public void deleteMember(LoginMember loginMember) {
         Member member = memberDao.findByEmail(loginMember.getEmail());
         memberDao.deleteById(member.getId());
+    }
+
+    public void checkEmail(EmailRequest request) {
+        if (memberDao.existsByEmail(request.getEmail())) {
+            throw new ConflictException("이미 사용된 이메일입니다.");
+        }
     }
 }

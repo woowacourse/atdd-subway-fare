@@ -1,6 +1,8 @@
 package wooteco.subway.station.application;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import wooteco.subway.config.exception.NotFoundException;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;
@@ -11,7 +13,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class StationService {
-    private StationDao stationDao;
+    private final StationDao stationDao;
 
     public StationService(StationDao stationDao) {
         this.stationDao = stationDao;
@@ -23,7 +25,11 @@ public class StationService {
     }
 
     public Station findStationById(Long id) {
-        return stationDao.findById(id);
+        try {
+            return stationDao.findById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new NotFoundException("존재하지 않는 역입니다.");
+        }
     }
 
     public List<StationResponse> findAllStationResponses() {
@@ -35,6 +41,7 @@ public class StationService {
     }
 
     public void deleteStationById(Long id) {
+        findStationById(id);
         stationDao.deleteById(id);
     }
 }

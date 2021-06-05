@@ -5,16 +5,13 @@ import wooteco.subway.station.domain.Station;
 import java.util.List;
 
 public class SubwayPath {
-    private List<SectionEdge> sectionEdges;
-    private List<Station> stations;
+
+    private final List<SectionEdge> sectionEdges;
+    private final List<Station> stations;
 
     public SubwayPath(List<SectionEdge> sectionEdges, List<Station> stations) {
         this.sectionEdges = sectionEdges;
         this.stations = stations;
-    }
-
-    public List<SectionEdge> getSectionEdges() {
-        return sectionEdges;
     }
 
     public List<Station> getStations() {
@@ -22,6 +19,24 @@ public class SubwayPath {
     }
 
     public int calculateDistance() {
-        return sectionEdges.stream().mapToInt(it -> it.getSection().getDistance()).sum();
+        return sectionEdges.stream()
+                .mapToInt(it -> it.getSection().getDistance())
+                .sum();
+    }
+
+    public int calculateFare() {
+        int distance = calculateDistance();
+        return distanceFare(distance) + lineAdditionalFare();
+    }
+
+    private int distanceFare(int distance) {
+        return new FareByDistance(distance).calculate();
+    }
+
+    private int lineAdditionalFare() {
+        return sectionEdges.stream()
+                .mapToInt(sectionEdge -> sectionEdge.getLine().getExtraFare())
+                .max()
+                .orElse(0);
     }
 }

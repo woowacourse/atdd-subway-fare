@@ -1,19 +1,15 @@
 package wooteco.subway.line.domain;
 
+import org.springframework.http.HttpStatus;
+import wooteco.subway.config.exception.BadRequestException;
+import wooteco.subway.config.exception.HttpException;
 import wooteco.subway.station.domain.Station;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Sections {
     private List<Section> sections = new ArrayList<>();
-
-    public List<Section> getSections() {
-        return sections;
-    }
 
     public Sections() {
     }
@@ -40,7 +36,7 @@ public class Sections {
     private void checkAlreadyExisted(Section section) {
         List<Station> stations = getStations();
         if (!stations.contains(section.getUpStation()) && !stations.contains(section.getDownStation())) {
-            throw new RuntimeException();
+            throw new BadRequestException("상/하행역 모두 노선에 존재하지 않습니다.");
         }
     }
 
@@ -48,7 +44,7 @@ public class Sections {
         List<Station> stations = getStations();
         List<Station> stationsOfNewSection = Arrays.asList(section.getUpStation(), section.getDownStation());
         if (stations.containsAll(stationsOfNewSection)) {
-            throw new RuntimeException();
+            throw new BadRequestException("상/하행역 모두 노선에 존재합니다.");
         }
     }
 
@@ -57,6 +53,14 @@ public class Sections {
                 .filter(it -> it.getUpStation().equals(section.getUpStation()))
                 .findFirst()
                 .ifPresent(it -> replaceSectionWithDownStation(section, it));
+    }
+
+    private void replaceSectionWithDownStation(Section newSection, Section existSection) {
+        if (existSection.getDistance() <= newSection.getDistance()) {
+            throw new BadRequestException("새로운 구간의 거리가 기존 구간의 거리보다 큽니다.");
+        }
+        this.sections.add(new Section(newSection.getDownStation(), existSection.getDownStation(), existSection.getDistance() - newSection.getDistance()));
+        this.sections.remove(existSection);
     }
 
     private void addSectionDownToDown(Section section) {
@@ -68,23 +72,15 @@ public class Sections {
 
     private void replaceSectionWithUpStation(Section newSection, Section existSection) {
         if (existSection.getDistance() <= newSection.getDistance()) {
-            throw new RuntimeException();
+            throw new BadRequestException("새로운 구간의 거리가 기존 구간의 거리보다 큽니다.");
         }
         this.sections.add(new Section(existSection.getUpStation(), newSection.getUpStation(), existSection.getDistance() - newSection.getDistance()));
         this.sections.remove(existSection);
     }
 
-    private void replaceSectionWithDownStation(Section newSection, Section existSection) {
-        if (existSection.getDistance() <= newSection.getDistance()) {
-            throw new RuntimeException();
-        }
-        this.sections.add(new Section(newSection.getDownStation(), existSection.getDownStation(), existSection.getDistance() - newSection.getDistance()));
-        this.sections.remove(existSection);
-    }
-
     public List<Station> getStations() {
         if (sections.isEmpty()) {
-            return Arrays.asList();
+            return Collections.emptyList();
         }
 
         List<Station> stations = new ArrayList<>();
@@ -102,13 +98,13 @@ public class Sections {
 
     private Section findUpEndSection() {
         List<Station> downStations = this.sections.stream()
-                .map(it -> it.getDownStation())
+                .map(Section::getDownStation)
                 .collect(Collectors.toList());
 
         return this.sections.stream()
                 .filter(it -> !downStations.contains(it.getUpStation()))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new HttpException("[서버오류] 상행종점을 찾을 수 없습니다.", HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
     private Section findSectionByNextUpStation(Station station) {
@@ -120,7 +116,7 @@ public class Sections {
 
     public void removeStation(Station station) {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new BadRequestException("노선에 존재하는 역이 2개면 역을 삭제할 수 없습니다.");
         }
 
         Optional<Section> upSection = sections.stream()
@@ -139,5 +135,9 @@ public class Sections {
 
         upSection.ifPresent(it -> sections.remove(it));
         downSection.ifPresent(it -> sections.remove(it));
+    }
+
+    public List<Section> getSections() {
+        return sections;
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import wooteco.subway.config.exception.BadRequestException;
 import wooteco.subway.station.domain.Station;
 
 import javax.sql.DataSource;
@@ -13,20 +14,19 @@ import java.util.List;
 
 @Repository
 public class StationDao {
-    private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcInsert insertAction;
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<Station> rowMapper = (rs, rowNum) ->
+    private final RowMapper<Station> rowMapper = (rs, rowNum) ->
             new Station(
                     rs.getLong("id"),
                     rs.getString("name")
             );
 
-
     public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("station")
+                .withTableName("STATION")
                 .usingGeneratedKeyColumns("id");
     }
 
@@ -43,7 +43,12 @@ public class StationDao {
 
     public void deleteById(Long id) {
         String sql = "delete from STATION where id = ?";
-        jdbcTemplate.update(sql, id);
+
+        try {
+            jdbcTemplate.update(sql, id);
+        } catch (Exception e) {
+            throw new BadRequestException("노선에 등록된 역은 삭제할 수 없습니다.");
+        }
     }
 
     public Station findById(Long id) {

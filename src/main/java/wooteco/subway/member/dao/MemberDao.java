@@ -12,10 +12,10 @@ import javax.sql.DataSource;
 
 @Repository
 public class MemberDao {
-    private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcInsert simpleJdbcInsert;
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert simpleJdbcInsert;
 
-    private RowMapper<Member> rowMapper = (rs, rowNum) ->
+    private final RowMapper<Member> rowMapper = (rs, rowNum) ->
             new Member(
                     rs.getLong("id"),
                     rs.getString("email"),
@@ -23,11 +23,10 @@ public class MemberDao {
                     rs.getInt("age")
             );
 
-
     public MemberDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
-                .withTableName("member")
+                .withTableName("MEMBER")
                 .usingGeneratedKeyColumns("id");
     }
 
@@ -39,7 +38,9 @@ public class MemberDao {
 
     public void update(Member member) {
         String sql = "update MEMBER set email = ?, password = ?, age = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{member.getEmail(), member.getPassword(), member.getAge(), member.getId()});
+        Object[] params = {
+                member.getEmail(), member.getPassword(), member.getAge(), member.getId()};
+        jdbcTemplate.update(sql, params);
     }
 
     public void deleteById(Long id) {
@@ -47,13 +48,13 @@ public class MemberDao {
         jdbcTemplate.update(sql, id);
     }
 
-    public Member findById(Long id) {
-        String sql = "select * from MEMBER where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
-    }
-
     public Member findByEmail(String email) {
         String sql = "select * from MEMBER where email = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, email);
+    }
+
+    public Boolean existsByEmail(String email) {
+        String sql = "select exists (select 1 from MEMBER where email = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, email);
     }
 }
