@@ -90,7 +90,7 @@ public class StationControllerTest {
 
         given(stationService.saveStation(any(StationRequest.class))).willReturn(stationResponse);
         given(loginInterceptor.preHandle(any(), any(), any()))
-            .willThrow(AuthorizationException.class);
+            .willThrow(new AuthorizationException());
 
         //when
         mockMvc.perform(post("/api/stations")
