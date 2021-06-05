@@ -60,4 +60,10 @@ public class Member implements User{
         return new AgeDiscountFareCalculator(defaultCalculator, age)
             .calculateFare(distance, extraFare);
     }
+
+    public void updateInfo(String email, String password, Integer age) {
+        this.email = email;
+        this.password = password;
+        this.age = age;
+    }
 }
