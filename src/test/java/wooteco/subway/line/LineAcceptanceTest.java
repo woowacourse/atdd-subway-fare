@@ -14,7 +14,7 @@ import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.exception.ExceptionResponse;
-import wooteco.subway.line.dto.LineInfoResponse;
+import wooteco.subway.line.dto.LineWithTotalDistanceResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.LineResponseWithSection;
@@ -319,8 +319,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .map(LineResponse::getId)
                 .collect(Collectors.toList());
 
-        List<Long> resultLineIds = response.jsonPath().getList(".", LineInfoResponse.class).stream()
-                .map(LineInfoResponse::getId)
+        List<Long> resultLineIds = response.jsonPath().getList(".", LineWithTotalDistanceResponse.class).stream()
+                .map(LineWithTotalDistanceResponse::getId)
                 .collect(Collectors.toList());
 
         assertThat(resultLineIds).containsAll(expectedLineIds);

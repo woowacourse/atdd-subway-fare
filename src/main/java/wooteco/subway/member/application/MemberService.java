@@ -36,7 +36,8 @@ public class MemberService {
     @Transactional
     public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
         Member member = memberDao.findByEmail(loginMember.getEmail());
-        memberDao.update(new Member(member.getId(), memberRequest));
+        member.update(memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge());
+        memberDao.update(member);
     }
 
     @Transactional

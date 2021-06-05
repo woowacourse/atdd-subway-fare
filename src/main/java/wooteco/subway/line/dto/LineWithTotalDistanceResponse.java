@@ -3,7 +3,7 @@ package wooteco.subway.line.dto;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.station.domain.Station;
 
-public class LineInfoResponse {
+public class LineWithTotalDistanceResponse {
     private Long id;
     private String name;
     private String color;
@@ -11,10 +11,10 @@ public class LineInfoResponse {
     private Station endStation;
     private int distance;
 
-    public LineInfoResponse() {
+    public LineWithTotalDistanceResponse() {
     }
 
-    public LineInfoResponse(Long id, String name, String color, Station startStation,
+    public LineWithTotalDistanceResponse(Long id, String name, String color, Station startStation,
         Station endStation, int distance) {
         this.id = id;
         this.name = name;
@@ -24,7 +24,7 @@ public class LineInfoResponse {
         this.distance = distance;
     }
 
-    public LineInfoResponse(Line line) {
+    public LineWithTotalDistanceResponse(Line line) {
         this(line.getId(), line.getName(), line.getColor(), line.getStartStation(), line.getEndStation(),
             line.getTotalDistance());
     }

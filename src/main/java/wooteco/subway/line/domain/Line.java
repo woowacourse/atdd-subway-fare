@@ -54,15 +54,6 @@ public class Line {
         this.extraFare = extraFare;
     }
 
-    public Line(LineRequest request) {
-        this(request.getName(), request.getColor(), request.getExtraFare());
-    }
-
-    public void update(Line line) {
-        this.name = line.getName();
-        this.color = line.getColor();
-    }
-
     public void addSection(Station upStation, Station downStation, int distance) {
         Section section = new Section(upStation, downStation, distance);
         sections.addSection(section);

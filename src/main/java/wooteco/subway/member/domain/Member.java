@@ -32,6 +32,12 @@ public class Member {
         this(id, memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge());
     }
 
+    public void update(String email, String password, Integer age) {
+        this.email = email;
+        this.password = password;
+        this.age = age;
+    }
+
     public void checkPassword(String password) {
         if (!StringUtils.equals(this.password, password)) {
             throw INVALID_PASSWORD.makeException();

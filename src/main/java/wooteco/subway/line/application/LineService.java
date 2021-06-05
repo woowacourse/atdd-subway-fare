@@ -13,7 +13,7 @@ import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
-import wooteco.subway.line.dto.LineInfoResponse;
+import wooteco.subway.line.dto.LineWithTotalDistanceResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.LineResponseWithSection;
@@ -40,7 +40,7 @@ public class LineService {
         if (lineDao.isExistByLineName(request.getName())) {
             throw DUPLICATED_LINE_NAME.makeException();
         }
-        Line persistLine = lineDao.insert(new Line(request));
+        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);
     }
@@ -53,9 +53,9 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
-    public List<LineInfoResponse> findLineResponses() {
+    public List<LineWithTotalDistanceResponse> findLineResponses() {
         return findLines().stream()
-            .map(LineInfoResponse::new)
+            .map(LineWithTotalDistanceResponse::new)
             .collect(Collectors.toList());
     }
 
