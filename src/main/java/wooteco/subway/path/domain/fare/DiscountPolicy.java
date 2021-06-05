@@ -6,33 +6,19 @@ import java.util.Arrays;
 import java.util.function.Predicate;
 
 public enum DiscountPolicy {
-    ADULT("성인", 0, 1.0, (age) -> age >= 19),
-    TEENAGER("청소년", 350, 0.8, (age) -> 13 <= age && age <= 18),
-    CHILD("어린이", 350, 0.5, (age) -> 6 <= age && age < 13),
-    BABY("유아", 0, 0.0, (age) -> age < 6);
+    ADULT(0, 1.0, (age) -> age >= 19),
+    TEENAGER(350, 0.8, (age) -> 13 <= age && age <= 18),
+    CHILD(350, 0.5, (age) -> 6 <= age && age < 13),
+    BABY(0, 0.0, (age) -> age < 6);
 
-    private final String korean;
     private final int staticDiscount;
     private final double discountRate;
     private final Predicate<Integer> findAge;
 
-    DiscountPolicy(String korean, int staticDiscount, double discountRate, Predicate<Integer> findAge) {
-        this.korean = korean;
+    DiscountPolicy(int staticDiscount, double discountRate, Predicate<Integer> findAge) {
         this.staticDiscount = staticDiscount;
         this.discountRate = discountRate;
         this.findAge = findAge;
-    }
-
-    public int staticDiscount() {
-        return staticDiscount;
-    }
-
-    public double discountRate() {
-        return discountRate;
-    }
-
-    public String getKorean() {
-        return korean;
     }
 
     public static DiscountPolicy findByAge(int age) {

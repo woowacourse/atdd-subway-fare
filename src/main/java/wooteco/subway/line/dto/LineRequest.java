@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 public class LineRequest {
-    public static final int DEFAULT_EXTRAFARE = 0;
+    private static final int DEFAULT_EXTRA_FARE = 0;
     @NotBlank(message = "입력되지 않은 항목을 확인해주세요")
     private String name;
     @NotBlank(message = "입력되지 않은 항목을 확인해주세요")
@@ -24,7 +24,7 @@ public class LineRequest {
     }
 
     public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance) {
-        this(name, color, upStationId, downStationId, distance, DEFAULT_EXTRAFARE);
+        this(name, color, upStationId, downStationId, distance, DEFAULT_EXTRA_FARE);
     }
 
     public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance, int extraFare) {
@@ -38,7 +38,7 @@ public class LineRequest {
     }
 
     private void validateExtraFare(int extraFare) {
-        if (extraFare < DEFAULT_EXTRAFARE) {
+        if (extraFare < DEFAULT_EXTRA_FARE) {
             throw new InvalidInsertException("추가요금은 음수일 수 없습니다.");
         }
     }

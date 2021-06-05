@@ -2,27 +2,31 @@ package wooteco.subway.path.domain.fare;
 
 import wooteco.subway.member.domain.User;
 
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import static wooteco.subway.path.domain.fare.DiscountPolicy.*;
 
 public class FareTable {
-    private Map<String, Integer> fareTable;
+    private final int adultFare;
+    private final int teenFare;
+    private final int childFare;
+    private final int babyFare;
     private final int defaultFare;
 
-    private FareTable(Map<String, Integer> fareTable, int defaultFare) {
-        this.fareTable = fareTable;
+    private FareTable(int adultFare, int teenFare, int childFare, int babyFare, int defaultFare) {
+        this.adultFare = adultFare;
+        this.teenFare = teenFare;
+        this.childFare = childFare;
+        this.babyFare = babyFare;
         this.defaultFare = defaultFare;
     }
 
     public static FareTable of(Fare fare, User member) {
-        Map<String, Integer> fareTable = new LinkedHashMap<>();
-        Arrays.stream(values())
-                .forEach(policy -> fareTable.put(policy.getKorean(), policy.apply(fare)));
+        return new FareTable(
+                ADULT.apply(fare),
+                TEENAGER.apply(fare),
+                CHILD.apply(fare),
+                BABY.apply(fare),
+                findByAge(fare, member));
 
-        return new FareTable(fareTable, findByAge(fare, member));
     }
 
     private static int findByAge(Fare fare, User member) {
@@ -33,8 +37,20 @@ public class FareTable {
         return memberDiscount.apply(fare);
     }
 
-    public Map<String, Integer> getFareTable() {
-        return fareTable;
+    public int getAdultFare() {
+        return adultFare;
+    }
+
+    public int getTeenFare() {
+        return teenFare;
+    }
+
+    public int getChildFare() {
+        return childFare;
+    }
+
+    public int getBabyFare() {
+        return babyFare;
     }
 
     public int getDefaultFare() {
