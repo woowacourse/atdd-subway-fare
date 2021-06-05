@@ -43,8 +43,12 @@ public class Fare {
     }
 
     private BigDecimal calculateDiscountPolicy(LoginMember loginMember, BigDecimal fare) {
+        if(!loginMember.isPresent()) {
+            return BigDecimal.ZERO;
+        }
+
         return discountPolicies.stream()
-            .map(farePolicy -> farePolicy.calculate(loginMember).apply(fare))
+            .map(farePolicy -> farePolicy.calculate(loginMember.getAge()).apply(fare))
             .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 

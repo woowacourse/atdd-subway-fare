@@ -9,5 +9,5 @@ public interface DiscountFarePolicy {
         return fare -> BigDecimal.ZERO;
     }
 
-    UnaryOperator<BigDecimal> calculate(LoginMember loginMember);
+    UnaryOperator<BigDecimal> calculate(Integer age);
 }

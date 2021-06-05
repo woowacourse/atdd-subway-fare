@@ -15,6 +15,8 @@ import wooteco.subway.auth.ui.dto.TokenRequest;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.infrastructure.dao.MemberDao;
 
+import java.util.Optional;
+
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -48,7 +50,7 @@ class AuthControllerTest {
 
     @Test
     void login() throws Exception {
-        given(memberDao.findByEmail(anyString())).willReturn(new Member(1L, EMAIL, PASSWORD, 10));
+        given(memberDao.findByEmail(anyString())).willReturn(Optional.of(new Member(1L, EMAIL, PASSWORD, 10)));
         given(jwtTokenProvider.createToken(anyString())).willReturn(TOKEN);
         given(memberDao.existsByEmail(anyString())).willReturn(true);
 
