@@ -14,17 +14,17 @@ import wooteco.common.exception.notfound.NotFoundException;
 public class ExceptionAdviceController {
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity notFound(NotFoundException e) {
+    public ResponseEntity<String> notFound(NotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
     @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity badRequest(BadRequestException e) {
+    public ResponseEntity<String> badRequest(BadRequestException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
     @ExceptionHandler(AuthorizationException.class)
-    public ResponseEntity authorization(AuthorizationException e) {
+    public ResponseEntity<String> authorization(AuthorizationException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
     }
 
