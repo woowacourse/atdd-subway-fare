@@ -19,9 +19,7 @@ public class MemberService {
     }
 
     public MemberResponse createMember(MemberRequest request) {
-        if (memberDao.isExistEmail(request.getEmail())) {
-            throw new MemberException("이미 존재하는 유저 이메일입니다.");
-        }
+        checkDuplicatedEmail(request.getEmail());
 
         Member member = memberDao.insert(request.toMember());
         return MemberResponse.of(member);
@@ -33,14 +31,20 @@ public class MemberService {
     }
 
     public void updateMember(LoginUser loginUser, MemberRequest memberRequest) {
-
         Member member = memberDao.findByEmail(loginUser.getEmail());
 
-        if (!member.isSameEmail(memberRequest.getEmail())) {
-            throw new MemberException("이메일은 변경할 수 없습니다.");
+        String requestEmail = memberRequest.getEmail();
+        if (!requestEmail.equals(loginUser.getEmail())) {
+            checkDuplicatedEmail(requestEmail);
         }
 
         memberDao.update(new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
+    }
+
+    private void checkDuplicatedEmail(String requestEmail) {
+        if (memberDao.isExistEmail(requestEmail)) {
+            throw new MemberException("이미 존재하는 유저 이메일입니다.");
+        }
     }
 
     public void deleteMember(LoginUser loginUser) {
