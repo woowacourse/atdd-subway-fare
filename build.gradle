@@ -45,7 +45,7 @@ dependencies {
 
 	// restdocs
 	asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor'
-	testCompile 'org.springframework.restdocs:spring-restdocs-restassured'
+	testImplementation 'org.springframework.restdocs:spring-restdocs-restassured'
 }
 
 ext {
