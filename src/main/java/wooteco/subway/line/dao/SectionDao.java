@@ -3,6 +3,7 @@ package wooteco.subway.line.dao;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import wooteco.subway.exception.delete.StationDeleteException;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 
@@ -52,5 +53,16 @@ public class SectionDao {
                 .collect(Collectors.toList());
 
         simpleJdbcInsert.executeBatch(batchValues.toArray(new Map[sections.size()]));
+    }
+
+    public void findSectionByStationId(Long stationId) {
+        String sql = "select id from SECTION where up_station_id = ? or down_station_id = ?";
+        List<Long> id = jdbcTemplate.query(sql, (resultSet, rowNum) -> {
+            return resultSet.getLong("id");
+        }, stationId, stationId);
+
+        if (!id.isEmpty()) {
+            throw new StationDeleteException();
+        }
     }
 }

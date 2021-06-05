@@ -22,57 +22,6 @@ public class StationAcceptanceTest extends AcceptanceTest {
     private static final String 강남역 = "강남역";
     private static final String 역삼역 = "역삼역";
 
-    @DisplayName("지하철역을 생성한다.")
-    @Test
-    void createStation() {
-        // when
-        ExtractableResponse<Response> response = 지하철역_생성_요청(강남역);
-
-        // then
-        지하철역_생성됨(response);
-    }
-
-    @DisplayName("기존에 존재하는 지하철역 이름으로 지하철역을 생성한다.")
-    @Test
-    void createStationWithDuplicateName() {
-        //given
-        지하철역_등록되어_있음(강남역);
-
-        // when
-        ExtractableResponse<Response> response = 지하철역_생성_요청(강남역);
-
-        // then
-        지하철역_생성_실패됨(response);
-    }
-
-    @DisplayName("지하철역을 조회한다.")
-    @Test
-    void getStations() {
-        // given
-        StationResponse stationResponse1 = 지하철역_등록되어_있음(강남역);
-        StationResponse stationResponse2 = 지하철역_등록되어_있음(역삼역);
-
-        // when
-        ExtractableResponse<Response> response = 지하철역_목록_조회_요청();
-
-        // then
-        지하철역_목록_응답됨(response);
-        지하철역_목록_포함됨(response, Arrays.asList(stationResponse1, stationResponse2));
-    }
-
-    @DisplayName("지하철역을 제거한다.")
-    @Test
-    void deleteStation() {
-        // given
-        StationResponse stationResponse = 지하철역_등록되어_있음(강남역);
-
-        // when
-        ExtractableResponse<Response> response = 지하철역_제거_요청(stationResponse);
-
-        // then
-        지하철역_삭제됨(response);
-    }
-
     public static StationResponse 지하철역_등록되어_있음(String name) {
         return 지하철역_생성_요청(name).as(StationResponse.class);
     }
@@ -132,5 +81,149 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 .collect(Collectors.toList());
 
         assertThat(resultLineIds).containsAll(expectedLineIds);
+    }
+
+    public static void 지하철역_생성되지_않음(ExtractableResponse response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    public static ExtractableResponse<Response> 지하철역_수정_요청(Long id, String name) {
+        StationRequest stationRequest = new StationRequest(name);
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(stationRequest)
+                .when().put("/stations/" + id)
+                .then().log().all()
+                .extract();
+    }
+
+    public static void 지하철역_수정됨(ExtractableResponse response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 지하철역_수정_실패(ExtractableResponse response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("지하철역을 생성한다.")
+    @Test
+    void createStation() {
+        // when
+        ExtractableResponse<Response> response = 지하철역_생성_요청(강남역);
+
+        // then
+        지하철역_생성됨(response);
+    }
+
+    @DisplayName("지하철 역은 2자 이상 20자 이하의 한글 (숫자 포함. 공백 허용 X)")
+    @Test
+    void createErrorNameStation() throws Exception {
+        //given
+        String numberName = "공백포함 역";
+
+        //when
+        ExtractableResponse<Response> response = 지하철역_생성_요청(numberName);
+
+        //then
+        지하철역_생성되지_않음(response);
+
+        //given
+        numberName = "역";
+
+        //when
+        response = 지하철역_생성_요청(numberName);
+
+        //then
+        지하철역_생성되지_않음(response);
+
+        //given
+        numberName = "스무자넘는매우매우매우매우매우매우진짜이상하고정말존재하지않을것같은역";
+
+        //when
+        response = 지하철역_생성_요청(numberName);
+
+        //then
+        지하철역_생성되지_않음(response);
+    }
+
+    @DisplayName("기존에 존재하는 지하철역 이름으로 지하철역을 생성한다.")
+    @Test
+    void createStationWithDuplicateName() {
+        //given
+        지하철역_등록되어_있음(강남역);
+
+        // when
+        ExtractableResponse<Response> response = 지하철역_생성_요청(강남역);
+
+        // then
+        지하철역_생성_실패됨(response);
+    }
+
+    @DisplayName("지하철역을 조회한다.")
+    @Test
+    void getStations() {
+        // given
+        StationResponse stationResponse1 = 지하철역_등록되어_있음(강남역);
+        StationResponse stationResponse2 = 지하철역_등록되어_있음(역삼역);
+
+        // when
+        ExtractableResponse<Response> response = 지하철역_목록_조회_요청();
+
+        // then
+        지하철역_목록_응답됨(response);
+        지하철역_목록_포함됨(response, Arrays.asList(stationResponse1, stationResponse2));
+    }
+
+    @DisplayName("지하철역을 제거한다.")
+    @Test
+    void deleteStation() {
+        // given
+        StationResponse stationResponse = 지하철역_등록되어_있음(강남역);
+
+        // when
+        ExtractableResponse<Response> response = 지하철역_제거_요청(stationResponse);
+
+        // then
+        지하철역_삭제됨(response);
+    }
+
+    @DisplayName("예외 - 중복된 지하철 역을 생성한다.")
+    @Test
+    void createDuplicateStation() {
+        //given
+        StationResponse stationResponse = 지하철역_등록되어_있음(강남역);
+
+        //when
+        ExtractableResponse<Response> response = 지하철역_생성_요청(stationResponse.getName());
+
+        //then
+        지하철역_생성되지_않음(response);
+    }
+
+    @DisplayName("지하철 역 이름을 수정한다.")
+    @Test
+    void updateStationName_success() throws Exception {
+        //given
+        StationResponse stationResponse = 지하철역_등록되어_있음(강남역);
+
+        //when
+        ExtractableResponse<Response> response = 지하철역_수정_요청(stationResponse.getId(), "송파나루역");
+
+        //then
+        지하철역_수정됨(response);
+    }
+
+    @DisplayName("지하철 역 이름을 실패한다. - 이름 중복")
+    @Test
+    void updateStationName_fail_duplicated() throws Exception {
+        //given
+        StationResponse stationResponse = 지하철역_등록되어_있음(강남역);
+
+        //when
+        ExtractableResponse<Response> response = 지하철역_수정_요청(stationResponse.getId(), "강남역");
+
+        //then
+        지하철역_수정_실패(response);
     }
 }

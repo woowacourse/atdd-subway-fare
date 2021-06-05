@@ -1,6 +1,7 @@
 package wooteco.subway.line.application;
 
 import org.springframework.stereotype.Service;
+import wooteco.subway.exception.duplicate.LineDuplicatedException;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
@@ -8,11 +9,12 @@ import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.line.dto.SectionResponse;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 public class LineService {
@@ -27,9 +29,17 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
+        validateInsert(request);
+        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);
+    }
+
+    private void validateInsert(final LineRequest lineRequest) {
+        final Optional<Line> foundLine = lineDao.findByName(lineRequest.getName());
+        if (foundLine.isPresent()) {
+            throw new LineDuplicatedException();
+        }
     }
 
     private Section addInitSection(Line line, LineRequest request) {
@@ -44,9 +54,7 @@ public class LineService {
 
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
-        return persistLines.stream()
-                .map(line -> LineResponse.of(line))
-                .collect(Collectors.toList());
+        return LineResponse.listOf(persistLines);
     }
 
     public List<Line> findLines() {
@@ -63,21 +71,28 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        validateInsert(lineUpdateRequest);
+        Line savedLine = findLineById(id);
+        lineDao.update(new Line(savedLine.getId(), lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
     public void deleteLineById(Long id) {
-        lineDao.deleteById(id);
+        Line saved = findLineById(id);
+        sectionDao.deleteByLineId(saved.getId());
+        lineDao.deleteById(saved.getId());
     }
 
-    public void addLineStation(Long lineId, SectionRequest request) {
+    public SectionResponse addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
-        line.addSection(upStation, downStation, request.getDistance());
+        Section section = new Section(upStation, downStation, request.getDistance());
+        line.addSection(section);
 
         sectionDao.deleteByLineId(lineId);
         sectionDao.insertSections(line);
+
+        return SectionResponse.of(section);
     }
 
     public void removeLineStation(Long lineId, Long stationId) {

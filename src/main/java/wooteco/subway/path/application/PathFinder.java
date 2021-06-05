@@ -14,6 +14,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class PathFinder {
+    public PathFinder() {
+    }
+
     public SubwayPath findPath(List<Line> lines, Station source, Station target) {
         if (source.equals(target)) {
             throw new InvalidPathException();
@@ -22,7 +25,6 @@ public class PathFinder {
         graph.addVertexWith(lines);
         graph.addEdge(lines);
 
-        // 다익스트라 최단 경로 찾기
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
         GraphPath<Station, SectionEdge> path = dijkstraShortestPath.getPath(source, target);
         if (path == null) {
