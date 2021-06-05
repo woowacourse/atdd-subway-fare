@@ -26,12 +26,12 @@ public class MemberService {
     }
 
     public MemberResponse findMember(LoginUser loginUser) {
-        Member member = memberDao.findByEmail(loginUser.getEmail());
+        Member member = memberDao.findById(loginUser.getId());
         return MemberResponse.of(member);
     }
 
     public void updateMember(LoginUser loginUser, MemberRequest memberRequest) {
-        Member member = memberDao.findByEmail(loginUser.getEmail());
+        Member member = memberDao.findById(loginUser.getId());
 
         String requestEmail = memberRequest.getEmail();
         if (!requestEmail.equals(loginUser.getEmail())) {
@@ -42,17 +42,17 @@ public class MemberService {
     }
 
     private void checkDuplicatedEmail(String requestEmail) {
-        if (memberDao.isExistEmail(requestEmail)) {
+        if (memberDao.isExistingEmail(requestEmail)) {
             throw new MemberException("이미 존재하는 유저 이메일입니다.");
         }
     }
 
     public void deleteMember(LoginUser loginUser) {
-        Member member = memberDao.findByEmail(loginUser.getEmail());
+        Member member = memberDao.findById(loginUser.getId());
         memberDao.deleteById(member.getId());
     }
 
-    public EmailExistsResponse isExistsEmail(String email) {
-        return new EmailExistsResponse(memberDao.isExistEmail(email));
+    public EmailExistsResponse isExistingEmail(String email) {
+        return new EmailExistsResponse(memberDao.isExistingEmail(email));
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.auth.application.AuthorizationException;
+import wooteco.subway.member.application.MemberException;
 import wooteco.subway.member.domain.Member;
 
 import javax.sql.DataSource;
@@ -41,7 +42,7 @@ public class MemberDao {
 
     public void update(Member member) {
         String sql = "update MEMBER set email = ?, password = ?, age = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{member.getEmail(), member.getPassword(), member.getAge(), member.getId()});
+        jdbcTemplate.update(sql, member.getEmail(), member.getPassword(), member.getAge(), member.getId());
     }
 
     public void deleteById(Long id) {
@@ -50,8 +51,12 @@ public class MemberDao {
     }
 
     public Member findById(Long id) {
-        String sql = "select * from MEMBER where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        try {
+            String sql = "select * from MEMBER where id = ?";
+            return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        } catch (Exception e) {
+            throw new MemberException("id에 해당하는 회원정보를 찾을 수 없습니다.");
+        }
     }
 
     public Member findByEmail(String email) {
@@ -63,7 +68,7 @@ public class MemberDao {
         }
     }
 
-    public boolean isExistEmail(String email) {
+    public boolean isExistingEmail(String email) {
         String sql = "SELECT EXISTS (SELECT id FROM MEMBER where email = ?)";
         return jdbcTemplate.queryForObject(sql, Boolean.class, email);
     }

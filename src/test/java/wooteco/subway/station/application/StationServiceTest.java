@@ -3,20 +3,15 @@ package wooteco.subway.station.application;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.jdbc.Sql;
+import wooteco.subway.ServiceTest;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 
-@SpringBootTest
-@Sql(value = "classpath:truncateAll.sql", executionPhase = AFTER_TEST_METHOD)
-@DisplayName("StationService")
-class StationServiceTest {
+class StationServiceTest extends ServiceTest {
     @Autowired
     private StationService stationService;
 

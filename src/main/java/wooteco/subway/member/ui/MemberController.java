@@ -24,7 +24,7 @@ public class MemberController {
 
     @GetMapping("/exists/{email}")
     public ResponseEntity<EmailExistsResponse> isExistsEmail(@PathVariable String email) {
-        return ResponseEntity.ok(memberService.isExistsEmail(email));
+        return ResponseEntity.ok(memberService.isExistingEmail(email));
     }
 
     @PostMapping
