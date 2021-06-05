@@ -1,5 +1,6 @@
 package wooteco.subway.station.dao;
 
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -13,10 +14,10 @@ import java.util.List;
 
 @Repository
 public class StationDao {
-    private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcInsert insertAction;
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<Station> rowMapper = (rs, rowNum) ->
+    private final RowMapper<Station> rowMapper = (rs, rowNum) ->
             new Station(
                     rs.getLong("id"),
                     rs.getString("name")
@@ -37,7 +38,8 @@ public class StationDao {
     }
 
     public List<Station> findAll() {
-        String sql = "select * from STATION";
+        String sql = "select * from STATION " +
+                "order by id asc";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
@@ -48,6 +50,11 @@ public class StationDao {
 
     public Station findById(Long id) {
         String sql = "select * from STATION where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        return DataAccessUtils.singleResult(jdbcTemplate.query(sql, rowMapper, id));
+    }
+
+    public boolean existsByName(String name) {
+        String sql = "select exists(select * from STATION where name = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, name);
     }
 }

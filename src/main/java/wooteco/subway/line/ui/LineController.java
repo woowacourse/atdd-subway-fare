@@ -3,27 +3,28 @@ package wooteco.subway.line.ui;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.line.application.LineService;
+import wooteco.subway.line.dto.LineDetailResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
 
 @RestController
 @RequestMapping("/lines")
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class LineController {
 
-    private LineService lineService;
+    private final LineService lineService;
 
     public LineController(LineService lineService) {
         this.lineService = lineService;
     }
 
     @PostMapping
-    public ResponseEntity createLine(@RequestBody LineRequest lineRequest) {
+    public ResponseEntity createLine(@Valid @RequestBody LineRequest lineRequest) {
         LineResponse line = lineService.saveLine(lineRequest);
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
@@ -44,6 +45,18 @@ public class LineController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/detail")
+    public ResponseEntity<List<LineDetailResponse>> findAllLineDetails() {
+        List<LineDetailResponse> lineDetailResponses = lineService.findLineDetails();
+        return ResponseEntity.ok(lineDetailResponses);
+    }
+
+    @GetMapping("/detail/{id}")
+    public ResponseEntity<LineDetailResponse> findLineDetailById(@PathVariable Long id) {
+        LineDetailResponse lineDetailResponses = lineService.findLineDetail(id);
+        return ResponseEntity.ok(lineDetailResponses);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity deleteLine(@PathVariable Long id) {
         lineService.deleteLineById(id);
@@ -51,15 +64,15 @@ public class LineController {
     }
 
     @PostMapping("/{lineId}/sections")
-    public ResponseEntity addLineStation(@PathVariable Long lineId, @RequestBody SectionRequest sectionRequest) {
-        lineService.addLineStation(lineId, sectionRequest);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<LineResponse> addLineStation(@PathVariable Long lineId, @RequestBody SectionRequest sectionRequest) {
+        LineResponse lineResponse = lineService.addLineStation(lineId, sectionRequest);
+        return ResponseEntity.created(URI.create("/lines/" + lineId)).body(lineResponse);
     }
 
     @DeleteMapping("/{lineId}/sections")
     public ResponseEntity removeLineStation(@PathVariable Long lineId, @RequestParam Long stationId) {
         lineService.removeLineStation(lineId, stationId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @ExceptionHandler(SQLException.class)
