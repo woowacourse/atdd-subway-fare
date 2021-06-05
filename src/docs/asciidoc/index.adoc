@@ -1,0 +1,117 @@
+ifndef::snippets[]
+:snippets: ../../../build/generated-snippets
+endif::[]
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+
+== Station(역)
+=== 역 생성
+==== Request
+include::{snippets}/station-create/http-request.adoc[]
+==== Response
+include::{snippets}/station-create/http-response.adoc[]
+
+=== 역 조회
+==== Request
+include::{snippets}/station-find/http-request.adoc[]
+==== Response
+include::{snippets}/station-find/http-response.adoc[]
+
+=== 역 삭제
+==== Request
+include::{snippets}/station-delete/http-request.adoc[]
+==== Response
+include::{snippets}/station-delete/http-response.adoc[]
+
+== Line(노선)
+=== 노선 생성
+==== Request
+include::{snippets}/line-create/http-request.adoc[]
+==== Response
+include::{snippets}/line-create/http-response.adoc[]
+
+=== 노선 전체 조회
+==== Request
+include::{snippets}/lines-find/http-request.adoc[]
+==== Response
+include::{snippets}/lines-find/http-response.adoc[]
+
+=== 노선 전체 조회 (새로운 API)
+==== Request
+include::{snippets}/lines-all/http-request.adoc[]
+==== Response
+include::{snippets}/lines-all/http-response.adoc[]
+
+=== 노선 ID 조회
+==== Request
+include::{snippets}/line-findbyid/http-request.adoc[]
+==== Response
+include::{snippets}/line-findbyid/http-response.adoc[]
+
+=== 노선 수정
+==== Request
+include::{snippets}/lines-update/http-request.adoc[]
+==== Response
+include::{snippets}/lines-update/http-response.adoc[]
+
+=== 노선 삭제
+==== Request
+include::{snippets}/line-delete/http-request.adoc[]
+==== Response
+include::{snippets}/line-delete/http-response.adoc[]
+
+== Section(구간)
+=== 구간 생성
+==== Request
+include::{snippets}/section-create/http-request.adoc[]
+==== Response
+include::{snippets}/section-create/http-response.adoc[]
+
+=== 구간 삭제
+==== Request
+include::{snippets}/section-delete/http-request.adoc[]
+==== Response
+include::{snippets}/section-delete/http-response.adoc[]
+
+== Path(경로)
+=== 경로 검색
+==== Request
+include::{snippets}/path-find/http-request.adoc[]
+==== Response
+include::{snippets}/path-find/http-response.adoc[]
+
+== Auth(인증)
+=== 토큰 로그인
+==== Request
+include::{snippets}/auth-login/http-request.adoc[]
+==== Response
+include::{snippets}/auth-login/http-response.adoc[]
+
+== Member(회원)
+=== 회원 가입
+==== Request
+include::{snippets}/member-create/http-request.adoc[]
+==== Response
+include::{snippets}/member-create/http-response.adoc[]
+
+=== 회원 조회
+==== Request
+include::{snippets}/member-find/http-request.adoc[]
+==== Response
+include::{snippets}/member-find/http-response.adoc[]
+
+=== 회원 수정
+==== Request
+include::{snippets}/member-update/http-request.adoc[]
+==== Response
+include::{snippets}/member-update/http-response.adoc[]
+
+=== 회원 삭제
+==== Request
+include::{snippets}/member-delete/http-request.adoc[]
+==== Response
+include::{snippets}/member-delete/http-response.adoc[]
+
