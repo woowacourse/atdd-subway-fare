@@ -13,6 +13,8 @@ import wooteco.subway.exception.AuthorizationException;
 import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.exception.SubwayException;
 
+import java.util.Objects;
+
 @RestControllerAdvice(annotations = RestController.class)
 public class SubwayAdvice {
 
@@ -40,10 +42,9 @@ public class SubwayAdvice {
     public ResponseEntity<MessageDto> handleMethodArgumentNotValidException(
         MethodArgumentNotValidException e) {
         return ResponseEntity.badRequest().body(new MessageDto(
-            e.getBindingResult()
-                .getAllErrors()
-                .get(0)
-                .getDefaultMessage()
+            Objects.requireNonNull(e.getBindingResult()
+                    .getFieldError())
+                .getField()
             )
         );
     }
