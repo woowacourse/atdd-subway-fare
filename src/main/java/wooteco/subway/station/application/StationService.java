@@ -2,6 +2,7 @@ package wooteco.subway.station.application;
 
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.InvalidInsertException;
 import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.station.dao.StationDao;
@@ -21,6 +22,7 @@ public class StationService {
         this.stationDao = stationDao;
     }
 
+    @Transactional
     public StationResponse saveStation(StationRequest stationRequest) {
         try {
             Station station = stationDao.insert(stationRequest.toStation());
@@ -30,6 +32,7 @@ public class StationService {
         }
     }
 
+    @Transactional(readOnly = true)
     public Station findStationById(Long id) {
         try{
             return stationDao.findById(id);
@@ -38,6 +41,7 @@ public class StationService {
         }
     }
 
+    @Transactional(readOnly = true)
     public List<StationResponse> findAllStationResponses() {
         List<Station> stations = stationDao.findAll();
         stations.stream()
@@ -45,6 +49,7 @@ public class StationService {
         return StationResponse.listOf(stations);
     }
 
+    @Transactional
     public void deleteStationById(Long id) {
         if (stationDao.existsInSection(id)) {
             throw new InvalidInsertException("이미 노선에 등록된 지하철 역입니다");
@@ -52,6 +57,7 @@ public class StationService {
         stationDao.deleteById(id);
     }
 
+    @Transactional
     public StationResponse updateName(Long id, StationNameRequest req) {
         if (stationDao.findByName(req.getName()) != null) {
             throw new InvalidInsertException("이미 존재하는 지하철 역입니다");

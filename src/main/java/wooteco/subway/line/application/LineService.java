@@ -1,6 +1,7 @@
 package wooteco.subway.line.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.InvalidInsertException;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
@@ -25,6 +26,7 @@ public class LineService {
         this.stationService = stationService;
     }
 
+    @Transactional
     public LineResponse saveLine(LineRequest request) {
         validatesNameAndColor(request.getName(), request.getColor());
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
@@ -58,11 +60,13 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<Line> findLines() {
         List<Line> lines = lineDao.findAll();
         return lines;
     }
 
+    @Transactional(readOnly = true)
     public LineWithStationsResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
         return getLineWithStationsResponse(persistLine);
@@ -95,10 +99,12 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public Line findLineById(Long id) {
         return lineDao.findById(id);
     }
 
+    @Transactional
     public LineUpdateResponse updateLine(Long id, LineRequest lineUpdateRequest) {
         Line currentLine = lineDao.findById(id);
         validatesChangeName(lineUpdateRequest.getName(), currentLine.getName());
@@ -120,11 +126,13 @@ public class LineService {
         }
     }
 
+    @Transactional
     public void deleteLineById(Long id) {
         lineDao.deleteById(id);
         sectionDao.deleteByLineId(id);
     }
 
+    @Transactional
     public SectionResponse addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
@@ -139,6 +147,7 @@ public class LineService {
         return SectionResponse.of(section);
     }
 
+    @Transactional
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);

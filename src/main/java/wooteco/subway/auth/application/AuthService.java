@@ -22,6 +22,7 @@ public class AuthService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+    @Transactional
     public TokenResponse login(TokenRequest request) {
         try {
             Member member = memberDao.findByEmail(request.getEmail());
@@ -33,6 +34,7 @@ public class AuthService {
         }
     }
 
+    @Transactional(readOnly = true)
     public User findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
             throw new AuthorizationException("다시 로그인 후 시도해주세요");
