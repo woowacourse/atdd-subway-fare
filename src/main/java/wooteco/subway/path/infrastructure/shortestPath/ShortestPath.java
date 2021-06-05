@@ -22,7 +22,6 @@ public abstract class ShortestPath {
     }
 
     private void validatePath(GraphPath<Station, SectionEdge> path) {
-        if(path == null) {
         if (path == null) {
             throw INVALID_PATH.makeException();
         }
