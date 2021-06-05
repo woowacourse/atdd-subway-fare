@@ -3,9 +3,7 @@ package wooteco.subway.station.ui;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import wooteco.subway.infrastructure.validate.StationValidator;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
@@ -23,13 +21,8 @@ public class StationController {
         this.stationService = stationService;
     }
 
-    @InitBinder("stationRequest")
-    private void initBind(WebDataBinder webDataBinder) {
-        webDataBinder.addValidators(new StationValidator());
-    }
-
     @PostMapping("/stations")
-    public ResponseEntity<StationResponse> createStation(@RequestBody @Valid StationRequest stationRequest, BindingResult bindingResult) {
+    public ResponseEntity<StationResponse> createStation(@RequestBody @Valid StationRequest stationRequest) {
         StationResponse station = stationService.saveStation(stationRequest);
         return ResponseEntity.created(URI.create("/stations/" + station.getId())).body(station);
     }
@@ -40,7 +33,7 @@ public class StationController {
     }
 
     @PutMapping("/stations/{id}")
-    public ResponseEntity<Void> updateStation(@PathVariable Long id, @RequestBody @Valid StationRequest stationRequest, BindingResult bindingResult) {
+    public ResponseEntity<Void> updateStation(@PathVariable Long id, @RequestBody @Valid StationRequest stationRequest) {
         stationService.updateStation(id, stationRequest);
         return ResponseEntity.ok().build();
     }

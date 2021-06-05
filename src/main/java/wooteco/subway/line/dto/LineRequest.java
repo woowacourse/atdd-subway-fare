@@ -1,8 +1,15 @@
 package wooteco.subway.line.dto;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
 public class LineRequest {
     private static final Long NONE_EXTRA_FARE = 0L;
 
+    @Pattern(regexp ="^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|]+$" , message = "지원되지 않는 언어, 공백, 특수문자는 입력 불가능합니다.")
+    @Size(min = 2, max = 10, message = "노선의 전체 글자 수는 2자 이상 10자 이하여야 합니다.")
     private String name;
     private String color;
     private Long upStationId;

@@ -7,22 +7,27 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import wooteco.subway.infrastructure.exception.dto.ErrorResponse;
+import org.springframework.web.server.ResponseStatusException;
+import wooteco.subway.infrastructure.dto.ErrorResponse;
+
+import static wooteco.subway.infrastructure.ErrorCode.INVALID_INPUT_VALUE;
+import static wooteco.subway.infrastructure.ErrorCode.NOT_EXPECTED_ERROR;
 
 @RestControllerAdvice
 public class SubwayExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleApplicationException(Exception e) throws Exception {
+        System.out.println("error: " + e.getMessage());
         if (AnnotationUtils.findAnnotation(e.getClass(), ResponseStatus.class) != null) {
             throw e;
         }
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ErrorResponse("서버에서 오류가 발생했습니다."));
+                .body(ErrorResponse.of(NOT_EXPECTED_ERROR));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<String> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        return ResponseEntity.badRequest().body(e.getAllErrors().get(0).getDefaultMessage());
+    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        return ResponseEntity.badRequest().body(ErrorResponse.of(INVALID_INPUT_VALUE, e.getFieldErrors()));
     }
 }
