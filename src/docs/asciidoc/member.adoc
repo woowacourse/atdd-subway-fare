@@ -1,0 +1,41 @@
+== 멤버 API
+
+=== 이메일 중복 검사 성공
+==== Request
+
+include::{snippets}/member/invalid-email/success/http-request.adoc[]
+
+==== Response
+include::{snippets}/member/invalid-email/success/http-response.adoc[]
+
+=== 이메일 중복 검사 실패
+==== Request
+
+include::{snippets}/member/invalid-email/fail/http-request.adoc[]
+
+==== Response
+include::{snippets}/member/invalid-email/fail/http-response.adoc[]
+
+=== 내 회원 정보 조회
+==== Request
+
+include::{snippets}/member/me/http-request.adoc[]
+
+==== Response
+include::{snippets}/member/me/http-response.adoc[]
+
+=== 내 회원 정보 수정
+==== Request
+
+include::{snippets}/member/me/edit/http-request.adoc[]
+
+==== Response
+include::{snippets}/member/me/edit/http-response.adoc[]
+
+=== 내 회원 정보 삭제
+==== Request
+
+include::{snippets}/member/me/delete/http-request.adoc[]
+
+==== Response
+include::{snippets}/member/me/delete/http-response.adoc[]

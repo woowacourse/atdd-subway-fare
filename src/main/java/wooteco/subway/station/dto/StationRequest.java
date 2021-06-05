@@ -2,7 +2,7 @@ package wooteco.subway.station.dto;
 
 import wooteco.subway.station.domain.Station;
 
-public class StationRequest {
+public final class StationRequest {
     private String name;
 
     public StationRequest() {

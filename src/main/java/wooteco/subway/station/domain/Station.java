@@ -2,7 +2,7 @@ package wooteco.subway.station.domain;
 
 import java.util.Objects;
 
-public class Station {
+public final class Station {
     private Long id;
     private String name;
 
@@ -24,6 +24,14 @@ public class Station {
 
     public String getName() {
         return name;
+    }
+
+    public boolean sameNameAs(String name) {
+        return this.name.equals(name);
+    }
+
+    public boolean sameAs(Long id) {
+        return this.id.equals(id);
     }
 
     @Override

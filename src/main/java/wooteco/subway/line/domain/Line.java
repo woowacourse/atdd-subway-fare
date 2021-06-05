@@ -4,30 +4,37 @@ import wooteco.subway.station.domain.Station;
 
 import java.util.List;
 
-public class Line {
+public final class Line {
     private Long id;
     private String name;
     private String color;
+    private int extraFare;
     private Sections sections = new Sections();
 
     public Line() {
     }
 
     public Line(String name, String color) {
-        this.name = name;
-        this.color = color;
+        this(null, name, color, 0);
     }
 
     public Line(Long id, String name, String color) {
-        this.id = id;
-        this.name = name;
-        this.color = color;
+        this(id, name, color, 0);
     }
 
-    public Line(Long id, String name, String color, Sections sections) {
+    public Line(String name, String color, int extraFare) {
+        this(null, name, color, extraFare);
+    }
+
+    public Line(Long id, String name, String color, int extraFare) {
+        this(id, name, color, extraFare, new Sections());
+    }
+
+    public Line(Long id, String name, String color, int extraFare, Sections sections) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
         this.sections = sections;
     }
 
@@ -41,6 +48,10 @@ public class Line {
 
     public String getColor() {
         return color;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 
     public Sections getSections() {
@@ -70,5 +81,13 @@ public class Line {
 
     public List<Station> getStations() {
         return sections.getStations();
+    }
+
+    public boolean sameNameAs(String name) {
+        return this.name.equals(name);
+    }
+
+    public boolean sameIdAs(Long id) {
+        return this.id.equals(id);
     }
 }

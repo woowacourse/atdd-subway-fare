@@ -2,7 +2,7 @@ package wooteco.subway.member.dto;
 
 import wooteco.subway.member.domain.Member;
 
-public class MemberResponse {
+public final class MemberResponse {
     private Long id;
     private String email;
     private Integer age;

@@ -3,7 +3,7 @@ package wooteco.subway.auth.infrastructure;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 
-public class AuthorizationExtractor {
+public final class AuthorizationExtractor {
     public static final String AUTHORIZATION = "Authorization";
     public static String BEARER_TYPE = "Bearer";
     public static final String ACCESS_TOKEN_TYPE = AuthorizationExtractor.class.getSimpleName() + ".ACCESS_TOKEN_TYPE";

@@ -1,18 +1,30 @@
 package wooteco.subway.line.domain;
 
+import wooteco.subway.line.exception.CannotRemoveSectionException;
+import wooteco.subway.line.exception.InvalidStationsOfSectionException;
+import wooteco.subway.line.exception.NotFoundStationOfSectionException;
+import wooteco.subway.line.exception.OverDistanceOfSectionException;
 import wooteco.subway.station.domain.Station;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
-public class Sections {
+public final class Sections {
     private List<Section> sections = new ArrayList<>();
 
     public List<Section> getSections() {
-        return sections;
+        return orderSections();
+    }
+
+    private List<Section> orderSections() {
+        List<Section> orderedSections = new ArrayList<>();
+
+        Section nextSection = findUpEndSection();
+        while (nextSection != null) {
+            orderedSections.add(nextSection);
+            nextSection = findSectionByNextUpStation(nextSection.getDownStation());
+        }
+        return orderedSections;
     }
 
     public Sections() {
@@ -40,7 +52,7 @@ public class Sections {
     private void checkAlreadyExisted(Section section) {
         List<Station> stations = getStations();
         if (!stations.contains(section.getUpStation()) && !stations.contains(section.getDownStation())) {
-            throw new RuntimeException();
+            throw new InvalidStationsOfSectionException();
         }
     }
 
@@ -48,7 +60,7 @@ public class Sections {
         List<Station> stations = getStations();
         List<Station> stationsOfNewSection = Arrays.asList(section.getUpStation(), section.getDownStation());
         if (stations.containsAll(stationsOfNewSection)) {
-            throw new RuntimeException();
+            throw new InvalidStationsOfSectionException();
         }
     }
 
@@ -68,15 +80,15 @@ public class Sections {
 
     private void replaceSectionWithUpStation(Section newSection, Section existSection) {
         if (existSection.getDistance() <= newSection.getDistance()) {
-            throw new RuntimeException();
+            throw new OverDistanceOfSectionException();
         }
         this.sections.add(new Section(existSection.getUpStation(), newSection.getUpStation(), existSection.getDistance() - newSection.getDistance()));
         this.sections.remove(existSection);
     }
 
     private void replaceSectionWithDownStation(Section newSection, Section existSection) {
-        if (existSection.getDistance() <= newSection.getDistance()) {
-            throw new RuntimeException();
+        if (existSection.isOverDistance(newSection)) {
+            throw new OverDistanceOfSectionException();
         }
         this.sections.add(new Section(newSection.getDownStation(), existSection.getDownStation(), existSection.getDistance() - newSection.getDistance()));
         this.sections.remove(existSection);
@@ -84,7 +96,7 @@ public class Sections {
 
     public List<Station> getStations() {
         if (sections.isEmpty()) {
-            return Arrays.asList();
+            return Collections.emptyList();
         }
 
         List<Station> stations = new ArrayList<>();
@@ -102,13 +114,13 @@ public class Sections {
 
     private Section findUpEndSection() {
         List<Station> downStations = this.sections.stream()
-                .map(it -> it.getDownStation())
+                .map(Section::getDownStation)
                 .collect(Collectors.toList());
 
         return this.sections.stream()
                 .filter(it -> !downStations.contains(it.getUpStation()))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(NotFoundStationOfSectionException::new);
     }
 
     private Section findSectionByNextUpStation(Station station) {
@@ -120,7 +132,7 @@ public class Sections {
 
     public void removeStation(Station station) {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new CannotRemoveSectionException();
         }
 
         Optional<Section> upSection = sections.stream()

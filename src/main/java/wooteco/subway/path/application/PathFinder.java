@@ -7,13 +7,14 @@ import wooteco.subway.line.domain.Line;
 import wooteco.subway.path.domain.SectionEdge;
 import wooteco.subway.path.domain.SubwayGraph;
 import wooteco.subway.path.domain.SubwayPath;
+import wooteco.subway.path.exception.InvalidPathException;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class PathFinder {
+public final class PathFinder {
     public SubwayPath findPath(List<Line> lines, Station source, Station target) {
         if (source.equals(target)) {
             throw new InvalidPathException();
