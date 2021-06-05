@@ -17,9 +17,9 @@ import wooteco.subway.auth.dto.TokenResponse;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
 
-    private static final String EMAIL = "email@email.com";
-    private static final String PASSWORD = "password";
-    private static final Integer AGE = 20;
+    public static final String EMAIL = "email@email.com";
+    public static final String PASSWORD = "password";
+    public static final Integer AGE = 20;
 
     @DisplayName("Bearer Auth")
     @Test
@@ -106,7 +106,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     public static String 토큰_요청() {
-        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
         TokenResponse tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
         return tokenResponse.getAccessToken();
     }
