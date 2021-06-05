@@ -2,6 +2,7 @@ package wooteco.subway.station.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dto.SimpleLineResponse;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
@@ -16,9 +17,11 @@ import java.util.stream.Collectors;
 @Service
 public class StationService {
     private StationDao stationDao;
+    private LineDao lineDao;
 
-    public StationService(StationDao stationDao) {
+    public StationService(StationDao stationDao, LineDao lineDao) {
         this.stationDao = stationDao;
+        this.lineDao = lineDao;
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
@@ -63,6 +66,6 @@ public class StationService {
     }
 
     public StationResponse toStationResponse(Station station) {
-        return StationResponse.of(station, SimpleLineResponse.listOf(stationDao.findLinesPassing(station)));
+        return StationResponse.of(station, SimpleLineResponse.listOf(lineDao.findLinesPassing(station)));
     }
 }

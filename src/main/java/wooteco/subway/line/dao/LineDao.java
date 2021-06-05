@@ -1,6 +1,7 @@
 package wooteco.subway.line.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.line.application.LineException;
@@ -17,6 +18,14 @@ import java.util.stream.Collectors;
 public class LineDao {
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert insertAction;
+
+    private RowMapper<Line> lineInfoRowMapper = (rs, rowNum) ->
+            new Line(
+                    rs.getLong("id"),
+                    rs.getString("name"),
+                    rs.getString("color"),
+                    rs.getInt("extra_fare")
+            );
 
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
@@ -50,13 +59,13 @@ public class LineDao {
                 "left outer join STATION DST on S.down_station_id = DST.id " +
                 "WHERE L.id = ?";
 
-        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, new Object[]{id});
+        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, id);
         return mapLine(result);
     }
 
     public void update(Line newLine) {
         String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
+        jdbcTemplate.update(sql, newLine.getName(), newLine.getColor(), newLine.getId());
     }
 
     public List<Line> findAll() {
@@ -73,9 +82,9 @@ public class LineDao {
         List<Map<String, Object>> result = jdbcTemplate.queryForList(sql);
         Map<Long, List<Map<String, Object>>> resultByLine = result.stream()
                 .collect(Collectors.groupingBy(it -> (Long) it.get("line_id")));
-        return resultByLine.entrySet()
+        return resultByLine.values()
                 .stream()
-                .map(it -> mapLine(it.getValue()).orElseThrow(() -> new LineException("존재하지 않는 노선입니다.")))
+                .map(maps -> mapLine(maps).orElseThrow(() -> new LineException("존재하지 않는 노선입니다.")))
                 .collect(Collectors.toList());
     }
 
@@ -101,7 +110,7 @@ public class LineDao {
     private List<Section> extractSections(List<Map<String, Object>> result) {
         if (result.isEmpty() || result.get(0)
                 .get("SECTION_ID") == null) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         return result.stream()
                 .collect(Collectors.groupingBy(it -> it.get("SECTION_ID")))
@@ -141,4 +150,9 @@ public class LineDao {
     }
 
 
+    public List<Line> findLinesPassing(Station station) {
+        String sql = "SELECT DISTINCT L.id as line_id, L.name as line_name, L.color as line_color, L.extra_fare as extra_fare FROM LINE L " +
+                "left outer join SECTION S WHERE L.id = S.line_id AND (S.up_station_id =? OR S.down_station_id = ?)";
+        return jdbcTemplate.query(sql, lineInfoRowMapper, station.getId(), station.getId());
+    }
 }
