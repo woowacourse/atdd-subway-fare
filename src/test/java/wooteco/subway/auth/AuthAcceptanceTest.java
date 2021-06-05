@@ -1,6 +1,5 @@
 package wooteco.subway.auth;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +12,7 @@ import wooteco.subway.auth.dto.TokenResponse;
 import java.util.HashMap;
 import java.util.Map;
 
+import static wooteco.subway.DocsIdentifier.*;
 import static wooteco.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static wooteco.subway.member.MemberAcceptanceTest.회원_정보_조회됨;
 
@@ -22,7 +22,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     private static final Integer AGE = 20;
 
     public static ExtractableResponse<Response> 회원_등록되어_있음(String email, String password, Integer age) {
-        return 회원_생성을_요청(email, password, age);
+        return 회원_생성을_요청(email, password, age, MEMBERS_POST_SUCCESS);
     }
 
     public static TokenResponse 로그인되어_있음(String email, String password) {
@@ -35,7 +35,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         params.put("email", email);
         params.put("password", password);
 
-        return RestAssured.given().log().all().
+        return given(AUTH_LOGIN_SUCCESS).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 body(params).
                 when().
@@ -47,7 +47,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {
-        return RestAssured.given().log().all().
+        return given(MEMBERS_ME_GET).
                 auth().oauth2(tokenResponse.getAccessToken()).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
@@ -81,8 +81,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         params.put("email", EMAIL + "OTHER");
         params.put("password", PASSWORD);
 
-        RestAssured
-                .given().log().all()
+        given(AUTH_LOGIN_FAIL)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().post("/login/token")
@@ -94,9 +93,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithWrongBearerAuth() {
         TokenResponse tokenResponse = new TokenResponse("accesstoken");
-
-        RestAssured
-                .given().log().all()
+        given(MEMBERS_ME_GET_WRONG_TOKEN)
                 .auth().oauth2(tokenResponse.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
@@ -107,7 +104,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("이메일 중복 검사 - 성공")
     @Test
     void emailDuplicate_success() throws Exception {
-        RestAssured.given().log().all()
+        given(MEMBERS_ME_GET_CHECK_VALIDATION_SUCCESS)
                 .when().get("/members/check-validation/?email=Other_login%40email.com")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
@@ -117,7 +114,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void emailDuplicate_fail() throws Exception {
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
-        RestAssured.given().log().all()
+        given(MEMBERS_ME_GET_CHECK_VALIDATION_FAIL).log().all()
                 .when().get("/members/check-validation/?email=" + EMAIL)
                 .then().log().all()
                 .statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value());

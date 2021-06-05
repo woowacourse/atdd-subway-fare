@@ -1,13 +1,13 @@
 package wooteco.subway.path;
 
 import com.google.common.collect.Lists;
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.RestDocumentationContextProvider;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.line.dto.LineResponse;
@@ -19,11 +19,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.DocsIdentifier.PATHS_GET;
+import static wooteco.subway.DocsIdentifier.PATHS_GET_TOKEN;
 import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
 import static wooteco.subway.auth.AuthAcceptanceTest.회원_등록되어_있음;
 import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static wooteco.subway.line.SectionAcceptanceTest.지하철_구간_등록되어_있음;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
+
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
@@ -37,9 +40,35 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 잠실역;
     private StationResponse 석촌역;
 
+    /**
+     * 교대역    --- *2호선* ---   강남역
+     * |                        |
+     * *3호선*                   *신분당선*
+     * |                        |
+     * 남부터미널역  --- *3호선* ---   양재
+     */
+    @BeforeEach
+    public void setUp(RestDocumentationContextProvider restDocumentation) {
+        super.setUp(restDocumentation);
+
+        강남역 = 지하철역_등록되어_있음("강남역");
+        양재역 = 지하철역_등록되어_있음("양재역");
+        교대역 = 지하철역_등록되어_있음("교대역");
+        남부터미널역 = 지하철역_등록되어_있음("남부터미널역");
+        잠실역 = 지하철역_등록되어_있음("잠실역");
+        석촌역 = 지하철역_등록되어_있음("석촌역");
+
+        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10, 900L);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10, 0L);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5, 0L);
+
+        지하철_구간_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
+        지하철_구간_등록되어_있음(신분당선, 양재역, 잠실역, 40);
+        지하철_구간_등록되어_있음(신분당선, 잠실역, 석촌역, 40);
+    }
+
     public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
-        return RestAssured
-                .given().log().all()
+        return given(PATHS_GET)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/paths?source={sourceId}&target={targetId}", source, target)
                 .then().log().all()
@@ -47,8 +76,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target, TokenResponse tokenResponse) {
-        return RestAssured
-                .given().log().all()
+        return given(PATHS_GET_TOKEN)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .auth().oauth2(tokenResponse.getAccessToken())
                 .when().get("/paths?source={sourceId}&target={targetId}", source, target)
@@ -80,32 +108,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(pathResponse.getFare()).isEqualTo(fare);
     }
 
-    /**
-     * 교대역    --- *2호선* ---   강남역
-     * |                        |
-     * *3호선*                   *신분당선*
-     * |                        |
-     * 남부터미널역  --- *3호선* ---   양재
-     */
-    @BeforeEach
-    public void setUp() {
-        super.setUp();
 
-        강남역 = 지하철역_등록되어_있음("강남역");
-        양재역 = 지하철역_등록되어_있음("양재역");
-        교대역 = 지하철역_등록되어_있음("교대역");
-        남부터미널역 = 지하철역_등록되어_있음("남부터미널역");
-        잠실역 = 지하철역_등록되어_있음("잠실역");
-        석촌역 = 지하철역_등록되어_있음("석촌역");
-
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10, 900L);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10, 0L);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5, 0L);
-
-        지하철_구간_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
-        지하철_구간_등록되어_있음(신분당선, 양재역, 잠실역, 40);
-        지하철_구간_등록되어_있음(신분당선, 잠실역, 석촌역, 40);
-    }
 
     @DisplayName("두 역의 최단 거리 경로를 조회한다.")
     @Test
@@ -170,8 +173,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("로그인이 되어 있는 경우 경로 조회 - 청소년")
     public void calculateFareByAgeTeenager() {
         //given
-        회원_등록되어_있음("teenager@teenager", "teenager", 13);
-        TokenResponse tokenResponse = 로그인되어_있음("teenager@teenager", "teenager");
+        회원_등록되어_있음("teenager@teenager.com", "teenager", 13);
+        TokenResponse tokenResponse = 로그인되어_있음("teenager@teenager.com", "teenager");
 
         //when
         ExtractableResponse<Response> response = 거리_경로_조회_요청(강남역.getId(), 석촌역.getId(), tokenResponse);
@@ -185,8 +188,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("로그인이 되어 있는 경우 경로 조회 - 어린이")
     public void calculateFareByAgeKid() {
         //given
-        회원_등록되어_있음("kid@kid", "kids", 12);
-        TokenResponse tokenResponse = 로그인되어_있음("kid@kid", "kids");
+        회원_등록되어_있음("kid@kid.com", "kids", 12);
+        TokenResponse tokenResponse = 로그인되어_있음("kid@kid.com", "kids");
 
         //when
         ExtractableResponse<Response> response = 거리_경로_조회_요청(강남역.getId(), 석촌역.getId(), tokenResponse);
@@ -200,8 +203,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("로그인이 되어 있는 경우 경로 조회 - 유아")
     public void calculateFareByAgeToddler() {
         //given
-        회원_등록되어_있음("toddler@toddler", "toddler", 5);
-        TokenResponse tokenResponse = 로그인되어_있음("toddler@toddler", "toddler");
+        회원_등록되어_있음("toddler@toddler.com", "toddler", 5);
+        TokenResponse tokenResponse = 로그인되어_있음("toddler@toddler.com", "toddler");
 
         //when
         ExtractableResponse<Response> response = 거리_경로_조회_요청(강남역.getId(), 석촌역.getId(), tokenResponse);
