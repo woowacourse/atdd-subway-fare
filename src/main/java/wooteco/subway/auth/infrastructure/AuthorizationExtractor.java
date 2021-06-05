@@ -1,6 +1,8 @@
 package wooteco.subway.auth.infrastructure;
 
 import java.util.Optional;
+
+import org.apache.commons.lang3.StringUtils;
 import wooteco.subway.exception.AuthorizationException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -50,7 +52,7 @@ public class AuthorizationExtractor {
     }
 
     private static boolean isBearerType(String header) {
-        return header.toLowerCase().startsWith(BEARER_TYPE.toLowerCase());
+        return StringUtils.equalsIgnoreCase(BEARER_TYPE, header);
     }
 
     private static String extractBearerTokenFromHeader(String header) {
