@@ -86,7 +86,7 @@ public class Line {
     }
 
     public List<Station> getStations() {
-        return sections.getStations();
+        return sections.getOrderedStations();
     }
 
     public int getExtraFare() {
@@ -94,17 +94,14 @@ public class Line {
     }
 
     public Station getStartStation() {
-        return sections.getStations().get(0);
+        return sections.startStation();
     }
 
     public Station getEndStation() {
-        int size = sections.getStations().size();
-        return sections.getStations().get(size - 1);
+        return sections.endStation();
     }
 
     public int getTotalDistance() {
-        return sections.getSections().stream()
-            .mapToInt(Section::getDistance)
-            .sum();
+        return sections.calculateTotalDistance();
     }
 }

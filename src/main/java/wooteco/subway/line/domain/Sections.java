@@ -12,17 +12,20 @@ import java.util.stream.Collectors;
 import wooteco.subway.station.domain.Station;
 
 public class Sections {
+    private List<Station> orderedStations;
     private List<Section> sections = new ArrayList<>();
 
     public Sections() {
     }
 
-    public Sections(List<Section> sections) {
+    public Sections(List<Station> orderedStations, List<Section> sections) {
+        this.orderedStations = orderedStations;
         this.sections = sections;
     }
 
-    public List<Section> getSections() {
-        return sections;
+    public Sections(List<Section> sections) {
+        this.sections = sections;
+        this.orderedStations = makeOrderedStations();
     }
 
     public void addSection(Section section) {
@@ -43,16 +46,14 @@ public class Sections {
     }
 
     private void checkAlreadyExisted(Section section) {
-        List<Station> stations = getStations();
-        if (!stations.contains(section.getUpStation()) && !stations.contains(section.getDownStation())) {
+        if (!orderedStations.contains(section.getUpStation()) && !orderedStations.contains(section.getDownStation())) {
             throw BOTH_STATION_NOT_REGISTERED_IN_LINE.makeException();
         }
     }
 
     private void checkExistedAny(Section section) {
-        List<Station> stations = getStations();
         List<Station> stationsOfNewSection = Arrays.asList(section.getUpStation(), section.getDownStation());
-        if (stations.containsAll(stationsOfNewSection)) {
+        if (orderedStations.containsAll(stationsOfNewSection)) {
             throw BOTH_STATION_ALREADY_REGISTERED_IN_LINE.makeException();
         }
     }
@@ -95,7 +96,7 @@ public class Sections {
         this.sections.remove(existSection);
     }
 
-    public List<Station> getStations() {
+    private List<Station> makeOrderedStations() {
         if (sections.isEmpty()) {
             return Collections.emptyList();
         }
@@ -152,5 +153,28 @@ public class Sections {
 
         upSection.ifPresent(it -> sections.remove(it));
         downSection.ifPresent(it -> sections.remove(it));
+    }
+
+    public Station startStation() {
+        return orderedStations.get(0);
+    }
+
+    public Station endStation() {
+        int size = orderedStations.size();
+        return orderedStations.get(size - 1);
+    }
+
+    public int calculateTotalDistance() {
+        return getSections().stream()
+            .mapToInt(Section::getDistance)
+            .sum();
+    }
+
+    public List<Section> getSections() {
+        return sections;
+    }
+
+    public List<Station> getOrderedStations() {
+        return makeOrderedStations();
     }
 }
