@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import wooteco.subway.path.AgeSet;
 
 @DisplayName("경로 관련 기능")
 class SubwayPathTest {
@@ -20,7 +21,7 @@ class SubwayPathTest {
         //when
         int fare = FareCalculator.calculateFare(
             distance,
-            20,
+            AgeSet.ADULT,
             subwayPath.getSectionEdges()
         );
 
@@ -39,7 +40,7 @@ class SubwayPathTest {
         //when
         int fare = FareCalculator.calculateFare(
             distance,
-            15,
+            AgeSet.TEENAGER,
             subwayPath.getSectionEdges()
         );
 
@@ -58,7 +59,7 @@ class SubwayPathTest {
         //when
         int fare = FareCalculator.calculateFare(
             distance,
-            7,
+            AgeSet.CHILD,
             subwayPath.getSectionEdges()
         );
 

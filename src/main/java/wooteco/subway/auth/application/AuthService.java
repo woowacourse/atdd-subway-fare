@@ -38,7 +38,7 @@ public class AuthService {
 
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember(AgeSet.ADULT.getReferenceAge());
+            throw new SubwayException(AuthExceptionSet.INVALID_JWT_EXCEPTION);
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
@@ -46,7 +46,21 @@ public class AuthService {
             Member member = memberDao.findByEmail(email);
             return new LoginMember(member.getId(), member.getEmail(), member.getAge());
         } catch (Exception e) {
-            return new LoginMember(AgeSet.ADULT.getReferenceAge());
+            throw new SubwayException(AuthExceptionSet.NOT_EXIST_MEMBER_EXCEPTION);
+        }
+    }
+
+    public AgeSet findAgeByToken(String credentials) {
+        if (!jwtTokenProvider.validateToken(credentials)) {
+            return AgeSet.ADULT;
+        }
+
+        String email = jwtTokenProvider.getPayload(credentials);
+        try {
+            Member member = memberDao.findByEmail(email);
+            return AgeSet.of(member.getAge());
+        } catch (Exception e) {
+            throw new SubwayException(AuthExceptionSet.NOT_EXIST_MEMBER_EXCEPTION);
         }
     }
 }
