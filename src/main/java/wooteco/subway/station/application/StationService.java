@@ -5,7 +5,6 @@ import static wooteco.subway.exception.SubwayExceptions.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +26,7 @@ public class StationService {
 
     @Transactional
     public StationResponse saveStation(StationRequest stationRequest) {
-        if(stationDao.isExistByName(stationRequest.getName())) {
+        if (stationDao.isExistByName(stationRequest.getName())) {
             throw DUPLICATED_STATION_NAME.makeException();
         }
         Station station = stationDao.insert(stationRequest.toStation());

@@ -20,6 +20,6 @@ public class PathFinder {
         }
 
         ShortestPath shortestPath = new ShortestPathWithDijkstra(lines, source, target);
-        return new SubwayPath(shortestPath.getSections(), shortestPath.getStations(), 0);
+        return new SubwayPath(shortestPath.getSections(), shortestPath.getStations());
     }
 }

@@ -1,8 +1,13 @@
 package wooteco.subway.line;
 
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
+import static org.assertj.core.api.Assertions.*;
+import static wooteco.subway.auth.AuthAcceptanceTest.*;
+import static wooteco.subway.station.StationAcceptanceTest.*;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,30 +16,129 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.exception.ExceptionResponse;
-import wooteco.subway.line.dto.LineWithTotalDistanceResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.LineResponseWithSection;
+import wooteco.subway.line.dto.LineWithTotalDistanceResponse;
 import wooteco.subway.station.dto.StationResponse;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.subway.auth.AuthAcceptanceTest.*;
-import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineAcceptanceTest extends AcceptanceTest {
+    private static String accessToken;
     private StationResponse 강남역;
     private StationResponse downStation;
     private LineRequest lineRequest1;
     private LineRequest lineRequest2;
-    private static String accessToken;
+
+    public static LineResponse 지하철_노선_등록되어_있음(String accessToken, String name, String color, StationResponse upStation,
+        StationResponse downStation, int distance, int extraFare) {
+        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance,
+            extraFare);
+        return 지하철_노선_등록되어_있음(accessToken, lineRequest);
+    }
+
+    public static LineResponse 지하철_노선_등록되어_있음(String accessToken, LineRequest lineRequest) {
+        return 지하철_노선_생성_요청(accessToken, lineRequest).as(LineResponse.class);
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선_생성_요청(String accessToken, LineRequest params) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(params)
+            .when().post("/api/lines")
+            .then().log().all().
+                extract();
+    }
+
+    private static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/api/lines")
+            .then().log().all()
+            .extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선_조회_요청(String accessToken, Long lineId) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/api/lines/{lineId}", lineId)
+            .then().log().all()
+            .extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선_수정_요청(Long lineId, LineRequest params) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(params)
+            .when().put("/api/lines/" + lineId)
+            .then().log().all()
+            .extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선_제거_요청(Long lineId) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .when().delete("/api/lines/" + lineId)
+            .then().log().all()
+            .extract();
+    }
+
+    public static void 지하철_노선_생성됨(ExtractableResponse response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.header("Location")).isNotBlank();
+    }
+
+    public static void 지하철_노선_생성_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
+        assertThat(exceptionResponse.getError()).isEqualTo("DUPLICATED_LINE_NAME");
+    }
+
+    public static void 지하철_노선_목록_응답됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 지하철_노선_응답됨(ExtractableResponse<Response> response, LineResponse lineResponse) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        LineResponse resultResponse = response.as(LineResponse.class);
+        assertThat(resultResponse.getId()).isEqualTo(lineResponse.getId());
+    }
+
+    public static void 지하철_노선_목록_포함됨(ExtractableResponse<Response> response, List<LineResponse> createdResponses) {
+        List<Long> expectedLineIds = createdResponses.stream()
+            .map(LineResponse::getId)
+            .collect(Collectors.toList());
+
+        List<Long> resultLineIds = response.jsonPath().getList(".", LineWithTotalDistanceResponse.class).stream()
+            .map(LineWithTotalDistanceResponse::getId)
+            .collect(Collectors.toList());
+
+        assertThat(resultLineIds).containsAll(expectedLineIds);
+    }
+
+    public static void 지하철_노선_수정됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 지하철_노선_삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
 
     @BeforeEach
     public void setUp() {
@@ -224,36 +328,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선도_포함됨(response, Arrays.asList(lineResponse1, lineResponse2));
     }
 
-    public static LineResponse 지하철_노선_등록되어_있음(String accessToken, String name, String color, StationResponse upStation, StationResponse downStation, int distance, int extraFare) {
-        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance, extraFare);
-        return 지하철_노선_등록되어_있음(accessToken, lineRequest);
-    }
-
-    public static LineResponse 지하철_노선_등록되어_있음(String accessToken, LineRequest lineRequest) {
-        return 지하철_노선_생성_요청(accessToken, lineRequest).as(LineResponse.class);
-    }
-
-    public static ExtractableResponse<Response> 지하철_노선_생성_요청(String accessToken, LineRequest params) {
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(accessToken)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/api/lines")
-                .then().log().all().
-                        extract();
-    }
-
-    private static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(accessToken)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/api/lines")
-                .then().log().all()
-                .extract();
-    }
-
     private ExtractableResponse<Response> 지하철_노선도_조회_요청() {
         return RestAssured
             .given().log().all()
@@ -261,69 +335,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
             .when().get("/api/lines/map")
             .then().log().all()
             .extract();
-    }
-
-    public static ExtractableResponse<Response> 지하철_노선_조회_요청(String accessToken, Long lineId) {
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(accessToken)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/api/lines/{lineId}", lineId)
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 지하철_노선_수정_요청(Long lineId, LineRequest params) {
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(accessToken)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().put("/api/lines/" + lineId)
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 지하철_노선_제거_요청(Long lineId) {
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(accessToken)
-                .when().delete("/api/lines/" + lineId)
-                .then().log().all()
-                .extract();
-    }
-
-    public static void 지하철_노선_생성됨(ExtractableResponse response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(response.header("Location")).isNotBlank();
-    }
-
-    public static void 지하철_노선_생성_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        ExceptionResponse exceptionResponse = response.as(ExceptionResponse.class);
-        assertThat(exceptionResponse.getError()).isEqualTo("DUPLICATED_LINE_NAME");
-    }
-
-    public static void 지하철_노선_목록_응답됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    public static void 지하철_노선_응답됨(ExtractableResponse<Response> response, LineResponse lineResponse) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        LineResponse resultResponse = response.as(LineResponse.class);
-        assertThat(resultResponse.getId()).isEqualTo(lineResponse.getId());
-    }
-
-    public static void 지하철_노선_목록_포함됨(ExtractableResponse<Response> response, List<LineResponse> createdResponses) {
-        List<Long> expectedLineIds = createdResponses.stream()
-                .map(LineResponse::getId)
-                .collect(Collectors.toList());
-
-        List<Long> resultLineIds = response.jsonPath().getList(".", LineWithTotalDistanceResponse.class).stream()
-                .map(LineWithTotalDistanceResponse::getId)
-                .collect(Collectors.toList());
-
-        assertThat(resultLineIds).containsAll(expectedLineIds);
     }
 
     private void 지하철_노선도_포함됨(ExtractableResponse<Response> response, List<LineResponse> lineResponses) {
@@ -336,14 +347,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
             .collect(Collectors.toList());
 
         assertThat(resultLineIds).containsAll(expectedLineIds);
-    }
-
-    public static void 지하철_노선_수정됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    public static void 지하철_노선_삭제됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
 }

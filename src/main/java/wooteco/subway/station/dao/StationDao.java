@@ -50,7 +50,8 @@ public class StationDao {
 
     public Optional<Station> findById(Long id) {
         String sql = "select * from STATION where id = ?";
-        List<Station> matchStation = jdbcTemplate.query(sql, (rs, rowNum) -> new Station(rs.getLong("id"), rs.getString("name")), id);
+        List<Station> matchStation = jdbcTemplate.query(sql,
+            (rs, rowNum) -> new Station(rs.getLong("id"), rs.getString("name")), id);
         return matchStation.stream().findAny();
     }
 

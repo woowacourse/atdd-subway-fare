@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import wooteco.subway.line.application.LineService;
-import wooteco.subway.line.dto.LineWithTotalDistanceResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.LineResponseWithSection;
+import wooteco.subway.line.dto.LineWithTotalDistanceResponse;
 import wooteco.subway.line.dto.SectionRequest;
 
 @RestController

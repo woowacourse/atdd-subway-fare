@@ -3,7 +3,6 @@ package wooteco.subway.path.domain.policy;
 import java.util.Arrays;
 import java.util.function.Predicate;
 
-import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.path.domain.policy.age.AdultPolicy;
 import wooteco.subway.path.domain.policy.age.AgePolicy;
 import wooteco.subway.path.domain.policy.age.BabyPolicy;

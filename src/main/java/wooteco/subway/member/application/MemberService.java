@@ -2,7 +2,6 @@ package wooteco.subway.member.application;
 
 import static wooteco.subway.exception.SubwayExceptions.*;
 
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,7 +47,7 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public void checkMemberNotExist(String email) {
-        if(memberDao.isExistByEmail(email)){
+        if (memberDao.isExistByEmail(email)) {
             throw DUPLICATED_ID.makeException();
         }
     }
