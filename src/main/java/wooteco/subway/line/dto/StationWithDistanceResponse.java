@@ -31,7 +31,7 @@ public class StationWithDistanceResponse {
         return name;
     }
 
-    public int getDistance() {
+    public Integer getDistance() {
         return distance;
     }
 }
