@@ -16,12 +16,18 @@ import wooteco.subway.station.domain.Station;
 @Component
 @Profile("!test")
 public class DataLoader implements CommandLineRunner {
+
     private StationDao stationDao;
     private LineDao lineDao;
     private SectionDao sectionDao;
     private MemberDao memberDao;
 
-    public DataLoader(StationDao stationDao, LineDao lineDao, SectionDao sectionDao, MemberDao memberDao) {
+    public DataLoader(
+        StationDao stationDao,
+        LineDao lineDao,
+        SectionDao sectionDao,
+        MemberDao memberDao
+    ) {
         this.stationDao = stationDao;
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
@@ -29,7 +35,7 @@ public class DataLoader implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         List<Line> lines = lineDao.findAll();
         if (lines.size() > 0) {
             return;
