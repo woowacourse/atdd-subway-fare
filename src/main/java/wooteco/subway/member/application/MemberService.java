@@ -3,6 +3,7 @@ package wooteco.subway.member.application;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.DuplicateException;
+import wooteco.subway.exception.MemberNotFoundException;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.infrastructure.dao.MemberDao;
@@ -27,14 +28,17 @@ public class MemberService {
     }
 
     public MemberResponse findMember(LoginMember loginMember) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
+        Member member = memberDao.findByEmail(loginMember.getEmail())
+                .orElseThrow(MemberNotFoundException::new);
         return MemberResponse.of(member);
     }
 
     @Transactional
     public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
         validateToAlreadyExistEmailExceptMe(memberRequest, loginMember);
-        Member member = memberDao.findByEmail(loginMember.getEmail());
+        Member member = memberDao.findByEmail(loginMember.getEmail())
+                .orElseThrow(MemberNotFoundException::new);
+
         memberDao.update(
             new Member(
                 member.getId(),
@@ -59,7 +63,8 @@ public class MemberService {
 
     @Transactional
     public void deleteMember(LoginMember loginMember) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
+        Member member = memberDao.findByEmail(loginMember.getEmail())
+                .orElseThrow(MemberNotFoundException::new);
         memberDao.deleteById(member.getId());
     }
 
