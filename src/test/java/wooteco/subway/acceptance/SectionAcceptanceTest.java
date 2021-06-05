@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.AcceptanceTest;
+import wooteco.auth.web.dto.response.TokenResponse;
 import wooteco.subway.web.dto.request.SectionRequest;
 import wooteco.subway.web.dto.response.LineResponse;
 import wooteco.subway.web.dto.response.SectionResponse;
@@ -32,6 +33,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 정자역;
     private StationResponse 광교역;
+    private TokenResponse token;
 
     public static void 지하철_구간_등록되어_있음(LineResponse lineResponse, StationResponse upStation,
         StationResponse downStation, int distance) {
@@ -102,12 +104,14 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        강남역 = 지하철역_등록되어_있음("강남역");
-        양재역 = 지하철역_등록되어_있음("양재역");
-        정자역 = 지하철역_등록되어_있음("정자역");
-        광교역 = 지하철역_등록되어_있음("광교역");
+        token = 토큰();
 
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 광교역, 10);
+        강남역 = 지하철역_등록되어_있음("강남역", token);
+        양재역 = 지하철역_등록되어_있음("양재역", token);
+        정자역 = 지하철역_등록되어_있음("정자역", token);
+        광교역 = 지하철역_등록되어_있음("광교역", token);
+
+        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 광교역, 10, token);
     }
 
     @DisplayName("지하철 구간을 등록한다.")

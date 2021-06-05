@@ -46,10 +46,10 @@ public class MemberService {
     public MemberResponse updateMember(LoginMember loginMember, MemberRequest memberRequest) {
         Member member = memberDao.findById(loginMember.getId())
             .orElseThrow(() -> new NotFoundException(NotFoundMessage.MEMBER));
-        final Member updatedMember = new Member(member.getId(), memberRequest.getEmail(),
+        member.updateInfo(memberRequest.getEmail(),
             memberRequest.getPassword(), memberRequest.getAge());
-        memberDao.update(updatedMember);
-        return MemberResponse.of(updatedMember);
+        memberDao.update(member);
+        return MemberResponse.of(member);
     }
 
     @Transactional

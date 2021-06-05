@@ -7,8 +7,8 @@ public class StationWithDistanceResponse {
 
     private Long id;
     private String name;
-    @JsonInclude(Include.NON_DEFAULT)
-    private int distance;
+    @JsonInclude(Include.NON_NULL)
+    private Integer distance;
 
     public StationWithDistanceResponse() {
     }
@@ -18,7 +18,7 @@ public class StationWithDistanceResponse {
         this.name = name;
     }
 
-    public StationWithDistanceResponse(Long id, String name, int distance) {
+    public StationWithDistanceResponse(Long id, String name, Integer distance) {
         this.id = id;
         this.name = name;
         this.distance = distance;
@@ -32,7 +32,7 @@ public class StationWithDistanceResponse {
         return name;
     }
 
-    public int getDistance() {
+    public Integer getDistance() {
         return distance;
     }
 }

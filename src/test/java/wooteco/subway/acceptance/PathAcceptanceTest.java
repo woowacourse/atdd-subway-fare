@@ -37,6 +37,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 새로운역;
     private StationResponse 먼역;
     private StationResponse 남부터미널역;
+    private TokenResponse token;
 
     public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
         return RestAssured
@@ -91,18 +92,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        강남역 = 지하철역_등록되어_있음("강남역");
-        양재역 = 지하철역_등록되어_있음("양재역");
-        교대역 = 지하철역_등록되어_있음("교대역");
-        새로운역 = 지하철역_등록되어_있음("새로운역");
-        먼역 = 지하철역_등록되어_있음("먼역");
-        남부터미널역 = 지하철역_등록되어_있음("남부터미널역");
+        token = 토큰();
 
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-pink-600", 강남역, 양재역, 10);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-green-600", 교대역, 강남역, 10);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-yellow-600", 교대역, 양재역, 5);
+        강남역 = 지하철역_등록되어_있음("강남역", token);
+        양재역 = 지하철역_등록되어_있음("양재역", token);
+        교대역 = 지하철역_등록되어_있음("교대역", token);
+        새로운역 = 지하철역_등록되어_있음("새로운역", token);
+        먼역 = 지하철역_등록되어_있음("먼역", token);
+        남부터미널역 = 지하철역_등록되어_있음("남부터미널역", token);
+
+        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-pink-600", 강남역, 양재역, 10, token);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-green-600", 교대역, 강남역, 10, token);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-yellow-600", 교대역, 양재역, 5, token);
         추가요금선 = 지하철_노선_등록되어_있음(
-            new LineRequest("추가요금선", "bg-add-500", 남부터미널역.getId(), 새로운역.getId(), 4, 300));
+            new LineRequest("추가요금선", "bg-add-500", 남부터미널역.getId(), 새로운역.getId(), 4, 300), token);
 
         지하철_구간_등록되어_있음(추가요금선, 새로운역, 먼역, 55);
 
