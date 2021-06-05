@@ -15,7 +15,7 @@ public class MemberRequest {
     private final String email;
 
     @NotBlank(message = "패스워드는 공백이 올 수 없습니다.")
-    @Length(min = 4, max = 20, message = "패스워트듣 4 이상 20 이하의 길이로 작성해야 합니다.")
+    @Length(min = 4, max = 20, message = "패스워드는 4 이상 20 이하의 길이로 작성해야 합니다.")
     private final String password;
 
     @Min(value = 1, message = "나이는 1보다 작을 수 없습니다.")
