@@ -3,12 +3,15 @@ package wooteco.subway;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * 이 클래스는 프론트엔드 코드에서 활용하는 코드 입니다. 수정하지 마세요.
  */
+@ApiIgnore
 @Controller
 public class PageController {
+
     @GetMapping(value = {
             "/",
             "/stations",

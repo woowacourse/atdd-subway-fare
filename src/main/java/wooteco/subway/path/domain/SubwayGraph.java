@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class SubwayGraph extends WeightedMultigraph<Station, SectionEdge> {
+
     public SubwayGraph(Class edgeClass) {
         super(edgeClass);
     }

@@ -29,6 +29,12 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        if (stationDao.findAll().isEmpty()) {
+            insertDummyData();
+        }
+    }
+
+    private void insertDummyData() {
         Station 강남역 = stationDao.insert(new Station("강남역"));
         Station 판교역 = stationDao.insert(new Station("판교역"));
         Station 정자역 = stationDao.insert(new Station("정자역"));
@@ -36,17 +42,28 @@ public class DataLoader implements CommandLineRunner {
         Station 잠실역 = stationDao.insert(new Station("잠실역"));
 
         Line 신분당선 = lineDao.insert(new Line("신분당선", "red lighten-1"));
-        신분당선.addSection(new Section(강남역, 판교역, 10));
-        신분당선.addSection(new Section(판교역, 정자역, 10));
+        신분당선.addSection(new Section.Builder(10)
+                .upStation(강남역)
+                .downStation(판교역)
+                .build());
+        신분당선.addSection(new Section.Builder(10)
+                .upStation(판교역)
+                .downStation(정자역)
+                .build());
         sectionDao.insertSections(신분당선);
 
         Line 이호선 = lineDao.insert(new Line("2호선", "green lighten-1"));
-        이호선.addSection(new Section(강남역, 역삼역, 10));
-        이호선.addSection(new Section(역삼역, 잠실역, 10));
+        이호선.addSection(new Section.Builder(10)
+                .upStation(강남역)
+                .downStation(역삼역)
+                .build());
+        이호선.addSection(new Section.Builder(10)
+                .upStation(역삼역)
+                .downStation(잠실역)
+                .build());
         sectionDao.insertSections(이호선);
 
         Member member = new Member("email@email.com", "password", 10);
         memberDao.insert(member);
     }
 }
-

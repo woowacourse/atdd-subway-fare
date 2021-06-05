@@ -1,4 +1,34 @@
 spring:
+  profiles:
+    active: local
+
+# local 환경
+---
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:13306/subway?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8
+    username: anne
+    password: annepw
+    initialization-mode: always
+  h2:
+    console:
+      enabled: true
+  config:
+    activate:
+      on-profile: local
+handlebars:
+  suffix: .html
+  enabled: true
+security:
+  jwt:
+    token:
+      secret-key: my_secret_is_secret
+      expire-length: 3600000
+
+# test 환경
+---
+spring:
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:testdb
@@ -7,6 +37,32 @@ spring:
   h2:
     console:
       enabled: true
+  config:
+    activate:
+      on-profile: test
+handlebars:
+  suffix: .html
+  enabled: true
+security:
+  jwt:
+    token:
+      secret-key: my_secret_is_secret
+      expire-length: 3600000
+
+# remote 환경
+---
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.0.239:3306/subway?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8
+    username: anne
+    password: annepw
+  h2:
+    console:
+      enabled: true
+  config:
+    activate:
+      on-profile: remote
 handlebars:
   suffix: .html
   enabled: true

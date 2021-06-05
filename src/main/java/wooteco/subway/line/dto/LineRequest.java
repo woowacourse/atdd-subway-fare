@@ -1,11 +1,20 @@
 package wooteco.subway.line.dto;
 
+import org.hibernate.validator.constraints.Length;
+import wooteco.subway.line.domain.Line;
+
+import javax.validation.constraints.Pattern;
+
 public class LineRequest {
+
+    @Pattern(regexp = "^[가-힣|0-9]*$", message = "노선명은 숫자와 한글만 가능합니다.")
+    @Length(min = 2, max = 10, message = "노선명은 2자 이상만 가능합니다.")
     private String name;
     private String color;
     private Long upStationId;
     private Long downStationId;
-    private int distance;
+    private Integer distance;
+    private int extraFare;
 
     public LineRequest() {
     }
@@ -16,6 +25,15 @@ public class LineRequest {
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
+    }
+
+    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance, int extraFare) {
+        this.name = name;
+        this.color = color;
+        this.upStationId = upStationId;
+        this.downStationId = downStationId;
+        this.distance = distance;
+        this.extraFare = extraFare;
     }
 
     public String getName() {
@@ -36,5 +54,13 @@ public class LineRequest {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
+    }
+
+    public Line toLine() {
+        return new Line(name, color, extraFare);
     }
 }

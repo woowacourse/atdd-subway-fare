@@ -3,17 +3,17 @@ package wooteco.subway.member.dao;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.member.domain.Member;
 
-import javax.sql.DataSource;
-
 @Repository
 public class MemberDao {
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert simpleJdbcInsert;
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     private RowMapper<Member> rowMapper = (rs, rowNum) ->
             new Member(
@@ -24,10 +24,10 @@ public class MemberDao {
             );
 
 
-    public MemberDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public MemberDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
-                .withTableName("member")
+        this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("MEMBER")
                 .usingGeneratedKeyColumns("id");
     }
 
@@ -47,6 +47,11 @@ public class MemberDao {
         jdbcTemplate.update(sql, id);
     }
 
+    public void deleteByEmail(String email) {
+        String sql = "delete from MEMBER where email = ?";
+        jdbcTemplate.update(sql, email);
+    }
+
     public Member findById(Long id) {
         String sql = "select * from MEMBER where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
@@ -55,5 +60,15 @@ public class MemberDao {
     public Member findByEmail(String email) {
         String sql = "select * from MEMBER where email = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, email);
+    }
+
+    public boolean isExistByEmail(String email) {
+        String sql = "select EXISTS (select email from MEMBER where email = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, email);
+    }
+
+    public boolean isNotExistByEmail(String email) {
+        String sql = "select EXISTS (select email from MEMBER where email = ?)";
+        return !jdbcTemplate.queryForObject(sql, Boolean.class, email);
     }
 }

@@ -14,9 +14,10 @@ import java.util.stream.Collectors;
 
 @Service
 public class PathFinder {
+
     public SubwayPath findPath(List<Line> lines, Station source, Station target) {
         if (source.equals(target)) {
-            throw new InvalidPathException();
+            throw new InvalidPathException("출발지와 목적지는 같을 수 없습니다.");
         }
         SubwayGraph graph = new SubwayGraph(SectionEdge.class);
         graph.addVertexWith(lines);

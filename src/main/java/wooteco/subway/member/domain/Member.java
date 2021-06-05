@@ -1,9 +1,10 @@
 package wooteco.subway.member.domain;
 
 import org.apache.commons.lang3.StringUtils;
-import wooteco.subway.auth.application.AuthorizationException;
+import wooteco.subway.exception.AuthorizationException;
 
-public class Member {
+public class Member implements User {
+
     private Long id;
     private String email;
     private String password;
@@ -31,6 +32,10 @@ public class Member {
         this.age = age;
     }
 
+    public Member update(String email, String password, Integer age) {
+        return new Member(id, email, password, age);
+    }
+
     public Long getId() {
         return id;
     }
@@ -43,13 +48,22 @@ public class Member {
         return password;
     }
 
-    public Integer getAge() {
+    public int getAge() {
         return age;
+    }
+
+    @Override
+    public boolean isGuest() {
+        return false;
     }
 
     public void checkPassword(String password) {
         if (!StringUtils.equals(this.password, password)) {
             throw new AuthorizationException();
         }
+    }
+
+    public boolean checkDifferentUserByEmail(String email) {
+        return !this.email.equals(email);
     }
 }

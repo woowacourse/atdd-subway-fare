@@ -5,29 +5,41 @@ import wooteco.subway.station.domain.Station;
 import java.util.List;
 
 public class Line {
+
     private Long id;
     private String name;
     private String color;
-    private Sections sections = new Sections();
+    private int extraFare;
+    private Sections sections;
 
     public Line() {
     }
 
     public Line(String name, String color) {
-        this.name = name;
-        this.color = color;
+        this(null, name, color, new Sections(), 0);
+    }
+
+    public Line(String name, String color, int extraFare) {
+        this(null, name, color, new Sections(), extraFare);
     }
 
     public Line(Long id, String name, String color) {
-        this.id = id;
-        this.name = name;
-        this.color = color;
+        this(id, name, color, new Sections(), 0);
     }
 
     public Line(Long id, String name, String color, Sections sections) {
+        this(id, name, color, sections, 0);
+    }
+
+    public Line(Long id, String name, String color, int extraFare) {
+        this(id, name, color, new Sections(), extraFare);
+    }
+
+    public Line(Long id, String name, String color, Sections sections, int extraFare) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
         this.sections = sections;
     }
 
@@ -43,6 +55,10 @@ public class Line {
         return color;
     }
 
+    public int getExtraFare() {
+        return extraFare;
+    }
+
     public Sections getSections() {
         return sections;
     }
@@ -53,7 +69,10 @@ public class Line {
     }
 
     public void addSection(Station upStation, Station downStation, int distance) {
-        Section section = new Section(upStation, downStation, distance);
+        Section section = new Section.Builder(distance)
+                .upStation(upStation)
+                .downStation(downStation)
+                .build();
         sections.addSection(section);
     }
 

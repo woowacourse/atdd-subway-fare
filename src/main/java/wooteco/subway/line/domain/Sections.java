@@ -1,5 +1,6 @@
 package wooteco.subway.line.domain;
 
+import wooteco.subway.exception.NotPermittedException;
 import wooteco.subway.station.domain.Station;
 
 import java.util.ArrayList;
@@ -9,17 +10,19 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Sections {
-    private List<Section> sections = new ArrayList<>();
 
-    public List<Section> getSections() {
-        return sections;
-    }
+    private final List<Section> sections;
 
     public Sections() {
+        sections = new ArrayList<>();
     }
 
     public Sections(List<Section> sections) {
         this.sections = sections;
+    }
+
+    public List<Section> getSections() {
+        return sections;
     }
 
     public void addSection(Section section) {
@@ -40,7 +43,7 @@ public class Sections {
     private void checkAlreadyExisted(Section section) {
         List<Station> stations = getStations();
         if (!stations.contains(section.getUpStation()) && !stations.contains(section.getDownStation())) {
-            throw new RuntimeException();
+            throw new NotPermittedException("양 끝 역이 구간에 존재하지 않습니다.");
         }
     }
 
@@ -48,7 +51,7 @@ public class Sections {
         List<Station> stations = getStations();
         List<Station> stationsOfNewSection = Arrays.asList(section.getUpStation(), section.getDownStation());
         if (stations.containsAll(stationsOfNewSection)) {
-            throw new RuntimeException();
+            throw new NotPermittedException("구간을 추가할 수 없습니다.");
         }
     }
 
@@ -68,18 +71,24 @@ public class Sections {
 
     private void replaceSectionWithUpStation(Section newSection, Section existSection) {
         if (existSection.getDistance() <= newSection.getDistance()) {
-            throw new RuntimeException();
+            throw new NotPermittedException("삽입하는 구간의 거리가 기존 구간보다 더 큽니다.");
         }
-        this.sections.add(new Section(existSection.getUpStation(), newSection.getUpStation(), existSection.getDistance() - newSection.getDistance()));
-        this.sections.remove(existSection);
+
+        final Section replacedSection = existSection.replaceSectionWithUpStation(newSection);
+
+        sections.add(replacedSection);
+        sections.remove(existSection);
     }
 
     private void replaceSectionWithDownStation(Section newSection, Section existSection) {
         if (existSection.getDistance() <= newSection.getDistance()) {
-            throw new RuntimeException();
+            throw new NotPermittedException("삽입하는 구간의 거리가 기존 구간보다 더 큽니다.");
         }
-        this.sections.add(new Section(newSection.getDownStation(), existSection.getDownStation(), existSection.getDistance() - newSection.getDistance()));
-        this.sections.remove(existSection);
+
+        final Section replacedSection = existSection.replaceSectionWithDownStation(newSection);
+
+        sections.add(replacedSection);
+        sections.remove(existSection);
     }
 
     public List<Station> getStations() {
@@ -108,7 +117,7 @@ public class Sections {
         return this.sections.stream()
                 .filter(it -> !downStations.contains(it.getUpStation()))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(NotPermittedException::new);
     }
 
     private Section findSectionByNextUpStation(Station station) {
@@ -120,7 +129,7 @@ public class Sections {
 
     public void removeStation(Station station) {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new NotPermittedException("구간이 하나밖에 없으므로 역을 삭제할 수 없습니다.");
         }
 
         Optional<Section> upSection = sections.stream()
@@ -134,7 +143,10 @@ public class Sections {
             Station newUpStation = downSection.get().getUpStation();
             Station newDownStation = upSection.get().getDownStation();
             int newDistance = upSection.get().getDistance() + downSection.get().getDistance();
-            sections.add(new Section(newUpStation, newDownStation, newDistance));
+            sections.add(new Section.Builder(newDistance)
+                    .upStation(newUpStation)
+                    .downStation(newDownStation)
+                    .build());
         }
 
         upSection.ifPresent(it -> sections.remove(it));
