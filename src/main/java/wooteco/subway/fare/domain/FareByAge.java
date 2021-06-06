@@ -21,7 +21,8 @@ public enum FareByAge {
 
     public static int calculate(int memberAge, int fareWithoutDiscount) {
         final FareByAge agePolicy = Arrays.stream(values())
-                .filter(fareByAge -> fareByAge.from <= memberAge && memberAge < fareByAge.to)
+                .filter(fareByAge -> fareByAge.from <= memberAge)
+                .filter(fareByAge -> memberAge < fareByAge.to)
                 .findAny()
                 .orElse(OTHER);
 
