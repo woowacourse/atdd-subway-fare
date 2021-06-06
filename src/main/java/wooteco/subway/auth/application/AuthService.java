@@ -5,10 +5,11 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
-import wooteco.subway.exception.AuthorizationException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
+
+import java.util.NoSuchElementException;
 
 @Service
 @Transactional
@@ -22,14 +23,13 @@ public class AuthService {
     }
 
     public TokenResponse createToken(TokenRequest request) {
-        try {
+        if (memberDao.isExistByEmail(request.getEmail())) {
             Member member = memberDao.findByEmail(request.getEmail());
             member.checkPassword(request.getPassword());
             String token = jwtTokenProvider.createToken(String.valueOf(member.getId()));
             return new TokenResponse(token);
-        } catch (Exception e) {
-            throw new AuthorizationException("이메일 혹은 비밀번호가 유효하지 않습니다.");
         }
+        throw new NoSuchElementException("존재하지 않는 이메일입니다.");
     }
 
     public LoginMember findLoginMemberByToken(String token) {
