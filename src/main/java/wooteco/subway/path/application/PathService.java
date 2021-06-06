@@ -16,12 +16,12 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class PathService {
     private final LineService lineService;
     private final StationService stationService;
     private final PathFinder pathFinder;
 
+    @Transactional
     public PathResponse findPath(Long source, Long target, int age) {
         try {
             List<Line> lines = lineService.findLines();

@@ -10,7 +10,6 @@ import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class AuthService {
     private final MemberDao memberDao;

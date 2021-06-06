@@ -15,11 +15,11 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class StationService {
     private final StationDao stationDao;
     private final SectionDao sectionDao;
 
+    @Transactional
     public StationResponse saveStation(StationRequest stationRequest) {
         Station station = stationDao.insert(stationRequest.toStation());
         return StationResponse.of(station);
@@ -29,6 +29,7 @@ public class StationService {
         return stationDao.findById(id);
     }
 
+    @Transactional
     public List<StationResponse> findAllStationResponses() {
         List<Station> stations = stationDao.findAll();
 
@@ -37,6 +38,7 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void deleteStationById(Long id) {
         if (sectionDao.isStationExistInSection(id)) {
             throw new StationAlreadyRegisteredInLineException();
