@@ -52,7 +52,7 @@ public class AuthorizationExtractor {
     }
 
     private static boolean isBearerType(String header) {
-        return StringUtils.equalsIgnoreCase(BEARER_TYPE, header);
+        return StringUtils.startsWithIgnoreCase(header, BEARER_TYPE);
     }
 
     private static String extractBearerTokenFromHeader(String header) {
