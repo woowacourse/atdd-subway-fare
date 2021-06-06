@@ -5,6 +5,9 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
+import wooteco.subway.infrastructure.ErrorCode;
+import wooteco.subway.infrastructure.exception.domain.auth.AuthorizationException;
+import wooteco.subway.infrastructure.exception.domain.auth.TokenNotValidException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
@@ -21,7 +24,9 @@ public class AuthService {
     }
 
     public TokenResponse login(TokenRequest request) {
-        Member member = memberDao.findByEmail(request.getEmail()).orElseThrow(AuthorizationException::new);
+        Member member = memberDao.findByEmail(request.getEmail())
+                .orElseThrow(() -> new AuthorizationException(ErrorCode.AUTH_NOT_VALID_LOGIN_INFO));
+
         member.checkPassword(request.getPassword());
         String token = jwtTokenProvider.createToken(request.getEmail());
         return new TokenResponse(token);
@@ -34,7 +39,9 @@ public class AuthService {
 
         String email = jwtTokenProvider.getPayload(credentials);
         try {
-            Member member = memberDao.findByEmail(email).orElseThrow(TokenNotValidException::new);
+            Member member = memberDao.findByEmail(email)
+                    .orElseThrow(() -> new TokenNotValidException(ErrorCode.AUTH_NOT_VALID_TOKEN));
+            
             return new LoginMember(member.getId(), member.getEmail(), member.getAge());
         } catch (Exception e) {
             return new LoginMember();

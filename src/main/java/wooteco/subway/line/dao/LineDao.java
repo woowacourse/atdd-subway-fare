@@ -4,7 +4,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import wooteco.subway.infrastructure.exception.not_found.LineNotFoundException;
+import wooteco.subway.infrastructure.exception.domain.not_found.LineNotFoundException;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.domain.Sections;
@@ -13,6 +13,8 @@ import wooteco.subway.station.domain.Station;
 import javax.sql.DataSource;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static wooteco.subway.infrastructure.ErrorCode.LINE_NOT_FOUND;
 
 @Repository
 public class LineDao {
@@ -76,7 +78,7 @@ public class LineDao {
 
     private Line mapLine(List<Map<String, Object>> result) {
         if (result.size() == 0) {
-            throw new LineNotFoundException();
+            throw new LineNotFoundException(LINE_NOT_FOUND);
         }
 
         List<Section> sections = extractSections(result);

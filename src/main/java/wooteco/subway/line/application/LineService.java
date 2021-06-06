@@ -1,7 +1,8 @@
 package wooteco.subway.line.application;
 
 import org.springframework.stereotype.Service;
-import wooteco.subway.infrastructure.exception.duplicate.LineDuplicatedException;
+import wooteco.subway.infrastructure.ErrorCode;
+import wooteco.subway.infrastructure.exception.domain.duplicate.LineDuplicatedException;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
@@ -15,6 +16,8 @@ import wooteco.subway.station.domain.Station;
 
 import java.util.List;
 import java.util.Optional;
+
+import static wooteco.subway.infrastructure.ErrorCode.*;
 
 @Service
 public class LineService {
@@ -38,7 +41,7 @@ public class LineService {
     private void validateInsert(final LineRequest lineRequest) {
         final Optional<Line> foundLine = lineDao.findByName(lineRequest.getName());
         if (foundLine.isPresent()) {
-            throw new LineDuplicatedException();
+            throw new LineDuplicatedException(LINE_DUPLICATED);
         }
     }
 
