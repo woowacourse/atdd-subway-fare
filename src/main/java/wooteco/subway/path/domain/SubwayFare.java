@@ -32,7 +32,7 @@ public class SubwayFare {
     }
 
     private int getDiscountMoney(int fare, int age) {
-        Age discountAge = Age.of(age);
-        return discountAge.calculateFareByAge(fare);
+        AgeFare discountAgeFare = AgeFare.of(age);
+        return discountAgeFare.calculateFareByAge(fare);
     }
 }

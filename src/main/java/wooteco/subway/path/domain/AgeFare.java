@@ -5,7 +5,7 @@ import wooteco.subway.path.exception.PathException;
 
 import java.util.Arrays;
 
-public enum Age {
+public enum AgeFare {
 
     ADULT(0){
         @Override
@@ -59,12 +59,12 @@ public enum Age {
 
     private final double discountRate;
 
-    Age(double discountRate) {
+    AgeFare(double discountRate) {
         this.discountRate = discountRate;
     }
 
-    public static Age of(int age) {
-        return Arrays.stream(Age.values())
+    public static AgeFare of(int age) {
+        return Arrays.stream(AgeFare.values())
                 .filter(item -> item.isRangeAge(age))
                 .findAny()
                 .orElseThrow(() -> new SubwayCustomException(PathException.INVALID_AGE_EXCEPTION));
