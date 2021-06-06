@@ -1,6 +1,7 @@
 package wooteco.subway.station;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,10 +47,14 @@ public class StationControllerTest {
     @MockBean
     private StationService stationService;
 
+    @BeforeEach
+    void setUp() throws Exception{
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
+    }
+
     @Test
     @DisplayName("역 생성")
     public void createStation() throws Exception {
-        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
         given(stationService.saveStation(any(StationRequest.class)))
                 .willReturn(new StationResponse(1L, "가양역"));
         StationRequest stationRequest = new StationRequest("가양역");
@@ -68,8 +73,6 @@ public class StationControllerTest {
     @Test
     @DisplayName("역 조회")
     public void showStations() throws Exception {
-        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
-
         StationResponse stationResponse = new StationResponse(1L, "가양역");
         StationResponse stationResponse2 = new StationResponse(2L, "등촌역");
 
@@ -89,9 +92,6 @@ public class StationControllerTest {
     @Test
     @DisplayName("역 조회")
     public void deleteStation() throws Exception {
-        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
-
-        //then
         mockMvc.perform(delete("/api/stations/1")
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isNoContent())

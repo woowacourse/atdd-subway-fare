@@ -1,6 +1,7 @@
 package wooteco.subway.line;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,12 @@ public class LineControllerTest {
     @MockBean
     private LineService lineService;
 
+    @BeforeEach
+    void setUp() throws Exception {
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
+
+    }
+
     @Test
     @DisplayName("노선 생성")
     public void createLine() throws Exception {
@@ -57,7 +64,6 @@ public class LineControllerTest {
         StationResponse stationResponse = new StationResponse(1L, "당산역");
         StationResponse stationResponse2 = new StationResponse(2L, "합정역");
 
-        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
         given(lineService.saveLine(any(LineRequest.class)))
                 .willReturn(new LineResponse(1L, "2호선", "초록색", Arrays.asList(stationResponse, stationResponse2)));
 
@@ -75,7 +81,6 @@ public class LineControllerTest {
     @Test
     @DisplayName("노선 전체 조회")
     public void findAllLines() throws Exception {
-        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
         Station startStation = new Station("1호선 시작역");
         Station endStation = new Station("1호선 끝역");
         Station startStation2 = new Station("2호선 시작역");
@@ -97,7 +102,6 @@ public class LineControllerTest {
     @Test
     @DisplayName("Id로 노선 조회")
     public void findLineById() throws Exception {
-        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
         StationResponse stationResponse = new StationResponse(1L, "당산역");
         StationResponse stationResponse2 = new StationResponse(2L, "합정역");
 
@@ -118,7 +122,6 @@ public class LineControllerTest {
     @DisplayName("노선 수정")
     public void updateLine() throws Exception {
         LineRequest lineRequest = new LineRequest("2호선", "초록색", 1L, 2L, 100);
-        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         //then
         mockMvc.perform(put("/api/lines/1")
@@ -134,8 +137,6 @@ public class LineControllerTest {
     @Test
     @DisplayName("노선 삭제")
     public void deleteLine() throws Exception {
-        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
-        //then
         mockMvc.perform(delete("/api/lines/1")
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isNoContent())
@@ -149,7 +150,6 @@ public class LineControllerTest {
     @DisplayName("구간 추가")
     public void addLineStation() throws Exception {
         //given & when
-        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
         SectionRequest sectionRequest = new SectionRequest(1L, 2L, 100);
 
         //then
@@ -167,7 +167,6 @@ public class LineControllerTest {
     @DisplayName("구간 삭제")
     public void removeLineStation() throws Exception {
         //given & when
-        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
         SectionRequest sectionRequest = new SectionRequest(1L, 2L, 100);
 
         //then
@@ -185,8 +184,6 @@ public class LineControllerTest {
     @DisplayName("신규 전체 조회")
     public void findLineMap() throws Exception {
         //given & when
-        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
-
         TransferLineResponse transferLineResponse1 = new TransferLineResponse(1L, "2호선", "초록색");
         TransferLineResponse transferLineResponse2 = new TransferLineResponse(2L, "9호선", "황토색");
 
