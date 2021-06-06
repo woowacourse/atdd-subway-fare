@@ -6,6 +6,7 @@ import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.line.dto.SimpleLineResponse;
 
 import java.net.URI;
 import java.sql.SQLException;
@@ -29,8 +30,8 @@ public class LineController {
     }
 
     @GetMapping
-    public ResponseEntity<List<LineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findLineResponses());
+    public ResponseEntity<List<SimpleLineResponse>> findLines() {
+        return ResponseEntity.ok(lineService.findSimpleLineResponses());
     }
 
     @GetMapping("/{id}")
@@ -60,10 +61,5 @@ public class LineController {
     public ResponseEntity removeLineStation(@PathVariable Long lineId, @RequestParam Long stationId) {
         lineService.removeLineStation(lineId, stationId);
         return ResponseEntity.ok().build();
-    }
-
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity handleSQLException() {
-        return ResponseEntity.badRequest().build();
     }
 }

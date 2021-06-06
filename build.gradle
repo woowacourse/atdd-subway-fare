@@ -18,6 +18,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 
+	// mySQL
+	implementation 'mysql:mysql-connector-java'
+
 	// handlebars
 	implementation 'pl.allegro.tech.boot:handlebars-spring-boot-starter:0.3.0'
 
@@ -34,6 +37,10 @@ dependencies {
 
 	// jwt
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
+	implementation 'jakarta.xml.bind:jakarta.xml.bind-api:2.3.2'
+
+	compile "javax.xml.bind:jaxb-api"
 }
 
 test {

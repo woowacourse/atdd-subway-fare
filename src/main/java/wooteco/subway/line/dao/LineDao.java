@@ -1,5 +1,6 @@
 package wooteco.subway.line.dao;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -23,7 +24,7 @@ public class LineDao {
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("line")
+                .withTableName("LINE")
                 .usingGeneratedKeyColumns("id");
     }
 
@@ -32,6 +33,7 @@ public class LineDao {
         params.put("id", line.getId());
         params.put("name", line.getName());
         params.put("color", line.getColor());
+        params.put("extra_fare", line.getFare());
 
         Long lineId = insertAction.executeAndReturnKey(params).longValue();
         return new Line(lineId, line.getName(), line.getColor());
@@ -39,6 +41,7 @@ public class LineDao {
 
     public Line findById(Long id) {
         String sql = "select L.id as line_id, L.name as line_name, L.color as line_color, " +
+                "L.extra_fare as extra_fare, " +
                 "S.id as section_id, S.distance as section_distance, " +
                 "UST.id as up_station_id, UST.name as up_station_name, " +
                 "DST.id as down_station_id, DST.name as down_station_name " +
@@ -52,13 +55,14 @@ public class LineDao {
         return mapLine(result);
     }
 
-    public void update(Line newLine) {
-        String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
+    public int update(Line newLine) {
+        String sql = "update LINE set name = ?, color = ?, extra_fare = ? where id = ?";
+        return jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getFare(), newLine.getId()});
     }
 
     public List<Line> findAll() {
         String sql = "select L.id as line_id, L.name as line_name, L.color as line_color, " +
+                "L.extra_fare as extra_fare, " +
                 "S.id as section_id, S.distance as section_distance, " +
                 "UST.id as up_station_id, UST.name as up_station_name, " +
                 "DST.id as down_station_id, DST.name as down_station_name " +
@@ -76,7 +80,7 @@ public class LineDao {
 
     private Line mapLine(List<Map<String, Object>> result) {
         if (result.size() == 0) {
-            throw new RuntimeException();
+            throw new EmptyResultDataAccessException(1);
         }
 
         List<Section> sections = extractSections(result);
@@ -85,6 +89,7 @@ public class LineDao {
                 (Long) result.get(0).get("LINE_ID"),
                 (String) result.get(0).get("LINE_NAME"),
                 (String) result.get(0).get("LINE_COLOR"),
+                (Integer) result.get(0).get("EXTRA_FARE"),
                 new Sections(sections));
     }
 
@@ -105,7 +110,30 @@ public class LineDao {
                 .collect(Collectors.toList());
     }
 
-    public void deleteById(Long id) {
-        jdbcTemplate.update("delete from Line where id = ?", id);
+    public int deleteById(Long id) {
+        return jdbcTemplate.update("delete from LINE where id = ?", id);
+    }
+
+    public boolean existColor(String color) {
+        String sql = "select exists (select * from LINE where color = ?)";
+
+        return jdbcTemplate.queryForObject(sql, Boolean.class, color);
+    }
+
+    public boolean existColor(Long id, String color) {
+        String sql = "select exists (select * from LINE where id <> ? AND color = ?)";
+
+        return jdbcTemplate.queryForObject(sql, Boolean.class, id, color);
+    }
+
+    public List<Line> findAllSimple() {
+        String sql = "select * from LINE";
+
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Long id = rs.getLong("id");
+            String name = rs.getString("name");
+            String color = rs.getString("color");
+            return new Line(id, name, color);
+        });
     }
 }

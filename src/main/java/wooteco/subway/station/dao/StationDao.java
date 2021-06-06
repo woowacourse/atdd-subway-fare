@@ -26,7 +26,7 @@ public class StationDao {
     public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("station")
+                .withTableName("STATION")
                 .usingGeneratedKeyColumns("id");
     }
 
@@ -41,13 +41,18 @@ public class StationDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public void deleteById(Long id) {
+    public int deleteById(Long id) {
         String sql = "delete from STATION where id = ?";
-        jdbcTemplate.update(sql, id);
+        return jdbcTemplate.update(sql, id);
     }
 
     public Station findById(Long id) {
         String sql = "select * from STATION where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    }
+
+    public int updateById(Long id, Station station) {
+        String sql = "update STATION set name = ? WHERE id = ?";
+        return jdbcTemplate.update(sql, station.getName(), id);
     }
 }

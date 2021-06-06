@@ -9,10 +9,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
+import wooteco.subway.auth.exception.AuthException;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static wooteco.subway.member.MemberAcceptanceTest.회원_정보_조회됨;
 
@@ -67,6 +69,36 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
+    @DisplayName("잘못된 아이디로 로그인")
+    @Test
+    void loginNotExistId() {
+        ExtractableResponse<Response> loginResponse = 로그인_요청("NOT_EXIST_ID", PASSWORD);
+
+        에러_발생함(loginResponse, AuthException.NOT_EXIST_EMAIL_EXCEPTION);
+    }
+
+    @DisplayName("잘못된 패스워드로 로그인")
+    @Test
+    void loginWrongPassword() {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+
+        ExtractableResponse<Response> loginResponse = 로그인_요청(EMAIL, "WRONG_PASSWORD");
+
+        에러_발생함(loginResponse, AuthException.WRONG_PASSWORD_EXCEPTION);
+    }
+
+    @DisplayName("토큰이 필요한 기능에 로그인을 안했을 경우 에러")
+    @Test
+    void notExistToken() {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+
+        로그인_요청(EMAIL, PASSWORD);
+
+        ExtractableResponse<Response> response = 내_회원_정보_조회_요청(new TokenResponse(""));
+
+        에러_발생함(response, AuthException.INVALID_TOKEN_EXCEPTION);
+    }
+
     public static ExtractableResponse<Response> 회원_등록되어_있음(String email, String password, Integer age) {
         return 회원_생성을_요청(email, password, age);
     }
@@ -88,7 +120,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 post("/login/token").
                 then().
                 log().all().
-                statusCode(HttpStatus.OK.value()).
                 extract();
     }
 
@@ -100,7 +131,12 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 get("/members/me").
                 then().
                 log().all().
-                statusCode(HttpStatus.OK.value()).
                 extract();
+    }
+
+    public static TokenResponse 회원가입_토큰가져오기() {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+
+        return 로그인되어_있음(EMAIL, PASSWORD);
     }
 }

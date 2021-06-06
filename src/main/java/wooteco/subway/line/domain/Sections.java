@@ -1,5 +1,7 @@
 package wooteco.subway.line.domain;
 
+import wooteco.subway.exception.SubwayCustomException;
+import wooteco.subway.line.exception.SectionException;
 import wooteco.subway.station.domain.Station;
 
 import java.util.ArrayList;
@@ -19,7 +21,50 @@ public class Sections {
     }
 
     public Sections(List<Section> sections) {
-        this.sections = sections;
+        this.sections = sortSections(sections);
+    }
+
+    public List<Section> sortSections(List<Section> sections) {
+        Section topSection = findTopSection(sections);
+        return sorting(sections, topSection);
+    }
+
+    private Section findTopSection(List<Section> sections) {
+        List<Station> downStationIds = sections.stream()
+                .map(Section::getDownStation)
+                .collect(Collectors.toList());
+
+        // todo 인덴트 2
+        for (Section section : sections) {
+            if (downStationIds.stream()
+                    .noneMatch(section::isUpStation)) {
+                return section;
+            }
+        }
+
+        throw new SubwayCustomException(SectionException.INVALID_SECTION_INFO_EXCEPTION);
+    }
+
+    private List<Section> sorting(List<Section> sections, Section topSection) {
+        List<Section> sortedSections = new ArrayList<>();
+
+        sortedSections.add(topSection);
+
+        int size = sections.size();
+        Station curDownStation = topSection.getDownStation();
+
+        // todo 인덴트 2
+        for (int i = 0; i < size - 1; i++) {
+            for (Section section : sections) {
+                if (section.isUpStation(curDownStation)) {
+                    sortedSections.add(section);
+                    curDownStation = section.getDownStation();
+                    break;
+                }
+            }
+        }
+
+        return sortedSections;
     }
 
     public void addSection(Section section) {
@@ -40,7 +85,7 @@ public class Sections {
     private void checkAlreadyExisted(Section section) {
         List<Station> stations = getStations();
         if (!stations.contains(section.getUpStation()) && !stations.contains(section.getDownStation())) {
-            throw new RuntimeException();
+            throw new SubwayCustomException(SectionException.INVALID_SECTION_INFO_EXCEPTION);
         }
     }
 
@@ -48,7 +93,7 @@ public class Sections {
         List<Station> stations = getStations();
         List<Station> stationsOfNewSection = Arrays.asList(section.getUpStation(), section.getDownStation());
         if (stations.containsAll(stationsOfNewSection)) {
-            throw new RuntimeException();
+            throw new SubwayCustomException(SectionException.INVALID_SECTION_INFO_EXCEPTION);
         }
     }
 
@@ -68,7 +113,7 @@ public class Sections {
 
     private void replaceSectionWithUpStation(Section newSection, Section existSection) {
         if (existSection.getDistance() <= newSection.getDistance()) {
-            throw new RuntimeException();
+            throw new SubwayCustomException(SectionException.INVALID_SECTION_INFO_EXCEPTION);
         }
         this.sections.add(new Section(existSection.getUpStation(), newSection.getUpStation(), existSection.getDistance() - newSection.getDistance()));
         this.sections.remove(existSection);
@@ -76,7 +121,7 @@ public class Sections {
 
     private void replaceSectionWithDownStation(Section newSection, Section existSection) {
         if (existSection.getDistance() <= newSection.getDistance()) {
-            throw new RuntimeException();
+            throw new SubwayCustomException(SectionException.INVALID_SECTION_INFO_EXCEPTION);
         }
         this.sections.add(new Section(newSection.getDownStation(), existSection.getDownStation(), existSection.getDistance() - newSection.getDistance()));
         this.sections.remove(existSection);
@@ -108,7 +153,7 @@ public class Sections {
         return this.sections.stream()
                 .filter(it -> !downStations.contains(it.getUpStation()))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new SubwayCustomException(SectionException.INVALID_SECTION_INFO_EXCEPTION));
     }
 
     private Section findSectionByNextUpStation(Station station) {
@@ -120,7 +165,7 @@ public class Sections {
 
     public void removeStation(Station station) {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new SubwayCustomException(SectionException.ILLEGAL_SECTION_DELETE_EXCEPTION);
         }
 
         Optional<Section> upSection = sections.stream()
