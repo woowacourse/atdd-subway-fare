@@ -20,15 +20,12 @@ public class PathService {
     private final LineService lineService;
     private final StationService stationService;
     private final PathFinder pathFinder;
-    private final FarePolicyFinder farePrincipalFinder;
 
-    public PathService(LineService lineService, StationService stationService, PathFinder pathFinder,
-                       FarePolicyFinder farePrincipalFinder) {
+    public PathService(LineService lineService, StationService stationService, PathFinder pathFinder) {
 
         this.lineService = lineService;
         this.stationService = stationService;
         this.pathFinder = pathFinder;
-        this.farePrincipalFinder = farePrincipalFinder;
     }
 
     public PathResponse findPath(LoginMember loginMember, Long source, Long target) {
@@ -39,7 +36,7 @@ public class PathService {
             SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
 
             return PathResponseAssembler.assemble(subwayPath,
-                    farePrincipalFinder.findFarePrincipal(loginMember.getAge()));
+                    FarePolicyFinder.findFarePrincipal(loginMember.getAge()));
         } catch (Exception e) {
             throw new InvalidPathException();
         }
