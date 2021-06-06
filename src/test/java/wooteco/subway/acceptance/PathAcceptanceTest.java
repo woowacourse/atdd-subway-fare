@@ -8,8 +8,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import wooteco.AcceptanceTest;
 import wooteco.auth.web.dto.response.TokenResponse;
-import wooteco.subway.AcceptanceTest;
 import wooteco.subway.web.dto.response.LineResponse;
 import wooteco.subway.web.dto.response.PathResponse;
 import wooteco.subway.web.dto.response.StationResponse;
@@ -19,10 +19,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.auth.acceptance.AuthAcceptanceTest.토큰;
+import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
+import static wooteco.auth.acceptance.AuthAcceptanceTest.*;
 import static wooteco.subway.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static wooteco.subway.acceptance.SectionAcceptanceTest.지하철_구간_등록되어_있음;
 import static wooteco.subway.acceptance.StationAcceptanceTest.지하철역_등록되어_있음;
+import static wooteco.utils.RestDocsUtils.*;
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
@@ -42,9 +44,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * 남부터미널역  --- *3호선* ---   양재
      */
     @BeforeEach
-    public void setUp() {
-        super.setUp();
-
+    public void setUpData() {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
         강남역 = 지하철역_등록되어_있음("강남역");
         양재역 = 지하철역_등록되어_있음("양재역");
         교대역 = 지하철역_등록되어_있음("교대역");
@@ -61,7 +62,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findPathByDistance() {
         //when
-        ExtractableResponse<Response> response = 거리_경로_조회_요청(3L, 2L);
+        ExtractableResponse<Response> response = 거리_경로_조회_요청(3L, 2L, "path-find");
 
         //then
         적절한_경로_응답됨(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
@@ -96,6 +97,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/api/paths?source={sourceId}&target={targetId}", source, target)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target, String documentIdentifier) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .filter(document(documentIdentifier, getRequestPreprocessor(), getResponsePreprocessor()))
                 .when().get("/api/paths?source={sourceId}&target={targetId}", source, target)
                 .then().log().all()
                 .extract();

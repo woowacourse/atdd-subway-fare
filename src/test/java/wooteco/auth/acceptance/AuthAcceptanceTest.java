@@ -7,26 +7,29 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import wooteco.AcceptanceTest;
 import wooteco.auth.web.dto.response.TokenResponse;
-import wooteco.subway.AcceptanceTest;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 import static wooteco.auth.acceptance.MemberAcceptanceTest.회원_생성을_요청;
 import static wooteco.auth.acceptance.MemberAcceptanceTest.회원_정보_조회됨;
+import static wooteco.utils.RestDocsUtils.*;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
-    private static final String EMAIL = "email@email.com";
-    private static final String PASSWORD = "password";
-    private static final Integer AGE = 20;
+    public static final String EMAIL = "email@email.com";
+    public static final String PASSWORD = "password";
+    public static final Integer AGE = 20;
 
     @DisplayName("Bearer Auth")
     @Test
     void myInfoWithBearerAuth() {
         // given
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
-        TokenResponse tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
+        ExtractableResponse<Response> response1 = 로그인_요청(EMAIL, PASSWORD, "auth-login");
+        TokenResponse tokenResponse = response1.as(TokenResponse.class);
 
         // when
         ExtractableResponse<Response> response = 내_회원_정보_조회_요청(tokenResponse);
@@ -81,27 +84,41 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         params.put("email", email);
         params.put("password", password);
 
-        return RestAssured.given().log().all().
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                body(params).
-                when().
-                post("/api/login/token").
-                then().
-                log().all().
-                statusCode(HttpStatus.OK.value()).
-                extract();
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/api/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 로그인_요청(String email, String password, String documentIdentifier) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .filter(document(documentIdentifier, getRequestPreprocessor(), getResponsePreprocessor()))
+                .when().post("/api/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
     }
 
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {
-        return RestAssured.given().log().all().
-                auth().oauth2(tokenResponse.getAccessToken()).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                get("/api/members/me").
-                then().
-                log().all().
-                statusCode(HttpStatus.OK.value()).
-                extract();
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/api/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
     }
 
     public static TokenResponse 토큰() {

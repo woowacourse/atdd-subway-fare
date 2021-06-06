@@ -8,7 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import wooteco.subway.AcceptanceTest;
+import wooteco.AcceptanceTest;
 import wooteco.subway.web.dto.request.LineRequest;
 import wooteco.subway.web.dto.response.LineResponse;
 import wooteco.subway.web.dto.response.StationResponse;
@@ -18,8 +18,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.auth.acceptance.AuthAcceptanceTest.토큰;
+import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
+import static wooteco.auth.acceptance.AuthAcceptanceTest.*;
 import static wooteco.subway.acceptance.StationAcceptanceTest.지하철역_등록되어_있음;
+import static wooteco.utils.RestDocsUtils.*;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineAcceptanceTest extends AcceptanceTest {
@@ -30,9 +32,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
     private LineRequest lineRequest2;
 
     @BeforeEach
-    public void setUp() {
-        super.setUp();
+    public void setUpData() {
         // given
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
         강남역 = 지하철역_등록되어_있음("강남역");
         downStation = 지하철역_등록되어_있음("광교역");
 
@@ -44,7 +46,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void createLine() {
         // when
-        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1);
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1, "line-create");
 
         // then
         지하철_노선_생성됨(response);
@@ -57,7 +59,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_등록되어_있음(lineRequest1);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1);
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1, "line-create-duplicate");
 
         // then
         지하철_노선_생성_실패됨(response);
@@ -71,7 +73,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         LineResponse lineResponse2 = 지하철_노선_등록되어_있음(lineRequest2);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청();
+        ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청("line-find");
 
         // then
         지하철_노선_목록_응답됨(response);
@@ -85,7 +87,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_조회_요청(lineResponse);
+        ExtractableResponse<Response> response = 지하철_노선_조회_요청(lineResponse, "line-findById");
 
         // then
         지하철_노선_응답됨(response, lineResponse);
@@ -98,7 +100,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse, lineRequest2);
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse, lineRequest2, "line-update");
 
         // then
         지하철_노선_수정됨(response);
@@ -111,7 +113,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         LineResponse lineResponse = 지하철_노선_등록되어_있음(lineRequest1);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_제거_요청(lineResponse);
+        ExtractableResponse<Response> response = 지하철_노선_제거_요청(lineResponse, "line-delete");
 
         // then
         지하철_노선_삭제됨(response);
@@ -139,10 +141,23 @@ public class LineAcceptanceTest extends AcceptanceTest {
                         extract();
     }
 
-    private static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {
+    public static ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest params, String documentIdentifier) {
         return RestAssured
-                .given().log().all()
+                .given(getRequestSpecification()).log().all()
+                .auth().oauth2(토큰().getAccessToken())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .filter(document(documentIdentifier, getRequestPreprocessor(), getResponsePreprocessor()))
+                .when().post("/api/lines")
+                .then().log().all().
+                        extract();
+    }
+
+    private static ExtractableResponse<Response> 지하철_노선_목록_조회_요청(String documentIdentifier) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
+                .filter(document(documentIdentifier, getRequestPreprocessor(), getResponsePreprocessor()))
                 .when().get("/api/lines")
                 .then().log().all()
                 .extract();
@@ -157,23 +172,33 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_수정_요청(LineResponse response,
-                                                             LineRequest params) {
-
+    public static ExtractableResponse<Response> 지하철_노선_조회_요청(LineResponse response, String documentIdentifier) {
         return RestAssured
-                .given().log().all()
+                .given(getRequestSpecification()).log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .filter(document(documentIdentifier, getRequestPreprocessor(), getResponsePreprocessor()))
+                .when().get("/api/lines/{lineId}", response.getId())
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선_수정_요청(LineResponse response, LineRequest params, String documentIdentifier) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
                 .auth().oauth2(토큰().getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
+                .filter(document(documentIdentifier, getRequestPreprocessor(), getResponsePreprocessor()))
                 .when().put("/api/lines/" + response.getId())
                 .then().log().all()
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_제거_요청(LineResponse lineResponse) {
+    public static ExtractableResponse<Response> 지하철_노선_제거_요청(LineResponse lineResponse, String documentIdentifier) {
         return RestAssured
-                .given().log().all()
+                .given(getRequestSpecification()).log().all()
                 .auth().oauth2(토큰().getAccessToken())
+                .filter(document(documentIdentifier, getRequestPreprocessor(), getResponsePreprocessor()))
                 .when().delete("/api/lines/" + lineResponse.getId())
                 .then().log().all()
                 .extract();
