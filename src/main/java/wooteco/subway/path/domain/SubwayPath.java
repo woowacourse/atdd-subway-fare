@@ -1,16 +1,22 @@
 package wooteco.subway.path.domain;
 
+import java.math.BigDecimal;
+import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
 
 public class SubwayPath {
-    private List<SectionEdge> sectionEdges;
-    private List<Station> stations;
 
-    public SubwayPath(List<SectionEdge> sectionEdges, List<Station> stations) {
+    private final List<SectionEdge> sectionEdges;
+    private final List<Station> stations;
+    private final Fare fare;
+
+    public SubwayPath(List<SectionEdge> sectionEdges, List<Station> stations, Fare fare) {
         this.sectionEdges = sectionEdges;
         this.stations = stations;
+        this.fare = fare;
+
     }
 
     public List<SectionEdge> getSectionEdges() {
@@ -24,4 +30,9 @@ public class SubwayPath {
     public int calculateDistance() {
         return sectionEdges.stream().mapToInt(it -> it.getSection().getDistance()).sum();
     }
+
+    public BigDecimal fare(LoginMember loginMember) {
+        return fare.calculate(this, loginMember);
+    }
+
 }

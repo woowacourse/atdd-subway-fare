@@ -1,0 +1,9 @@
+== 맵 API
+
+=== 맵 조회
+==== Request
+
+include::{snippets}/Show map/http-request.adoc[]
+
+==== Response
+include::{snippets}/Show map/http-response.adoc[]
