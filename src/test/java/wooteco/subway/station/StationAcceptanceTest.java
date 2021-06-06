@@ -3,11 +3,13 @@ package wooteco.subway.station;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.ArrayList;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.station.dto.StationLinesResponse;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
@@ -51,13 +53,15 @@ public class StationAcceptanceTest extends AcceptanceTest {
         // given
         StationResponse stationResponse1 = 지하철역_등록되어_있음(강남역);
         StationResponse stationResponse2 = 지하철역_등록되어_있음(역삼역);
+        StationLinesResponse stationLinesResponse1 = new StationLinesResponse(stationResponse1.getId(), stationResponse1.getName(), new ArrayList<>());
+        StationLinesResponse stationLinesResponse2 = new StationLinesResponse(stationResponse2.getId(), stationResponse2.getName(), new ArrayList<>());
 
         // when
         ExtractableResponse<Response> response = 지하철역_목록_조회_요청();
 
         // then
         지하철역_목록_응답됨(response);
-        지하철역_목록_포함됨(response, Arrays.asList(stationResponse1, stationResponse2));
+        지하철역_목록_포함됨(response, Arrays.asList(stationLinesResponse1, stationLinesResponse2));
     }
 
     @DisplayName("지하철역을 제거한다.")
@@ -122,13 +126,13 @@ public class StationAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    public static void 지하철역_목록_포함됨(ExtractableResponse<Response> response, List<StationResponse> createdResponses) {
+    public static void 지하철역_목록_포함됨(ExtractableResponse<Response> response, List<StationLinesResponse> createdResponses) {
         List<Long> expectedLineIds = createdResponses.stream()
-                .map(it -> it.getId())
+                .map(StationLinesResponse::getId)
                 .collect(Collectors.toList());
 
-        List<Long> resultLineIds = response.jsonPath().getList(".", StationResponse.class).stream()
-                .map(StationResponse::getId)
+        List<Long> resultLineIds = response.jsonPath().getList(".", StationLinesResponse.class).stream()
+                .map(StationLinesResponse::getId)
                 .collect(Collectors.toList());
 
         assertThat(resultLineIds).containsAll(expectedLineIds);

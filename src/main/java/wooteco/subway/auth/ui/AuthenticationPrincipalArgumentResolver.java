@@ -1,5 +1,6 @@
 package wooteco.subway.auth.ui;
 
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -11,9 +12,8 @@ import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
 import wooteco.subway.member.domain.LoginMember;
 
-import javax.servlet.http.HttpServletRequest;
-
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
+
     private AuthService authService;
 
     public AuthenticationPrincipalArgumentResolver(AuthService authService) {
@@ -26,12 +26,18 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
+    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
+        NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+        HttpServletRequest nativeRequest = webRequest.getNativeRequest(HttpServletRequest.class);
+        String credentials = AuthorizationExtractor.extract(nativeRequest);
         LoginMember member = authService.findMemberByToken(credentials);
-        if (member.getId() == null) {
-            throw new AuthorizationException();
+
+        if (member.getId() != null) {
+            return member;
         }
-        return member;
+        if (nativeRequest.getRequestURL().toString().contains("paths")) {
+            return member;
+        }
+        throw new AuthorizationException();
     }
 }

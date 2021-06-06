@@ -1,5 +1,6 @@
 package wooteco.subway.line.domain;
 
+import java.util.Map;
 import wooteco.subway.station.domain.Station;
 
 import java.util.ArrayList;
@@ -102,7 +103,7 @@ public class Sections {
 
     private Section findUpEndSection() {
         List<Station> downStations = this.sections.stream()
-                .map(it -> it.getDownStation())
+                .map(Section::getDownStation)
                 .collect(Collectors.toList());
 
         return this.sections.stream()
@@ -139,5 +140,15 @@ public class Sections {
 
         upSection.ifPresent(it -> sections.remove(it));
         downSection.ifPresent(it -> sections.remove(it));
+    }
+
+    public Sections sort() {
+        List<Section> sortedSections = new ArrayList<>();
+        Section nextSection = findUpEndSection();
+        while (nextSection != null) {
+            sortedSections.add(nextSection);
+            nextSection = findSectionByNextUpStation(nextSection.getDownStation());
+        }
+        return new Sections(sortedSections);
     }
 }
