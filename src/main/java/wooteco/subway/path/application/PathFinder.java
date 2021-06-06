@@ -1,40 +1,25 @@
 package wooteco.subway.path.application;
 
-import org.jgrapht.GraphPath;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.springframework.stereotype.Service;
-import wooteco.subway.line.domain.Line;
-import wooteco.subway.path.domain.SectionEdge;
-import wooteco.subway.path.domain.SubwayGraph;
-import wooteco.subway.path.domain.SubwayPath;
-import wooteco.subway.station.domain.Station;
+import static wooteco.subway.exception.SubwayExceptions.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
+import wooteco.subway.line.domain.Line;
+import wooteco.subway.path.infrastructure.SubwayPath;
+import wooteco.subway.path.infrastructure.shortestPath.ShortestPath;
+import wooteco.subway.path.infrastructure.shortestPath.ShortestPathWithDijkstra;
+import wooteco.subway.station.domain.Station;
 
 @Service
 public class PathFinder {
     public SubwayPath findPath(List<Line> lines, Station source, Station target) {
-        if (source.equals(target)) {
-            throw new InvalidPathException();
-        }
-        SubwayGraph graph = new SubwayGraph(SectionEdge.class);
-        graph.addVertexWith(lines);
-        graph.addEdge(lines);
-
-        // 다익스트라 최단 경로 찾기
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        GraphPath<Station, SectionEdge> path = dijkstraShortestPath.getPath(source, target);
-        if (path == null) {
-            throw new InvalidPathException();
+        if (lines.isEmpty() || source.equals(target)) {
+            throw INVALID_PATH.makeException();
         }
 
-        return convertSubwayPath(path);
-    }
-
-    private SubwayPath convertSubwayPath(GraphPath graphPath) {
-        List<SectionEdge> edges = (List<SectionEdge>) graphPath.getEdgeList().stream().collect(Collectors.toList());
-        List<Station> stations = graphPath.getVertexList();
-        return new SubwayPath(edges, stations);
+        ShortestPath shortestPath = new ShortestPathWithDijkstra(lines, source, target);
+        return new SubwayPath(shortestPath.getSections(), shortestPath.getStations());
     }
 }

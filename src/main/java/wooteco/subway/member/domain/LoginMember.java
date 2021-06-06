@@ -1,6 +1,6 @@
 package wooteco.subway.member.domain;
 
-public class LoginMember {
+public class LoginMember extends Throwable {
     private Long id;
     private String email;
     private Integer age;
@@ -11,6 +11,10 @@ public class LoginMember {
     public LoginMember(Long id, String email, Integer age) {
         this.id = id;
         this.email = email;
+        this.age = age;
+    }
+
+    public LoginMember(Integer age) {
         this.age = age;
     }
 

@@ -1,18 +1,18 @@
 package wooteco.subway.path.dto;
 
-import wooteco.subway.path.domain.SubwayPath;
-import wooteco.subway.station.dto.StationResponse;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class PathResponseAssembler {
-    public static PathResponse assemble(SubwayPath subwayPath) {
-        List<StationResponse> stationResponses = subwayPath.getStations().stream()
-                .map(it -> StationResponse.of(it))
-                .collect(Collectors.toList());
+import wooteco.subway.path.domain.Fare;
+import wooteco.subway.path.infrastructure.SubwayPath;
+import wooteco.subway.station.dto.StationResponse;
 
-        int distance = subwayPath.calculateDistance();
-        return new PathResponse(stationResponses, distance);
+public class PathResponseAssembler {
+    public static PathResponse assemble(SubwayPath subwayPath, Fare fare) {
+        List<StationResponse> stationResponses = subwayPath.getStations().stream()
+            .map(StationResponse::of)
+            .collect(Collectors.toList());
+
+        return new PathResponse(stationResponses, subwayPath.getDistance(), fare.getFare());
     }
 }
