@@ -50,6 +50,20 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
+    private boolean isExistingLineName(String name) {
+        return lineDao.exists(name);
+    }
+
+    private Section addInitSection(Line line, LineRequest request) {
+        if (request.getUpStationId() != null && request.getDownStationId() != null) {
+            Station upStation = stationService.findStationById(request.getUpStationId());
+            Station downStation = stationService.findStationById(request.getDownStationId());
+            Section section = new Section(upStation, downStation, request.getDistance());
+            return sectionDao.insert(line, section);
+        }
+        return null;
+    }
+
     @Transactional(readOnly = true)
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
@@ -71,19 +85,21 @@ public class LineService {
 
     @Transactional(readOnly = true)
     public Line findLineById(Long id) {
-        checkLineExist(id);
-        return lineDao.findById(id);
+        return lineDao.findById(id)
+            .orElseThrow(InvalidLineException::new);
     }
 
     @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        checkLineExist(id);
+        lineDao.findById(id)
+            .orElseThrow(InvalidLineException::new);
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
     @Transactional
     public void deleteLineById(Long id) {
-        checkLineExist(id);
+        lineDao.findById(id)
+            .orElseThrow(InvalidLineException::new);
         lineDao.deleteById(id);
     }
 
@@ -111,7 +127,8 @@ public class LineService {
     @Transactional
     public void updateLineStation(Long lineId, Long stationId, Long downStationId,
         SectionDistanceRequest request) {
-        checkLineExist(lineId);
+        lineDao.findById(lineId)
+            .orElseThrow(InvalidLineException::new);
         checkSectionExist(lineId, stationId, downStationId);
         int distance = request.getDistance();
         sectionDao.updateByLineId(lineId, stationId, downStationId, distance);
@@ -119,7 +136,7 @@ public class LineService {
 
     @Transactional(readOnly = true)
     public LineSectionResponse findSectionsById(Long lineId) {
-        Line line = lineDao.findById(lineId);
+        Line line = lineDao.findById(lineId).orElseThrow(InvalidLineException::new);
         return LineSectionResponse.of(line, stationService.findStationsWithTransferLine(lineId));
     }
 
@@ -129,32 +146,6 @@ public class LineService {
             .map(line -> LineMapResponse
                 .of(line, convertToStationMapResponse(line, line.getStations())))
             .collect(Collectors.toList());
-    }
-
-    private Section addInitSection(Line line, LineRequest request) {
-        if (request.getUpStationId() != null && request.getDownStationId() != null) {
-            Station upStation = stationService.findStationById(request.getUpStationId());
-            Station downStation = stationService.findStationById(request.getDownStationId());
-            Section section = new Section(upStation, downStation, request.getDistance());
-            return sectionDao.insert(line, section);
-        }
-        return null;
-    }
-
-    private boolean isExistingLineName(String name) {
-        return lineDao.findExistingLineByName(name);
-    }
-
-    private void checkLineExist(Long id) {
-        if (!lineDao.findExistingLineById(id)) {
-            throw new InvalidLineException();
-        }
-    }
-
-    private void checkSectionExist(Long lineId, Long stationId, Long downStationId) {
-        if (!sectionDao.findExistingSection(lineId, stationId, downStationId)) {
-            throw new InvalidSectionException();
-        }
     }
 
     private List<StationMapResponse> convertToStationMapResponse(Line line,
@@ -180,5 +171,11 @@ public class LineService {
             .findFirst()
             .map(Section::getDistance)
             .orElse(LAST_SORTED_STATION_MARK);
+    }
+
+    private void checkSectionExist(Long lineId, Long stationId, Long downStationId) {
+        if (!sectionDao.exists(lineId, stationId, downStationId)) {
+            throw new InvalidSectionException();
+        }
     }
 }

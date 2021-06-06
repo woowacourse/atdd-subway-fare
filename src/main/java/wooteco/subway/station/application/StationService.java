@@ -36,10 +36,14 @@ public class StationService {
         return StationResponse.of(station);
     }
 
+    private boolean isExistingName(String name) {
+        return stationDao.findStationByName(name);
+    }
+
     @Transactional(readOnly = true)
     public Station findStationById(Long id) {
-        checkStationExist(id);
-        return stationDao.findById(id);
+        return stationDao.findById(id)
+            .orElseThrow(InvalidStationException::new);
     }
 
     @Transactional(readOnly = true)
@@ -57,13 +61,15 @@ public class StationService {
 
     @Transactional
     public void deleteStationById(Long id) {
-        checkStationExist(id);
+        stationDao.findById(id)
+            .orElseThrow(InvalidStationException::new);
         stationDao.deleteById(id);
     }
 
     @Transactional
     public void updateStationById(Long id, String name) {
-        checkStationExist(id);
+        stationDao.findById(id)
+            .orElseThrow(InvalidStationException::new);
         if (isExistingName(name)) {
             throw new DuplicateStationException();
         }
@@ -73,15 +79,5 @@ public class StationService {
     @Transactional(readOnly = true)
     public List<StationTransferResponse> findStationsWithTransferLine(Long lineId) {
         return stationDao.getStationsWithTransferLines(lineId);
-    }
-
-    private boolean isExistingName(String name) {
-        return stationDao.findStationByName(name);
-    }
-
-    private void checkStationExist(Long id) {
-        if (!stationDao.findExistingStationById(id)) {
-            throw new InvalidStationException();
-        }
     }
 }

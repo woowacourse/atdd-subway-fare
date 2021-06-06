@@ -4,11 +4,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import wooteco.subway.exception.InvalidLineException;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.domain.Sections;
@@ -38,7 +40,7 @@ public class LineDao {
         return new Line(lineId, line.getName(), line.getColor(), line.getFare());
     }
 
-    public Line findById(Long id) {
+    public Optional<Line> findById(Long id) {
         String sql =
             "select L.id as line_id," +
                 " L.name as line_name, " +
@@ -91,24 +93,24 @@ public class LineDao {
         List<Map<String, Object>> result = jdbcTemplate.queryForList(sql);
         Map<Long, List<Map<String, Object>>> resultByLine = result.stream()
             .collect(Collectors.groupingBy(it -> (Long) it.get("line_id")));
-        return resultByLine.entrySet().stream()
-            .map(it -> mapLine(it.getValue()))
+        return resultByLine.values().stream()
+            .map(it -> mapLine(it).orElseThrow(InvalidLineException::new))
             .collect(Collectors.toList());
     }
 
-    private Line mapLine(List<Map<String, Object>> result) {
+    private Optional<Line> mapLine(List<Map<String, Object>> result) {
         if (result.size() == 0) {
-            throw new RuntimeException();
+            return Optional.empty();
         }
 
         List<Section> sections = extractSections(result);
 
-        return new Line(
+        return Optional.of(new Line(
             (Long) result.get(0).get("LINE_ID"),
             (String) result.get(0).get("LINE_NAME"),
             (String) result.get(0).get("LINE_COLOR"),
             (int) result.get(0).get("LINE_EXTRAFARE"),
-            new Sections(sections));
+            new Sections(sections)));
     }
 
     private List<Section> extractSections(List<Map<String, Object>> result) {
@@ -134,12 +136,7 @@ public class LineDao {
         jdbcTemplate.update("delete from LINE where id = ?", id);
     }
 
-    public boolean findExistingLineById(Long id) {
-        String sql = "select exists (select * from LINE where id = ?)";
-        return jdbcTemplate.queryForObject(sql, Boolean.class, id);
-    }
-
-    public boolean findExistingLineByName(String name) {
+    public boolean exists(String name) {
         String sql = "select exists (select * from LINE where name = ?)";
         return jdbcTemplate.queryForObject(sql, Boolean.class, name);
     }
