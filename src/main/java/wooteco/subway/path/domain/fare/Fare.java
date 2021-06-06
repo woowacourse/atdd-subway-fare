@@ -1,5 +1,6 @@
 package wooteco.subway.path.domain.fare;
 
+import java.util.Objects;
 import wooteco.subway.exception.application.ValidationFailureException;
 
 public class Fare {
@@ -40,5 +41,22 @@ public class Fare {
 
     public int value() {
         return this.value;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Fare fare = (Fare) o;
+        return value == fare.value;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
     }
 }
