@@ -1,4 +1,4 @@
-package wooteco.subway.advice;
+package wooteco.subway.exceptionhandler;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,9 +13,9 @@ import wooteco.subway.exception.InvalidPathException;
 import java.util.NoSuchElementException;
 
 @ControllerAdvice
-public class SubwayAdvice {
+public class SubwayExceptionHandler {
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleUnExpected(Exception e) {
+    public ResponseEntity<ErrorResponse> handleUnExpected() {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse("예기치 못한 오류가 발생했습니다."));
     }
 
@@ -29,13 +29,8 @@ public class SubwayAdvice {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(e.getMessage()));
     }
 
-    @ExceptionHandler(UnsupportedOperationException.class)
-    public ResponseEntity<ErrorResponse> handleUnsupportedOperation(UnsupportedOperationException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
-    }
-
-    @ExceptionHandler(InvalidPathException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidPath(InvalidPathException e) {
+    @ExceptionHandler({UnsupportedOperationException.class, InvalidPathException.class})
+    public ResponseEntity<ErrorResponse> handleUnsupportedOperation(RuntimeException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
     }
 
