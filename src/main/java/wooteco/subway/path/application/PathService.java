@@ -1,10 +1,11 @@
 package wooteco.subway.path.application;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
-import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.domain.Age;
 import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.path.dto.PathResponseAssembler;
@@ -26,16 +27,17 @@ public class PathService {
         this.pathFinder = pathFinder;
     }
 
-    public PathResponse findPath(Long source, Long target) {
+    @Transactional(readOnly = true)
+    public PathResponse findPath(Long source, Long target, Age age) {
         try {
             List<Line> lines = lineService.findLines();
             Station sourceStation = stationService.findStationById(source);
             Station targetStation = stationService.findStationById(target);
             SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
 
-            return PathResponseAssembler.assemble(subwayPath);
-        } catch (Exception e) {
-            throw new InvalidPathException();
+            return PathResponseAssembler.assemble(subwayPath, subwayPath.calculateFare(age), lines);
+        } catch (EmptyResultDataAccessException e) {
+            throw new InvalidPathException("출발지 또는 도착지가 존재하지 않습니다.");
         }
     }
 }
