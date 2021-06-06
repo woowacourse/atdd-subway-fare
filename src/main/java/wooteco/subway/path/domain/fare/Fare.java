@@ -8,7 +8,7 @@ public class Fare {
     }
 
     public int calculateFare(int distance, int extraFare, int age) {
-        int fareAfterDistanceDiscount = DistanceDiscount.calculateFareAfterDiscount(distance);
+        int fareAfterDistanceDiscount = DistanceFareRule.calculateFee(distance);
         return AgeDiscount.calculateFareAfterDiscount(fareAfterDistanceDiscount, age) + extraFare;
     }
 

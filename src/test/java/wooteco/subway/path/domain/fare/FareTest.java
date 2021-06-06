@@ -17,7 +17,7 @@ class FareTest {
         assertThat(fare.getFare()).isEqualTo(expected);
     }
 
-    @DisplayName("10km이상, 51km미만 일 때")
+    @DisplayName("10km 이상, 51km 미만 일 때")
     @ParameterizedTest
     @CsvSource(value = {"50,19,0,2050", "46,18,100,1810", "35,13,0,1470",
             "30,12,100,1100", "29,6,0,1000", "11,5,100,1450"})
