@@ -1,38 +1,61 @@
 package wooteco.subway.member.application;
 
-import org.apache.commons.logging.Log;
+import java.util.Objects;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.auth.exception.AuthExceptionSet;
+import wooteco.subway.exception.SubwayException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
+import wooteco.subway.member.exception.MemberExceptionSet;
 
 @Service
 public class MemberService {
-    private MemberDao memberDao;
+
+    private final MemberDao memberDao;
 
     public MemberService(MemberDao memberDao) {
         this.memberDao = memberDao;
     }
 
     public MemberResponse createMember(MemberRequest request) {
-        Member member = memberDao.insert(request.toMember());
-        return MemberResponse.of(member);
+        try {
+            Member member = memberDao.insert(request.toMember());
+            return MemberResponse.of(member);
+        } catch (DuplicateKeyException exception) {
+            throw new SubwayException(MemberExceptionSet.DUPLICATE_EMAIL_EXCEPTION);
+        }
     }
 
     public MemberResponse findMember(LoginMember loginMember) {
+        validateMember(loginMember);
         Member member = memberDao.findByEmail(loginMember.getEmail());
         return MemberResponse.of(member);
     }
 
+    private void validateMember(LoginMember loginMember) {
+        if (Objects.isNull(loginMember.getId())) {
+            throw new SubwayException(AuthExceptionSet.NOT_EXIST_MEMBER_EXCEPTION);
+        }
+    }
+
     public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
+        validateMember(loginMember);
         Member member = memberDao.findByEmail(loginMember.getEmail());
-        memberDao.update(new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
+        try {
+            memberDao.update(
+                new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(),
+                    memberRequest.getAge()));
+        } catch (DuplicateKeyException exception) {
+            throw new SubwayException(MemberExceptionSet.DUPLICATE_EMAIL_EXCEPTION);
+        }
     }
 
     public void deleteMember(LoginMember loginMember) {
+        validateMember(loginMember);
         Member member = memberDao.findByEmail(loginMember.getEmail());
         memberDao.deleteById(member.getId());
     }

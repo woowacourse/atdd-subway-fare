@@ -1,19 +1,24 @@
 package wooteco.subway.auth.application;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
+import wooteco.subway.auth.exception.AuthExceptionSet;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
+import wooteco.subway.exception.SubwayException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
+import wooteco.subway.path.AgeSet;
 
 @Service
 @Transactional
 public class AuthService {
-    private MemberDao memberDao;
-    private JwtTokenProvider jwtTokenProvider;
+
+    private final MemberDao memberDao;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public AuthService(MemberDao memberDao, JwtTokenProvider jwtTokenProvider) {
         this.memberDao = memberDao;
@@ -24,8 +29,8 @@ public class AuthService {
         try {
             Member member = memberDao.findByEmail(request.getEmail());
             member.checkPassword(request.getPassword());
-        } catch (Exception e) {
-            throw new AuthorizationException();
+        } catch (EmptyResultDataAccessException e) {
+            throw new SubwayException(AuthExceptionSet.NOT_EXIST_EMAIL_EXCEPTION);
         }
         String token = jwtTokenProvider.createToken(request.getEmail());
         return new TokenResponse(token);
@@ -33,7 +38,7 @@ public class AuthService {
 
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
+            throw new SubwayException(AuthExceptionSet.INVALID_JWT_EXCEPTION);
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
@@ -41,7 +46,21 @@ public class AuthService {
             Member member = memberDao.findByEmail(email);
             return new LoginMember(member.getId(), member.getEmail(), member.getAge());
         } catch (Exception e) {
-            return new LoginMember();
+            throw new SubwayException(AuthExceptionSet.NOT_EXIST_MEMBER_EXCEPTION);
+        }
+    }
+
+    public AgeSet findAgeByToken(String credentials) {
+        if (!jwtTokenProvider.validateToken(credentials)) {
+            return AgeSet.ADULT;
+        }
+
+        String email = jwtTokenProvider.getPayload(credentials);
+        try {
+            Member member = memberDao.findByEmail(email);
+            return AgeSet.of(member.getAge());
+        } catch (Exception e) {
+            throw new SubwayException(AuthExceptionSet.NOT_EXIST_MEMBER_EXCEPTION);
         }
     }
 }
