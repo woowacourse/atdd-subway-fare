@@ -1,5 +1,8 @@
 package wooteco.subway.path.domain;
 
+import wooteco.subway.exception.SubwayCustomException;
+import wooteco.subway.path.exception.PathException;
+
 import java.util.List;
 
 public class SubwayFare {
@@ -26,15 +29,10 @@ public class SubwayFare {
     }
 
     private int getExpensiveFare() {
-        int fare = 0;
-
-        for(SectionEdge sectionEdge : sectionEdges) {
-            int lineFare = sectionEdge.getFare();
-
-            fare = Math.max(fare, lineFare);
-        }
-
-        return fare;
+        return sectionEdges.stream()
+                .mapToInt(SectionEdge::getFare)
+                .max()
+                .orElseThrow(() -> new SubwayCustomException(PathException.INVALID_DISTANCE_EXCEPTION));
     }
 
     private int getDiscountMoney(int fare, int age) {
