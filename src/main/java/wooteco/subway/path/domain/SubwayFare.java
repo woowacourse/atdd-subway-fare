@@ -7,10 +7,6 @@ import java.util.List;
 
 public class SubwayFare {
 
-    private static final int DEFAULT_FARE = 1250;
-    private static final int DEFAULT_DISTANCE = 10;
-    private static final int EXTRA_DISTANCE = 50;
-
     private final List<SectionEdge> sectionEdges;
 
     public SubwayFare(List<SectionEdge> sectionEdges) {
