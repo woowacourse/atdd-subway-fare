@@ -8,9 +8,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.ErrorResponse;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
@@ -39,6 +43,86 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> deleteResponse = 내_회원_삭제_요청(사용자);
         회원_삭제됨(deleteResponse);
+    }
+
+    @DisplayName("회원 가입 시 Email 형식이 유효해야 한다.")
+    @Test
+    void createMemberWithValidEmail() {
+        String invalidEmail1 = "sdklfjsdlf";
+        ExtractableResponse<Response> response1 = 회원_생성을_요청(invalidEmail1, "password", 20);
+        회원_가입_실패(response1);
+
+        String invalidEmail2 = "kokoko@";
+        ExtractableResponse<Response> response2 = 회원_생성을_요청(invalidEmail2, "password", 20);
+        회원_가입_실패(response2);
+
+        String invalidEmail3 = "@com";
+        ExtractableResponse<Response> response3 = 회원_생성을_요청(invalidEmail3, "password", 20);
+        회원_가입_실패(response3);
+    }
+
+    @DisplayName("회원 가입 시 나이는 양수여야 한다.")
+    @Test
+    void createMemberWithValidAge() {
+        int AGE = -10;
+        ExtractableResponse<Response> response = 회원_생성을_요청("hello@hello.com", "password", AGE);
+        회원_가입_실패(response);
+    }
+
+    @DisplayName("회원 가입 시 비밀번호는 영어/숫자로 이루어진 1자 이상이어야 한다.")
+    @Test
+    void createMemberWithValidPassword() {
+        String blankAsPassword = "";
+        ExtractableResponse<Response> response1 = 회원_생성을_요청("hello@hello.com", blankAsPassword, 10);
+        회원_가입_실패(response1);
+
+        String koreanAsPassword = "한글비밀번호";
+        ExtractableResponse<Response> response2 = 회원_생성을_요청("hello@hello.com", koreanAsPassword, 10);
+        회원_가입_실패(response2);
+
+        String specialCharacterAsPassword = "%%##$";
+        ExtractableResponse<Response> response3 = 회원_생성을_요청("hello@hello.com", specialCharacterAsPassword, 10);
+        회원_가입_실패(response3);
+    }
+
+    @DisplayName("이미 가입된 이메일로는 다시 가입할 수 없다.")
+    @Test
+    void createMemberWithDuplicateEmail() {
+        final String duplicateEmail = "hello@hello.com";
+        회원_생성을_요청(duplicateEmail, "password", 10);
+        ExtractableResponse<Response> response = 회원_생성을_요청(duplicateEmail, "password", 10);
+        회원_가입_이메일_중복(response);
+    }
+
+    @DisplayName("이미 등록된 이메일에 대해 유효성 검사를 하는 기능을 구현한다.")
+    @Test
+    void checkMemberWithDuplicateEmail() {
+        final String duplicateEmail = "hello@hello.com";
+
+        Map<String, String> duplicateInfo = new HashMap<>();
+        duplicateInfo.put("email", duplicateEmail);
+
+        ExtractableResponse<Response> properResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(duplicateInfo)
+                .when().post("/members/email-check")
+                .then().log().all()
+                .extract();
+
+        assertThat(properResponse.statusCode()).isEqualTo(200);
+
+        회원_생성을_요청(duplicateEmail, "password", 10);
+
+        ExtractableResponse<Response> inproperResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(duplicateInfo)
+                .when().post("/members/email-check")
+                .then().log().all()
+                .extract();
+
+        assertThat(inproperResponse.statusCode()).isEqualTo(409);
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
@@ -88,6 +172,18 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 회원_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    public static void 회원_가입_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        ErrorResponse errorResponse = response.jsonPath().getObject(".", ErrorResponse.class);
+        assertThat(errorResponse.getErrorMessage()).isEqualTo("양식에 맞지 않는 회원가입 요청입니다.");
+    }
+
+    public static void 회원_가입_이메일_중복(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CONFLICT.value());
+        ErrorResponse errorResponse = response.jsonPath().getObject(".", ErrorResponse.class);
+        assertThat(errorResponse.getErrorMessage()).isEqualTo("이미 가입된 이메일입니다.");
     }
 
     public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {

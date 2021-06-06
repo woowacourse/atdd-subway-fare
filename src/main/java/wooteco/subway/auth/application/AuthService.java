@@ -2,18 +2,20 @@ package wooteco.subway.auth.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.auth.domain.AnonymousUser;
+import wooteco.subway.auth.domain.LoginUser;
+import wooteco.subway.auth.domain.User;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
-import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
 
 @Service
 @Transactional
 public class AuthService {
-    private MemberDao memberDao;
-    private JwtTokenProvider jwtTokenProvider;
+    private final MemberDao memberDao;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public AuthService(MemberDao memberDao, JwtTokenProvider jwtTokenProvider) {
         this.memberDao = memberDao;
@@ -22,7 +24,8 @@ public class AuthService {
 
     public TokenResponse login(TokenRequest request) {
         try {
-            Member member = memberDao.findByEmail(request.getEmail());
+            Member member = memberDao.findByEmail(request.getEmail())
+                    .orElseThrow(AuthorizationException::new);
             member.checkPassword(request.getPassword());
         } catch (Exception e) {
             throw new AuthorizationException();
@@ -31,17 +34,22 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
-    public LoginMember findMemberByToken(String credentials) {
+    public User findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
+            return new AnonymousUser();
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
         try {
-            Member member = memberDao.findByEmail(email);
-            return new LoginMember(member.getId(), member.getEmail(), member.getAge());
+            Member member = memberDao.findByEmail(email)
+                    .orElseThrow(AuthorizationException::new);
+            return new LoginUser(member.getId(), member.getEmail(), member.getAge());
         } catch (Exception e) {
-            return new LoginMember();
+            return new AnonymousUser();
         }
+    }
+
+    public boolean validateToken(String token) {
+        return jwtTokenProvider.validateToken(token);
     }
 }

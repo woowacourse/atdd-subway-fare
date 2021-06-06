@@ -1,8 +1,12 @@
 package wooteco.subway.station.dto;
 
 import wooteco.subway.station.domain.Station;
+import wooteco.subway.station.exception.InvalidStationNameException;
+
+import javax.validation.constraints.NotBlank;
 
 public class StationRequest {
+    @NotBlank(message = InvalidStationNameException.ERROR_MESSAGE)
     private String name;
 
     public StationRequest() {

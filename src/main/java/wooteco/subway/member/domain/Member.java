@@ -19,16 +19,24 @@ public class Member {
         this.age = age;
     }
 
-    public Member(Long id, String email, Integer age) {
-        this.id = id;
-        this.email = email;
-        this.age = age;
+    public Member(String email, String password, Integer age) {
+        this(null, email, password, age);
     }
 
-    public Member(String email, String password, Integer age) {
-        this.email = email;
-        this.password = password;
+    public void checkPassword(String password) {
+        if (StringUtils.equals(this.password, password)) {
+            return;
+        }
+        throw new AuthorizationException();
+    }
+
+    public boolean isSameEmail(String email) {
+        return this.email.equals(email);
+    }
+
+    public void update(Integer age, String password) {
         this.age = age;
+        this.password = password;
     }
 
     public Long getId() {
@@ -45,11 +53,5 @@ public class Member {
 
     public Integer getAge() {
         return age;
-    }
-
-    public void checkPassword(String password) {
-        if (!StringUtils.equals(this.password, password)) {
-            throw new AuthorizationException();
-        }
     }
 }

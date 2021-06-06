@@ -6,50 +6,48 @@ import java.util.List;
 
 public class Line {
     private Long id;
-    private String name;
-    private String color;
-    private Sections sections = new Sections();
+    private LineName lineName;
+    private LineColor lineColor;
+    private Integer extraFare;
+    private Sections sections;
 
     public Line() {
     }
 
-    public Line(String name, String color) {
-        this.name = name;
-        this.color = color;
-    }
-
-    public Line(Long id, String name, String color) {
+    public Line(Long id, String lineName, String lineColor, int extraFare, Sections sections) {
         this.id = id;
-        this.name = name;
-        this.color = color;
-    }
-
-    public Line(Long id, String name, String color, Sections sections) {
-        this.id = id;
-        this.name = name;
-        this.color = color;
+        this.lineName = new LineName(lineName);
+        this.lineColor = new LineColor(lineColor);
+        this.extraFare = extraFare;
         this.sections = sections;
     }
 
-    public Long getId() {
-        return id;
+    public Line(String lineName, String lineColor) {
+        this(null, lineName, lineColor, 0, new Sections());
     }
 
-    public String getName() {
-        return name;
+    public Line(String lineName, String lineColor, int extraFare) {
+        this(null, lineName, lineColor, extraFare, new Sections());
     }
 
-    public String getColor() {
-        return color;
+    public Line(Long id, String lineName, String lineColor) {
+        this(id, lineName, lineColor, 0, new Sections());
     }
 
-    public Sections getSections() {
-        return sections;
+    public Line(Long id, String lineName, String lineColor, int extraFare) {
+        this(id, lineName, lineColor, extraFare, new Sections());
     }
 
-    public void update(Line line) {
-        this.name = line.getName();
-        this.color = line.getColor();
+    public boolean containsStation(Station station) {
+        return sections.containsStation(station);
+    }
+
+    public boolean hasSameName(String name) {
+        return this.lineName.hasSameName(name);
+    }
+
+    public boolean hasSameColor(String color) {
+        return this.lineColor.hasSameColor(color);
     }
 
     public void addSection(Station upStation, Station downStation, int distance) {
@@ -70,5 +68,25 @@ public class Line {
 
     public List<Station> getStations() {
         return sections.getStations();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getLineName() {
+        return lineName.getName();
+    }
+
+    public String getLineColor() {
+        return lineColor.getColor();
+    }
+
+    public Integer getExtraFare() {
+        return extraFare;
+    }
+
+    public Sections getSections() {
+        return sections;
     }
 }
