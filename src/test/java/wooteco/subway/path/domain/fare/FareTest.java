@@ -2,12 +2,8 @@ package wooteco.subway.path.domain.fare;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 
 class FareTest {
 
@@ -15,28 +11,18 @@ class FareTest {
     @Test
     void equality() {
         // when, then
-        Fare fare = new Fare(15, 15, 100);
-        assertThat(fare).isEqualTo(
-            new Fare(15, 15, 100)
-        );
+        Fare fare = new Fare(10);
+        assertThat(fare).isEqualTo(new Fare(10));
     }
 
-    @DisplayName("노선별 추가 요금 계산")
-    @MethodSource("extraFareByLine")
-    @ParameterizedTest
-    void distanceRate(int distance, int expectedFare, int age, int extraFare) {
-        //when
-        Fare fare = new Fare(distance, age, extraFare);
+    @DisplayName("요금과 요금 더하기")
+    @Test
+    void addFare() {
+        // given
+        Fare fare = new Fare(500);
 
-        //then
-        assertThat(fare.value()).isEqualTo(expectedFare);
-    }
-
-    private static Stream<Arguments> extraFareByLine() {
-        return Stream.of(
-            Arguments.of(9, 1350, 20, 100),
-            Arguments.of(9, 1450, 20, 200),
-            Arguments.of(9, 1550, 20, 300)
-        );
+        // when, then
+        assertThat(fare.addFare(new Fare(1000)))
+            .isEqualTo(new Fare(1500));
     }
 }
