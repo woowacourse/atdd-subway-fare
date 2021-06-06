@@ -8,9 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
-import wooteco.subway.auth.dto.TokenResponse;
-import wooteco.subway.member.dto.MemberRequest;
-import wooteco.subway.member.dto.MemberResponse;
+import wooteco.subway.auth.ui.dto.TokenResponse;
+import wooteco.subway.member.ui.dto.MemberRequest;
+import wooteco.subway.member.ui.dto.MemberResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
@@ -39,6 +39,14 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> deleteResponse = 내_회원_삭제_요청(사용자);
         회원_삭제됨(deleteResponse);
+    }
+
+    @DisplayName("200보다 큰 나이의 회원을 가입한다.")
+    @Test
+    void insertMemberWithAgeOver200() {
+        ExtractableResponse<Response> response = 회원_생성을_요청("abc@abc.abc", "password", 201);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
