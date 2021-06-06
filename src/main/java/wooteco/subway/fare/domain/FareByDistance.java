@@ -11,7 +11,7 @@ public enum FareByDistance {
         return Constants.DEFAULT_FARE +
                 extraFareOverTen(distance - Constants.MAX_DISTANCE_FOR_DEFAULT_FARE);
     }),
-    OVER_FIFTY_FARE(50, distance -> {
+    OVER_FIFTY_FARE(50, Constants.MAX_DISTANCE_OF_SUBWAY_PATH, distance -> {
         return Constants.DEFAULT_FARE +
                 extraFareOverTen(Constants.MAX_DISTANCE_FOR_OVER_TEN_FARE) +
                 extraFareOverFifty(distance - Constants.MAX_DISTANCE_FOR_DEFAULT_FARE - Constants.MAX_DISTANCE_FOR_OVER_TEN_FARE);
@@ -24,12 +24,6 @@ public enum FareByDistance {
     FareByDistance(int from, int to, Function<Integer, Integer> farePolicy) {
         this.from = from;
         this.to = to;
-        this.farePolicy = farePolicy;
-    }
-
-    FareByDistance(int from, Function<Integer, Integer> farePolicy) {
-        this.from = from;
-        this.to = Constants.MAX_DISTANCE_OF_SUBWAY_PATH;
         this.farePolicy = farePolicy;
     }
 
