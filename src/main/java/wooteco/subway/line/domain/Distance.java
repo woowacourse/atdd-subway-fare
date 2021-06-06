@@ -1,13 +1,10 @@
 package wooteco.subway.line.domain;
 
-import wooteco.subway.exception.InternalLogicException;
 import wooteco.subway.exception.addition.LineDistanceException;
 
 public class Distance {
-    private static final int DEFAULT_FARE_RANGE = 10;
-    private static final int FIRST_FARE_RANGE_DISTANCE = 50;
-    public static final int DEFAULT_TO_FIRST_RANGE_DISTANCE = FIRST_FARE_RANGE_DISTANCE - DEFAULT_FARE_RANGE;
     private static final int MIN_POSITIVE = 1;
+
     private final int distance;
 
     public Distance(int distance) {
@@ -25,23 +22,19 @@ public class Distance {
         return distance;
     }
 
-    public boolean isDefaultRange() {
-        return distance <= DEFAULT_FARE_RANGE;
+    public boolean isLessOrEqualThan(int value) {
+        return distance <= value;
     }
 
-    public boolean isFirstRange() {
-        return DEFAULT_FARE_RANGE < distance
-                && distance <= FIRST_FARE_RANGE_DISTANCE;
+    public boolean isLessThan(int value) {
+        return distance < value;
     }
 
-    public int firstDistanceRange() {
-        return distance - DEFAULT_FARE_RANGE;
+    public boolean isMoreThan(int value) {
+        return distance > value;
     }
 
-    public int secondDistanceRange() {
-        if (distance < FIRST_FARE_RANGE_DISTANCE) {
-            throw new InternalLogicException();
-        }
-        return distance - FIRST_FARE_RANGE_DISTANCE;
+    public int subtract(int value) {
+        return distance - value;
     }
 }
