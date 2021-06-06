@@ -95,19 +95,11 @@ public class LineService {
     }
 
     private boolean isUpdatedNameDuplicate(Line originalLine, LineRequest lineUpdateRequest) {
-        return isNameUpdated(originalLine, lineUpdateRequest) && lineDao.isExistByName(lineUpdateRequest.getName());
-    }
-
-    private boolean isNameUpdated(Line originalLine, LineRequest lineUpdateRequest) {
-        return originalLine.hasDifferentName(lineUpdateRequest);
+        return originalLine.hasDifferentName(lineUpdateRequest) && lineDao.isExistByName(lineUpdateRequest.getName());
     }
 
     private boolean isUpdatedColorDuplicate(Line originalLine, LineRequest lineUpdateRequest) {
-        return isColorUpdated(originalLine, lineUpdateRequest) && lineDao.isExistByColor(lineUpdateRequest.getColor());
-    }
-
-    private boolean isColorUpdated(Line originalLine, LineRequest lineUpdateRequest) {
-        return originalLine.hasDifferentColor(lineUpdateRequest);
+        return originalLine.hasDifferentColor(lineUpdateRequest) && lineDao.isExistByColor(lineUpdateRequest.getColor());
     }
 
     @Transactional
