@@ -27,14 +27,6 @@ public class AcceptanceTest {
     @LocalServerPort
     private int port;
 
-    @BeforeEach
-    public void setUp(RestDocumentationContextProvider restDocumentation) {
-        RestAssured.port = port;
-        spec = new RequestSpecBuilder()
-                .addFilter(documentationConfiguration(restDocumentation))
-                .build();
-    }
-
     public static RequestSpecification given(String identifier) {
 
         return RestAssured
@@ -42,5 +34,13 @@ public class AcceptanceTest {
                 .filter(document(identifier,
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint())));
+    }
+
+    @BeforeEach
+    public void setUp(RestDocumentationContextProvider restDocumentation) {
+        RestAssured.port = port;
+        spec = new RequestSpecBuilder()
+                .addFilter(documentationConfiguration(restDocumentation))
+                .build();
     }
 }

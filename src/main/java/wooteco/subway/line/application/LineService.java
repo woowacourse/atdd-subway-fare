@@ -1,7 +1,6 @@
 package wooteco.subway.line.application;
 
 import org.springframework.stereotype.Service;
-import wooteco.subway.infrastructure.ErrorCode;
 import wooteco.subway.infrastructure.exception.domain.duplicate.LineDuplicatedException;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
@@ -17,7 +16,7 @@ import wooteco.subway.station.domain.Station;
 import java.util.List;
 import java.util.Optional;
 
-import static wooteco.subway.infrastructure.ErrorCode.*;
+import static wooteco.subway.infrastructure.ErrorCode.LINE_DUPLICATED;
 
 @Service
 public class LineService {

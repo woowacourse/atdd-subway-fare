@@ -1,10 +1,11 @@
-package wooteco.subway.auth.application;
+package wooteco.subway.infrastructure.exception.domain.auth;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import wooteco.subway.infrastructure.ErrorCode;
+import wooteco.subway.infrastructure.exception.domain.SubwayException;
 
-@ResponseStatus(value = HttpStatus.UNAUTHORIZED, reason = "이메일과 비밀번호를 확인해주세요.")
-public class AuthorizationException extends RuntimeException {
-    public AuthorizationException() {
+public class AuthorizationException extends SubwayException {
+
+    public AuthorizationException(final ErrorCode errorCode) {
+        super(errorCode);
     }
 }

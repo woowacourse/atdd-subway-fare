@@ -1,10 +1,11 @@
-package wooteco.subway.infrastructure.exception.duplicate;
+package wooteco.subway.infrastructure.exception.domain.duplicate;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import wooteco.subway.infrastructure.ErrorCode;
+import wooteco.subway.infrastructure.exception.domain.SubwayException;
 
-@ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "중복된 지하철 노선입니다")
-public class LineDuplicatedException extends RuntimeException {
-    public LineDuplicatedException() {
+public class LineDuplicatedException extends SubwayException {
+
+    public LineDuplicatedException(final ErrorCode errorCode) {
+        super(errorCode);
     }
 }

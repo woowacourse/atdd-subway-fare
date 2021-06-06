@@ -1,6 +1,5 @@
 package wooteco.subway.line.domain;
 
-import wooteco.subway.infrastructure.ErrorCode;
 import wooteco.subway.infrastructure.exception.domain.create.SectionCreateException;
 import wooteco.subway.infrastructure.exception.domain.delete.SectionDeleteException;
 import wooteco.subway.station.domain.Station;
@@ -11,7 +10,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static wooteco.subway.infrastructure.ErrorCode.*;
+import static wooteco.subway.infrastructure.ErrorCode.SECTION_CREATE;
+import static wooteco.subway.infrastructure.ErrorCode.SECTION_DELETE;
 
 public class Sections {
     private List<Section> sections = new ArrayList<>();

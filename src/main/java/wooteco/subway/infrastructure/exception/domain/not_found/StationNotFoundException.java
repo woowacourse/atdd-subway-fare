@@ -1,11 +1,11 @@
-package wooteco.subway.infrastructure.exception.not_found;
+package wooteco.subway.infrastructure.exception.domain.not_found;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import wooteco.subway.infrastructure.ErrorCode;
+import wooteco.subway.infrastructure.exception.domain.SubwayException;
 
-@ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "존재하지 않는 지하철 역 입니다.")
-public class StationNotFoundException extends RuntimeException {
+public class StationNotFoundException extends SubwayException {
 
-    public StationNotFoundException() {
+    public StationNotFoundException(final ErrorCode errorCode) {
+        super(errorCode);
     }
 }

@@ -1,7 +1,6 @@
 package wooteco.subway.station.application;
 
 import org.springframework.stereotype.Service;
-import wooteco.subway.infrastructure.ErrorCode;
 import wooteco.subway.infrastructure.exception.domain.delete.StationDeleteException;
 import wooteco.subway.infrastructure.exception.domain.duplicate.StationDuplicatedException;
 import wooteco.subway.infrastructure.exception.domain.not_found.StationNotFoundException;

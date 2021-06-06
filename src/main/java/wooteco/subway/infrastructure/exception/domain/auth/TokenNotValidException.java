@@ -1,8 +1,10 @@
-package wooteco.subway.auth.application;
+package wooteco.subway.infrastructure.exception.domain.auth;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import wooteco.subway.infrastructure.ErrorCode;
+import wooteco.subway.infrastructure.exception.domain.SubwayException;
 
-@ResponseStatus(value = HttpStatus.UNAUTHORIZED, reason = "토큰이 유효하지 않습니다.")
-public class TokenNotValidException extends RuntimeException {
+public class TokenNotValidException extends SubwayException {
+    public TokenNotValidException(final ErrorCode errorCode) {
+        super(errorCode);
+    }
 }

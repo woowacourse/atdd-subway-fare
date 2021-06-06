@@ -41,7 +41,7 @@ public class AuthService {
         try {
             Member member = memberDao.findByEmail(email)
                     .orElseThrow(() -> new TokenNotValidException(ErrorCode.AUTH_NOT_VALID_TOKEN));
-            
+
             return new LoginMember(member.getId(), member.getEmail(), member.getAge());
         } catch (Exception e) {
             return new LoginMember();

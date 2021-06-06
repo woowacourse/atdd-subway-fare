@@ -40,33 +40,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 잠실역;
     private StationResponse 석촌역;
 
-    /**
-     * 교대역    --- *2호선* ---   강남역
-     * |                        |
-     * *3호선*                   *신분당선*
-     * |                        |
-     * 남부터미널역  --- *3호선* ---   양재
-     */
-    @BeforeEach
-    public void setUp(RestDocumentationContextProvider restDocumentation) {
-        super.setUp(restDocumentation);
-
-        강남역 = 지하철역_등록되어_있음("강남역");
-        양재역 = 지하철역_등록되어_있음("양재역");
-        교대역 = 지하철역_등록되어_있음("교대역");
-        남부터미널역 = 지하철역_등록되어_있음("남부터미널역");
-        잠실역 = 지하철역_등록되어_있음("잠실역");
-        석촌역 = 지하철역_등록되어_있음("석촌역");
-
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10, 900L);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10, 0L);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5, 0L);
-
-        지하철_구간_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
-        지하철_구간_등록되어_있음(신분당선, 양재역, 잠실역, 40);
-        지하철_구간_등록되어_있음(신분당선, 잠실역, 석촌역, 40);
-    }
-
     public static ExtractableResponse<Response> 거리_경로_조회_요청(long source, long target) {
         return given(PATHS_GET)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -108,7 +81,32 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(pathResponse.getFare()).isEqualTo(fare);
     }
 
+    /**
+     * 교대역    --- *2호선* ---   강남역
+     * |                        |
+     * *3호선*                   *신분당선*
+     * |                        |
+     * 남부터미널역  --- *3호선* ---   양재
+     */
+    @BeforeEach
+    public void setUp(RestDocumentationContextProvider restDocumentation) {
+        super.setUp(restDocumentation);
 
+        강남역 = 지하철역_등록되어_있음("강남역");
+        양재역 = 지하철역_등록되어_있음("양재역");
+        교대역 = 지하철역_등록되어_있음("교대역");
+        남부터미널역 = 지하철역_등록되어_있음("남부터미널역");
+        잠실역 = 지하철역_등록되어_있음("잠실역");
+        석촌역 = 지하철역_등록되어_있음("석촌역");
+
+        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10, 900L);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10, 0L);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5, 0L);
+
+        지하철_구간_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
+        지하철_구간_등록되어_있음(신분당선, 양재역, 잠실역, 40);
+        지하철_구간_등록되어_있음(신분당선, 잠실역, 석촌역, 40);
+    }
 
     @DisplayName("두 역의 최단 거리 경로를 조회한다.")
     @Test

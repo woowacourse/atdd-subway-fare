@@ -1,8 +1,10 @@
-package wooteco.subway.infrastructure.exception.delete;
+package wooteco.subway.infrastructure.exception.domain.delete;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import wooteco.subway.infrastructure.ErrorCode;
+import wooteco.subway.infrastructure.exception.domain.SubwayException;
 
-@ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "구간을 제거 할 수 없습니다.")
-public class SectionDeleteException extends RuntimeException{
+public class SectionDeleteException extends SubwayException {
+    public SectionDeleteException(final ErrorCode errorCode) {
+        super(errorCode);
+    }
 }

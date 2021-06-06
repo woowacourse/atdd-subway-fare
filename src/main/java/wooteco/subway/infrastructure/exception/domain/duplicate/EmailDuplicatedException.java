@@ -1,10 +1,11 @@
-package wooteco.subway.infrastructure.exception.duplicate;
+package wooteco.subway.infrastructure.exception.domain.duplicate;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import wooteco.subway.infrastructure.ErrorCode;
+import wooteco.subway.infrastructure.exception.domain.SubwayException;
 
-@ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY, reason = "이메일이 중복되었습니다.")
-public class EmailDuplicatedException extends RuntimeException {
-    public EmailDuplicatedException() {
+public class EmailDuplicatedException extends SubwayException {
+
+    public EmailDuplicatedException(final ErrorCode errorCode) {
+        super(errorCode);
     }
 }

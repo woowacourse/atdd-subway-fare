@@ -1,8 +1,11 @@
-package wooteco.subway.infrastructure.exception.delete;
+package wooteco.subway.infrastructure.exception.domain.delete;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import wooteco.subway.infrastructure.ErrorCode;
+import wooteco.subway.infrastructure.exception.domain.SubwayException;
 
-@ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "구간에 존재하는 지하 역을 삭제할 수 없습니다.")
-public class StationDeleteException extends RuntimeException{
+public class StationDeleteException extends SubwayException {
+
+    public StationDeleteException(final ErrorCode errorCode) {
+        super(errorCode);
+    }
 }

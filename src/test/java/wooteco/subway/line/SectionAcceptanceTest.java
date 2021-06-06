@@ -32,18 +32,6 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     private StationResponse 정자역;
     private StationResponse 광교역;
 
-    @BeforeEach
-    public void setUp(RestDocumentationContextProvider restDocumentation) {
-        super.setUp(restDocumentation);
-
-        강남역 = 지하철역_등록되어_있음("강남역");
-        양재역 = 지하철역_등록되어_있음("양재역");
-        정자역 = 지하철역_등록되어_있음("정자역");
-        광교역 = 지하철역_등록되어_있음("광교역");
-
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 광교역, 10, 900L);
-    }
-
     public static void 지하철_구간_등록되어_있음(LineResponse lineResponse, StationResponse upStation, StationResponse downStation, int distance) {
         지하철_구간_생성_요청(lineResponse, upStation, downStation, distance);
     }
@@ -78,7 +66,6 @@ public class SectionAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-
     public static void 지하철_노선에_지하철역_순서_정렬됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
         LineResponse line = response.as(LineResponse.class);
         List<Long> stationIds = line.getStations().stream()
@@ -110,6 +97,18 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철_노선에_지하철역_제외_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @BeforeEach
+    public void setUp(RestDocumentationContextProvider restDocumentation) {
+        super.setUp(restDocumentation);
+
+        강남역 = 지하철역_등록되어_있음("강남역");
+        양재역 = 지하철역_등록되어_있음("양재역");
+        정자역 = 지하철역_등록되어_있음("정자역");
+        광교역 = 지하철역_등록되어_있음("광교역");
+
+        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 광교역, 10, 900L);
     }
 
     @DisplayName("지하철 구간을 등록한다.")

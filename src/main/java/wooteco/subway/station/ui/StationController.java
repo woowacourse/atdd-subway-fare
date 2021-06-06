@@ -2,7 +2,6 @@ package wooteco.subway.station.ui;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.dto.StationRequest;

@@ -1,11 +1,11 @@
-package wooteco.subway.infrastructure.exception.duplicate;
+package wooteco.subway.infrastructure.exception.domain.duplicate;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import wooteco.subway.infrastructure.ErrorCode;
+import wooteco.subway.infrastructure.exception.domain.SubwayException;
 
-@ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "이미 존재하는 지하철 역입니다.")
-public class StationDuplicatedException extends RuntimeException {
+public class StationDuplicatedException extends SubwayException {
 
-    public StationDuplicatedException() {
+    public StationDuplicatedException(final ErrorCode errorCode) {
+        super(errorCode);
     }
 }

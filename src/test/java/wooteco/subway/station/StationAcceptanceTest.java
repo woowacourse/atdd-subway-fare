@@ -63,7 +63,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     public static StationResponse 지하철역_등록되어_있음(String name) {
         return 지하철역_생성_요청(name, STATIONS_POST_SUCCESS).as(StationResponse.class);
     }
-    
+
     public static void 지하철역_생성됨(ExtractableResponse response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
