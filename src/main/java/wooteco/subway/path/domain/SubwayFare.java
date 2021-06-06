@@ -33,6 +33,6 @@ public class SubwayFare {
 
     private int getDiscountMoney(int fare, int age) {
         AgeFare discountAgeFare = AgeFare.of(age);
-        return discountAgeFare.calculateFareByAge(fare);
+        return discountAgeFare.calculateByAge(fare);
     }
 }
