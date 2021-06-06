@@ -19,7 +19,6 @@ public class MemberService {
         this.memberDao = memberDao;
     }
 
-    @Transactional
     public MemberResponse createMember(MemberRequest request) {
         validateDuplicatedEmail(request.getEmail());
         Member member = memberDao.insert(request.toMember());
@@ -38,7 +37,6 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    @Transactional
     public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
         Member member = memberDao.findByEmail(loginMember.getEmail())
                 .orElseThrow(WrongEmailException::new);
@@ -46,7 +44,6 @@ public class MemberService {
         memberDao.update(newMember);
     }
 
-    @Transactional
     public void deleteMember(LoginMember loginMember) {
         Member member = memberDao.findByEmail(loginMember.getEmail())
                 .orElseThrow(WrongEmailException::new);

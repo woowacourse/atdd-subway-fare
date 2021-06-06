@@ -92,7 +92,6 @@ public class LineService {
         }
     }
 
-    @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         checkIfLineExists(id);
         validateDuplicatedName(lineUpdateRequest.getName());
