@@ -6,20 +6,20 @@ import wooteco.subway.line.dto.SectionRequest;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-public class SectionRequestValidator implements ConstraintValidator<SectionRequestConstraint, SectionRequest> {
+public class NotEqualValidator implements ConstraintValidator<NotEqual, SectionRequest> {
     private String upStationId;
     private String downStationId;
 
     @Override
-    public void initialize(SectionRequestConstraint constraintAnnotation) {
+    public void initialize(NotEqual constraintAnnotation) {
         this.upStationId = constraintAnnotation.upStationId();
         this.downStationId = constraintAnnotation.downStationId();
     }
 
     @Override
     public boolean isValid(SectionRequest sectionRequest, ConstraintValidatorContext context) {
-        Object upStationValue = new BeanWrapperImpl(sectionRequest).getPropertyValue("upStationId");
-        Object downStationValue = new BeanWrapperImpl(sectionRequest).getPropertyValue("downStationId");
+        Object upStationValue = new BeanWrapperImpl(sectionRequest).getPropertyValue(upStationId);
+        Object downStationValue = new BeanWrapperImpl(sectionRequest).getPropertyValue(downStationId);
         return !upStationValue.equals(downStationValue);
     }
 }

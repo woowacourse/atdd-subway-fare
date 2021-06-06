@@ -7,10 +7,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Constraint(validatedBy = SectionRequestValidator.class)
+@Constraint(validatedBy = NotEqualValidator.class)
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface SectionRequestConstraint {
+public @interface NotEqual {
     String message() default "상행 역과 하행 역은 같을 수 없습니다.";
 
     Class<?>[] groups() default {};
@@ -24,6 +24,6 @@ public @interface SectionRequestConstraint {
     @Target({ElementType.TYPE})
     @Retention(RetentionPolicy.RUNTIME)
     @interface List {
-        SectionRequestConstraint[] value();
+        NotEqual[] value();
     }
 }

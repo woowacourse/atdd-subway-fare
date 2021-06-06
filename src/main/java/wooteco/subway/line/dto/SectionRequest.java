@@ -1,11 +1,11 @@
 package wooteco.subway.line.dto;
 
-import wooteco.subway.line.SectionRequestConstraint;
+import wooteco.subway.line.NotEqual;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
-@SectionRequestConstraint(upStationId = "upStationId", downStationId = "downStationId")
+@NotEqual(upStationId = "upStationId", downStationId = "downStationId")
 public class SectionRequest {
     @NotNull
     private Long upStationId;
