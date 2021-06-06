@@ -3,9 +3,10 @@ package wooteco.subway.common;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import wooteco.subway.auth.exception.InvalidTokenException;
@@ -14,7 +15,7 @@ import wooteco.subway.line.exception.section.SectionException;
 import wooteco.subway.member.exception.MemberException;
 import wooteco.subway.station.exception.StationException;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class BaseControllerAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(StationException.class)
@@ -44,6 +45,7 @@ public class BaseControllerAdvice extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        FieldError fieldError = ex.getBindingResult().getFieldError();
         return ResponseEntity.badRequest()
                 .body(new ErrorResponse(ex.getBindingResult().getAllErrors().get(0).getDefaultMessage()));
     }
