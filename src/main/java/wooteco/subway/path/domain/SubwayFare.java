@@ -21,7 +21,7 @@ public class SubwayFare {
 
     private int calculateFareByDistance(int distance) {
         DistanceFare distanceFare = DistanceFare.of(distance);
-        return distanceFare.calculateFareByDistance(distance) + getExpensiveFare();
+        return distanceFare.calculateByDistance(distance) + getExpensiveFare();
     }
 
     private int getExpensiveFare() {
@@ -32,7 +32,7 @@ public class SubwayFare {
     }
 
     private int getDiscountMoney(int fare, int age) {
-        AgeFare discountAgeFare = AgeFare.of(age);
-        return discountAgeFare.calculateByAge(fare);
+        DiscountFareByAge discountDiscountFareByAge = DiscountFareByAge.of(age);
+        return discountDiscountFareByAge.calculateByAge(fare);
     }
 }
