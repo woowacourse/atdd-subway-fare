@@ -13,15 +13,20 @@ public class SubwayPath {
         this.stations = stations;
     }
 
-    public List<SectionEdge> getSectionEdges() {
-        return sectionEdges;
-    }
-
     public List<Station> getStations() {
         return stations;
     }
 
     public int calculateDistance() {
-        return sectionEdges.stream().mapToInt(it -> it.getSection().getDistance()).sum();
+        return sectionEdges.stream()
+                .mapToInt(it -> it.getSection().getDistance())
+                .sum();
+    }
+
+    public int calculateExtraFare() {
+        return sectionEdges.stream()
+                .mapToInt(SectionEdge::getExtraFare)
+                .max()
+                .orElse(0);
     }
 }

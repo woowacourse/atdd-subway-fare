@@ -2,7 +2,10 @@ package wooteco.subway.station.dto;
 
 import wooteco.subway.station.domain.Station;
 
+import javax.validation.constraints.NotEmpty;
+
 public class StationRequest {
+    @NotEmpty(message = "입력되지 않은 항목을 확인해주세요")
     private String name;
 
     public StationRequest() {

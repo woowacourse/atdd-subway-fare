@@ -3,6 +3,7 @@ package wooteco.subway.line.dao;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import wooteco.subway.exception.NotFoundException;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.domain.Sections;
@@ -23,7 +24,7 @@ public class LineDao {
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("line")
+                .withTableName("LINE")
                 .usingGeneratedKeyColumns("id");
     }
 
@@ -32,17 +33,18 @@ public class LineDao {
         params.put("id", line.getId());
         params.put("name", line.getName());
         params.put("color", line.getColor());
+        params.put("extra_fare", line.getExtraFare());
 
         Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new Line(lineId, line.getName(), line.getColor());
+        return new Line(lineId, line.getName(), line.getColor(), line.getExtraFare());
     }
 
     public Line findById(Long id) {
-        String sql = "select L.id as line_id, L.name as line_name, L.color as line_color, " +
+        String sql = "select L.id as line_id, L.name as line_name, L.color as line_color, L.extra_fare as extra_fare, " +
                 "S.id as section_id, S.distance as section_distance, " +
                 "UST.id as up_station_id, UST.name as up_station_name, " +
                 "DST.id as down_station_id, DST.name as down_station_name " +
-                "from LINE L \n" +
+                "from LINE L \n " +
                 "left outer join SECTION S on L.id = S.line_id " +
                 "left outer join STATION UST on S.up_station_id = UST.id " +
                 "left outer join STATION DST on S.down_station_id = DST.id " +
@@ -58,7 +60,7 @@ public class LineDao {
     }
 
     public List<Line> findAll() {
-        String sql = "select L.id as line_id, L.name as line_name, L.color as line_color, " +
+        String sql = "select L.id as line_id, L.name as line_name, L.color as line_color, L.extra_fare as extra_fare," +
                 "S.id as section_id, S.distance as section_distance, " +
                 "UST.id as up_station_id, UST.name as up_station_name, " +
                 "DST.id as down_station_id, DST.name as down_station_name " +
@@ -76,7 +78,7 @@ public class LineDao {
 
     private Line mapLine(List<Map<String, Object>> result) {
         if (result.size() == 0) {
-            throw new RuntimeException();
+            throw new NotFoundException("해당하는 노선이 없습니다.");
         }
 
         List<Section> sections = extractSections(result);
@@ -85,6 +87,7 @@ public class LineDao {
                 (Long) result.get(0).get("LINE_ID"),
                 (String) result.get(0).get("LINE_NAME"),
                 (String) result.get(0).get("LINE_COLOR"),
+                (Integer) result.get(0).get("EXTRA_FARE"),
                 new Sections(sections));
     }
 
@@ -106,6 +109,26 @@ public class LineDao {
     }
 
     public void deleteById(Long id) {
-        jdbcTemplate.update("delete from Line where id = ?", id);
+        jdbcTemplate.update("delete from LINE where id = ?", id);
+    }
+
+    public boolean existNewNameExceptCurrentName(String newName, String currentName) {
+        String query = "SELECT EXISTS (SELECT * FROM LINE WHERE name IN (?) AND name NOT IN (?))";
+        return jdbcTemplate.queryForObject(query, Boolean.class, newName, currentName);
+    }
+
+    public boolean existNewColorExceptCurrentColor(String color, String currentColor) {
+        String query = "SELECT EXISTS (SELECT * FROM LINE WHERE color IN (?) AND color NOT IN (?))";
+        return jdbcTemplate.queryForObject(query, Boolean.class, color, currentColor);
+    }
+
+    public boolean isExistsName(String name) {
+        String query = "SELECT EXISTS (SELECT * FROM LINE WHERE name = ?)";
+        return jdbcTemplate.queryForObject(query, Boolean.class, name);
+    }
+
+    public boolean isExistsColor(String color) {
+        String query = "SELECT EXISTS (SELECT * FROM LINE WHERE color = ?)";
+        return jdbcTemplate.queryForObject(query, Boolean.class, color);
     }
 }

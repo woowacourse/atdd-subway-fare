@@ -1,5 +1,6 @@
 package wooteco.subway.station.dao;
 
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -26,7 +27,7 @@ public class StationDao {
     public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("station")
+                .withTableName("STATION")
                 .usingGeneratedKeyColumns("id");
     }
 
@@ -49,5 +50,21 @@ public class StationDao {
     public Station findById(Long id) {
         String sql = "select * from STATION where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    }
+
+    public Station findByName(String name) {
+        String sql = "SELECT * FROM STATION where name = ?";
+        return DataAccessUtils.singleResult(jdbcTemplate.query(sql, rowMapper, name));
+    }
+
+    public Station updateName(Long id, String name) {
+        String sql = "update STATION set name = (?) where id = (?)";
+        jdbcTemplate.update(sql, name, id);
+        return new Station(id, name);
+    }
+
+    public boolean existsInSection(Long id) {
+        String sql = "SELECT EXISTS(select * from SECTION WHERE up_station_id = ? or down_station_id = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, id, id);
     }
 }
