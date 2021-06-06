@@ -32,16 +32,18 @@ public class AuthService {
     }
 
     public LoginMember findMemberByToken(String credentials) {
-        if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
-        }
-
-        String email = jwtTokenProvider.getPayload(credentials);
         try {
+            String email = jwtTokenProvider.getPayload(credentials);
             Member member = memberDao.findByEmail(email);
-            return new LoginMember(member.getId(), member.getEmail(), member.getAge());
+            return LoginMember.of(member);
         } catch (Exception e) {
-            return new LoginMember();
+            return LoginMember.ofGuest();
+        }
+    }
+
+    public void validateToken(String credentials) {
+        if (!jwtTokenProvider.validateToken(credentials)) {
+            throw new AuthorizationException();
         }
     }
 }

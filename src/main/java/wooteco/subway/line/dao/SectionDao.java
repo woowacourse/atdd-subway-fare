@@ -1,19 +1,19 @@
 package wooteco.subway.line.dao;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 
-import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 @Repository
 public class SectionDao {
+
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert simpleJdbcInsert;
 
@@ -52,5 +52,10 @@ public class SectionDao {
                 .collect(Collectors.toList());
 
         simpleJdbcInsert.executeBatch(batchValues.toArray(new Map[sections.size()]));
+    }
+
+    public boolean existsByStationId(Long stationId) {
+        String sql = "select exists (select * from SECTION where up_station_id = ? or down_station_id = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, stationId, stationId);
     }
 }

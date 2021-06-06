@@ -1,5 +1,9 @@
 package wooteco.subway.station.dao;
 
+import java.util.List;
+import java.util.Optional;
+import javax.sql.DataSource;
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -7,9 +11,6 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.station.domain.Station;
-
-import javax.sql.DataSource;
-import java.util.List;
 
 @Repository
 public class StationDao {
@@ -26,7 +27,7 @@ public class StationDao {
     public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("station")
+                .withTableName("STATION")
                 .usingGeneratedKeyColumns("id");
     }
 
@@ -37,7 +38,7 @@ public class StationDao {
     }
 
     public List<Station> findAll() {
-        String sql = "select * from STATION";
+        String sql = "select * from STATION order by id";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
@@ -46,8 +47,14 @@ public class StationDao {
         jdbcTemplate.update(sql, id);
     }
 
-    public Station findById(Long id) {
+    public Optional<Station> findById(Long id) {
         String sql = "select * from STATION where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        List<Station> result =  jdbcTemplate.query(sql, rowMapper, id);
+        return Optional.ofNullable(DataAccessUtils.singleResult(result));
+    }
+
+    public boolean exists(String name) {
+        String sql = "select exists (select * from STATION where name = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, name);
     }
 }
