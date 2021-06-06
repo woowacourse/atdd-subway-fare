@@ -14,6 +14,10 @@ public class SectionEdge extends DefaultWeightedEdge {
         this.line = line;
     }
 
+    public int getLineExtraFare() {
+        return line.getExtraFare();
+    }
+
     public Section getSection() {
         return section;
     }
