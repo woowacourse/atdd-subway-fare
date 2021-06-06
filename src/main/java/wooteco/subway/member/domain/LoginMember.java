@@ -2,7 +2,6 @@ package wooteco.subway.member.domain;
 
 public class LoginMember {
 
-    private static final LoginMember UNCERTIFIED_MEMBER = new LoginMember(null, "UNCERTIFIED_MEMBER", null);
     private static final LoginMember GUEST = new LoginMember(null, "GUEST", 20);
 
     private final Long id;
@@ -19,16 +18,12 @@ public class LoginMember {
         this.age = age;
     }
 
-    public static LoginMember obtainUncertifiedMember() {
-        return UNCERTIFIED_MEMBER;
-    }
-
     public static LoginMember obtainGuest() {
         return GUEST;
     }
 
-    public boolean isUncertified() {
-        return this.equals(UNCERTIFIED_MEMBER);
+    public boolean isGuest() {
+        return this.equals(GUEST);
     }
 
     public Long getId() {

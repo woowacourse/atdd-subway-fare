@@ -25,9 +25,9 @@ public abstract class AuthenticationArgumentResolver implements HandlerMethodArg
             (HttpServletRequest) webRequest.getNativeRequest()
         );
         LoginMember loginMember = authService.findMemberByToken(credentials);
-        return considerUncertifiedMember(loginMember);
+        return considerGuest(loginMember);
     }
 
-    abstract LoginMember considerUncertifiedMember(LoginMember member);
+    protected abstract LoginMember considerGuest(LoginMember member);
 
 }

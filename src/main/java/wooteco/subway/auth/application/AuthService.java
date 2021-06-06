@@ -36,12 +36,12 @@ public class AuthService {
 
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return LoginMember.obtainUncertifiedMember();
+            return LoginMember.obtainGuest();
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
         return memberDao.findByEmail(email)
             .map(LoginMember::new)
-            .orElse(LoginMember.obtainUncertifiedMember());
+            .orElse(LoginMember.obtainGuest());
     }
 }

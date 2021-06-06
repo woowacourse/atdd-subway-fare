@@ -18,8 +18,8 @@ public class AuthenticationRequiredArgumentResolver extends AuthenticationArgume
     }
 
     @Override
-    LoginMember considerUncertifiedMember(LoginMember member) {
-        if (member.isUncertified()) {
+    protected LoginMember considerGuest(LoginMember member) {
+        if (member.isGuest()) {
             throw new AuthorizationException("토큰 검증에 실패했습니다.");
         }
         return member;

@@ -17,10 +17,7 @@ public class AuthenticationOptionalArgumentResolver extends AuthenticationArgume
     }
 
     @Override
-    LoginMember considerUncertifiedMember(LoginMember member) {
-        if (member.isUncertified()) {
-            return LoginMember.obtainGuest();
-        }
+    protected LoginMember considerGuest(LoginMember member) {
         return member;
     }
 }
