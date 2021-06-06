@@ -2,9 +2,10 @@ package wooteco.subway.path.domain.fare;
 
 import java.util.Objects;
 import wooteco.subway.exception.application.ValidationFailureException;
-import wooteco.subway.path.domain.fare.discountrule.AgeAppliedRule;
+import wooteco.subway.path.domain.fare.discountrule.DiscountRule;
 
 public class Fare {
+
     public static final Fare ZERO_FARE = new Fare(0);
     public static final Fare DEFAULT_FARE = new Fare(1250);
 
@@ -25,8 +26,18 @@ public class Fare {
         return new Fare(value + fare.value);
     }
 
-    private int applyAge(int fare, int age) {
-        return AgeAppliedRule.applyRule(fare, age);
+    public Fare minus(int value) {
+        return new Fare(this.value - value);
+    }
+
+    public Fare multiplyScale(double scale) {
+        return new Fare(
+            (int) (value * scale)
+        );
+    }
+
+    public Fare applyDiscountRule(DiscountRule discountRule) {
+        return discountRule.apply(this);
     }
 
     public int value() {
