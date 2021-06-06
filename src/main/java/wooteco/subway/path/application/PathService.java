@@ -1,7 +1,6 @@
 package wooteco.subway.path.application;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.fare.domain.Fare;
 import wooteco.subway.fare.domain.Money;
 import wooteco.subway.fare.domain.farestrategy.FarePolicy;

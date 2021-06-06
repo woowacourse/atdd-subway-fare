@@ -1,7 +1,6 @@
 package wooteco.subway.station.application;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.deletion.StationCannotDeleteException;
 import wooteco.subway.exception.duplication.StationNameDuplicatedException;
 import wooteco.subway.exception.notfound.StationNotFoundException;
