@@ -58,7 +58,7 @@ public class LineDao {
                 "WHERE L.id = ?";
 
         try {
-            List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, new Object[]{id});
+            List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, id);
             return mapLine(result);
         } catch (EmptyResultDataAccessException e) {
             throw new NoSuchLineException();
