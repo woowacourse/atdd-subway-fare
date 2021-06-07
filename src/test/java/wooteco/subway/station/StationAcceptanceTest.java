@@ -1,14 +1,19 @@
 package wooteco.subway.station;
 
+import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.dto.BindErrorResponse;
+import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -69,6 +74,23 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철역_삭제됨(response);
+    }
+
+    @DisplayName("역 이름 누락시 요청을 거절하며, 역 이름이 빌 수 없다는 메세지를 보낸다.")
+    @Test
+    void missingArgumentTest() {
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .body(new HashMap<>())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/stations")
+                .then().log().all()
+                .extract();
+
+        BindErrorResponse bindErrorResponse = response.as(BindErrorResponse.class);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(bindErrorResponse.getCauses().keySet()).contains("name");
     }
 
     public static void 지하철역_생성됨(ExtractableResponse response) {

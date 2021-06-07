@@ -1,17 +1,22 @@
 package wooteco.subway.line;
 
+import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.dto.BindErrorResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -151,5 +156,27 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철_노선_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("요청 인자 조건이 맞이 않는 경우 요청을 거절하며, 인자 마다 사유를 같이 보낸다.")
+    @Test
+    void missingArgumentTest() {
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("name", "정규표현식에 맞지 않는 이름");
+        int 거리는_1이상의_양의_정수여야한다 = 0;
+        params.put("distance", 거리는_1이상의_양의_정수여야한다);
+
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .body(params)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/lines")
+                .then().log().all()
+                .extract();
+
+        BindErrorResponse bindErrorResponse = response.as(BindErrorResponse.class);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(bindErrorResponse.getCauses().keySet()).containsAll(Arrays.asList("name", "color", "upStationId", "downStationId", "distance"));
     }
 }

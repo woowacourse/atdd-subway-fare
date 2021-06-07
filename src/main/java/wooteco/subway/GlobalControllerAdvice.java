@@ -1,11 +1,14 @@
 package wooteco.subway;
 
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import wooteco.subway.auth.exception.AuthorizationException;
+import wooteco.subway.dto.BindErrorResponse;
 import wooteco.subway.dto.ErrorResponse;
 import wooteco.subway.line.exception.LineDaoException;
 import wooteco.subway.line.exception.LineDomainException;
@@ -32,7 +35,7 @@ public class GlobalControllerAdvice {
         e.printStackTrace();
         return ResponseEntity
                 .badRequest()
-                .body(new ErrorResponse(e.getMessage()));
+                .body(BindErrorResponse.from("인자값을 검증하는 과정에서 오류가 발생했습니다.", e.getBindingResult()));
     }
 
     @ExceptionHandler(MemberDaoException.class)
