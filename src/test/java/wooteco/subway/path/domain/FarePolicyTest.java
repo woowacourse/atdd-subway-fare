@@ -3,6 +3,7 @@ package wooteco.subway.path.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wooteco.subway.member.domain.MemberType;
+import wooteco.subway.path.domain.fair.FarePolicy;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

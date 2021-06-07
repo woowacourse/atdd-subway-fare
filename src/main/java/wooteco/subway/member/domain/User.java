@@ -1,7 +1,5 @@
 package wooteco.subway.member.domain;
 
-import wooteco.subway.member.application.MemberException;
-
 public class User {
 
     public static final User GUEST = new Guest();
@@ -19,7 +17,7 @@ public class User {
         this.age = age;
     }
 
-    public boolean isLoggedIn(){
+    public boolean isLoggedIn() {
         return true;
     }
 
@@ -35,7 +33,7 @@ public class User {
         return age;
     }
 
-    private static class Guest extends User{
+    private static class Guest extends User {
         @Override
         public boolean isLoggedIn() {
             return false;

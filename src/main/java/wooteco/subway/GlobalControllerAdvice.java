@@ -26,9 +26,7 @@ public class GlobalControllerAdvice {
     @ExceptionHandler(AuthorizationException.class)
     public ResponseEntity<ExceptionResponse> handleAuthorizationException(AuthorizationException e) {
         String message = e.getMessage();
-
         ExceptionResponse exceptionResponse = new ExceptionResponse(message);
-        logger.error(message);
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(exceptionResponse);
     }
@@ -38,7 +36,6 @@ public class GlobalControllerAdvice {
         String message = e.getMessage();
 
         ExceptionResponse exceptionResponse = new ExceptionResponse(message);
-        logger.error(message);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
     }
@@ -47,9 +44,7 @@ public class GlobalControllerAdvice {
     public ResponseEntity<ExceptionResponse> handleMethodArgumentNotValidException(BindingResult bindingResult) {
         FieldError fieldError = bindingResult.getFieldError();
         String message = fieldError.getDefaultMessage();
-
         ExceptionResponse exceptionResponse = new ExceptionResponse(message);
-        logger.error(message);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
     }
@@ -57,9 +52,7 @@ public class GlobalControllerAdvice {
     @ExceptionHandler({ConstraintViolationException.class})
     public ResponseEntity<ExceptionResponse> handleConstraintViolationException(ConstraintViolationException e) {
         String message = e.getMessage();
-
         ExceptionResponse exceptionResponse = new ExceptionResponse(message);
-        logger.error(message);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
     }

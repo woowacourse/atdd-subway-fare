@@ -1,6 +1,6 @@
 package wooteco.subway.member.domain;
 
-import wooteco.subway.member.application.MemberException;
+import wooteco.subway.auth.application.AuthorizationException;
 
 public class LoginMember {
     private Long id;
@@ -16,9 +16,9 @@ public class LoginMember {
         this.email = user.getEmail();
     }
 
-    public static LoginMember of(User user){
-        if(!user.isLoggedIn()){
-            throw new MemberException("로그인된 유저가 아닙니다.");
+    public static LoginMember of(User user) {
+        if (!user.isLoggedIn()) {
+            throw new AuthorizationException("로그인된 유저가 아닙니다.");
         }
         return new LoginMember(user);
     }

@@ -4,9 +4,9 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.member.domain.MemberType;
 import wooteco.subway.member.domain.User;
-import wooteco.subway.path.domain.FarePolicy;
-import wooteco.subway.path.domain.RouteFinder;
 import wooteco.subway.path.domain.SubwayRoute;
+import wooteco.subway.path.domain.fair.FarePolicy;
+import wooteco.subway.path.domain.finder.PathFinder;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
@@ -18,10 +18,12 @@ import java.util.List;
 public class PathService {
     private LineService lineService;
     private StationService stationService;
+    private PathFinder pathFinder;
 
-    public PathService(LineService lineService, StationService stationService) {
+    public PathService(LineService lineService, StationService stationService, PathFinder pathFinder) {
         this.lineService = lineService;
         this.stationService = stationService;
+        this.pathFinder = pathFinder;
     }
 
     public PathResponse findPath(Long sourceId, Long targetId, User user) {
@@ -35,7 +37,7 @@ public class PathService {
         try {
             Station source = stationService.findStationById(sourceId);
             Station target = stationService.findStationById(targetId);
-            return RouteFinder.find(lineService.findLines(), source, target);
+            return pathFinder.find(lineService.findLines(), source, target);
         } catch (Exception e) {
             throw new PathException("적절하지 않은 구간의 경로 탐색입니다.");
         }

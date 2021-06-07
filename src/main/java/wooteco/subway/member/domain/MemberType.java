@@ -21,7 +21,7 @@ public enum MemberType {
     }
 
     public static MemberType of(User user) {
-        if(!user.isLoggedIn()){
+        if (!user.isLoggedIn()) {
             return NONE;
         }
 

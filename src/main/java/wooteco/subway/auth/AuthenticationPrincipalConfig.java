@@ -10,7 +10,7 @@ import java.util.List;
 public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
     private AuthenticationPrincipalArgumentResolver authenticationPrincipalArgumentResolver;
 
-    public AuthenticationPrincipalConfig(AuthenticationPrincipalArgumentResolver authenticationPrincipalArgumentResolver){
+    public AuthenticationPrincipalConfig(AuthenticationPrincipalArgumentResolver authenticationPrincipalArgumentResolver) {
         this.authenticationPrincipalArgumentResolver = authenticationPrincipalArgumentResolver;
     }
 

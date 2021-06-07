@@ -1,4 +1,4 @@
-package wooteco.subway.path.domain;
+package wooteco.subway.path.domain.fair;
 
 import wooteco.subway.member.domain.MemberType;
 
