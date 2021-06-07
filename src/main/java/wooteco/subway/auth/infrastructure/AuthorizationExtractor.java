@@ -20,7 +20,6 @@ public class AuthorizationExtractor {
         return null;
     }
 
-
     private static String getAuthHeaderValue(HttpServletRequest request, String headerValue) {
         String authHeaderValue = headerValue.substring(BEARER_TYPE.length()).trim();
         request.setAttribute(ACCESS_TOKEN_TYPE, headerValue.substring(0, BEARER_TYPE.length()).trim());

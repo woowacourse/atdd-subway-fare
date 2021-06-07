@@ -32,8 +32,8 @@ public class PathService {
     public PathResponse findPath(Long source, Long target, LoginMember member) {
         try {
             List<Line> lines = lineService.findLines();
-            Station sourceStation = stationService.findStationById(source);
-            Station targetStation = stationService.findStationById(target);
+            Station sourceStation = stationService.findExistentStationById(source);
+            Station targetStation = stationService.findExistentStationById(target);
             SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
             Fare fare = calculateFare(subwayPath, member.getAge());
 

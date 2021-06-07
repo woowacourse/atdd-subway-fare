@@ -3,7 +3,6 @@ package wooteco.subway.path.domain;
 import java.util.List;
 import wooteco.subway.exception.application.ValidationFailureException;
 import wooteco.subway.path.domain.fare.Fare;
-import wooteco.subway.path.domain.fare.creationstrategy.DistanceBasedCreationStrategy;
 import wooteco.subway.path.domain.fare.creationstrategy.FareCreationStrategy;
 import wooteco.subway.station.domain.Station;
 

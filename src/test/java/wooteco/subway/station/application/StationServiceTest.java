@@ -1,7 +1,6 @@
 package wooteco.subway.station.application;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;

@@ -54,15 +54,15 @@ class PathServiceTest {
     void findPath_singleLine(Long source, Long target, LoginMember member, PathResponse expectedPathResponse) {
         // given
         given(lineService.findLines()).willReturn(Arrays.asList(이호선, 삼호선));
-        given(stationService.findStationById(source)).willReturn(서초);
-        given(stationService.findStationById(target)).willReturn(교대);
+        given(stationService.findExistentStationById(source)).willReturn(서초);
+        given(stationService.findExistentStationById(target)).willReturn(교대);
 
         // when
         PathResponse pathResponse = pathService.findPath(source, target, member);
 
         // then
         then(lineService).should(times(1)).findLines();
-        then(stationService).should(times(2)).findStationById(anyLong());
+        then(stationService).should(times(2)).findExistentStationById(anyLong());
 
         assertThat(pathResponse).usingRecursiveComparison()
             .isEqualTo(expectedPathResponse);
@@ -99,15 +99,15 @@ class PathServiceTest {
     void findPath_transferLine(Long source, Long target, LoginMember member, PathResponse expectedPathResponse) {
         // given
         given(lineService.findLines()).willReturn(Arrays.asList(이호선, 삼호선));
-        given(stationService.findStationById(source)).willReturn(서초);
-        given(stationService.findStationById(target)).willReturn(강남);
+        given(stationService.findExistentStationById(source)).willReturn(서초);
+        given(stationService.findExistentStationById(target)).willReturn(강남);
 
         // when
         PathResponse pathResponse = pathService.findPath(source, target, member);
 
         // then
         then(lineService).should(times(1)).findLines();
-        then(stationService).should(times(2)).findStationById(anyLong());
+        then(stationService).should(times(2)).findExistentStationById(anyLong());
 
         assertThat(pathResponse).usingRecursiveComparison()
             .isEqualTo(expectedPathResponse);

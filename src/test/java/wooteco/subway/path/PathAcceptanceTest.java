@@ -40,7 +40,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
-    
+
     @BeforeEach
     public void setUp() {
         super.setUp();

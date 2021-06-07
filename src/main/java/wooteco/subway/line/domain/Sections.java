@@ -61,6 +61,15 @@ public class Sections {
             .ifPresent(existentSection -> replaceSectionWithDownStation(section, existentSection));
     }
 
+    private void replaceSectionWithDownStation(Section newSection, Section existSection) {
+        if (existSection.getDistance() <= newSection.getDistance()) {
+            throw new ValidationFailureException("추가하려는 구간의 거리가 기존의 구간보다 크거나 같습니다.");
+        }
+        this.sections.add(new Section(newSection.getDownStation(), existSection.getDownStation(),
+            existSection.getDistance() - newSection.getDistance()));
+        this.sections.remove(existSection);
+    }
+
     private void addSectionDownToDown(Section section) {
         this.sections.stream()
             .filter(existentSection -> existentSection.getDownStation().equals(section.getDownStation()))
@@ -76,15 +85,6 @@ public class Sections {
             new Section(existSection.getUpStation(), newSection.getUpStation(),
                 existSection.getDistance() - newSection.getDistance())
         );
-        this.sections.remove(existSection);
-    }
-
-    private void replaceSectionWithDownStation(Section newSection, Section existSection) {
-        if (existSection.getDistance() <= newSection.getDistance()) {
-            throw new ValidationFailureException("추가하려는 구간의 거리가 기존의 구간보다 크거나 같습니다.");
-        }
-        this.sections.add(new Section(newSection.getDownStation(), existSection.getDownStation(),
-            existSection.getDistance() - newSection.getDistance()));
         this.sections.remove(existSection);
     }
 

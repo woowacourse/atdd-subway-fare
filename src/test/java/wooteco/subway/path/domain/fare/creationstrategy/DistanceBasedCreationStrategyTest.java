@@ -11,9 +11,9 @@ import wooteco.subway.path.domain.fare.Fare;
 
 class DistanceBasedCreationStrategyTest {
 
-    @ParameterizedTest
     @DisplayName("거리별 기본 요금 계산")
     @MethodSource("distanceFareValues")
+    @ParameterizedTest
     void defaultRate(int distance, Fare expectedFare) {
         // given
         DistanceBasedCreationStrategy distanceBasedCreationStrategy = new DistanceBasedCreationStrategy();

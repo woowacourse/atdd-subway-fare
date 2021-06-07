@@ -107,6 +107,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         이메일_중복_검사_요청(EMAIL, HttpStatus.CONFLICT);
         이메일_중복_검사_요청(UNIQUE_EMAIL, HttpStatus.NO_CONTENT);
     }
+
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 

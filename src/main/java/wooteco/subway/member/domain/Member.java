@@ -1,7 +1,6 @@
 package wooteco.subway.member.domain;
 
 import org.apache.commons.lang3.StringUtils;
-import wooteco.subway.auth.application.AuthorizationException;
 
 public class Member {
 

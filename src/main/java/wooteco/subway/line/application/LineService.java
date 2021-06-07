@@ -2,10 +2,8 @@ package wooteco.subway.line.application;
 
 import java.util.List;
 import java.util.Objects;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.exception.application.DuplicatedFieldException;
 import wooteco.subway.exception.application.ValidationFailureException;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
