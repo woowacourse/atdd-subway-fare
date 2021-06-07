@@ -1,6 +1,5 @@
 package wooteco.subway.auth.application;
 
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.auth.dto.TokenRequest;
@@ -10,6 +9,8 @@ import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
+
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -23,12 +24,9 @@ public class AuthService {
     }
 
     public TokenResponse login(TokenRequest request) {
-        Member member;
-        try {
-            member = memberDao.findByEmail(request.getEmail());
-        } catch (DataAccessException e) {
-            throw new AuthorizationException("잘못된 정보를 기입하셨습니다.");
-        }
+        Member member = memberDao.findByEmail(request.getEmail())
+                .orElseThrow(() -> new AuthorizationException("잘못된 정보를 기입하셨습니다."));
+
         member.checkPassword(request.getPassword());
 
         String token = jwtTokenProvider.createToken(request.getEmail());
@@ -41,11 +39,12 @@ public class AuthService {
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
-        try {
-            Member member = memberDao.findByEmail(email);
+
+        Optional<Member> memberOptional = memberDao.findByEmail(email);
+        if (memberOptional.isPresent()) {
+            Member member = memberOptional.get();
             return new LoginMember(member.getId(), member.getEmail(), member.getAge());
-        } catch (Exception e) {
-            return new LoginMember();
         }
+        return new LoginMember();
     }
 }
