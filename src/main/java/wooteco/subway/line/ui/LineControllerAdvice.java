@@ -6,7 +6,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import wooteco.subway.exception.ErrorResponse;
+import wooteco.subway.dto.ErrorResponse;
 import wooteco.subway.line.exception.LineDaoException;
 import wooteco.subway.line.exception.LineDomainException;
 

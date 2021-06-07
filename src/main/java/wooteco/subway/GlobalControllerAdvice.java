@@ -7,7 +7,7 @@ import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import wooteco.subway.auth.exception.AuthorizationException;
-import wooteco.subway.exception.ErrorResponse;
+import wooteco.subway.dto.ErrorResponse;
 
 import java.sql.SQLException;
 
