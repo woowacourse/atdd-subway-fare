@@ -31,7 +31,7 @@ public class SubwayExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleApplicationException(Exception e) {
-        logger.error(COMMON_NOT_EXPECTED_ERROR.getError());
+        logger.error(COMMON_NOT_EXPECTED_ERROR.getError() + " - " + e.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ErrorResponse.of(COMMON_NOT_EXPECTED_ERROR));
     }
