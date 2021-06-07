@@ -33,17 +33,6 @@ public class MemberDaoTest {
     MemberDao memberDao;
 
     @Test
-    @DisplayName("중복된 멤버 삽입")
-    public void duplicatedMemberInsert() {
-        //given
-        insert(EMAIL, PASSWORD, AGE);
-
-        //when & then
-        assertThatThrownBy(() -> memberDao.insert(new Member(EMAIL, PASSWORD, AGE)))
-                .isInstanceOf(DuplicatedIdException.class);
-    }
-
-    @Test
     @DisplayName("정상적인 멤버 삽입")
     public void insert() {
         //when
@@ -53,17 +42,6 @@ public class MemberDaoTest {
         assertThat(member).usingRecursiveComparison()
                 .ignoringFields("id")
                 .isEqualTo(new Member(EMAIL, PASSWORD, AGE));
-    }
-
-    @Test
-    @DisplayName("수정 실패")
-    public void failedUpdate() {
-        //given
-        long id = insert(EMAIL, PASSWORD, AGE);
-
-        //when & then
-        assertThatThrownBy(() -> memberDao.update(new Member(1000L, "wrong@wrong.com", "pwd", 40)))
-                .isInstanceOf(MismatchIdPasswordException.class);
     }
 
     @Test
@@ -81,14 +59,6 @@ public class MemberDaoTest {
     }
 
     @Test
-    @DisplayName("삭제 실패")
-    public void failedDeleteMember() {
-        //given
-        assertThatThrownBy(() -> memberDao.deleteById(1000L))
-                .isInstanceOf(MismatchIdPasswordException.class);
-    }
-
-    @Test
     @DisplayName("삭제 성공")
     public void deleteMemberById() {
         //given
@@ -102,16 +72,6 @@ public class MemberDaoTest {
         //then
         Boolean deleteDeletedResult = jdbcTemplate.queryForObject("select exists (select * from MEMBER where id = ?)", Boolean.class, id);
         assertThat(deleteDeletedResult).isFalse();
-    }
-
-    @Test
-    @DisplayName("Id 또는 Email로 조회 실패")
-    public void failedFindByIdAndEmail() {
-        assertThatThrownBy(() -> memberDao.findByEmail("asdf"))
-                .isInstanceOf(MismatchIdPasswordException.class);
-
-        assertThatThrownBy(() -> memberDao.findById(1000L))
-                .isInstanceOf(MismatchIdPasswordException.class);
     }
 
     @Test

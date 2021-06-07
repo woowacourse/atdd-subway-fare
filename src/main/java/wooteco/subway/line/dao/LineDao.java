@@ -1,14 +1,11 @@
 package wooteco.subway.line.dao;
 
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.domain.Sections;
-import wooteco.subway.line.exception.line.DuplicatedLineNameException;
 import wooteco.subway.line.exception.line.NoSuchLineException;
 import wooteco.subway.station.domain.Station;
 
@@ -38,12 +35,8 @@ public class LineDao {
         params.put("color", line.getColor());
         params.put("extraFare", line.getExtraFare());
 
-        try {
-            Long lineId = insertAction.executeAndReturnKey(params).longValue();
-            return new Line(lineId, line.getName(), line.getColor(), line.getExtraFare());
-        } catch (DuplicateKeyException e) {
-            throw new DuplicatedLineNameException();
-        }
+        Long lineId = insertAction.executeAndReturnKey(params).longValue();
+        return new Line(lineId, line.getName(), line.getColor(), line.getExtraFare());
     }
 
     public Line findById(Long id) {
@@ -57,25 +50,13 @@ public class LineDao {
                 "left outer join STATION DST on S.down_station_id = DST.id " +
                 "WHERE L.id = ?";
 
-        try {
-            List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, id);
-            return mapLine(result);
-        } catch (EmptyResultDataAccessException e) {
-            throw new NoSuchLineException();
-        }
+        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, id);
+        return mapLine(result);
     }
 
     public void update(Line newLine) {
         String sql = "update LINE set name = ?, color = ? where id = ?";
-        int affectedQuery = 0;
-        try {
-            affectedQuery = jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
-        } catch (DuplicateKeyException e) {
-            throw new DuplicatedLineNameException();
-        }
-        if (affectedQuery == 0) {
-            throw new NoSuchLineException();
-        }
+        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
     }
 
     public List<Line> findAll() {
@@ -143,5 +124,15 @@ public class LineDao {
                         rs.getString("name"),
                         rs.getString("color")),
                 stationId, stationId, lineId);
+    }
+
+    public boolean isLineExist(String name) {
+        String sql = "select exists (select * from LINE where name = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, name);
+    }
+
+    public boolean isLineNotExist(Long id) {
+        String sql = "select exists (select * from LINE where id = ?)";
+        return !jdbcTemplate.queryForObject(sql, Boolean.class, id);
     }
 }

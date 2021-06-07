@@ -8,6 +8,7 @@ import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.Member;
+import wooteco.subway.member.exception.MismatchIdPasswordException;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +23,9 @@ public class AuthService {
     }
 
     private Long getIdWhenValidLogin(TokenRequest request) {
+        if (memberDao.isEmailNotExist(request.getEmail())) {
+            throw new MismatchIdPasswordException();
+        }
         Member member = memberDao.findByEmail(request.getEmail());
         member.checkPassword(request.getPassword());
         return member.getId();

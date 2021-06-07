@@ -9,6 +9,9 @@ import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.domain.Sections;
 import wooteco.subway.line.dto.*;
+import wooteco.subway.line.exception.line.DuplicatedLineNameException;
+import wooteco.subway.line.exception.line.NoSuchLineException;
+import wooteco.subway.line.exception.section.NoSuchSectionException;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
@@ -26,12 +29,14 @@ public class LineService {
 
     @Transactional
     public LineResponse saveLine(LineRequest request) {
+        if (lineDao.isLineExist(request.getName())) {
+            throw new DuplicatedLineNameException();
+        }
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);
     }
 
-    @Transactional
     private Section addInitSection(Line line, LineRequest request) {
         if (request.getUpStationId() != null && request.getDownStationId() != null) {
             Station upStation = stationService.findStationById(request.getUpStationId());
@@ -54,20 +59,32 @@ public class LineService {
     }
 
     public LineResponse findLineResponseById(Long id) {
+        if (lineDao.isLineNotExist(id)) {
+            throw new NoSuchLineException();
+        }
         Line persistLine = findLineById(id);
         return LineResponse.of(persistLine);
     }
 
     public Line findLineById(Long id) {
+        if (lineDao.isLineNotExist(id)) {
+            throw new NoSuchLineException();
+        }
         return lineDao.findById(id);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
+        if (lineDao.isLineNotExist(id)) {
+            throw new NoSuchLineException();
+        }
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
     @Transactional
     public void deleteLineById(Long id) {
+        if (lineDao.isLineNotExist(id)) {
+            throw new NoSuchLineException();
+        }
         lineDao.deleteById(id);
         sectionDao.deleteByLineId(id);
     }
@@ -79,6 +96,9 @@ public class LineService {
         Station downStation = stationService.findStationById(request.getDownStationId());
         line.addSection(upStation, downStation, request.getDistance());
 
+        if (lineDao.isLineNotExist(lineId)) {
+            throw new NoSuchSectionException();
+        }
         sectionDao.deleteByLineId(lineId);
         sectionDao.insertSections(line);
     }
@@ -89,6 +109,9 @@ public class LineService {
         Station station = stationService.findStationById(stationId);
         line.removeSection(station);
 
+        if (lineDao.isLineNotExist(lineId)) {
+            throw new NoSuchSectionException();
+        }
         sectionDao.deleteByLineId(lineId);
         sectionDao.insertSections(line);
     }

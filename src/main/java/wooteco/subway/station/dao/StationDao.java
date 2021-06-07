@@ -1,7 +1,5 @@
 package wooteco.subway.station.dao;
 
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -9,8 +7,6 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.station.domain.Station;
-import wooteco.subway.station.exception.DuplicatedStationNameException;
-import wooteco.subway.station.exception.NoSuchStationException;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -36,12 +32,8 @@ public class StationDao {
 
     public Station insert(Station station) {
         SqlParameterSource params = new BeanPropertySqlParameterSource(station);
-        try {
-            Long id = insertAction.executeAndReturnKey(params).longValue();
-            return new Station(id, station.getName());
-        } catch (DuplicateKeyException e) {
-            throw new DuplicatedStationNameException();
-        }
+        Long id = insertAction.executeAndReturnKey(params).longValue();
+        return new Station(id, station.getName());
     }
 
     public List<Station> findAll() {
@@ -51,17 +43,21 @@ public class StationDao {
 
     public void deleteById(Long id) {
         String sql = "delete from STATION where id = ?";
-        if (jdbcTemplate.update(sql, id) == 0) {
-            throw new NoSuchStationException();
-        }
+        jdbcTemplate.update(sql, id);
     }
 
     public Station findById(Long id) {
         String sql = "select * from STATION where id = ?";
-        try {
-            return jdbcTemplate.queryForObject(sql, rowMapper, id);
-        } catch (EmptyResultDataAccessException e) {
-            throw new NoSuchStationException();
-        }
+        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    }
+
+    public boolean isStationExist(String name) {
+        String sql = "select exists (select * from STATION where name = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, name);
+    }
+
+    public boolean isStationNotExist(Long id) {
+        String sql = "select exists(select * from STATION where id = ?)";
+        return !jdbcTemplate.queryForObject(sql, Boolean.class, id);
     }
 }

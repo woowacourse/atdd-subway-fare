@@ -17,6 +17,9 @@ public class MemberService {
     private final MemberDao memberDao;
 
     public MemberResponse createMember(MemberRequest request) {
+        if (memberDao.isEmailExist(request.getEmail())) {
+            throw new DuplicatedIdException();
+        }
         Member member = memberDao.insert(request.toMember());
         return MemberResponse.of(member);
     }
@@ -39,7 +42,7 @@ public class MemberService {
     }
 
     public void checkEmail(EmailRequest emailRequest) {
-        if (memberDao.checkEmailDuplicated(emailRequest.getEmail())) {
+        if (memberDao.isEmailExist(emailRequest.getEmail())) {
             throw new DuplicatedIdException();
         }
     }

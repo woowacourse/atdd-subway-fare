@@ -34,17 +34,6 @@ public class LineDaoTest {
     LineDao lineDao;
 
     @Test
-    @DisplayName("중복된 라인 삽입")
-    public void duplicatedLineInsert() {
-        //given
-        insert(NAME, COLOR);
-
-        //when & then
-        assertThatThrownBy(() -> lineDao.insert(new Line(NAME, COLOR)))
-                .isInstanceOf(DuplicatedLineNameException.class);
-    }
-
-    @Test
     @DisplayName("정상적인 라인 삽입")
     public void lineInsert() {
         //given
@@ -68,13 +57,6 @@ public class LineDaoTest {
         assertThat(line).usingRecursiveComparison()
                 .ignoringFields("id", "sections", "extraFare")
                 .isEqualTo(new Line(NAME, COLOR));
-    }
-
-    @Test
-    @DisplayName("수정 실패")
-    public void updateFailed() {
-        assertThatThrownBy(() -> lineDao.update(new Line(2000L, NAME, COLOR)))
-                .isInstanceOf(NoSuchLineException.class);
     }
 
     @Test

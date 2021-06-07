@@ -31,14 +31,6 @@ public class StationDaoTest {
     StationDao stationDao;
 
     @Test
-    @DisplayName("중복된 역 삽입")
-    public void duplicatedStationInsert() {
-        insert("a");
-        assertThatThrownBy(() -> stationDao.insert(new Station("a")))
-                .isInstanceOf(DuplicatedStationNameException.class);
-    }
-
-    @Test
     @DisplayName("정상적인 역 삽입")
     public void stationInsert() {
         stationDao.insert(new Station("kang"));
