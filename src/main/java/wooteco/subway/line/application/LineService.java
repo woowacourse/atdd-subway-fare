@@ -31,11 +31,11 @@ public class LineService {
 
     @Transactional
     public LineResponse saveLine(LineRequest request) {
-        if (lineDao.isExistByName(request.getName())) {
+        if (lineDao.existsByName(request.getName())) {
             throw new DuplicateException("이미 존재하는 노선입니다.");
         }
 
-        if (lineDao.isExistByColor(request.getColor())) {
+        if (lineDao.existsByColor(request.getColor())) {
             throw new DuplicateException("이미 존재하는 노선 색깔입니다.");
         }
 
@@ -69,7 +69,7 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        if (lineDao.isExistById(id)) {
+        if (lineDao.existsById(id)) {
             return lineDao.findById(id);
         }
         throw new NoSuchElementException("존재하지 않는 노선입니다.");
@@ -77,7 +77,7 @@ public class LineService {
 
     @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        if (lineDao.isExistById(id)) {
+        if (lineDao.existsById(id)) {
             Line originalLine = lineDao.findById(id);
             validateDuplicate(originalLine, lineUpdateRequest);
         }
@@ -95,16 +95,16 @@ public class LineService {
     }
 
     private boolean isUpdatedNameDuplicate(Line originalLine, LineRequest lineUpdateRequest) {
-        return originalLine.hasDifferentName(lineUpdateRequest) && lineDao.isExistByName(lineUpdateRequest.getName());
+        return originalLine.hasDifferentName(lineUpdateRequest) && lineDao.existsByName(lineUpdateRequest.getName());
     }
 
     private boolean isUpdatedColorDuplicate(Line originalLine, LineRequest lineUpdateRequest) {
-        return originalLine.hasDifferentColor(lineUpdateRequest) && lineDao.isExistByColor(lineUpdateRequest.getColor());
+        return originalLine.hasDifferentColor(lineUpdateRequest) && lineDao.existsByColor(lineUpdateRequest.getColor());
     }
 
     @Transactional
     public void deleteLineById(Long id) {
-        if (lineDao.isExistById(id)) {
+        if (lineDao.existsById(id)) {
             sectionDao.deleteByLineId(id);
             lineDao.deleteById(id);
             return;

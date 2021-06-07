@@ -111,17 +111,17 @@ public class LineDao {
         return jdbcTemplate.update("delete from LINE where id = ?", id);
     }
 
-    public boolean isExistById(Long id) {
+    public boolean existsById(Long id) {
         String sql = "select EXISTS (select * from LINE where id = ?)";
         return jdbcTemplate.queryForObject(sql, Boolean.class, id);
     }
 
-    public boolean isExistByColor(String color) {
+    public boolean existsByColor(String color) {
         String sql = "select EXISTS (select * from LINE where color = ?)";
         return jdbcTemplate.queryForObject(sql, Boolean.class, color);
     }
 
-    public boolean isExistByName(String name) {
+    public boolean existsByName(String name) {
         String sql = "select EXISTS (select * from LINE where name = ?)";
         return jdbcTemplate.queryForObject(sql, Boolean.class, name);
     }

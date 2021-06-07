@@ -10,8 +10,6 @@ import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
 
-import java.util.NoSuchElementException;
-
 @Service
 @Transactional
 public class AuthService {
@@ -24,7 +22,7 @@ public class AuthService {
     }
 
     public TokenResponse createToken(TokenRequest request) {
-        if (memberDao.isExistByEmail(request.getEmail())) {
+        if (memberDao.existsByEmail(request.getEmail())) {
             Member member = memberDao.findByEmail(request.getEmail());
             member.checkPassword(request.getPassword());
             String token = jwtTokenProvider.createToken(String.valueOf(member.getId()));
