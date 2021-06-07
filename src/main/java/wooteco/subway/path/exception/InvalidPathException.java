@@ -1,4 +1,4 @@
-package wooteco.subway.path.application;
+package wooteco.subway.path.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
