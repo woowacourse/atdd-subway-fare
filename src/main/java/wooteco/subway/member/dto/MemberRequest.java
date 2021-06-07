@@ -7,7 +7,6 @@ import javax.validation.constraints.*;
 public class MemberRequest {
     @Email(regexp = "^[0-9a-zA-Z]+([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]+([-_.]*[0-9a-zA-Z])*.[a-zA-Z]{2,3}$",
             message = "지원되지 않는 언어, 공백, 특수문자는 입력 불가능합니다.")
-    @NotNull(message = "지원되지 않는 언어, 공백, 특수문자는 입력 불가능합니다.")
     @NotBlank(message = "지원되지 않는 언어, 공백, 특수문자는 입력 불가능합니다.")
     @Size(max = 30, message = "이메일 전체 글자 수는 30글자를 넘을 수 없습니다.")
     private String email;
