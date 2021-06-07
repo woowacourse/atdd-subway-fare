@@ -60,6 +60,7 @@ public class MemberController {
     @PostMapping("/members/email-check")
     public ResponseEntity<Void> verifyUniqueEmail(@Valid @RequestBody EmailRequest emailRequest) {
         memberService.validateUniqueEmail(emailRequest.getEmail());
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent()
+            .build();
     }
 }

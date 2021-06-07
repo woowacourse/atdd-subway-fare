@@ -21,10 +21,8 @@ public class Member {
         this.age = age;
     }
 
-    public void checkPassword(String password) {
-        if (!StringUtils.equals(this.password, password)) {
-            throw new AuthorizationException("입력한 정보가 틀립니다.");
-        }
+    public boolean checkPassword(String password) {
+        return StringUtils.equals(this.password, password);
     }
 
     public Long getId() {

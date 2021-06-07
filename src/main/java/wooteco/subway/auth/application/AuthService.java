@@ -8,7 +8,6 @@ import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
-import wooteco.subway.member.exception.MemberNotFoundException;
 
 @Service
 @Transactional
@@ -23,15 +22,19 @@ public class AuthService {
     }
 
     public TokenResponse login(TokenRequest request) {
-        try {
-            Member member = memberDao.findByEmail(request.getEmail())
-                .orElseThrow(() -> new MemberNotFoundException(request.getEmail()));
-            member.checkPassword(request.getPassword());
-        } catch (Exception e) {
-            throw new AuthorizationException("이메일 혹은 비밀번호를 다시 확인해주세요.");
+        Member member = memberDao.findByEmail(request.getEmail())
+            .orElseThrow(() -> new AuthorizationException("입력한 정보가 틀립니다."));
+
+        validateCorrectPassword(member, request);
+        return new TokenResponse(
+            jwtTokenProvider.createToken(request.getEmail())
+        );
+    }
+
+    private void validateCorrectPassword(Member member, TokenRequest request) {
+        if (!member.checkPassword(request.getPassword())) {
+            throw new AuthorizationException("입력한 정보가 틀립니다.");
         }
-        String token = jwtTokenProvider.createToken(request.getEmail());
-        return new TokenResponse(token);
     }
 
     public LoginMember findMemberByToken(String credentials) {
