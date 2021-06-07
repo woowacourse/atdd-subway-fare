@@ -21,13 +21,12 @@ import wooteco.subway.member.domain.Member;
 class AuthServiceTest {
 
     @InjectMocks
-    AuthService authService;
-
+    private AuthService authService;
     @Mock
-    MemberDao memberDao;
-
+    private MemberDao memberDao;
     @Mock
-    JwtTokenProvider jwtTokenProvider;
+    private JwtTokenProvider jwtTokenProvider;
+
     private String email;
     private String password;
     private Member member;
@@ -97,6 +96,7 @@ class AuthServiceTest {
     void validateTokenSuccess() {
         // given
         String token = "로키의토오큰";
+
         when(jwtTokenProvider.validateToken(token)).thenReturn(true);
 
         // when
@@ -111,6 +111,7 @@ class AuthServiceTest {
     void validateTokenFail() {
         // given
         String token = "로키의토오큰";
+
         when(jwtTokenProvider.validateToken(token)).thenReturn(false);
 
         // when // then

@@ -23,16 +23,13 @@ import wooteco.subway.station.domain.Station;
 class LineServiceTest {
 
     @Autowired
-    StationDao stationDao;
-
+    private StationDao stationDao;
     @Autowired
-    SectionDao sectionDao;
-
+    private SectionDao sectionDao;
     @Autowired
-    LineDao lineDao;
-
+    private LineDao lineDao;
     @Autowired
-    LineService lineService;
+    private LineService lineService;
 
     @DisplayName("노선 생성 성공")
     @Test

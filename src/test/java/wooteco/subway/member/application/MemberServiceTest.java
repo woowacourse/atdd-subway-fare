@@ -22,10 +22,9 @@ import wooteco.subway.member.dto.MemberResponse;
 class MemberServiceTest {
 
     @InjectMocks
-    MemberService memberService;
-
+    private MemberService memberService;
     @Mock
-    MemberDao memberDao;
+    private MemberDao memberDao;
 
     @DisplayName("멤버 생성 성공한다.")
     @Test
@@ -71,7 +70,6 @@ class MemberServiceTest {
         String password = "password";
         LoginMember loginMember = new LoginMember(1L, email, 20);
         Member member = new Member(1L, email, password, 20);
-        MemberRequest memberRequest = new MemberRequest(email, password, 20);
 
         when(memberDao.findByEmail(loginMember.getEmail())).thenReturn(member);
 
@@ -97,6 +95,7 @@ class MemberServiceTest {
         MemberRequest memberRequest = new MemberRequest(email, password, 20);
 
         when(memberDao.findByEmail(memberRequest.getEmail())).thenReturn(member);
+
         // when
         memberService.updateMember(loginMember, memberRequest);
 
@@ -114,6 +113,7 @@ class MemberServiceTest {
         Member member = new Member(1L, email, password, 20);
 
         when(memberDao.findByEmail(loginMember.getEmail())).thenReturn(member);
+
         // when
         memberService.deleteMember(loginMember);
 

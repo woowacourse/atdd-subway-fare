@@ -25,11 +25,11 @@ class StationServiceTest {
     private static final Long STATION_ID = 1L;
 
     @InjectMocks
-    StationService stationService;
+    private StationService stationService;
     @Mock
-    StationDao stationDao;
+    private StationDao stationDao;
     @Mock
-    SectionDao sectionDao;
+    private SectionDao sectionDao;
 
     @DisplayName("역을 저장한다.")
     @Test
@@ -37,6 +37,7 @@ class StationServiceTest {
         // given
         Station station = new Station(1L, "선정릉역");
         StationRequest stationRequest = new StationRequest("선정릉역");
+
         when(stationDao.insert(stationRequest.toStation())).thenReturn(station);
 
         // when
@@ -51,6 +52,7 @@ class StationServiceTest {
     void saveStationFail_duplicateStation() {
         // given
         StationRequest stationRequest = new StationRequest("선정릉역");
+
         when(stationDao.exists(stationRequest.getName())).thenReturn(true);
 
         // when // then
@@ -64,6 +66,7 @@ class StationServiceTest {
     void findStationByIdSuccess() {
         // given
         Station station = new Station(STATION_ID, "선정릉역");
+
         when(stationDao.findById(STATION_ID)).thenReturn(Optional.of(station));
 
         // when
@@ -92,6 +95,7 @@ class StationServiceTest {
                 new Station(1L, "로키형네역"),
                 new Station(2L, "피케이네역")
         );
+
         when(stationDao.findAll()).thenReturn(stations);
 
         // when
