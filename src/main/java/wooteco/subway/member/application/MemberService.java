@@ -20,7 +20,7 @@ public class MemberService {
     @Transactional
     public MemberResponse createMember(MemberRequest request) {
         if (memberDao.exists(request.getEmail())) {
-            throw new MemberException("이미 사용되고 있는 이메일입니다.");
+            throw new DuplicatedMemberException("이미 사용되고 있는 이메일입니다.");
         }
         Member member = memberDao.insert(request.toMember());
         return MemberResponse.of(member);
