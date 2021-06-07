@@ -8,11 +8,14 @@ import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import wooteco.subway.exception.application.NonexistentTargetException;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 
 @Repository
 public class SectionDao {
+
+    private static final int SUCCESSFUL_EXECUTED_COUNT = 1;
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
@@ -35,7 +38,14 @@ public class SectionDao {
     }
 
     public void deleteByLineId(Long lineId) {
-        jdbcTemplate.update("delete from SECTION where line_id = ?", lineId);
+        int deletedCount = jdbcTemplate.update("delete from SECTION where line_id = ?", lineId);
+        verifyExecution(deletedCount, lineId);
+    }
+
+    private void verifyExecution(int executedCount, Long id) {
+        if (executedCount < SUCCESSFUL_EXECUTED_COUNT) {
+            throw new NonexistentTargetException("노선ID: " + id);
+        }
     }
 
     public void insertSections(Line line) {
