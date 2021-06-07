@@ -25,7 +25,7 @@ public class AuthService {
         if (memberDao.existsByEmail(request.getEmail())) {
             Member member = memberDao.findByEmail(request.getEmail());
             member.checkPassword(request.getPassword());
-            String token = jwtTokenProvider.createToken(String.valueOf(member.getId()));
+            String token = jwtTokenProvider.createToken(member.getEmail());
             return new TokenResponse(token);
         }
         throw new AuthorizationException("존재하지 않는 이메일입니다.");
@@ -35,8 +35,8 @@ public class AuthService {
         if (!jwtTokenProvider.validateToken(token)) {
             return new LoginMember();
         }
-        String id = jwtTokenProvider.getPayload(token);
-        return new LoginMember(Long.valueOf(id));
+        String email = jwtTokenProvider.getPayload(token);
+        return new LoginMember(email);
     }
 
     public boolean validateToken(String token) {

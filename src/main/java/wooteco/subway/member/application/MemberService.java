@@ -26,21 +26,21 @@ public class MemberService {
     }
 
     public MemberResponse findMember(LoginMember loginMember) {
-        Long id = loginMember.getId();
-        if (Objects.isNull(id)) {
-            throw new AuthorizationException();
+        String email = loginMember.getEmail();
+        if (Objects.isNull(email)) {
+            throw new AuthorizationException("존재하지 않는 이메일입니다.");
         }
-        Member member = memberDao.findById(id);
+        Member member = memberDao.findByEmail(email);
         return MemberResponse.of(member);
     }
 
     public void updateMember(LoginMember loginMember, MemberRequest memberRequest) {
-        Member member = memberDao.findById(loginMember.getId());
+        Member member = memberDao.findByEmail(loginMember.getEmail());
         memberDao.update(new Member(member.getId(), memberRequest.getEmail(), memberRequest.getPassword(), memberRequest.getAge()));
     }
 
     public void deleteMember(LoginMember loginMember) {
-        Member member = memberDao.findById(loginMember.getId());
+        Member member = memberDao.findByEmail(loginMember.getEmail());
         memberDao.deleteById(member.getId());
     }
 

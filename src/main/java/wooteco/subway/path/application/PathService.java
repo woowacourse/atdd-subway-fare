@@ -2,7 +2,6 @@ package wooteco.subway.path.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wooteco.subway.exception.InvalidPathException;
 import wooteco.subway.fare.domain.FareByAge;
 import wooteco.subway.fare.domain.FareByDistance;
 import wooteco.subway.line.application.LineService;
@@ -38,13 +37,10 @@ public class PathService {
         List<Line> lines = lineService.findLines();
         Station sourceStation = stationService.findStationById(source);
         Station targetStation = stationService.findStationById(target);
-        try {
-            SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
-            int fare = calculateFare(loginMember, subwayPath);
-            return PathResponseAssembler.assemble(subwayPath, fare);
-        } catch (Exception e) {
-            throw new InvalidPathException();
-        }
+
+        SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
+        int fare = calculateFare(loginMember, subwayPath);
+        return PathResponseAssembler.assemble(subwayPath, fare);
     }
 
     private int calculateFare(LoginMember loginMember, SubwayPath subwayPath) {
@@ -55,10 +51,14 @@ public class PathService {
 
         final int fareWithoutDiscount = FareByDistance.calculate(subwayPath.calculateDistance()) + lineExtraFare;
 
-        if (Objects.isNull(loginMember.getId())) {
+        if (isGuest(loginMember)) {
             return fareWithoutDiscount;
         }
-        Member member = memberDao.findById(loginMember.getId());
+        Member member = memberDao.findByEmail(loginMember.getEmail());
         return FareByAge.calculate(member.getAge(), fareWithoutDiscount);
+    }
+
+    private boolean isGuest(LoginMember loginMember) {
+        return Objects.isNull(loginMember.getEmail());
     }
 }
