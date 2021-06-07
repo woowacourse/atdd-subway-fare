@@ -1,8 +1,4 @@
 spring:
-  config:
-    activate:
-      on-profile:
-        - local
   datasource:
     schema:
       - classpath:schema.sql
@@ -19,3 +15,9 @@ security:
     token:
       secret-key: my_secret_is_secret
       expire-length: 3600000
+
+logging:
+  level:
+    root: warn
+  file:
+    path: logs
