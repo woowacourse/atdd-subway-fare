@@ -14,7 +14,7 @@ import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationResponse;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class PathService {
 
     private LineService lineService;
