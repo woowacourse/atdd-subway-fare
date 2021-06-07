@@ -8,7 +8,7 @@ public class LineRequest {
     @Size(min = 2, message = "두 글자 이상이어야 합니다.")
     private String name;
 
-    @NotEmpty(message = "유효하지 않은 색상입니다.")
+    @NotBlank(message = "유효하지 않은 색상입니다.")
     private String color;
 
     @NotNull
@@ -23,7 +23,7 @@ public class LineRequest {
 
     @NotNull
     @PositiveOrZero(message = "추가 요금은 0 이상이어야 합니다.")
-    private int extraFare;
+    private Integer extraFare;
 
     public LineRequest() {
     }
