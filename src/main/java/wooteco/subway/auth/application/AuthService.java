@@ -47,4 +47,11 @@ public class AuthService {
         }
         return new LoginMember();
     }
+
+    public boolean validateToken(String credentials) {
+        if (jwtTokenProvider.validateToken(credentials)) {
+            return true;
+        }
+        throw new AuthorizationException("유효하지 않은 토큰입니다.");
+    }
 }

@@ -14,14 +14,14 @@ import java.util.Optional;
 public class FareCalculator implements FarePolicy {
     private static final int DEFAULT_FARE = 1250;
 
-    public Fare getTotalFare(SubwayPath subwayPath, Optional<LoginMember> loginMember) {
+    public Fare getTotalFare(SubwayPath subwayPath, LoginMember loginMember) {
         Fare fareByDistance = getFareByDistance(new Fare(DEFAULT_FARE), subwayPath.calculateDistance());
         Fare fareWithLineExtraFare = getFareWithLineExtraFare(fareByDistance, subwayPath.getLines());
 
-        if (!loginMember.isPresent()) {
+        if (!loginMember.isLoggedIn()) {
             return fareWithLineExtraFare;
         }
-        return AgeDiscountPolicy.discountFareByAge(loginMember.get().getAge(), fareWithLineExtraFare);
+        return AgeDiscountPolicy.discountFareByAge(loginMember.getAge(), fareWithLineExtraFare);
     }
 
     public Fare getFareByDistance(Fare currentFare, int distance) {

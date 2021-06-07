@@ -14,6 +14,10 @@ public class LoginMember {
         this.age = age;
     }
 
+    public boolean isLoggedIn() {
+        return (this.id != null) && (this.email != null) && (this.age != null);
+    }
+
     public Long getId() {
         return id;
     }

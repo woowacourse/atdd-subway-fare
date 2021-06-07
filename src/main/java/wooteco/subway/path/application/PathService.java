@@ -30,7 +30,7 @@ public class PathService {
         this.farePolicy = farePolicy;
     }
 
-    public PathResponse findPath(Long source, Long target, Optional<LoginMember> loginMember) {
+    public PathResponse findPath(Long source, Long target, LoginMember loginMember) {
         try {
             List<Line> lines = lineService.findLines();
             Station sourceStation = stationService.findStationById(source);
