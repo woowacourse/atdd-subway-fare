@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    schema:
+      - classpath:schema-prod.sql
+    initialization-mode: always
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/subway?useSSL=false&ServerTimezone=UTC
+    username: produser
+    password: prod
+handlebars:
+  suffix: .html
+  enabled: true
+security:
+  jwt:
+    token:
+      secret-key: my_secret_is_secret
+      expire-length: 3600000
+
+logging:
+  level:
+    root: warn
+  file:
+    path: logs

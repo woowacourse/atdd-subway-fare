@@ -1,0 +1,91 @@
+== 지하철 역 API
+
+=== 역 목록 조회
+==== Request
+
+include::{snippets}/stations/get/http-request.adoc[]
+
+==== Response
+include::{snippets}/stations/get/http-response.adoc[]
+
+=== 역 생성 성공
+==== Request
+
+include::{snippets}/stations/post/success/http-request.adoc[]
+
+=== 역 생성 실패 - 역 명 중복
+==== Request
+
+include::{snippets}/stations/post/fail/duplicated/http-request.adoc[]
+
+==== Response
+include::{snippets}/stations/post/fail/duplicated/http-response.adoc[]
+
+==== Response
+include::{snippets}/stations/post/success/http-response.adoc[]
+
+=== 역 생성 실패 - 역 명 공백포함
+==== Request
+
+include::{snippets}/stations/post/fail/name/blank/http-request.adoc[]
+
+==== Response
+include::{snippets}/stations/post/fail/name/blank/http-response.adoc[]
+
+=== 역 생성 실패 - 역 명 길이 유효성
+==== Request
+
+include::{snippets}/stations/post/fail/name/length/http-request.adoc[]
+
+==== Response
+include::{snippets}/stations/post/fail/name/length/http-response.adoc[]
+
+=== 역 수정 성공
+==== Request
+
+include::{snippets}/stations/put/success/http-request.adoc[]
+
+==== Response
+include::{snippets}/stations/put/success/http-response.adoc[]
+
+=== 역 수정 실패 - 역 명 중복
+==== Request
+
+include::{snippets}/stations/put/fail/duplicated/http-request.adoc[]
+
+==== Response
+include::{snippets}/stations/put/fail/duplicated/http-response.adoc[]
+
+=== 역 수정 실패 - 역 명 공백포함
+==== Request
+
+include::{snippets}/stations/put/fail/name/blank/http-request.adoc[]
+
+==== Response
+include::{snippets}/stations/put/fail/name/blank/http-response.adoc[]
+
+=== 역 수정 실패 - 역 명 길이 유효성
+==== Request
+
+include::{snippets}/stations/put/fail/name/length/http-request.adoc[]
+
+==== Response
+include::{snippets}/stations/put/fail/name/length/http-response.adoc[]
+
+=== 역 삭제 성공
+==== Request
+
+include::{snippets}/stations/delete/success/http-request.adoc[]
+
+==== Response
+include::{snippets}/stations/delete/success/http-response.adoc[]
+
+=== 역 삭제 실패 - 구간에 존재하는 역
+==== Request
+
+include::{snippets}/stations/delete/fail/http-request.adoc[]
+
+==== Response
+include::{snippets}/stations/delete/fail/http-response.adoc[]
+
+

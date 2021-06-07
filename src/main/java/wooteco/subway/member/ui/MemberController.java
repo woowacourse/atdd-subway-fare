@@ -8,20 +8,27 @@ import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class MemberController {
-    private MemberService memberService;
+    private final MemberService memberService;
 
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
     }
 
+    @GetMapping("/members/check-validation")
+    public ResponseEntity<Void> findDuplicatedEmail(@RequestParam String email) {
+        memberService.checkDuplicatedEmail(email);
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/members")
-    public ResponseEntity createMember(@RequestBody MemberRequest request) {
-        MemberResponse member = memberService.createMember(request);
+    public ResponseEntity<Void> createMember(@RequestBody @Valid MemberRequest memberRequest) {
+        MemberResponse member = memberService.createMember(memberRequest);
         return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
     }
 
@@ -32,7 +39,7 @@ public class MemberController {
     }
 
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest param) {
+    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody @Valid MemberRequest param) {
         memberService.updateMember(loginMember, param);
         return ResponseEntity.ok().build();
     }

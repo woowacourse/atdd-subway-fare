@@ -1,0 +1,19 @@
+== 로그인 API
+
+=== 로그인 성공
+==== Request
+
+include::{snippets}/auth/login/post/success/http-request.adoc[]
+
+==== Response
+include::{snippets}/auth/login/post/success/http-response.adoc[]
+
+=== 로그인 실패
+==== Request
+
+include::{snippets}/auth/login/post/fail/http-request.adoc[]
+
+==== Response
+include::{snippets}/auth/login/post/fail/http-response.adoc[]
+
+
