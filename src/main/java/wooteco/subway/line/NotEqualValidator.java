@@ -1,12 +1,11 @@
 package wooteco.subway.line;
 
 import org.springframework.beans.BeanWrapperImpl;
-import wooteco.subway.line.dto.SectionRequest;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-public class NotEqualValidator implements ConstraintValidator<NotEqual, SectionRequest> {
+public class NotEqualValidator implements ConstraintValidator<NotEqual, Object> {
     private String upStationId;
     private String downStationId;
 
@@ -17,9 +16,9 @@ public class NotEqualValidator implements ConstraintValidator<NotEqual, SectionR
     }
 
     @Override
-    public boolean isValid(SectionRequest sectionRequest, ConstraintValidatorContext context) {
-        Object upStationValue = new BeanWrapperImpl(sectionRequest).getPropertyValue(upStationId);
-        Object downStationValue = new BeanWrapperImpl(sectionRequest).getPropertyValue(downStationId);
+    public boolean isValid(Object object, ConstraintValidatorContext context) {
+        Object upStationValue = new BeanWrapperImpl(object).getPropertyValue(upStationId);
+        Object downStationValue = new BeanWrapperImpl(object).getPropertyValue(downStationId);
         return !upStationValue.equals(downStationValue);
     }
 }

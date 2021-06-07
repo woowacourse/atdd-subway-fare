@@ -1,7 +1,10 @@
 package wooteco.subway.line.dto;
 
+import wooteco.subway.line.NotEqual;
+
 import javax.validation.constraints.*;
 
+@NotEqual(upStationId = "upStationId", downStationId = "downStationId")
 public class LineRequest {
     @NotBlank(message = "노선 이름이 공백입니다.")
     @Pattern(regexp = "^[가-힣|0-9]*$", message = "유효하지 않은 노선 이름입니다.")
