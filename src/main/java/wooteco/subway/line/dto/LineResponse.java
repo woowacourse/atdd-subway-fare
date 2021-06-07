@@ -18,10 +18,6 @@ public class LineResponse {
     public LineResponse() {
     }
 
-    public LineResponse(Long id, String name, String color, Long extraFare, List<StationResponse> stations) {
-        this(id, name, color, extraFare, stations, Collections.emptyList());
-    }
-
     public LineResponse(Long id, String name, String color, Long extraFare, List<StationResponse> stations, List<SectionResponse> sections) {
         this.id = id;
         this.name = name;

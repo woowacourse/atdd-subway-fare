@@ -16,11 +16,13 @@ import wooteco.subway.line.dto.MapResponse;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.DocsIdentifier.*;
+import static wooteco.subway.line.domain.Line.NONE_EXTRA_FARE;
 import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
 @DisplayName("지하철 노선 관련 기능")
@@ -160,8 +162,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         강남역 = 지하철역_등록되어_있음("강남역");
         광교역 = 지하철역_등록되어_있음("광교역");
 
-        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15);
+        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10, 0L);
+        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15, 0L);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -192,7 +194,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     void createErrorNameLine() throws Exception {
         //given
         String errorName = "공백 선";
-        LineRequest errorLineRequest = new LineRequest(errorName, "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
+        LineRequest errorLineRequest = new LineRequest(errorName, "bg-red-600", 강남역.getId(), 광교역.getId(), 10, NONE_EXTRA_FARE);
 
         //when
         ExtractableResponse<Response> extractableResponse = 지하철_노선_생성_요청(errorLineRequest, LINES_POST_FAIL_NAME_BLANK);
@@ -202,7 +204,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         //given
         errorName = "선";
-        errorLineRequest = new LineRequest(errorName, "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
+        errorLineRequest = new LineRequest(errorName, "bg-red-600", 강남역.getId(), 광교역.getId(), 10, NONE_EXTRA_FARE);
 
         //when
         extractableResponse = 지하철_노선_생성_요청(errorLineRequest, DocsIdentifier.LINES_POST_FAIL_NAME_LENGTH);
@@ -212,7 +214,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         //given
         errorName = "진짜진짜진짜기다란이상한노션아닌노선";
-        errorLineRequest = new LineRequest(errorName, "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
+        errorLineRequest = new LineRequest(errorName, "bg-red-600", 강남역.getId(), 광교역.getId(), 10, NONE_EXTRA_FARE);
 
         //when
         extractableResponse = 지하철_노선_생성_요청(errorLineRequest, LINES_POST_FAIL_NAME_LENGTH);
@@ -299,7 +301,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void updateNotExistLine() throws Exception {
         //given
-        LineResponse lineResponse = new LineResponse(Long.MAX_VALUE, null, null, null, null);
+        LineResponse lineResponse = new LineResponse(Long.MAX_VALUE, null, null,
+                null, null, Collections.emptyList());
 
         //when
         ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineResponse, lineRequest1, LINES_PUT_FAIL_NOT_EXIST);
@@ -317,7 +320,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         //given
         String errorName = "공백 선";
-        LineRequest errorLineRequest = new LineRequest(errorName, "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
+        LineRequest errorLineRequest = new LineRequest(errorName, "bg-red-600", 강남역.getId(), 광교역.getId(), 10, NONE_EXTRA_FARE);
 
         //when
         ExtractableResponse<Response> extractableResponse = 지하철_노선_수정_요청(lineResponse, errorLineRequest, LINES_PUT_FAIL_NAME_BLANK);
@@ -327,7 +330,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         //given
         errorName = "선";
-        errorLineRequest = new LineRequest(errorName, "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
+        errorLineRequest = new LineRequest(errorName, "bg-red-600", 강남역.getId(), 광교역.getId(), 10, NONE_EXTRA_FARE);
 
         //when
         extractableResponse = 지하철_노선_수정_요청(lineResponse, errorLineRequest, LINES_PUT_FAIL_NAME_LENGTH);
@@ -337,7 +340,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         //given
         errorName = "진짜진짜진짜기다란이상한노션아닌노선";
-        errorLineRequest = new LineRequest(errorName, "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
+        errorLineRequest = new LineRequest(errorName, "bg-red-600", 강남역.getId(), 광교역.getId(), 10, NONE_EXTRA_FARE);
 
         //when
         extractableResponse = 지하철_노선_수정_요청(lineResponse, errorLineRequest, LINES_PUT_FAIL_NAME_LENGTH);
@@ -363,7 +366,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteNotExistLine() throws Exception {
         //given
-        LineResponse lineResponse = new LineResponse(Long.MAX_VALUE, null, null, null, null);
+        LineResponse lineResponse = new LineResponse(Long.MAX_VALUE, null, null,
+                null, null, Collections.emptyList());
 
         //when
         ExtractableResponse<Response> response = 지하철_노선_제거_요청(lineResponse, LINES_DELETE_FAIL);

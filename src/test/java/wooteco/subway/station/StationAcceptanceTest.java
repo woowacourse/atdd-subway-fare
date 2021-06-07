@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.DocsIdentifier.*;
 import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
+import static wooteco.subway.line.domain.Line.NONE_EXTRA_FARE;
 
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {
@@ -257,7 +258,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         //given
         StationResponse stationResponse1 = 지하철역_등록되어_있음(강남역);
         StationResponse stationResponse2 = 지하철역_등록되어_있음(역삼역);
-        지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", stationResponse1.getId(), stationResponse2.getId(), 10));
+        지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", stationResponse1.getId(), stationResponse2.getId(), 10, NONE_EXTRA_FARE));
 
         //when
         ExtractableResponse<Response> response = 지하철역_제거_요청(stationResponse1, STATIONS_DELETE_FAIL);

@@ -5,7 +5,7 @@ import wooteco.subway.station.domain.Station;
 import java.util.List;
 
 public class Line {
-    private static final Long NONE_EXTRA_FARE = 0L;
+    public static final Long NONE_EXTRA_FARE = 0L;
 
     private Long id;
     private String name;
