@@ -5,6 +5,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
@@ -40,6 +42,17 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response = 지하철역_생성_요청(강남역);
+
+        // then
+        지하철역_생성_실패됨(response);
+    }
+
+    @DisplayName("비어있는 지하철역 이름으로 지하철역을 생성한다.")
+    @NullAndEmptySource
+    @ParameterizedTest
+    void createStationWithNullOrEmptyName(String name) {
+        // when
+        ExtractableResponse<Response> response = 지하철역_생성_요청(name);
 
         // then
         지하철역_생성_실패됨(response);
