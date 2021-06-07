@@ -18,7 +18,6 @@ public class ErrorDto {
     public static List<ErrorDto> listOf(List<FieldError> fieldErrors) {
         return fieldErrors.stream()
                 .map(error -> new ErrorDto(error.getField(), error.getDefaultMessage()))
-                .peek(System.out::println)
                 .collect(Collectors.toList());
     }
 
