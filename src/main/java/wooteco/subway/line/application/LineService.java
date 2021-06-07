@@ -33,13 +33,9 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Line persistLine;
-        try {
-            persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
-        } catch (DuplicateKeyException e) {
-            throw new DuplicatedFieldException("중복 필드가 있어 노선 저장에 실패했습니다.");
-        }
-
+        Line persistLine = lineDao.insert(
+            new Line(request.getName(), request.getColor(), request.getExtraFare())
+        );
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);
     }
@@ -47,8 +43,8 @@ public class LineService {
     private Section addInitSection(Line line, LineRequest request) {
         validateSectionStations(request.getUpStationId(), request.getDownStationId());
 
-        Station upStation = stationService.findStationById(request.getUpStationId());
-        Station downStation = stationService.findStationById(request.getDownStationId());
+        Station upStation = stationService.findExistentStationById(request.getUpStationId());
+        Station downStation = stationService.findExistentStationById(request.getDownStationId());
         Section section = new Section(upStation, downStation, request.getDistance());
         return sectionDao.insert(line, section);
     }
@@ -66,7 +62,7 @@ public class LineService {
 
     private void validateDifferentStations(Long upStationId, Long downStationId) {
         if (upStationId.equals(downStationId)) {
-            throw new ValidationFailureException("추가하려는 구간의 상행역과 하향역이 같습니다.");
+            throw new ValidationFailureException("추가하려는 구간의 상행역과 하행역이 같습니다.");
         }
     }
 
@@ -80,9 +76,7 @@ public class LineService {
     }
 
     public LineResponse findLineResponseById(Long id) {
-        return LineResponse.of(
-            findLineById(id)
-        );
+        return LineResponse.of(findLineById(id));
     }
 
     public Line findLineById(Long id) {
@@ -90,11 +84,7 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineUpdateRequest request) {
-        try {
-            lineDao.update(new Line(id, request.getName(), request.getColor(), request.getExtraFare()));
-        } catch (DuplicateKeyException e) {
-            throw new DuplicatedFieldException("중복 필드가 있어 노선 수정에 실패했습니다.");
-        }
+        lineDao.update(new Line(id, request.getName(), request.getColor(), request.getExtraFare()));
     }
 
     public void deleteLineById(Long id) {
@@ -105,8 +95,8 @@ public class LineService {
         validateSectionStations(request.getUpStationId(), request.getDownStationId());
 
         Line line = findLineById(lineId);
-        Station upStation = stationService.findStationById(request.getUpStationId());
-        Station downStation = stationService.findStationById(request.getDownStationId());
+        Station upStation = stationService.findExistentStationById(request.getUpStationId());
+        Station downStation = stationService.findExistentStationById(request.getDownStationId());
         line.addSection(upStation, downStation, request.getDistance());
 
         sectionDao.deleteByLineId(lineId);
@@ -115,7 +105,7 @@ public class LineService {
 
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
-        Station station = stationService.findStationById(stationId);
+        Station station = stationService.findExistentStationById(stationId);
         line.removeSection(station);
 
         sectionDao.deleteByLineId(lineId);
