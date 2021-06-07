@@ -77,6 +77,9 @@ public class LineService {
         if (lineDao.isLineNotExist(id)) {
             throw new NoSuchLineException();
         }
+        if (lineDao.isLineNameDuplicatedExceptMySelf(id, lineUpdateRequest.getName())) {
+            throw new DuplicatedLineNameException();
+        }
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
