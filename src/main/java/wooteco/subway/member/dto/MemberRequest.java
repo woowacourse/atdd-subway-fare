@@ -13,8 +13,8 @@ public class MemberRequest {
     private String email;
     @Size(min = 4, max = 20, message = "비밀번호는 4글자 이상 20글자 이하이어야 합니다.")
     private String password;
-    @Positive(message = "나이는 음수일 수 없으며 200살을 넘을 수 없습니다.")
-    @Max(value = 200, message = "나이는 음수일 수 없으며 200살을 넘을 수 없습니다.")
+    @Positive(message = "나이는 음수일 수 없습니다.")
+    @Max(value = 200, message = "나이는 200살을 넘을 수 없습니다.")
     private int age;
 
     public MemberRequest() {
