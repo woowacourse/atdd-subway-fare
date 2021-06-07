@@ -44,8 +44,10 @@ class AuthServiceTest {
 
         when(memberDao.findByEmail(tokenRequest.getEmail())).thenReturn(member);
         when(jwtTokenProvider.createToken(tokenRequest.getEmail())).thenReturn(accessToken);
+
         // when
         TokenResponse tokenResponse = authService.login(tokenRequest);
+
         // then
         assertThat(tokenResponse.getAccessToken()).isEqualTo(accessToken);
     }
@@ -61,6 +63,7 @@ class AuthServiceTest {
         TokenRequest tokenRequest = new TokenRequest(email, wrongPassword);
 
         when(memberDao.findByEmail(tokenRequest.getEmail())).thenReturn(member);
+
         // when // then
         assertThatThrownBy(() -> authService.login(tokenRequest))
                 .isExactlyInstanceOf(AuthorizationException.class);
@@ -95,8 +98,10 @@ class AuthServiceTest {
         // given
         String token = "로키의토오큰";
         when(jwtTokenProvider.validateToken(token)).thenReturn(true);
+
         // when
         authService.validateToken(token);
+
         // then
         verify(jwtTokenProvider).validateToken(token);
     }
@@ -107,6 +112,7 @@ class AuthServiceTest {
         // given
         String token = "로키의토오큰";
         when(jwtTokenProvider.validateToken(token)).thenReturn(false);
+
         // when // then
         assertThatThrownBy(() -> authService.validateToken(token))
                 .isExactlyInstanceOf(AuthorizationException.class);

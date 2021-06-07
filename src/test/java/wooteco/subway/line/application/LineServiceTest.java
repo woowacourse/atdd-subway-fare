@@ -78,11 +78,13 @@ class LineServiceTest {
         String color = "cobalt-blue";
         String name = "2호선";
         int distance = 10;
+
         LineRequest lineRequest = new LineRequest(name, color, 잠실역.getId(), 신림역.getId(), 0, distance);
-        Line line = lineDao.insert(new Line(lineRequest.getName(), lineRequest.getColor(),
-                lineRequest.getExtraFare()));
+        Line line = lineDao.insert(new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getExtraFare()));
+
         Section section = new Section(잠실역, 신림역, lineRequest.getDistance());
         Section persistSection = sectionDao.insert(line, section);
+
         line.addSection(persistSection);
         return LineResponse.of(line);
     }

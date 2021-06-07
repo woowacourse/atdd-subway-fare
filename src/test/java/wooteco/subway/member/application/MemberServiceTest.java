@@ -60,7 +60,7 @@ class MemberServiceTest {
 
         // when // then
         assertThatThrownBy(() -> memberService.createMember(memberRequest))
-                .isInstanceOf(MemberException.class);
+                .isInstanceOf(DuplicatedMemberException.class);
     }
 
     @DisplayName("멤버 정보 조회 성공")

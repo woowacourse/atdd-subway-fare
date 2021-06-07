@@ -38,8 +38,10 @@ class StationServiceTest {
         Station station = new Station(1L, "선정릉역");
         StationRequest stationRequest = new StationRequest("선정릉역");
         when(stationDao.insert(stationRequest.toStation())).thenReturn(station);
+
         // when
         stationService.saveStation(stationRequest);
+
         // then
         verify(stationDao).insert(stationRequest.toStation());
     }
@@ -63,8 +65,10 @@ class StationServiceTest {
         // given
         Station station = new Station(STATION_ID, "선정릉역");
         when(stationDao.findById(STATION_ID)).thenReturn(Optional.of(station));
+
         // when
         stationService.findStationById(STATION_ID);
+
         // then
         verify(stationDao).findById(STATION_ID);
     }
@@ -74,6 +78,7 @@ class StationServiceTest {
     void findStationByIdFail_stationNotExisting() {
         // given
         when(stationDao.findById(STATION_ID)).thenReturn(Optional.empty());
+
         // when // then
         assertThatThrownBy(() -> stationService.findStationById(STATION_ID))
                 .isInstanceOf(NotFoundException.class);
@@ -88,8 +93,10 @@ class StationServiceTest {
                 new Station(2L, "피케이네역")
         );
         when(stationDao.findAll()).thenReturn(stations);
+
         // when
         List<StationResponse> responses = stationService.findAllStationResponses();
+
         // then
         verify(stationDao).findAll();
         assertThat(responses).extracting("name")
@@ -101,8 +108,10 @@ class StationServiceTest {
     void deleteStationByIdSuccess() {
         // given
         when(sectionDao.existsByStationId(STATION_ID)).thenReturn(false);
+
         // when
         stationService.deleteStationById(STATION_ID);
+
         // then
         verify(stationDao).deleteById(STATION_ID);
     }
@@ -112,6 +121,7 @@ class StationServiceTest {
     void deleteStationByIdFail_stationInLine() {
         // given
         when(sectionDao.existsByStationId(STATION_ID)).thenReturn(true);
+
         // when // then
         assertThatThrownBy(() -> stationService.deleteStationById(STATION_ID))
                 .isInstanceOf(InvalidDeletionException.class);
