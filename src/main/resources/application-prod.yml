@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://3.36.70.153:8080/db_name?serverTimezone=UTC&characterEncoding=UTF-8
+    url: jdbc:mysql://3.36.70.153:3306/db_name?serverTimezone=UTC&characterEncoding=UTF-8
     username: bepoz
     password: bepoz
   h2:
