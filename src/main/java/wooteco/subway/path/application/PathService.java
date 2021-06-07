@@ -13,7 +13,6 @@ import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -37,7 +36,7 @@ public class PathService {
             Station targetStation = stationService.findStationById(target);
             SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
 
-            Fare totalFare = farePolicy.getTotalFare(subwayPath, loginMember);
+            Fare totalFare = farePolicy.calculateTotalFare(subwayPath, loginMember);
             return PathResponseAssembler.assemble(subwayPath, totalFare);
         } catch (Exception e) {
             throw new InvalidPathException();

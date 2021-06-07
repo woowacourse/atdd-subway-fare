@@ -14,7 +14,7 @@ import java.util.Optional;
 public class FareCalculator implements FarePolicy {
     private static final int DEFAULT_FARE = 1250;
 
-    public Fare getTotalFare(SubwayPath subwayPath, LoginMember loginMember) {
+    public Fare calculateTotalFare(SubwayPath subwayPath, LoginMember loginMember) {
         Fare fareByDistance = getFareByDistance(new Fare(DEFAULT_FARE), subwayPath.calculateDistance());
         Fare fareWithLineExtraFare = getFareWithLineExtraFare(fareByDistance, subwayPath.getLines());
 

@@ -7,5 +7,5 @@ import wooteco.subway.path.domain.SubwayPath;
 import java.util.Optional;
 
 public interface FarePolicy {
-    Fare getTotalFare(SubwayPath subwayPath, LoginMember loginMember);
+    Fare calculateTotalFare(SubwayPath subwayPath, LoginMember loginMember);
 }
