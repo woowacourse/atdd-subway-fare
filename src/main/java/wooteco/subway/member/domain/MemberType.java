@@ -20,8 +20,12 @@ public enum MemberType {
         this.predicate = predicate;
     }
 
-    public static MemberType of(Member member) {
-        int age = member.getAge();
+    public static MemberType of(User user) {
+        if(!user.isLoggedIn()){
+            return NONE;
+        }
+
+        int age = user.getAge();
         return Arrays.stream(values())
                 .filter(memberType -> memberType.is(age))
                 .findFirst()

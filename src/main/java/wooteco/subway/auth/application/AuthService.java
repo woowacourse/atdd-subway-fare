@@ -6,9 +6,8 @@ import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
-import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
-import wooteco.subway.member.domain.MemberType;
+import wooteco.subway.member.domain.User;
 
 import java.util.Optional;
 
@@ -31,21 +30,7 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
-    public MemberType findMemberTypeByToken(String credentials) {
-        if (!jwtTokenProvider.validateToken(credentials)) {
-            return MemberType.NONE;
-        }
-
-        String email = jwtTokenProvider.getPayload(credentials);
-        try {
-            Member member = memberDao.findByEmail(email);
-            return MemberType.of(member);
-        } catch (Exception e) {
-            return MemberType.NONE;
-        }
-    }
-
-    public Optional<LoginMember> findMemberByToken(String credentials) {
+    public Optional<User> findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
             return Optional.empty();
         }
@@ -53,7 +38,7 @@ public class AuthService {
         String email = jwtTokenProvider.getPayload(credentials);
         try {
             Member member = memberDao.findByEmail(email);
-            return Optional.of(new LoginMember(member.getId(), member.getEmail(), member.getAge()));
+            return Optional.of(new User(member.getId(), member.getEmail(), member.getAge()));
         } catch (Exception e) {
             return Optional.empty();
         }

@@ -3,6 +3,7 @@ package wooteco.subway.path.application;
 import org.springframework.stereotype.Service;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.member.domain.MemberType;
+import wooteco.subway.member.domain.User;
 import wooteco.subway.path.domain.FarePolicy;
 import wooteco.subway.path.domain.RouteFinder;
 import wooteco.subway.path.domain.SubwayRoute;
@@ -23,7 +24,8 @@ public class PathService {
         this.stationService = stationService;
     }
 
-    public PathResponse findPath(Long sourceId, Long targetId, MemberType memberType) {
+    public PathResponse findPath(Long sourceId, Long targetId, User user) {
+        MemberType memberType = MemberType.of(user);
         SubwayRoute route = findRoute(sourceId, targetId);
 
         return pathResponse(route, memberType);

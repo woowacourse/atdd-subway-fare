@@ -24,7 +24,6 @@ public class MemberDao {
                     rs.getInt("age")
             );
 
-
     public MemberDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)

@@ -65,11 +65,12 @@ public class GlobalControllerAdvice {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ExceptionResponse> handleUnhandledException() {
-        String message = "Oops!! There's unhandled exception";
+    public ResponseEntity<ExceptionResponse> handleUnhandledException(Exception e) {
+        logger.error(e.getMessage());
+        logger.error(e.getLocalizedMessage());
 
+        String message = "Oops!! There's unhandled exception";
         ExceptionResponse exceptionResponse = new ExceptionResponse(message);
-        logger.error(message);
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exceptionResponse);
     }
