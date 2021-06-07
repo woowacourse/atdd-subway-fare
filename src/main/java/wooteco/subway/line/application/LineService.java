@@ -1,9 +1,12 @@
 package wooteco.subway.line.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.exception.DuplicateException;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
+import wooteco.subway.line.domain.Lines;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
@@ -12,9 +15,10 @@ import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.NoSuchElementException;
 
 @Service
+@Transactional(readOnly = true)
 public class LineService {
     private LineDao lineDao;
     private SectionDao sectionDao;
@@ -26,8 +30,17 @@ public class LineService {
         this.stationService = stationService;
     }
 
+    @Transactional
     public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
+        if (lineDao.existsByName(request.getName())) {
+            throw new DuplicateException("이미 존재하는 노선입니다.");
+        }
+
+        if (lineDao.existsByColor(request.getColor())) {
+            throw new DuplicateException("이미 존재하는 노선 색깔입니다.");
+        }
+
+        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
         persistLine.addSection(addInitSection(persistLine, request));
         return LineResponse.of(persistLine);
     }
@@ -44,9 +57,7 @@ public class LineService {
 
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
-        return persistLines.stream()
-                .map(line -> LineResponse.of(line))
-                .collect(Collectors.toList());
+        return LineResponse.listOf(persistLines);
     }
 
     public List<Line> findLines() {
@@ -59,17 +70,32 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        return lineDao.findById(id);
+        if (lineDao.existsById(id)) {
+            return lineDao.findById(id);
+        }
+        throw new NoSuchElementException("존재하지 않는 노선입니다.");
     }
 
+    @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        if (lineDao.existsById(id)) {
+            Line originalLine = lineDao.findById(id);
+            Lines lines = new Lines(lineDao.findAll());
+            lineDao.update(lines.update(originalLine, lineUpdateRequest));
+        }
     }
 
+    @Transactional
     public void deleteLineById(Long id) {
-        lineDao.deleteById(id);
+        if (lineDao.existsById(id)) {
+            sectionDao.deleteByLineId(id);
+            lineDao.deleteById(id);
+            return;
+        }
+        throw new NoSuchElementException("존재하지 않는 노선입니다.");
     }
 
+    @Transactional
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
@@ -80,13 +106,17 @@ public class LineService {
         sectionDao.insertSections(line);
     }
 
+    @Transactional
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
-        line.removeSection(station);
 
-        sectionDao.deleteByLineId(lineId);
-        sectionDao.insertSections(line);
+        if (line.hasStation(stationId)) {
+            line.removeSection(station);
+            sectionDao.deleteByLineId(lineId);
+            sectionDao.insertSections(line);
+            return;
+        }
+        throw new UnsupportedOperationException("노선에 등록되지 않은 역은 삭제할 수 없습니다.");
     }
-
 }

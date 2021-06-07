@@ -1,9 +1,21 @@
 package wooteco.subway.line.dto;
 
+import wooteco.subway.line.NotEqual;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+
+@NotEqual(upStationId = "upStationId", downStationId = "downStationId")
 public class SectionRequest {
+    @NotNull
     private Long upStationId;
+
+    @NotNull
     private Long downStationId;
-    private int distance;
+
+    @NotNull
+    @Positive(message = "거리는 양수여야 합니다.")
+    private Integer distance;
 
     public SectionRequest() {
     }

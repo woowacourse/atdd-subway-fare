@@ -9,12 +9,12 @@ public class Station {
     public Station() {
     }
 
-    public Station(Long id, String name) {
-        this.id = id;
+    public Station(String name) {
         this.name = name;
     }
 
-    public Station(String name) {
+    public Station(Long id, String name) {
+        this.id = id;
         this.name = name;
     }
 
@@ -24,6 +24,10 @@ public class Station {
 
     public String getName() {
         return name;
+    }
+
+    public boolean hasSameId(Long id) {
+        return this.id.equals(id);
     }
 
     @Override

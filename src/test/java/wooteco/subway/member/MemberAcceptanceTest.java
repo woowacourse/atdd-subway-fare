@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
+import wooteco.subway.member.dto.EmailRequest;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
@@ -16,12 +17,33 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.auth.AuthAcceptanceTest.로그인되어_있음;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
-    public static final String EMAIL = "email@email.com";
-    public static final String PASSWORD = "password";
-    public static final int AGE = 20;
-    public static final String NEW_EMAIL = "new_email@email.com";
-    public static final String NEW_PASSWORD = "new_password";
-    public static final int NEW_AGE = 30;
+    private static final String EMAIL = "email@email.com";
+    private static final String PASSWORD = "password";
+    private static final int AGE = 20;
+    private static final String NEW_EMAIL = "new_email@email.com";
+    private static final String NEW_PASSWORD = "new_password";
+    private static final int NEW_AGE = 30;
+
+    @DisplayName("이메일 중복 확인한다. - 중복되는 경우")
+    @Test
+    void checkWhenEmailDuplicate() {
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청("fafi@fafi.com", PASSWORD, AGE);
+        회원_생성됨(createResponse);
+
+        EmailRequest emailRequest = new EmailRequest("fafi@fafi.com");
+        ExtractableResponse<Response> duplicateEmailResponse = 이메일_중복_확인을_요청(emailRequest);
+
+        이메일_중복됨(duplicateEmailResponse);
+    }
+
+    @DisplayName("이메일 중복 확인한다. - 중복되지 않는 경우")
+    @Test
+    void checkWhenEmailNotDuplicate() {
+        EmailRequest emailRequest = new EmailRequest("fafi2@fafi.com");
+        ExtractableResponse<Response> emailResponse = 이메일_중복_확인을_요청(emailRequest);
+
+        이메일_중복_안됨(emailResponse);
+    }
 
     @DisplayName("회원 정보를 관리한다.")
     @Test
@@ -103,5 +125,24 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private ExtractableResponse<Response> 이메일_중복_확인을_요청(EmailRequest emailRequest) {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .body(emailRequest)
+                .when().post("/members/email-check")
+                .then().log().all()
+                .extract();
+    }
+
+    private void 이메일_중복됨(ExtractableResponse<Response> duplicateEmailResponse) {
+        assertThat(duplicateEmailResponse.statusCode()).isEqualTo(HttpStatus.CONFLICT.value());
+    }
+
+    private void 이메일_중복_안됨(ExtractableResponse<Response> emailResponse) {
+        assertThat(emailResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 }

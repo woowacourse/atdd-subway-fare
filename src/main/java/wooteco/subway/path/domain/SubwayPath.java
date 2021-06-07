@@ -13,15 +13,17 @@ public class SubwayPath {
         this.stations = stations;
     }
 
+    public int calculateDistance() {
+        return sectionEdges.stream()
+                .mapToInt(it -> it.getSection().getDistance())
+                .sum();
+    }
+
     public List<SectionEdge> getSectionEdges() {
         return sectionEdges;
     }
 
     public List<Station> getStations() {
         return stations;
-    }
-
-    public int calculateDistance() {
-        return sectionEdges.stream().mapToInt(it -> it.getSection().getDistance()).sum();
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
+import wooteco.subway.exception.AuthorizationException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
@@ -20,28 +21,25 @@ public class AuthService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    public TokenResponse login(TokenRequest request) {
-        try {
+    public TokenResponse createToken(TokenRequest request) {
+        if (memberDao.existsByEmail(request.getEmail())) {
             Member member = memberDao.findByEmail(request.getEmail());
             member.checkPassword(request.getPassword());
-        } catch (Exception e) {
-            throw new AuthorizationException();
+            String token = jwtTokenProvider.createToken(member.getEmail());
+            return new TokenResponse(token);
         }
-        String token = jwtTokenProvider.createToken(request.getEmail());
-        return new TokenResponse(token);
+        throw new AuthorizationException("존재하지 않는 이메일입니다.");
     }
 
-    public LoginMember findMemberByToken(String credentials) {
-        if (!jwtTokenProvider.validateToken(credentials)) {
+    public LoginMember findLoginMemberByToken(String token) {
+        if (!jwtTokenProvider.validateToken(token)) {
             return new LoginMember();
         }
+        String email = jwtTokenProvider.getPayload(token);
+        return new LoginMember(email);
+    }
 
-        String email = jwtTokenProvider.getPayload(credentials);
-        try {
-            Member member = memberDao.findByEmail(email);
-            return new LoginMember(member.getId(), member.getEmail(), member.getAge());
-        } catch (Exception e) {
-            return new LoginMember();
-        }
+    public boolean validateToken(String token) {
+        return jwtTokenProvider.validateToken(token);
     }
 }

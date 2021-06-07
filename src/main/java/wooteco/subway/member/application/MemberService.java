@@ -1,13 +1,16 @@
 package wooteco.subway.member.application;
 
-import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.exception.AuthorizationException;
+import wooteco.subway.exception.DuplicateException;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
+import wooteco.subway.member.dto.EmailRequest;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
+
+import java.util.Objects;
 
 @Service
 public class MemberService {
@@ -23,7 +26,11 @@ public class MemberService {
     }
 
     public MemberResponse findMember(LoginMember loginMember) {
-        Member member = memberDao.findByEmail(loginMember.getEmail());
+        String email = loginMember.getEmail();
+        if (Objects.isNull(email)) {
+            throw new AuthorizationException("존재하지 않는 이메일입니다.");
+        }
+        Member member = memberDao.findByEmail(email);
         return MemberResponse.of(member);
     }
 
@@ -35,5 +42,11 @@ public class MemberService {
     public void deleteMember(LoginMember loginMember) {
         Member member = memberDao.findByEmail(loginMember.getEmail());
         memberDao.deleteById(member.getId());
+    }
+
+    public void checkEmail(EmailRequest request) {
+        if (memberDao.existsByEmail(request.getEmail())) {
+            throw new DuplicateException("중복되는 이메일입니다.");
+        }
     }
 }
