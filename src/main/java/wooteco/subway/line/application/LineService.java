@@ -6,6 +6,7 @@ import wooteco.subway.exception.DuplicateException;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
+import wooteco.subway.line.domain.Lines;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
@@ -79,27 +80,9 @@ public class LineService {
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         if (lineDao.existsById(id)) {
             Line originalLine = lineDao.findById(id);
-            validateDuplicate(originalLine, lineUpdateRequest);
+            Lines lines = new Lines(lineDao.findAll());
+            lineDao.update(lines.update(originalLine, lineUpdateRequest));
         }
-        lineDao.update(new Line(id, lineUpdateRequest));
-    }
-
-    private void validateDuplicate(Line originalLine, LineRequest lineUpdateRequest) {
-        if (isUpdatedNameDuplicate(originalLine, lineUpdateRequest)) {
-            throw new DuplicateException("이미 존재하는 노선입니다.");
-        }
-
-        if (isUpdatedColorDuplicate(originalLine, lineUpdateRequest)) {
-            throw new DuplicateException("이미 존재하는 노선 색깔입니다.");
-        }
-    }
-
-    private boolean isUpdatedNameDuplicate(Line originalLine, LineRequest lineUpdateRequest) {
-        return originalLine.hasDifferentName(lineUpdateRequest) && lineDao.existsByName(lineUpdateRequest.getName());
-    }
-
-    private boolean isUpdatedColorDuplicate(Line originalLine, LineRequest lineUpdateRequest) {
-        return originalLine.hasDifferentColor(lineUpdateRequest) && lineDao.existsByColor(lineUpdateRequest.getColor());
     }
 
     @Transactional

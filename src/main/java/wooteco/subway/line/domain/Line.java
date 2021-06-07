@@ -115,4 +115,12 @@ public class Line {
         return sections.getStations().stream()
                 .anyMatch(station -> station.hasSameId(id));
     }
+
+    public boolean hasSameName(String name) {
+        return this.name.equals(name);
+    }
+
+    public boolean hasSameColor(String color) {
+        return this.color.equals(color);
+    }
 }
