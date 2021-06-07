@@ -1,0 +1,40 @@
+= Subway Application API Document
+:toc: left
+
+== 회원 (/members)
+
+=== 가입
+
+==== Request
+
+include::{snippets}/members/post/http-request.adoc[]
+include::{snippets}/members/post/request-fields.adoc[]
+
+==== Response
+
+include::{snippets}/members/post/http-response.adoc[]
+
+=== 로그인
+
+==== Request
+
+include::{snippets}/login/token/post/http-request.adoc[]
+include::{snippets}/login/token/post/request-fields.adoc[]
+
+==== Response
+
+include::{snippets}/login/token/post/http-response.adoc[]
+
+=== 내 정보 조회
+
+==== Request
+
+include::{snippets}/members/me/get/http-request.adoc[]
+
+include::{snippets}/members/me/get/request-headers.adoc[]
+
+==== Response
+
+include::{snippets}/members/me/get/http-response.adoc[]
+
+include::{snippets}/members/me/get/response-fields.adoc[]

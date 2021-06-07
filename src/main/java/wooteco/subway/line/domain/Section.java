@@ -3,6 +3,7 @@ package wooteco.subway.line.domain;
 import wooteco.subway.station.domain.Station;
 
 public class Section {
+
     private Long id;
     private Station upStation;
     private Station downStation;
