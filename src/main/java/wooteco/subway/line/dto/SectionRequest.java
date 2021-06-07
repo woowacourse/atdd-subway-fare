@@ -15,7 +15,7 @@ public class SectionRequest {
 
     @NotNull
     @Positive(message = "거리는 양수여야 합니다.")
-    private int distance;
+    private Integer distance;
 
     public SectionRequest() {
     }
