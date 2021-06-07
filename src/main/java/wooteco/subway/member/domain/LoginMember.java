@@ -6,12 +6,19 @@ public class LoginMember {
     private Integer age;
 
     public LoginMember() {
+        age = 0;
     }
 
     public LoginMember(Long id, String email, Integer age) {
         this.id = id;
         this.email = email;
         this.age = age;
+    }
+
+    public LoginMember(Member member) {
+        this.id = member.getId();
+        this.email = member.getEmail();
+        this.age = member.getAge();
     }
 
     public Long getId() {
@@ -25,4 +32,5 @@ public class LoginMember {
     public Integer getAge() {
         return age;
     }
+
 }

@@ -41,6 +41,23 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_삭제됨(deleteResponse);
     }
 
+    @DisplayName("중복된 이름으로 회원가입 시도시 실패한다.")
+    void duplicateEmailException() {
+        //given
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성됨(createResponse);
+
+        //when
+        ExtractableResponse<Response> exceptionResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+
+        //then
+        회원_생성_실패됨(exceptionResponse);
+    }
+
+    private void 회원_생성_실패됨(ExtractableResponse<Response> exceptionResponse) {
+        assertThat(exceptionResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
