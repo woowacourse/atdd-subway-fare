@@ -1,6 +1,8 @@
 package wooteco.subway.line.exception;
 
-public abstract class LineDaoException extends RuntimeException {
+import org.springframework.dao.DataAccessException;
+
+public abstract class LineDaoException extends DataAccessException {
     public LineDaoException(String message) {
         super(message);
     }

@@ -1,6 +1,5 @@
 package wooteco.subway;
 
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
@@ -8,10 +7,15 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import wooteco.subway.auth.exception.AuthorizationException;
 import wooteco.subway.dto.ErrorResponse;
+import wooteco.subway.line.exception.LineDaoException;
+import wooteco.subway.line.exception.LineDomainException;
+import wooteco.subway.member.exception.MemberDaoException;
+import wooteco.subway.path.exception.PathDomainException;
+import wooteco.subway.station.exception.StationDaoException;
+import wooteco.subway.station.exception.StationDomainException;
 
 import java.sql.SQLException;
 
-@Order
 @ControllerAdvice
 public class GlobalControllerAdvice {
 
@@ -25,6 +29,38 @@ public class GlobalControllerAdvice {
 
     @ExceptionHandler(BindException.class)
     public ResponseEntity<ErrorResponse> resolveRequest(BindException e) {
+        e.printStackTrace();
+        return ResponseEntity
+                .badRequest()
+                .body(new ErrorResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(MemberDaoException.class)
+    public ResponseEntity<ErrorResponse> handleMemberException(BindException e) {
+        e.printStackTrace();
+        return ResponseEntity
+                .badRequest()
+                .body(new ErrorResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(value = {StationDaoException.class, StationDomainException.class})
+    public ResponseEntity<ErrorResponse> handleStationException(Exception e) {
+        e.printStackTrace();
+        return ResponseEntity
+                .badRequest()
+                .body(new ErrorResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(value = {LineDaoException.class, LineDomainException.class})
+    public ResponseEntity<ErrorResponse> handleLineException(Exception e) {
+        e.printStackTrace();
+        return ResponseEntity
+                .badRequest()
+                .body(new ErrorResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(PathDomainException.class)
+    public ResponseEntity<ErrorResponse> handlePathException(PathDomainException e) {
         e.printStackTrace();
         return ResponseEntity
                 .badRequest()

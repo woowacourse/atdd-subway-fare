@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import wooteco.subway.station.domain.Station;
 
 import javax.sql.DataSource;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,7 +54,7 @@ public class StationDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Integer deleteById(Long id) {
+    public Integer deleteById(Long id) throws SQLIntegrityConstraintViolationException {
         String sql = "delete from STATION where id = ?";
         return jdbcTemplate.update(sql, id);
     }
