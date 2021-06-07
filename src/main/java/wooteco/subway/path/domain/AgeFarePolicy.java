@@ -1,5 +1,6 @@
 package wooteco.subway.path.domain;
 
+import java.util.Arrays;
 import java.util.function.Predicate;
 
 public enum AgeFarePolicy {
@@ -18,16 +19,22 @@ public enum AgeFarePolicy {
     }
 
     public static int agePolicyAppliedFare(int originFare, int age) {
-        for (AgeFarePolicy ageFarePolicy : AgeFarePolicy.values()) {
-            if (ageFarePolicy.policy.test(age)) {
-                return ageFarePolicy.calculateAgeFare(originFare);
-            }
+        try {
+            AgeFarePolicy farePolicy = findByAge(age);
+            return farePolicy.calculateAgeFare(originFare);
+        } catch (IllegalArgumentException e) {
+            return originFare;
         }
-        return originFare;
     }
 
     private int calculateAgeFare(int fare) {
         return (int) ((fare - basicDiscountAmount) * ageDiscountRate);
     }
 
+    public static AgeFarePolicy findByAge(int age) {
+        return Arrays.stream(AgeFarePolicy.values())
+            .filter(ageFarePolicy -> ageFarePolicy.policy.test(age))
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("나이에 해당하는 요금 정책이 존재하지 않습니다."));
+    }
 }

@@ -1,7 +1,7 @@
 package wooteco.subway.path.domain;
 
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Predicate;
@@ -33,7 +33,8 @@ public enum DistanceFarePolicy {
 
     private static Map<DistanceFarePolicy, Integer> distanceOfDistanceFarePolicy(
         int totalDistance) {
-        Map<DistanceFarePolicy, Integer> distanceOfDistanceFarePolicy = new HashMap<>();
+        Map<DistanceFarePolicy, Integer> distanceOfDistanceFarePolicy = new EnumMap<>(
+            DistanceFarePolicy.class);
         for (int distance = 1; distance <= totalDistance; distance++) {
             putDistanceOfDistanceFarePolicy(distanceOfDistanceFarePolicy, distance);
         }
@@ -42,14 +43,19 @@ public enum DistanceFarePolicy {
 
     private static void putDistanceOfDistanceFarePolicy(Map<DistanceFarePolicy, Integer> map,
         int distance) {
-        Arrays.stream(DistanceFarePolicy.values())
-            .filter(distanceFarePolicy -> distanceFarePolicy.test(distance))
-            .forEach(distanceFarePolicy -> map
-                .put(distanceFarePolicy, map.getOrDefault(distanceFarePolicy, 0) + 1));
+        try {
+            DistanceFarePolicy distanceFarePolicy = findByDistance(distance);
+            map.put(distanceFarePolicy, map.getOrDefault(distanceFarePolicy, 0) + 1);
+        } catch (IllegalArgumentException e) {
+            return;
+        }
     }
 
-    private boolean test(int distance) {
-        return policy.test(distance);
+    public static DistanceFarePolicy findByDistance(int distance) {
+        return Arrays.stream(DistanceFarePolicy.values())
+            .filter(distancePolicy -> distancePolicy.policy.test(distance))
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("거리에 해당하는 요금 정책이 존재하지 않습니다."));
     }
 
     private int calculateOverFare(int distance) {
