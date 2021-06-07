@@ -1,8 +1,14 @@
 package wooteco.subway.line;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,13 +18,6 @@ import wooteco.subway.AcceptanceTest;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.station.dto.StationResponse;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static wooteco.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineAcceptanceTest extends AcceptanceTest {
@@ -60,6 +59,92 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_노선_생성_실패됨(response);
+    }
+
+    @DisplayName("유효하지 않은 이름으로 노선을 생성한다.")
+    @Test
+    void createLineWithInvalidName() {
+        // given
+        String color = "green lighten-1";
+        Long upStationId = 1L;
+        Long downStationId = 2L;
+        int distance = 10;
+        int extraFare = 100;
+
+        // when
+        ExtractableResponse<Response> response1 = 지하철_노선_생성_요청(
+            new LineRequest(null, color, upStationId, downStationId, distance, extraFare)
+        );
+        ExtractableResponse<Response> response2 = 지하철_노선_생성_요청(
+            new LineRequest("", color, upStationId, downStationId, distance, extraFare)
+        );
+        ExtractableResponse<Response> response3 = 지하철_노선_생성_요청(
+            new LineRequest(" ", color, upStationId, downStationId, distance, extraFare)
+        );
+
+        // then
+        지하철_노선_생성_실패됨(response1);
+        지하철_노선_생성_실패됨(response2);
+        지하철_노선_생성_실패됨(response3);
+    }
+
+    @DisplayName("유효하지 않은 이름으로 노선을 생성한다.")
+    @Test
+    void createLineWithInvalidColor() {
+        // given
+        String name = "이호선";
+        Long upStationId = 1L;
+        Long downStationId = 2L;
+        int distance = 10;
+        int extraFare = 100;
+
+        // when
+        ExtractableResponse<Response> response1 = 지하철_노선_생성_요청(
+            new LineRequest(name, null, upStationId, downStationId, distance, extraFare)
+        );
+        ExtractableResponse<Response> response2 = 지하철_노선_생성_요청(
+            new LineRequest(name, "", upStationId, downStationId, distance, extraFare)
+        );
+        ExtractableResponse<Response> response3 = 지하철_노선_생성_요청(
+            new LineRequest(name, " ", upStationId, downStationId, distance, extraFare)
+        );
+
+        // then
+        지하철_노선_생성_실패됨(response1);
+        지하철_노선_생성_실패됨(response2);
+        지하철_노선_생성_실패됨(response3);
+    }
+
+    @DisplayName("유효하지 않은 숫자로 노선을 생성한다.")
+    @Test
+    void createLineWithInvalidNumber() {
+        // given
+        String name = "이호선";
+        String color = "green lighten-1";
+        Long upStationId = 1L;
+        Long downStationId = 2L;
+        int distance = 10;
+        int extraFare = 100;
+
+        // when
+        ExtractableResponse<Response> response1 = 지하철_노선_생성_요청(
+            new LineRequest(name, color, null, downStationId, distance, extraFare)
+        );
+        ExtractableResponse<Response> response2 = 지하철_노선_생성_요청(
+            new LineRequest(name, color, upStationId, null, distance, extraFare)
+        );
+        ExtractableResponse<Response> response3 = 지하철_노선_생성_요청(
+            new LineRequest(name, color, upStationId, downStationId, 0, extraFare)
+        );
+        ExtractableResponse<Response> response4 = 지하철_노선_생성_요청(
+            new LineRequest(name, color, upStationId, downStationId, distance, -1)
+        );
+
+        // then
+        지하철_노선_생성_실패됨(response1);
+        지하철_노선_생성_실패됨(response2);
+        지하철_노선_생성_실패됨(response3);
+        지하철_노선_생성_실패됨(response4);
     }
 
     @DisplayName("지하철 노선 목록을 조회한다.")

@@ -1,7 +1,6 @@
 package wooteco.subway.line.dto;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 
 public class LineUpdateRequest {
@@ -12,7 +11,6 @@ public class LineUpdateRequest {
     @NotBlank(message = "색상이 비어있거나 공백입니다.")
     private String color;
 
-    @NotNull(message = "추가요금이 비어있습니다.")
     @PositiveOrZero(message = "추가요금은 0이상이어야 합니다.")
     private int extraFare;
 

@@ -6,11 +6,15 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.NullSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
+import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.Arrays;
@@ -78,6 +82,26 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     void addLineSectionWithNoStation() {
         // when
         ExtractableResponse<Response> response = 지하철_구간_생성_요청(신분당선, 정자역, 양재역, 3);
+
+        // then
+        지하철_구간_등록_실패됨(response);
+    }
+
+    @DisplayName("ID가 null인 상행역으로 구간을 생성한다.")
+    @Test
+    void addLineSectionWithNullUpStation() {
+        // when
+        ExtractableResponse<Response> response = 지하철_구간_생성_요청(신분당선, new StationResponse(null, "null역"), 양재역, 3);
+
+        // then
+        지하철_구간_등록_실패됨(response);
+    }
+
+    @DisplayName("ID가 null인 하행역으로 구간을 생성한다.")
+    @Test
+    void addLineSectionWithNullDownStation() {
+        // when
+        ExtractableResponse<Response> response = 지하철_구간_생성_요청(신분당선, 정자역, new StationResponse(null, "null역"), 3);
 
         // then
         지하철_구간_등록_실패됨(response);
