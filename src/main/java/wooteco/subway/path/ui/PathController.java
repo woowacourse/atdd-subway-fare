@@ -1,8 +1,10 @@
 package wooteco.subway.path.ui;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.auth.domain.AuthenticationPrincipal;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.path.application.PathService;
@@ -22,10 +24,5 @@ public class PathController {
                                                  @RequestParam Long source, @RequestParam Long target) {
         final PathResponse pathResponse = pathService.findPath(loginMember, source, target);
         return ResponseEntity.ok(pathResponse);
-    }
-
-    @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<Void> handleIllegalFareStateException() {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 }

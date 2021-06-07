@@ -44,4 +44,9 @@ public class SubwayExceptionHandler {
         String message = methodArgumentNotValidException.getBindingResult().getAllErrors().get(0).getDefaultMessage();
         return ResponseEntity.badRequest().body(new ErrorResponse(message));
     }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<Void> handleIllegalFareStateException() {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
 }
