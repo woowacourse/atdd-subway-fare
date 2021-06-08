@@ -3,10 +3,7 @@ package wooteco.subway.line.domain;
 import wooteco.subway.line.application.LineException;
 import wooteco.subway.station.domain.Station;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Sections {
@@ -69,25 +66,25 @@ public class Sections {
                 .ifPresent(it -> replaceSectionWithUpStation(section, it));
     }
 
-    private void replaceSectionWithUpStation(Section newSection, Section existSection) {
-        if (existSection.getDistance() <= newSection.getDistance()) {
+    private void replaceSectionWithUpStation(Section newSection, Section existingSection) {
+        if (existingSection.getDistance() <= newSection.getDistance()) {
             throw new LineException("기존의 구간보다 더 큰 거리의 새로운 구간을 추가할 수 없습니다.");
         }
-        this.sections.add(new Section(existSection.getUpStation(), newSection.getUpStation(), existSection.getDistance() - newSection.getDistance()));
-        this.sections.remove(existSection);
+        this.sections.add(new Section(existingSection.getUpStation(), newSection.getUpStation(), existingSection.getDistance() - newSection.getDistance()));
+        this.sections.remove(existingSection);
     }
 
-    private void replaceSectionWithDownStation(Section newSection, Section existSection) {
-        if (existSection.getDistance() <= newSection.getDistance()) {
+    private void replaceSectionWithDownStation(Section newSection, Section existingSection) {
+        if (existingSection.getDistance() <= newSection.getDistance()) {
             throw new LineException("기존의 구간보다 더 큰 거리의 새로운 구간을 추가할 수 없습니다.");
         }
-        this.sections.add(new Section(newSection.getDownStation(), existSection.getDownStation(), existSection.getDistance() - newSection.getDistance()));
-        this.sections.remove(existSection);
+        this.sections.add(new Section(newSection.getDownStation(), existingSection.getDownStation(), existingSection.getDistance() - newSection.getDistance()));
+        this.sections.remove(existingSection);
     }
 
     public List<Station> getStations() {
         if (sections.isEmpty()) {
-            return Arrays.asList();
+            return Collections.emptyList();
         }
 
         List<Station> stations = new ArrayList<>();
