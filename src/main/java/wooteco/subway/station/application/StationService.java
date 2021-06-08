@@ -26,7 +26,7 @@ public class StationService {
 
     @Transactional
     public StationResponse saveStation(StationRequest stationRequest) {
-        if (stationDao.isExistName(stationRequest.getName())) {
+        if (stationDao.existsBy(stationRequest.getName())) {
             throw new StationException("이미 존재하는 역 이름입니다.");
         }
 

@@ -1,6 +1,5 @@
 package wooteco.subway.station.dao;
 
-import org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -8,7 +7,6 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import wooteco.subway.line.application.LineException;
 import wooteco.subway.station.application.StationException;
 import wooteco.subway.station.domain.Station;
 
@@ -64,7 +62,7 @@ public class StationDao {
         }
     }
 
-    public boolean isExistName(String name) {
+    public boolean existsBy(String name) {
         String sql = "SELECT EXISTS (SELECT id FROM STATION WHERE name = ?)";
         return jdbcTemplate.queryForObject(sql, Boolean.class, name);
     }
