@@ -76,7 +76,7 @@ public class GlobalControllerAdvice {
         logger.error(e.getMessage(), e);
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ErrorResponse("예상치 못한 DB 예외가 발생했습니다." + System.getProperty("line.separator") + "에러 메세지: " + e.getMessage()));
+                .body(new ErrorResponse("예상치 못한 DB 예외가 발생했습니다."));
     }
 
     @ExceptionHandler(Exception.class)
@@ -84,6 +84,6 @@ public class GlobalControllerAdvice {
         logger.error(e.getMessage(), e);
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ErrorResponse("예상치 못한 예외가 발생했습니다." + System.getProperty("line.separator") + "에러 메세지: " + e.getMessage()));
+                .body(new ErrorResponse("예상치 못한 예외가 발생했습니다."));
     }
 }
