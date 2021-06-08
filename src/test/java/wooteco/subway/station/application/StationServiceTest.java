@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import wooteco.subway.ServiceTest;
+import wooteco.subway.line.application.LineService;
+import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
@@ -16,6 +18,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class StationServiceTest extends ServiceTest {
     @Autowired
     private StationService stationService;
+    @Autowired
+    private LineService lineService;
 
     @Test
     @DisplayName("역 정상 생성")

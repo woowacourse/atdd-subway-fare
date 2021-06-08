@@ -1,11 +1,14 @@
 package wooteco.subway.station.dao;
 
+import org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import wooteco.subway.line.application.LineException;
 import wooteco.subway.station.application.StationException;
 import wooteco.subway.station.domain.Station;
 
@@ -47,7 +50,7 @@ public class StationDao {
         try {
             String sql = "delete from STATION where id = ?";
             return jdbcTemplate.update(sql, id);
-        } catch (Exception e) {
+        } catch (DataIntegrityViolationException e) {
             throw new StationException("이미 구간에 포함된 역을 삭제할 수 없습니다.");
         }
     }
