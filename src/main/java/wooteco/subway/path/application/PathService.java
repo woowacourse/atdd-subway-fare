@@ -9,6 +9,7 @@ import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.path.domain.Fare;
 import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.path.dto.PathResponse;
+import wooteco.subway.path.exception.InvalidPathException;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationResponse;

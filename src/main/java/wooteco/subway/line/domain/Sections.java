@@ -5,8 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import wooteco.subway.station.application.InvalidDeletionException;
-import wooteco.subway.station.application.NotFoundException;
+import wooteco.subway.station.exception.InvalidDeletionException;
+import wooteco.subway.station.exception.NotFoundException;
 import wooteco.subway.station.domain.Station;
 
 public class Sections {

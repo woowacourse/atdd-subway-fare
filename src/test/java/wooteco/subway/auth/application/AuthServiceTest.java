@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoSettings;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
+import wooteco.subway.auth.exception.AuthorizationException;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginMember;
