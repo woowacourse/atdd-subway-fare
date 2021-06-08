@@ -1,31 +1,27 @@
 package wooteco.subway.member.dto;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import wooteco.subway.member.domain.Member;
 
-public class MemberRequest {
-    private String email;
-    private String password;
-    private Integer age;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.PositiveOrZero;
 
-    public MemberRequest() {
-    }
+@Getter
+@NoArgsConstructor
+public class MemberRequest {
+    @Email(message = "INVALID_INPUT")
+    private String email;
+    @NotBlank(message = "INVALID_INPUT")
+    private String password;
+    @PositiveOrZero(message = "INVALID_INPUT")
+    private Integer age;
 
     public MemberRequest(String email, String password, Integer age) {
         this.email = email;
         this.password = password;
         this.age = age;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public Integer getAge() {
-        return age;
     }
 
     public Member toMember() {

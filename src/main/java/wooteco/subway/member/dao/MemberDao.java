@@ -27,7 +27,7 @@ public class MemberDao {
     public MemberDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
-                .withTableName("member")
+                .withTableName("MEMBER")
                 .usingGeneratedKeyColumns("id");
     }
 
@@ -55,5 +55,15 @@ public class MemberDao {
     public Member findByEmail(String email) {
         String sql = "select * from MEMBER where email = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, email);
+    }
+
+    public boolean isEmailExist(String email) {
+        String sql = "select exists (select * from MEMBER where email = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, email);
+    }
+
+    public boolean isEmailNotExist(String email) {
+        String sql = "select exists (select * from MEMBER where email = ?)";
+        return !jdbcTemplate.queryForObject(sql, Boolean.class, email);
     }
 }

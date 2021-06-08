@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://3.36.70.153:8080/db_name?serverTimezone=UTC&characterEncoding=UTF-8
+    username: bepoz
+    password: bepoz
+  h2:
+    console:
+      enabled: true
+handlebars:
+  suffix: .html
+  enabled: true
+security:
+  jwt:
+    token:
+      secret-key: my_secret_is_secret
+      expire-length: 3600000

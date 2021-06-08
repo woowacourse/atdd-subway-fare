@@ -24,4 +24,11 @@ public class SubwayPath {
     public int calculateDistance() {
         return sectionEdges.stream().mapToInt(it -> it.getSection().getDistance()).sum();
     }
+
+    public int calculateExtraLineFare() {
+        return sectionEdges.stream()
+                .mapToInt(it -> it.getLine().getExtraFare())
+                .max()
+                .orElseThrow(RuntimeException::new);
+    }
 }

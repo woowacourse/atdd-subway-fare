@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
+import wooteco.subway.line.exception.section.NoSuchSectionException;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -35,7 +36,9 @@ public class SectionDao {
     }
 
     public void deleteByLineId(Long lineId) {
-        jdbcTemplate.update("delete from SECTION where line_id = ?", lineId);
+        if (jdbcTemplate.update("delete from SECTION where line_id = ?", lineId) == 0) {
+            throw new NoSuchSectionException();
+        }
     }
 
     public void insertSections(Line line) {
@@ -52,5 +55,10 @@ public class SectionDao {
                 .collect(Collectors.toList());
 
         simpleJdbcInsert.executeBatch(batchValues.toArray(new Map[sections.size()]));
+    }
+
+    public boolean isStationExistInSection(Long stationId) {
+        String sql = "select exists (select * from SECTION where up_station_id = ? or down_station_id = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, stationId, stationId);
     }
 }

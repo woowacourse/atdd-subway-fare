@@ -5,132 +5,141 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.auth.AuthAcceptanceTest.loginRequest;
 
-@DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {
-    private static final String 강남역 = "강남역";
-    private static final String 역삼역 = "역삼역";
 
-    @DisplayName("지하철역을 생성한다.")
     @Test
-    void createStation() {
-        // when
-        ExtractableResponse<Response> response = 지하철역_생성_요청(강남역);
+    @DisplayName("유효하지 않은 토큰일 때의 역 삽입")
+    public void createStationWhenInvalidToken() {
+        ExtractableResponse<Response> response = createStationRequest(new StationRequest("가양역"), "asdf");
 
-        // then
-        지하철역_생성됨(response);
+        assertThat(response.statusCode()).isEqualTo(401);
+        assertThat((String) response.jsonPath().get("error")).isEqualTo("INVALID_TOKEN");
     }
 
-    @DisplayName("기존에 존재하는 지하철역 이름으로 지하철역을 생성한다.")
     @Test
-    void createStationWithDuplicateName() {
-        //given
-        지하철역_등록되어_있음(강남역);
+    @DisplayName("유효하지 않은 역 명일 때의 역 삽입")
+    public void createStationWhenInvalidStationName() {
+        String accessToken = loginRequest(new TokenRequest("email@email.com", "password")).jsonPath().get("accessToken");
+        ExtractableResponse<Response> response = createStationRequest(new StationRequest("!@#$$"), accessToken);
 
-        // when
-        ExtractableResponse<Response> response = 지하철역_생성_요청(강남역);
-
-        // then
-        지하철역_생성_실패됨(response);
+        assertThat(response.statusCode()).isEqualTo(400);
+        assertThat((String) response.jsonPath().get("error")).isEqualTo("INVALID_NAME");
     }
 
-    @DisplayName("지하철역을 조회한다.")
     @Test
-    void getStations() {
-        // given
-        StationResponse stationResponse1 = 지하철역_등록되어_있음(강남역);
-        StationResponse stationResponse2 = 지하철역_등록되어_있음(역삼역);
+    @DisplayName("중복 역 명일 때의 역 삽입")
+    public void createStationWhenInvalidDuplicatedStationName() {
+        String accessToken = loginRequest(new TokenRequest("email@email.com", "password")).jsonPath().get("accessToken");
+        jdbcTemplate.update("insert into STATION (name) values ('가양역')");
+        ExtractableResponse<Response> response = createStationRequest(new StationRequest("가양역"), accessToken);
 
-        // when
-        ExtractableResponse<Response> response = 지하철역_목록_조회_요청();
-
-        // then
-        지하철역_목록_응답됨(response);
-        지하철역_목록_포함됨(response, Arrays.asList(stationResponse1, stationResponse2));
+        assertThat(response.statusCode()).isEqualTo(400);
+        assertThat((String) response.jsonPath().get("error")).isEqualTo("DUPLICATED_STATION_NAME");
     }
 
-    @DisplayName("지하철역을 제거한다.")
     @Test
-    void deleteStation() {
-        // given
-        StationResponse stationResponse = 지하철역_등록되어_있음(강남역);
+    @DisplayName("정상적인 역 삽입")
+    public void createStation() {
+        String accessToken = loginRequest(new TokenRequest("email@email.com", "password")).jsonPath().get("accessToken");
+        ExtractableResponse<Response> response = createStationRequest(new StationRequest("가양역"), accessToken);
 
-        // when
-        ExtractableResponse<Response> response = 지하철역_제거_요청(stationResponse);
-
-        // then
-        지하철역_삭제됨(response);
+        assertThat(response.statusCode()).isEqualTo(201);
+        StationResponse stationResponse = response.body().as(StationResponse.class);
+        assertThat(stationResponse).usingRecursiveComparison()
+                .ignoringFields("id")
+                .isEqualTo(new StationResponse(null, "가양역"));
     }
 
-    public static StationResponse 지하철역_등록되어_있음(String name) {
-        return 지하철역_생성_요청(name).as(StationResponse.class);
+    @Test
+    @DisplayName("유효하지 않은 토큰일 때의 역 목록")
+    public void showStationsWhenInvalidToken() {
+        ExtractableResponse<Response> response = showStationsRequest("asdf");
+
+        assertThat(response.statusCode()).isEqualTo(401);
+        assertThat((String) response.jsonPath().get("error")).isEqualTo("INVALID_TOKEN");
     }
 
-    public static ExtractableResponse<Response> 지하철역_생성_요청(String name) {
-        StationRequest stationRequest = new StationRequest(name);
+    @Test
+    @DisplayName("정상적인 역 목록")
+    public void showStations() {
+        jdbcTemplate.update("insert into STATION (name) values ('가양역')");
+        jdbcTemplate.update("insert into STATION (name) values ('증미역')");
 
-        return RestAssured
-                .given().log().all()
-                .body(stationRequest)
+        String accessToken = loginRequest(new TokenRequest("email@email.com", "password")).jsonPath().get("accessToken");
+        ExtractableResponse<Response> response = showStationsRequest(accessToken);
+        List<String> names = response.jsonPath().getList("name");
+
+        assertThat(response.statusCode()).isEqualTo(200);
+        assertThat(names).containsExactlyInAnyOrder("가양역", "증미역");
+    }
+
+    @Test
+    @DisplayName("유효하지 않은 토큰일 때의 역 삭제")
+    public void deleteStationWhenInvalidToken() {
+        jdbcTemplate.update("insert into STATION (name) values ('가양역')");
+
+        ExtractableResponse<Response> response = deleteStationsRequest(1L, "asdf");
+
+        assertThat(response.statusCode()).isEqualTo(401);
+        assertThat((String) response.jsonPath().get("error")).isEqualTo("INVALID_TOKEN");
+    }
+
+    @Test
+    @DisplayName("역이 없을 경우의 역 삭제")
+    public void deleteStationWhenStationNotExist() {
+        String accessToken = loginRequest(new TokenRequest("email@email.com", "password")).jsonPath().get("accessToken");
+        ExtractableResponse<Response> response = deleteStationsRequest(1L, accessToken);
+
+        assertThat(response.statusCode()).isEqualTo(400);
+        assertThat((String) response.jsonPath().get("error")).isEqualTo("NO_SUCH_STATION");
+    }
+
+    @Test
+    @DisplayName("정상적인 역 삭제")
+    public void deleteStation() {
+        jdbcTemplate.update("insert into STATION (name) values ('가양역')");
+        String accessToken = loginRequest(new TokenRequest("email@email.com", "password")).jsonPath().get("accessToken");
+        ExtractableResponse<Response> response = deleteStationsRequest(1L, accessToken);
+
+        assertThat(response.statusCode()).isEqualTo(204);
+    }
+
+    private ExtractableResponse<Response> createStationRequest(StationRequest request, String accessToken) {
+        return RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/stations")
-                .then().log().all()
-                .extract();
+                .auth().oauth2(accessToken)
+                .body(request)
+                .when()
+                .post("/api/stations")
+                .then().extract();
     }
 
-    public static ExtractableResponse<Response> 지하철역_목록_조회_요청() {
-        return RestAssured
-                .given().log().all()
-                .when().get("/stations")
-                .then().log().all()
-                .extract();
+    private ExtractableResponse<Response> showStationsRequest(String accessToken) {
+        return RestAssured.given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(accessToken)
+                .when()
+                .get("/api/stations")
+                .then().extract();
     }
 
-    public static ExtractableResponse<Response> 지하철역_제거_요청(StationResponse stationResponse) {
-        return RestAssured
-                .given().log().all()
-                .when().delete("/stations/" + stationResponse.getId())
-                .then().log().all()
-                .extract();
-    }
-
-    public static void 지하철역_생성됨(ExtractableResponse response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(response.header("Location")).isNotBlank();
-    }
-
-    public static void 지하철역_생성_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
-    public static void 지하철역_목록_응답됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    public static void 지하철역_삭제됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
-    public static void 지하철역_목록_포함됨(ExtractableResponse<Response> response, List<StationResponse> createdResponses) {
-        List<Long> expectedLineIds = createdResponses.stream()
-                .map(it -> it.getId())
-                .collect(Collectors.toList());
-
-        List<Long> resultLineIds = response.jsonPath().getList(".", StationResponse.class).stream()
-                .map(StationResponse::getId)
-                .collect(Collectors.toList());
-
-        assertThat(resultLineIds).containsAll(expectedLineIds);
+    private ExtractableResponse<Response> deleteStationsRequest(Long id, String accessToken) {
+        return RestAssured.given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(accessToken)
+                .when()
+                .delete("/api/stations/" + id)
+                .then().extract();
     }
 }

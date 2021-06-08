@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.domain.Sections;
+import wooteco.subway.line.exception.line.NoSuchLineException;
 import wooteco.subway.station.domain.Station;
 
 import javax.sql.DataSource;
@@ -23,7 +24,7 @@ public class LineDao {
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("line")
+                .withTableName("LINE")
                 .usingGeneratedKeyColumns("id");
     }
 
@@ -32,9 +33,10 @@ public class LineDao {
         params.put("id", line.getId());
         params.put("name", line.getName());
         params.put("color", line.getColor());
+        params.put("extraFare", line.getExtraFare());
 
         Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new Line(lineId, line.getName(), line.getColor());
+        return new Line(lineId, line.getName(), line.getColor(), line.getExtraFare());
     }
 
     public Line findById(Long id) {
@@ -48,7 +50,7 @@ public class LineDao {
                 "left outer join STATION DST on S.down_station_id = DST.id " +
                 "WHERE L.id = ?";
 
-        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, new Object[]{id});
+        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, id);
         return mapLine(result);
     }
 
@@ -76,7 +78,7 @@ public class LineDao {
 
     private Line mapLine(List<Map<String, Object>> result) {
         if (result.size() == 0) {
-            throw new RuntimeException();
+            throw new NoSuchLineException();
         }
 
         List<Section> sections = extractSections(result);
@@ -106,6 +108,36 @@ public class LineDao {
     }
 
     public void deleteById(Long id) {
-        jdbcTemplate.update("delete from Line where id = ?", id);
+        if (jdbcTemplate.update("delete from LINE where id = ?", id) == 0) {
+            throw new NoSuchLineException();
+        }
+    }
+
+    public List<Line> findIncludingStation(Long stationId, Long lineId) {
+        String sql = "select id, name, color from LINE where id in (" +
+                "select line_id from SECTION where up_station_id = ? or down_station_id = ?) " +
+                "and id != ?";
+
+        return jdbcTemplate.query(sql,
+                (rs, rowNum) -> new Line(
+                        rs.getLong("id"),
+                        rs.getString("name"),
+                        rs.getString("color")),
+                stationId, stationId, lineId);
+    }
+
+    public boolean isLineExist(String name) {
+        String sql = "select exists (select * from LINE where name = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, name);
+    }
+
+    public boolean isLineNotExist(Long id) {
+        String sql = "select exists (select * from LINE where id = ?)";
+        return !jdbcTemplate.queryForObject(sql, Boolean.class, id);
+    }
+
+    public boolean isLineNameDuplicatedExceptMySelf(Long id, String name) {
+        String sql = "select exists (select * from LINE where name = ? and id != ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, name, id);
     }
 }
