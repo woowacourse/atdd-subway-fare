@@ -9,8 +9,6 @@ import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.path.application.PathService;
 import wooteco.subway.path.dto.PathResponse;
 
-import java.util.Optional;
-
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class PathController {
