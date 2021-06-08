@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/subway
+    username: inkim
+    password: inkim
+  config:
+    activate:
+      on-profile: prod
+handlebars:
+  suffix: .html
+  enabled: true
+security:
+  jwt:
+    token:
+      secret-key: my_secret_is_secret
+      expire-length: 3600000

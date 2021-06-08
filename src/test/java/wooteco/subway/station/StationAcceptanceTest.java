@@ -8,14 +8,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
+import wooteco.subway.dto.BindErrorResponse;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.station.StationRestAssuredRequestUtils.*;
 
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {
@@ -26,7 +29,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void createStation() {
         // when
-        ExtractableResponse<Response> response = 지하철역_생성_요청(강남역);
+        ExtractableResponse<Response> response = 지하철역_생성_요청(강남역, "station-create");
 
         // then
         지하철역_생성됨(response);
@@ -39,7 +42,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_등록되어_있음(강남역);
 
         // when
-        ExtractableResponse<Response> response = 지하철역_생성_요청(강남역);
+        ExtractableResponse<Response> response = 지하철역_생성_요청(강남역, "station-create-fail-duplicate-name");
 
         // then
         지하철역_생성_실패됨(response);
@@ -53,7 +56,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         StationResponse stationResponse2 = 지하철역_등록되어_있음(역삼역);
 
         // when
-        ExtractableResponse<Response> response = 지하철역_목록_조회_요청();
+        ExtractableResponse<Response> response = 지하철역_목록_조회_요청("stations-read");
 
         // then
         지하철역_목록_응답됨(response);
@@ -67,42 +70,27 @@ public class StationAcceptanceTest extends AcceptanceTest {
         StationResponse stationResponse = 지하철역_등록되어_있음(강남역);
 
         // when
-        ExtractableResponse<Response> response = 지하철역_제거_요청(stationResponse);
+        ExtractableResponse<Response> response = 지하철역_제거_요청(stationResponse, "station-delete");
 
         // then
         지하철역_삭제됨(response);
     }
 
-    public static StationResponse 지하철역_등록되어_있음(String name) {
-        return 지하철역_생성_요청(name).as(StationResponse.class);
-    }
-
-    public static ExtractableResponse<Response> 지하철역_생성_요청(String name) {
-        StationRequest stationRequest = new StationRequest(name);
-
-        return RestAssured
+    @DisplayName("역 이름 누락시 요청을 거절하며, 역 이름이 빌 수 없다는 메세지를 보낸다.")
+    @Test
+    void missingArgumentTest() {
+        ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
-                .body(stationRequest)
+                .body(new HashMap<>())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/stations")
                 .then().log().all()
                 .extract();
-    }
 
-    public static ExtractableResponse<Response> 지하철역_목록_조회_요청() {
-        return RestAssured
-                .given().log().all()
-                .when().get("/stations")
-                .then().log().all()
-                .extract();
-    }
+        BindErrorResponse bindErrorResponse = response.as(BindErrorResponse.class);
 
-    public static ExtractableResponse<Response> 지하철역_제거_요청(StationResponse stationResponse) {
-        return RestAssured
-                .given().log().all()
-                .when().delete("/stations/" + stationResponse.getId())
-                .then().log().all()
-                .extract();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(bindErrorResponse.getCauses().keySet()).contains("name");
     }
 
     public static void 지하철역_생성됨(ExtractableResponse response) {

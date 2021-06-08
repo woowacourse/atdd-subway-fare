@@ -2,6 +2,7 @@ plugins {
 	id 'org.springframework.boot' version '2.4.3'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
+	id "org.asciidoctor.convert" version "1.5.9.2"
 }
 
 group = 'com.example'
@@ -17,6 +18,7 @@ dependencies {
 	// spring
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
 	// handlebars
 	implementation 'pl.allegro.tech.boot:handlebars-spring-boot-starter:0.3.0'
@@ -28,14 +30,45 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
 	runtimeOnly 'com.h2database:h2'
+	runtimeOnly 'mysql:mysql-connector-java'
 
 	// jgrapht
     implementation 'org.jgrapht:jgrapht-core:1.0.1'
 
 	// jwt
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+	implementation 'javax.xml.bind:jaxb-api'
+
+	// lombok
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	// restdocs
+	asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+	testImplementation 'org.springframework.restdocs:spring-restdocs-restassured'
+}
+
+ext {
+	snippetsDir = file('build/generated-snippets')
 }
 
 test {
+	outputs.dir snippetsDir
 	useJUnitPlatform()
+}
+
+asciidoctor {
+	inputs.dir snippetsDir
+	dependsOn test
+}
+
+bootJar {
+	dependsOn asciidoctor
+}
+
+task copyDocument(type: Copy) {
+	dependsOn bootJar
+
+	from file("build/asciidoc/html5/index.html")
+	into file("src/main/resources/static/docs")
 }

@@ -1,6 +1,7 @@
 package wooteco.subway.station.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -9,7 +10,9 @@ import org.springframework.stereotype.Repository;
 import wooteco.subway.station.domain.Station;
 
 import javax.sql.DataSource;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class StationDao {
@@ -22,11 +25,21 @@ public class StationDao {
                     rs.getString("name")
             );
 
+    public ResultSetExtractor<Optional<Station>> resultSetExtractor = (rs) -> {
+        if (rs.next()) {
+            Station station = new Station(
+                    rs.getLong("id"),
+                    rs.getString("name")
+            );
+            return Optional.of(station);
+        }
+        return Optional.empty();
+    };
 
     public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("station")
+                .withTableName("STATION")
                 .usingGeneratedKeyColumns("id");
     }
 
@@ -41,13 +54,18 @@ public class StationDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public void deleteById(Long id) {
+    public Integer deleteById(Long id) throws SQLIntegrityConstraintViolationException {
         String sql = "delete from STATION where id = ?";
-        jdbcTemplate.update(sql, id);
+        return jdbcTemplate.update(sql, id);
     }
 
     public Station findById(Long id) {
         String sql = "select * from STATION where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    }
+
+    public Optional<Station> findByName(String name) {
+        String sql = "select * from STATION where name = ?";
+        return jdbcTemplate.query(sql, resultSetExtractor, name);
     }
 }

@@ -1,11 +1,16 @@
 package wooteco.subway.station.application;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
+import wooteco.subway.station.exception.DuplicateStationNameException;
+import wooteco.subway.station.exception.RegisteredStationDeleteException;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,9 +22,22 @@ public class StationService {
         this.stationDao = stationDao;
     }
 
+    @Transactional
     public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationDao.insert(stationRequest.toStation());
-        return StationResponse.of(station);
+        validateDuplicateStationName(stationRequest.getName());
+
+        try {
+            Station station = stationDao.insert(stationRequest.toStation());
+            return StationResponse.of(station);
+        } catch (DuplicateKeyException e) {
+            throw new DuplicateStationNameException();
+        }
+    }
+
+    private void validateDuplicateStationName(String name) {
+        stationDao.findByName(name).ifPresent(station -> {
+            throw new DuplicateStationNameException();
+        });
     }
 
     public Station findStationById(Long id) {
@@ -34,7 +52,12 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void deleteStationById(Long id) {
-        stationDao.deleteById(id);
+        try {
+            stationDao.deleteById(id);
+        } catch (SQLIntegrityConstraintViolationException e) {
+            throw new RegisteredStationDeleteException("노선에 등록된 역은 삭제할 수 없습니다.");
+        }
     }
 }

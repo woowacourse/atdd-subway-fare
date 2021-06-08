@@ -6,13 +6,11 @@ import org.springframework.stereotype.Repository;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.line.domain.Section;
 import wooteco.subway.line.domain.Sections;
+import wooteco.subway.path.domain.Fare;
 import wooteco.subway.station.domain.Station;
 
 import javax.sql.DataSource;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
@@ -23,7 +21,7 @@ public class LineDao {
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("line")
+                .withTableName("LINE")
                 .usingGeneratedKeyColumns("id");
     }
 
@@ -32,13 +30,15 @@ public class LineDao {
         params.put("id", line.getId());
         params.put("name", line.getName());
         params.put("color", line.getColor());
+        Fare extraFare = line.getExtraFare();
+        params.put("extra_fare", extraFare.getFare());
 
         Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new Line(lineId, line.getName(), line.getColor());
+        return new Line(lineId, line.getName(), line.getColor(), line.getExtraFare());
     }
 
     public Line findById(Long id) {
-        String sql = "select L.id as line_id, L.name as line_name, L.color as line_color, " +
+        String sql = "select L.id as line_id, L.name as line_name, L.color as line_color, L.extra_fare as line_extra_fare, " +
                 "S.id as section_id, S.distance as section_distance, " +
                 "UST.id as up_station_id, UST.name as up_station_name, " +
                 "DST.id as down_station_id, DST.name as down_station_name " +
@@ -52,13 +52,32 @@ public class LineDao {
         return mapLine(result);
     }
 
+    public Optional<Line> findByName(String name) {
+        String sql = "select L.id as line_id, L.name as line_name, L.color as line_color, L.extra_fare as line_extra_fare, " +
+                "S.id as section_id, S.distance as section_distance, " +
+                "UST.id as up_station_id, UST.name as up_station_name, " +
+                "DST.id as down_station_id, DST.name as down_station_name " +
+                "from LINE L \n" +
+                "left outer join SECTION S on L.id = S.line_id " +
+                "left outer join STATION UST on S.up_station_id = UST.id " +
+                "left outer join STATION DST on S.down_station_id = DST.id " +
+                "WHERE L.name = ?";
+
+        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, new Object[]{name});
+        if (result.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(mapLine(result));
+    }
+
     public void update(Line newLine) {
         String sql = "update LINE set name = ?, color = ? where id = ?";
         jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
     }
 
     public List<Line> findAll() {
-        String sql = "select L.id as line_id, L.name as line_name, L.color as line_color, " +
+        String sql = "select L.id as line_id, L.name as line_name, L.color as line_color, L.extra_fare as line_extra_fare, " +
                 "S.id as section_id, S.distance as section_distance, " +
                 "UST.id as up_station_id, UST.name as up_station_name, " +
                 "DST.id as down_station_id, DST.name as down_station_name " +
@@ -85,6 +104,7 @@ public class LineDao {
                 (Long) result.get(0).get("LINE_ID"),
                 (String) result.get(0).get("LINE_NAME"),
                 (String) result.get(0).get("LINE_COLOR"),
+                new Fare((Integer) result.get(0).get("LINE_EXTRA_FARE")),
                 new Sections(sections));
     }
 
@@ -105,7 +125,7 @@ public class LineDao {
                 .collect(Collectors.toList());
     }
 
-    public void deleteById(Long id) {
-        jdbcTemplate.update("delete from Line where id = ?", id);
+    public Integer deleteById(Long id) {
+        return jdbcTemplate.update("delete from LINE where id = ?", id);
     }
 }

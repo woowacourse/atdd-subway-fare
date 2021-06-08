@@ -1,8 +1,10 @@
 package wooteco.subway.path.domain;
 
+import wooteco.subway.line.domain.Line;
 import wooteco.subway.station.domain.Station;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SubwayPath {
     private List<SectionEdge> sectionEdges;
@@ -15,6 +17,13 @@ public class SubwayPath {
 
     public List<SectionEdge> getSectionEdges() {
         return sectionEdges;
+    }
+
+    public List<Line> getLines() {
+        return sectionEdges.stream()
+                .map(SectionEdge::getLine)
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     public List<Station> getStations() {
