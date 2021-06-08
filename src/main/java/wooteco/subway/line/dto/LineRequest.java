@@ -17,10 +17,8 @@ public class LineRequest {
     @NotNull
     @Positive
     private Long downStationId;
-    @NotNull
     @PositiveOrZero
     private int extraFare;
-    @NotNull
     @Positive
     private int distance;
 
