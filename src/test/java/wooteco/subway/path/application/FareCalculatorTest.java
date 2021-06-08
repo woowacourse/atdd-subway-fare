@@ -34,7 +34,7 @@ class FareCalculatorTest {
             "66, 2250"
     })
     void getFareByDistance(int distance, int fareExpected) {
-        Fare actual = fareCalculator.getFareByDistance(distance);
+        Fare actual = fareCalculator.calculateFareByDistance(distance);
 
         assertThat(actual).isEqualTo(new Fare(fareExpected));
     }
@@ -43,7 +43,7 @@ class FareCalculatorTest {
     @ParameterizedTest
     @MethodSource
     void getFareWithLineExtraFare(Fare currentFare, Fare expectedFare, List<Line> lines) {
-        Fare actualFare = fareCalculator.getFareWithLineExtraFare(currentFare, lines);
+        Fare actualFare = fareCalculator.calculateFareWithLineExtraFare(currentFare, lines);
         assertThat(actualFare).isEqualTo(expectedFare);
     }
 

@@ -12,8 +12,8 @@ import java.util.List;
 @Component
 public class FareCalculator implements FarePolicy {
     public Fare calculateTotalFare(SubwayPath subwayPath, LoginMember loginMember) {
-        Fare fareByDistance = getFareByDistance(subwayPath.calculateDistance());
-        Fare fareWithLineExtraFare = getFareWithLineExtraFare(fareByDistance, subwayPath.getLines());
+        Fare fareByDistance = calculateFareByDistance(subwayPath.calculateDistance());
+        Fare fareWithLineExtraFare = calculateFareWithLineExtraFare(fareByDistance, subwayPath.getLines());
 
         if (!loginMember.isLoggedIn()) {
             return fareWithLineExtraFare;
@@ -21,11 +21,11 @@ public class FareCalculator implements FarePolicy {
         return AgeDiscountPolicy.discountFareByAge(loginMember.getAge(), fareWithLineExtraFare);
     }
 
-    public Fare getFareByDistance(int distance) {
+    public Fare calculateFareByDistance(int distance) {
         return DistanceExtraFarePolicy.calculateFareByDistance(distance);
     }
 
-    public Fare getFareWithLineExtraFare(Fare currentFare, List<Line> lines) {
+    public Fare calculateFareWithLineExtraFare(Fare currentFare, List<Line> lines) {
         return lines.stream()
                 .map(Line::getExtraFare)
                 .max(Comparator.comparingInt(Fare::getFare))
