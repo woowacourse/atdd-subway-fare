@@ -43,10 +43,10 @@ public class StationDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public void deleteById(Long id) {
+    public int deleteById(Long id) {
         try {
             String sql = "delete from STATION where id = ?";
-            jdbcTemplate.update(sql, id);
+            return jdbcTemplate.update(sql, id);
         } catch (Exception e) {
             throw new StationException("이미 구간에 포함된 역을 삭제할 수 없습니다.");
         }
@@ -66,8 +66,8 @@ public class StationDao {
         return jdbcTemplate.queryForObject(sql, Boolean.class, name);
     }
 
-    public void updateById(Long id, String name) {
+    public int updateById(Long id, String name) {
         String sql = "update station set name = ? where id = ?";
-        jdbcTemplate.update(sql, name, id);
+        return jdbcTemplate.update(sql, name, id);
     }
 }

@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class RouteFinder {
     public SubwayRoute find(List<Line> lines, Station source, Station target) {
         if (source.equals(target)) {
-            throw new PathException("source 와 target 의 같은 위치입니다.");
+            throw new PathException("source 와 target 이 같은 위치입니다.");
         }
         SubwayGraph graph = new SubwayGraph(SectionEdge.class);
         graph.addVertexWith(lines);

@@ -7,12 +7,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import wooteco.subway.auth.domain.LoginAuthenticationPrincipal;
-import wooteco.subway.member.domain.LoginUser;
 import wooteco.subway.member.domain.User;
 import wooteco.subway.path.application.PathService;
 import wooteco.subway.path.dto.PathResponse;
-
-import java.util.Optional;
 
 @Validated
 @RestController

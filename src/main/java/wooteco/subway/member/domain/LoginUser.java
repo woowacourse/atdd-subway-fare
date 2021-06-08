@@ -8,11 +8,16 @@ public class LoginUser implements User {
     public LoginUser() {
     }
 
+    public LoginUser(Member member) {
+        this(member.getId(), member.getEmail(), member.getAge());
+    }
+
     public LoginUser(Long id, String email, Integer age) {
         this.id = id;
         this.email = email;
         this.age = age;
     }
+
 
     public Long getId() {
         return id;

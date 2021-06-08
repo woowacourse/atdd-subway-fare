@@ -5,6 +5,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
@@ -20,22 +22,23 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     private static final String PASSWORD = "password";
     private static final Integer AGE = 20;
 
-    @DisplayName("올바른 회원 가입 요청")
     @Test
+    @DisplayName("올바른 회원 가입 요청")
     void validSingUp() {
         ExtractableResponse<Response> response = 회원_등록되어_있음(EMAIL, PASSWORD, AGE);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    @DisplayName("올바르지 않은 회원 가입 요청")
-    @Test
-    void invalidSingUp() {
-        ExtractableResponse<Response> response = 회원_등록되어_있음("notEmail@", PASSWORD, AGE);
+    @DisplayName("올바르지 않은 이메일 형식 회원 가입 요청")
+    @ParameterizedTest(name = "{index}: email = {arguments}")
+    @ValueSource(strings = {"notEmail@", "test", "@email.com", " "})
+    void invalidEmailSingUp(String email) {
+        ExtractableResponse<Response> response = 회원_등록되어_있음(email, PASSWORD, AGE);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    @DisplayName("Bearer Auth")
     @Test
+    @DisplayName("Bearer Auth")
     void myInfoWithBearerAuth() {
         // given
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
@@ -48,8 +51,8 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         회원_정보_조회됨(response, EMAIL, AGE);
     }
 
-    @DisplayName("Bearer Auth 로그인 실패 :: invalid email address")
     @Test
+    @DisplayName("Bearer Auth 로그인 실패 :: invalid email address")
     void InvalidEmailAddress() {
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
 
@@ -65,8 +68,8 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
-    @DisplayName("Bearer Auth 로그인 실패 :: non exist email address")
     @Test
+    @DisplayName("Bearer Auth 로그인 실패 :: non exist email address")
     void myInfoWithNonExistEmailAddress() {
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
 
@@ -82,8 +85,8 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
-    @DisplayName("Bearer Auth 로그인 실패 :: invalid password")
     @Test
+    @DisplayName("Bearer Auth 로그인 실패 :: invalid password")
     void myInfoWithInvalidPassword() {
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
 
@@ -99,8 +102,8 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
-    @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
+    @DisplayName("Bearer Auth 유효하지 않은 토큰")
     void myInfoWithWrongBearerAuth() {
         TokenResponse tokenResponse = new TokenResponse("accesstoken");
 

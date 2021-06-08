@@ -1,7 +1,9 @@
 package wooteco.subway.member.application;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import wooteco.subway.ServiceTest;
 import wooteco.subway.member.domain.LoginUser;
 import wooteco.subway.member.dto.EmailExistsResponse;
@@ -11,6 +13,7 @@ import wooteco.subway.member.dto.MemberResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@SpringBootTest
 class MemberServiceTest extends ServiceTest {
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
@@ -20,12 +23,14 @@ class MemberServiceTest extends ServiceTest {
     private MemberService memberService;
 
     @Test
+    @DisplayName("회원 정상 생성")
     void createMember() {
         MemberResponse response = 멤버_생성_요청(EMAIL, PASSWORD, AGE);
         회원_정보_조회됨(response, EMAIL, AGE);
     }
 
     @Test
+    @DisplayName("생성된 회원 정보 조회")
     void findMember() {
         MemberResponse response = 멤버_생성_요청(EMAIL, PASSWORD, AGE);
 
@@ -36,8 +41,9 @@ class MemberServiceTest extends ServiceTest {
     }
 
     @Test
+    @DisplayName("회원 정보 수정")
     void updateMember() {
-        String emailToUpdate = EMAIL + "other";
+        String emailToUpdate = "other" + EMAIL;
         MemberResponse response = 멤버_생성_요청(EMAIL, PASSWORD, AGE);
         LoginUser loginUser = new LoginUser(response.getId(), response.getEmail(), response.getAge());
 
@@ -49,6 +55,7 @@ class MemberServiceTest extends ServiceTest {
     }
 
     @Test
+    @DisplayName("존재하는 이메일로 회원 정보 수정요청시 에러 발생")
     void updateMemberToExistingEmail() {
         String existingEmail = "existing@email.com";
         멤버_생성_요청(existingEmail, PASSWORD, AGE);
@@ -61,6 +68,7 @@ class MemberServiceTest extends ServiceTest {
     }
 
     @Test
+    @DisplayName("회원 정보 삭제")
     void deleteMember() {
         MemberResponse response = 멤버_생성_요청(EMAIL, PASSWORD, AGE);
 
@@ -71,14 +79,16 @@ class MemberServiceTest extends ServiceTest {
     }
 
     @Test
+    @DisplayName("존재하지 않는 회원 정보 삭제시 에러 발생")
     void deleteNotExistingMember() {
-        LoginUser fakeUser = new LoginUser(1000L, "notEmail", 999);
+        LoginUser fakeUser = new LoginUser(1000L, "notEmail@email.com", 999);
 
         assertThatThrownBy(() -> memberService.deleteMember(fakeUser)).isInstanceOf(MemberException.class);
     }
 
     @Test
-    void isExistsEmail() {
+    @DisplayName("존재하는 이메일인 경우 true 반환")
+    void isExistingEmail() {
         멤버_생성_요청(EMAIL, PASSWORD, AGE);
 
         assertThat(memberService.isExistingEmail(EMAIL))
@@ -87,7 +97,8 @@ class MemberServiceTest extends ServiceTest {
     }
 
     @Test
-    void isExistsEmailFalse() {
+    @DisplayName("존재하지 않는 이메일인 경우 false 반환")
+    void notExistingEmail() {
         assertThat(memberService.isExistingEmail(EMAIL))
                 .usingRecursiveComparison()
                 .isEqualTo(new EmailExistsResponse(false));

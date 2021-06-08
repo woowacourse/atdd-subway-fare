@@ -8,7 +8,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class FareServiceTest {
 
-    final FareService fareService = new FareService();
+    private final FareService fareService = new FareService();
 
     @DisplayName("거리가 7일 때 기본 요금 반환")
     @Test
@@ -42,7 +42,7 @@ class FareServiceTest {
         assertFare(distance, 1000, 30, expectedFare);
     }
 
-    @DisplayName("거리가 7일 때, 아이 요금 적용 반환")
+    @DisplayName("거리가 7주어지고, 3세의 나이일 때, 아이 요금 적용 반환")
     @Test
     public void calculateTestBaby() {
         int distance = 7;
@@ -50,7 +50,7 @@ class FareServiceTest {
         assertFare(distance, 0, 3, expectedFare);
     }
 
-    @DisplayName("거리가 7일 때, 어린이 요금 적용 반환")
+    @DisplayName("거리가 7이 주어지고, 9세의 나이일 때, 어린이 요금 적용 반환")
     @Test
     public void calculateTestChild() {
         int distance = 7;
@@ -58,7 +58,7 @@ class FareServiceTest {
         assertFare(distance, 0, 9, expectedFare);
     }
 
-    @DisplayName("거리가 7일 때, 청소년 요금 적용 반환")
+    @DisplayName("거리가 7이 주어지고, 15세 나이 일 때,  청소년 요금 적용 반환")
     @Test
     public void calculateTestTeenage() {
         int distance = 7;

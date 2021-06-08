@@ -66,6 +66,11 @@ public class StationService {
     }
 
     public StationResponse toStationResponse(Station station) {
-        return StationResponse.of(station, SimpleLineResponse.listOf(lineDao.findLinesPassing(station)));
+        List<SimpleLineResponse> includedLines = findLinePassing(station);
+        return StationResponse.of(station, includedLines);
+    }
+
+    private List<SimpleLineResponse> findLinePassing(Station station) {
+        return SimpleLineResponse.listOf(lineDao.findLinesPassing(station));
     }
 }

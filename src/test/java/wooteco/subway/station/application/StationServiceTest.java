@@ -3,6 +3,7 @@ package wooteco.subway.station.application;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import wooteco.subway.ServiceTest;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;
@@ -11,6 +12,7 @@ import wooteco.subway.station.dto.StationResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@SpringBootTest
 class StationServiceTest extends ServiceTest {
     @Autowired
     private StationService stationService;

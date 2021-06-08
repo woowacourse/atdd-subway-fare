@@ -38,8 +38,8 @@ public class AuthService {
         String email = jwtTokenProvider.getPayload(credentials);
         try {
             Member member = memberDao.findByEmail(email);
-            return Optional.of(new LoginUser(member.getId(), member.getEmail(), member.getAge()));
-        } catch (Exception e) {
+            return Optional.of(new LoginUser(member));
+        } catch (AuthorizationException e) {
             return Optional.empty();
         }
     }

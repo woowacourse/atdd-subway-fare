@@ -9,8 +9,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class MemberTest {
-    private static final String EMAIL = "valid";
-    private static final String PASSWORD = "valid";
+    private static final String EMAIL = "email@email.com";
+    private static final String PASSWORD = "password";
     private static final int AGE = 10;
 
     @Nested
@@ -55,5 +55,5 @@ class MemberTest {
                 assertThatThrownBy(() -> new Member(EMAIL, PASSWORD, -1)).isInstanceOf(MemberException.class);
             }
         }
-     }
+    }
 }

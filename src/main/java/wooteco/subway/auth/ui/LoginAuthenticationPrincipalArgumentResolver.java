@@ -8,17 +8,17 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import wooteco.subway.auth.application.AuthService;
 import wooteco.subway.auth.domain.LoginAuthenticationPrincipal;
 import wooteco.subway.auth.infrastructure.AuthorizationExtractor;
-import wooteco.subway.member.domain.User;
 import wooteco.subway.member.domain.GuestUser;
 import wooteco.subway.member.domain.LoginUser;
+import wooteco.subway.member.domain.User;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
-public class LoingAuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
+public class LoginAuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
     private final AuthService authService;
 
-    public LoingAuthenticationPrincipalArgumentResolver(AuthService authService) {
+    public LoginAuthenticationPrincipalArgumentResolver(AuthService authService) {
         this.authService = authService;
     }
 
