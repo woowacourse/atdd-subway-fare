@@ -1,8 +1,11 @@
 package wooteco.subway.station.dto;
 
 import wooteco.subway.station.domain.Station;
+import wooteco.subway.validator.SubwayName;
 
 public class StationRequest {
+
+    @SubwayName
     private String name;
 
     public StationRequest() {

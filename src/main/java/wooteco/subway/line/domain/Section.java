@@ -3,6 +3,7 @@ package wooteco.subway.line.domain;
 import wooteco.subway.station.domain.Station;
 
 public class Section {
+
     private Long id;
     private Station upStation;
     private Station downStation;
@@ -19,9 +20,7 @@ public class Section {
     }
 
     public Section(Station upStation, Station downStation, int distance) {
-        this.upStation = upStation;
-        this.downStation = downStation;
-        this.distance = distance;
+        this(null, upStation, downStation, distance);
     }
 
     public Long getId() {
@@ -38,5 +37,21 @@ public class Section {
 
     public int getDistance() {
         return distance;
+    }
+
+    public long getUpStationId() {
+        return upStation.getId();
+    }
+
+    public long getDownStationId() {
+        return downStation.getId();
+    }
+
+    public String getUpStationName() {
+        return upStation.getName();
+    }
+
+    public String getDownStationName() {
+        return downStation.getName();
     }
 }

@@ -14,8 +14,9 @@ import java.util.stream.Collectors;
 
 @Repository
 public class SectionDao {
-    private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcInsert simpleJdbcInsert;
+
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert simpleJdbcInsert;
 
     public SectionDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
@@ -52,5 +53,10 @@ public class SectionDao {
                 .collect(Collectors.toList());
 
         simpleJdbcInsert.executeBatch(batchValues.toArray(new Map[sections.size()]));
+    }
+
+    public int countSectionByStationId(Long id) {
+        String query = "SELECT count(*) FROM SECTION WHERE up_station_id = ? OR down_station_id = ?";
+        return jdbcTemplate.queryForObject(query, Integer.class, id, id);
     }
 }

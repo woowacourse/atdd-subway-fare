@@ -20,7 +20,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String PASSWORD = "password";
     public static final int AGE = 20;
     public static final String NEW_EMAIL = "new_email@email.com";
-    public static final String NEW_PASSWORD = "new_password";
+    public static final String NEW_PASSWORD = "newpassword";
     public static final int NEW_AGE = 30;
 
     @DisplayName("회원 정보를 관리한다.")
@@ -34,7 +34,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> findResponse = 내_회원_정보_조회_요청(사용자);
         회원_정보_조회됨(findResponse, EMAIL, AGE);
 
-        ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(사용자, EMAIL, NEW_PASSWORD, NEW_AGE);
+        ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(사용자, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
         회원_정보_수정됨(updateResponse);
 
         ExtractableResponse<Response> deleteResponse = 내_회원_삭제_요청(사용자);
@@ -48,7 +48,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(memberRequest)
-                .when().post("/members")
+                .when().post("/api/members")
                 .then().log().all()
                 .extract();
     }
@@ -58,7 +58,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/me")
+                .when().get("/api/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
@@ -72,7 +72,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .auth().oauth2(tokenResponse.getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(memberRequest)
-                .when().put("/members/me")
+                .when().put("/api/members/me")
                 .then().log().all()
                 .extract();
     }
@@ -81,7 +81,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
-                .when().delete("/members/me")
+                .when().delete("/api/members/me")
                 .then().log().all()
                 .extract();
     }

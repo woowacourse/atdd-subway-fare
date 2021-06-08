@@ -1,19 +1,26 @@
 package wooteco.subway.auth;
 
+import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import wooteco.subway.auth.application.AuthService;
+import wooteco.subway.auth.infrastructure.JwtTokenProvider;
+import wooteco.subway.auth.infrastructure.LoginInterceptor;
 import wooteco.subway.auth.ui.AuthenticationPrincipalArgumentResolver;
-
-import java.util.List;
 
 @Configuration
 public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
-    private final AuthService authService;
 
-    public AuthenticationPrincipalConfig(AuthService authService) {
-        this.authService = authService;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final LoginInterceptor loginInterceptor;
+
+    public AuthenticationPrincipalConfig(
+        JwtTokenProvider jwtTokenProvider,
+        LoginInterceptor loginInterceptor
+    ) {
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.loginInterceptor = loginInterceptor;
     }
 
     @Override
@@ -23,6 +30,14 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
 
     @Bean
     public AuthenticationPrincipalArgumentResolver createAuthenticationPrincipalArgumentResolver() {
-        return new AuthenticationPrincipalArgumentResolver(authService);
+        return new AuthenticationPrincipalArgumentResolver(jwtTokenProvider);
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(loginInterceptor)
+            .addPathPatterns("/api/**")
+            .excludePathPatterns("/api/login/token")
+            .excludePathPatterns("/api/members");
     }
 }

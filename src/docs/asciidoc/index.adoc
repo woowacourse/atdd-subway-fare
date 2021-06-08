@@ -1,0 +1,127 @@
+= 지하철 협업 미션 API Document
+ifndef::snippets[]
+:snippets: ../../../build/generated-snippets
+endif::[]
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+
+== Auth
+=== 로그인
+==== Request
+include::{snippets}/auth-login/http-request.adoc[]
+==== Response
+include::{snippets}/auth-login/http-response.adoc[]
+
+== Member
+=== 생성
+==== Request
+include::{snippets}/member-create/http-request.adoc[]
+==== Response
+include::{snippets}/member-create/http-response.adoc[]
+=== 이메일 중복 X
+==== Request
+include::{snippets}/member-duplicate/http-request.adoc[]
+==== Response
+include::{snippets}/member-duplicate/http-response.adoc[]
+=== 이메일 중복 O
+==== Request
+include::{snippets}/member-duplicate-fail/http-request.adoc[]
+==== Response
+include::{snippets}/member-duplicate-fail/http-response.adoc[]
+=== 조회
+==== Request
+include::{snippets}/member-find/http-request.adoc[]
+==== Response
+include::{snippets}/member-find/http-response.adoc[]
+=== 수정
+==== Request
+include::{snippets}/member-update/http-request.adoc[]
+==== Response
+include::{snippets}/member-update/http-response.adoc[]
+=== 삭제
+==== Request
+include::{snippets}/member-delete/http-request.adoc[]
+==== Response
+include::{snippets}/member-delete/http-response.adoc[]
+
+== Station
+=== 생성
+==== Request
+include::{snippets}/station-create/http-request.adoc[]
+==== Response
+include::{snippets}/station-create/http-response.adoc[]
+=== 생성 실패 (비로그인)
+==== Request
+include::{snippets}/station-create-fail/http-request.adoc[]
+==== Response
+include::{snippets}/station-create-fail/http-response.adoc[]
+=== 조회
+==== Request
+include::{snippets}/station-show-line/http-request.adoc[]
+==== Response
+include::{snippets}/station-show-line/http-response.adoc[]
+=== 수정
+==== Request
+include::{snippets}/station-update/http-request.adoc[]
+==== Response
+include::{snippets}/station-update/http-response.adoc[]
+=== 수정 실패 (이름 중복)
+==== Request
+include::{snippets}/station-update-fail/http-request.adoc[]
+==== Response
+include::{snippets}/station-update-fail/http-response.adoc[]
+
+=== 삭제
+==== Request
+include::{snippets}/station-delete/http-request.adoc[]
+==== Response
+include::{snippets}/station-delete/http-response.adoc[]
+
+== Line
+=== 생성
+==== Request
+include::{snippets}/line-create/http-request.adoc[]
+==== Response
+include::{snippets}/line-create/http-response.adoc[]
+=== 조회
+==== Request
+include::{snippets}/line-findAll/http-request.adoc[]
+==== Response
+include::{snippets}/line-findAll/http-response.adoc[]
+=== id 조회
+==== Request
+include::{snippets}/line-findById/http-request.adoc[]
+==== Response
+include::{snippets}/line-findById/http-response.adoc[]
+=== 수정
+==== Request
+include::{snippets}/line-update/http-request.adoc[]
+==== Response
+include::{snippets}/line-update/http-response.adoc[]
+=== 삭제
+==== Request
+include::{snippets}/line-delete/http-request.adoc[]
+==== Response
+include::{snippets}/line-delete/http-response.adoc[]
+
+== Section
+=== 생성
+==== Request
+include::{snippets}/section-create/http-request.adoc[]
+==== Response
+include::{snippets}/section-create/http-response.adoc[]
+=== 삭제
+==== Request
+include::{snippets}/section-delete/http-request.adoc[]
+==== Response
+include::{snippets}/section-delete/http-response.adoc[]
+
+== Path
+=== 조회
+==== Request
+include::{snippets}/path-find/http-request.adoc[]
+==== Response
+include::{snippets}/path-find/http-response.adoc[]
