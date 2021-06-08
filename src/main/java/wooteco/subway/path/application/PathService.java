@@ -1,21 +1,23 @@
 package wooteco.subway.path.application;
 
+import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.line.domain.Line;
 import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.path.domain.Fare;
 import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.path.dto.PathResponse;
-import wooteco.subway.path.dto.PathResponseAssembler;
+import wooteco.subway.path.exception.InvalidPathException;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
-
-import java.util.List;
+import wooteco.subway.station.dto.StationResponse;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class PathService {
+
     private LineService lineService;
     private StationService stationService;
     private PathFinder pathFinder;
@@ -26,16 +28,20 @@ public class PathService {
         this.pathFinder = pathFinder;
     }
 
-    public PathResponse findPath(Long source, Long target) {
+    public PathResponse findPath(LoginMember loginMember, Long source, Long target) {
         try {
             List<Line> lines = lineService.findLines();
             Station sourceStation = stationService.findStationById(source);
             Station targetStation = stationService.findStationById(target);
             SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
 
-            return PathResponseAssembler.assemble(subwayPath);
+            List<StationResponse> stationResponses = StationResponse.listOf(subwayPath.getStations());
+            int distance = subwayPath.calculateDistance();
+            Fare totalFare = subwayPath.fareOf(loginMember);
+
+            return new PathResponse(stationResponses, distance, totalFare);
         } catch (Exception e) {
-            throw new InvalidPathException();
+            throw new InvalidPathException("출발지와 도착지는 같을 수 없습니다.");
         }
     }
 }

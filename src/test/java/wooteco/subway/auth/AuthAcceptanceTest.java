@@ -1,20 +1,20 @@
 package wooteco.subway.auth;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static wooteco.subway.member.MemberAcceptanceTest.회원_생성을_요청;
+import static wooteco.subway.member.MemberAcceptanceTest.회원_정보_조회됨;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static wooteco.subway.member.MemberAcceptanceTest.회원_생성을_요청;
-import static wooteco.subway.member.MemberAcceptanceTest.회원_정보_조회됨;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
     private static final String EMAIL = "email@email.com";
@@ -67,6 +67,24 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
+    public static TokenResponse 회원가입_후_로그인(String email, int age) {
+        String password = "password";
+
+        회원_등록되어_있음(email, password, age);
+        return 로그인되어_있음(email, password);
+    }
+
+    public static TokenResponse 회원가입_후_로그인(int age) {
+        String email = "pkeugine@gmail.com";
+
+        return 회원가입_후_로그인(email, age);
+    }
+
+    public static TokenResponse 회원가입_후_로그인() {
+        return 회원가입_후_로그인(20);
+    }
+
+
     public static ExtractableResponse<Response> 회원_등록되어_있음(String email, String password, Integer age) {
         return 회원_생성을_요청(email, password, age);
     }
@@ -103,4 +121,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 statusCode(HttpStatus.OK.value()).
                 extract();
     }
+
+    public static void 인증_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
 }

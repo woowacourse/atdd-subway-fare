@@ -1,5 +1,7 @@
 package wooteco.subway.path.application;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.springframework.stereotype.Service;
@@ -7,16 +9,14 @@ import wooteco.subway.line.domain.Line;
 import wooteco.subway.path.domain.SectionEdge;
 import wooteco.subway.path.domain.SubwayGraph;
 import wooteco.subway.path.domain.SubwayPath;
+import wooteco.subway.path.exception.InvalidPathException;
 import wooteco.subway.station.domain.Station;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class PathFinder {
     public SubwayPath findPath(List<Line> lines, Station source, Station target) {
         if (source.equals(target)) {
-            throw new InvalidPathException();
+            throw new InvalidPathException("출발지와 도착지는 같을 수 없습니다.");
         }
         SubwayGraph graph = new SubwayGraph(SectionEdge.class);
         graph.addVertexWith(lines);
@@ -26,7 +26,7 @@ public class PathFinder {
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
         GraphPath<Station, SectionEdge> path = dijkstraShortestPath.getPath(source, target);
         if (path == null) {
-            throw new InvalidPathException();
+            throw new InvalidPathException("경로를 찾을 수 없습니다.");
         }
 
         return convertSubwayPath(path);
