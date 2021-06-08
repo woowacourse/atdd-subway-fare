@@ -88,9 +88,4 @@ public class LineController {
         lineService.removeLineStation(lineId, stationId);
         return ResponseEntity.ok().build();
     }
-
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException() {
-        return ResponseEntity.badRequest().build();
-    }
 }
