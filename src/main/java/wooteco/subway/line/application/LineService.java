@@ -17,8 +17,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Transactional
 @Service
+@Transactional(readOnly = true)
 public class LineService {
     private LineDao lineDao;
     private SectionDao sectionDao;
@@ -30,6 +30,7 @@ public class LineService {
         this.stationService = stationService;
     }
 
+    @Transactional
     public LineResponse saveLine(LineRequest request) {
         validateDuplicatedName(request);
         validateDuplicatedColor(request);
@@ -69,6 +70,7 @@ public class LineService {
                 .orElseThrow(() -> new LineException("존재하지 않는 노선입니다."));
     }
 
+    @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line oldLine = findLineById(id);
 
@@ -95,12 +97,14 @@ public class LineService {
         }
     }
 
+    @Transactional
     public void deleteLineById(Long id) {
         findLineById(id);
 
         lineDao.deleteById(id);
     }
 
+    @Transactional
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
@@ -111,6 +115,7 @@ public class LineService {
         sectionDao.insertSections(line);
     }
 
+    @Transactional
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);

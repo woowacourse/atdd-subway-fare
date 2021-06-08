@@ -9,8 +9,8 @@ import wooteco.subway.member.dto.EmailExistsResponse;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
 
-@Transactional
 @Service
+@Transactional(readOnly = true)
 public class MemberService {
     private MemberDao memberDao;
 
@@ -18,6 +18,7 @@ public class MemberService {
         this.memberDao = memberDao;
     }
 
+    @Transactional
     public MemberResponse createMember(MemberRequest request) {
         checkDuplicatedEmail(request.getEmail());
 
@@ -30,6 +31,7 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
+    @Transactional
     public void updateMember(LoginUser loginUser, MemberRequest memberRequest) {
         Member member = memberDao.findById(loginUser.getId());
 
@@ -47,6 +49,7 @@ public class MemberService {
         }
     }
 
+    @Transactional
     public void deleteMember(LoginUser loginUser) {
         Member member = memberDao.findById(loginUser.getId());
         memberDao.deleteById(member.getId());

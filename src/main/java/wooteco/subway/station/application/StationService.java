@@ -13,7 +13,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Transactional
+@Transactional(readOnly = true)
 @Service
 public class StationService {
     private StationDao stationDao;
@@ -24,6 +24,7 @@ public class StationService {
         this.lineDao = lineDao;
     }
 
+    @Transactional
     public StationResponse saveStation(StationRequest stationRequest) {
         if (stationDao.isExistName(stationRequest.getName())) {
             throw new StationException("이미 존재하는 역 이름입니다.");
@@ -38,6 +39,7 @@ public class StationService {
                 .orElseThrow(() -> new StationException("존재하지 않는 역입니다."));
     }
 
+    @Transactional
     public void deleteStationById(Long id) {
         stationDao.findById(id)
                 .orElseThrow(() -> new StationException("존재하지 않는 역입니다."));
@@ -45,6 +47,7 @@ public class StationService {
         stationDao.deleteById(id);
     }
 
+    @Transactional
     public void updateStationById(Long id, StationRequest stationRequest) {
         stationDao.findById(id)
                 .orElseThrow(() -> new StationException("존재하지 않는 역입니다."));
