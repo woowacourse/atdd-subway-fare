@@ -42,6 +42,50 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_삭제됨(deleteResponse);
     }
 
+    @DisplayName("회원 가입 시도시 이메일 정보가 null 이거나 유효한 형식이 아닌 경우")
+    @Test
+    void validateJoinMemberEmail() {
+        assertThat(회원_생성을_요청(null, PASSWORD, AGE).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(회원_생성을_요청("", PASSWORD, AGE).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(회원_생성을_요청(" ", PASSWORD, AGE).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(회원_생성을_요청("mail.com", PASSWORD, AGE).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("회원 가입 시도시 비밀번호 정보가 null 이거나 공백인 경우")
+    @Test
+    void validateJoinMemberPassword() {
+        assertThat(회원_생성을_요청(EMAIL, null, AGE).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(회원_생성을_요청(EMAIL, "", AGE).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(회원_생성을_요청(EMAIL, " ", AGE).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("회원 가입 시도시 나이 정보가 null 이거나 음수인 경우")
+    @Test
+    void validateJoinMemberAge() {
+        assertThat(회원_생성을_요청(EMAIL, PASSWORD, null).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(회원_생성을_요청(EMAIL, PASSWORD, -1).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("회원 가입 시도시 중복된 이메일이 이미 존재하는지 확인")
+    @Test
+    void validateDuplicateEmail() {
+        assertThat(회원_생성을_요청(EMAIL, PASSWORD, AGE).statusCode()).isEqualTo(HttpStatus.CREATED.value());
+
+        RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/api/members/check-validation?email=" + "dododo@naver.com")
+            .then().log().all()
+            .statusCode(HttpStatus.OK.value());
+
+        RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/api/members/check-validation?email=" + EMAIL)
+            .then().log().all()
+            .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
