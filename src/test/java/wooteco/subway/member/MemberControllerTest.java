@@ -29,7 +29,6 @@ import wooteco.subway.member.application.MemberService;
 import wooteco.subway.member.domain.Member;
 import wooteco.subway.member.dto.MemberRequest;
 import wooteco.subway.member.dto.MemberResponse;
-import wooteco.subway.member.dto.ValidateEmailRequest;
 import wooteco.subway.member.ui.MemberController;
 
 @WebMvcTest(controllers = MemberController.class)
@@ -56,9 +55,8 @@ public class MemberControllerTest {
     public void createMember() throws Exception {
         // given
         given(authenticationInterceptor.preHandle(any(), any(), any())).willReturn(true);
-        MemberRequest memberRequest = new MemberRequest("email@gmail.com", "password", 20);
-        given(memberService.createMember(any(MemberRequest.class)))
-            .willReturn(new MemberResponse(1L, "email@gmail.com", 20));
+        MemberRequest memberRequest = new MemberRequest("email@email.com", "password", 20);
+        given(memberService.createMember(any(MemberRequest.class))).willReturn(new MemberResponse(1L, "email@email.com", 20));
 
         // then
         mockMvc.perform(post("/api/members")
@@ -76,10 +74,8 @@ public class MemberControllerTest {
     public void findMemberOfMine() throws Exception {
         // given
         given(authenticationInterceptor.preHandle(any(), any(), any())).willReturn(true);
-        given(authService.findMemberByToken(null))
-            .willReturn(new Member(1L, "email@email.com", "password", 20));
-        given(memberService.findMember(any(Member.class)))
-            .willReturn(new MemberResponse(1L, "email@gmail.com", 20));
+        given(authService.findMemberByToken(null)).willReturn(new Member(1L, "email@email.com", "password", 20));
+        given(memberService.findMember(any(Member.class))).willReturn(new MemberResponse(1L, "email@email.com", 20));
 
         // then
         mockMvc.perform(get("/api/members/me")
@@ -96,8 +92,7 @@ public class MemberControllerTest {
     public void updateMemberOfMine() throws Exception {
         given(authenticationInterceptor.preHandle(any(), any(), any())).willReturn(true);
         MemberRequest memberRequest = new MemberRequest("email@email.com", "password", 20);
-        given(authService.findMemberByToken(null))
-            .willReturn(new Member(1L, "email@email.com", "password", 20));
+        given(authService.findMemberByToken(null)).willReturn(new Member(1L, "email@email.com", "password", 20));
 
         // then
         mockMvc.perform(put("/api/members/me")
@@ -115,8 +110,7 @@ public class MemberControllerTest {
     public void deleteMemberOfMine() throws Exception {
         // given
         given(authenticationInterceptor.preHandle(any(), any(), any())).willReturn(true);
-        given(authService.findMemberByToken(null))
-            .willReturn(new Member(1L, "email@email.com", "password", 20));
+        given(authService.findMemberByToken(null)).willReturn(new Member(1L, "email@email.com", "password", 20));
 
         // then
         mockMvc.perform(delete("/api/members/me")
@@ -133,15 +127,11 @@ public class MemberControllerTest {
     public void validateMember() throws Exception {
         // given
         given(authenticationInterceptor.preHandle(any(), any(), any())).willReturn(true);
-        given(authService.findMemberByToken(null))
-            .willReturn(new Member(1L, "email@email.com", "password", 20));
-        ValidateEmailRequest emailRequest = new ValidateEmailRequest("email@email.com");
+        given(authService.findMemberByToken(null)).willReturn(new Member(1L, "email@email.com", "password", 20));
 
         // then
-        mockMvc.perform(get("/api/members/check-validation")
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .content(objectMapper.writeValueAsString(emailRequest)))
-            .andExpect(status().isBadRequest())
+        mockMvc.perform(get("/api/members/check-validation" + "?email=different@email.com"))
+            .andExpect(status().isOk())
             .andDo(print())
             .andDo(document("validateMemberEmail",
                 preprocessRequest(prettyPrint()),
