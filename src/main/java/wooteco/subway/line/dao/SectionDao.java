@@ -1,31 +1,34 @@
 package wooteco.subway.line.dao;
 
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Repository;
-import wooteco.subway.line.domain.Line;
-import wooteco.subway.line.domain.Section;
-
-import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.sql.DataSource;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.stereotype.Repository;
+import wooteco.subway.exception.application.NonexistentTargetException;
+import wooteco.subway.line.domain.Line;
+import wooteco.subway.line.domain.Section;
 
 @Repository
 public class SectionDao {
-    private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcInsert simpleJdbcInsert;
+
+    private static final int SUCCESSFUL_EXECUTED_COUNT = 1;
+
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert simpleJdbcInsert;
 
     public SectionDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
-                .withTableName("SECTION")
-                .usingGeneratedKeyColumns("id");
+            .withTableName("SECTION")
+            .usingGeneratedKeyColumns("id");
     }
 
     public Section insert(Line line, Section section) {
-        Map<String, Object> params = new HashMap();
+        Map<String, Object> params = new HashMap<>();
         params.put("line_id", line.getId());
         params.put("up_station_id", section.getUpStation().getId());
         params.put("down_station_id", section.getDownStation().getId());
@@ -35,21 +38,28 @@ public class SectionDao {
     }
 
     public void deleteByLineId(Long lineId) {
-        jdbcTemplate.update("delete from SECTION where line_id = ?", lineId);
+        int deletedCount = jdbcTemplate.update("delete from SECTION where line_id = ?", lineId);
+        verifyExecution(deletedCount, lineId);
+    }
+
+    private void verifyExecution(int executedCount, Long id) {
+        if (executedCount < SUCCESSFUL_EXECUTED_COUNT) {
+            throw new NonexistentTargetException("노선ID: " + id);
+        }
     }
 
     public void insertSections(Line line) {
         List<Section> sections = line.getSections().getSections();
         List<Map<String, Object>> batchValues = sections.stream()
-                .map(section -> {
-                    Map<String, Object> params = new HashMap<>();
-                    params.put("line_id", line.getId());
-                    params.put("up_station_id", section.getUpStation().getId());
-                    params.put("down_station_id", section.getDownStation().getId());
-                    params.put("distance", section.getDistance());
-                    return params;
-                })
-                .collect(Collectors.toList());
+            .map(section -> {
+                Map<String, Object> params = new HashMap<>();
+                params.put("line_id", line.getId());
+                params.put("up_station_id", section.getUpStation().getId());
+                params.put("down_station_id", section.getDownStation().getId());
+                params.put("distance", section.getDistance());
+                return params;
+            })
+            .collect(Collectors.toList());
 
         simpleJdbcInsert.executeBatch(batchValues.toArray(new Map[sections.size()]));
     }

@@ -12,8 +12,9 @@ import wooteco.subway.member.domain.Member;
 @Service
 @Transactional
 public class AuthService {
-    private MemberDao memberDao;
-    private JwtTokenProvider jwtTokenProvider;
+
+    private final MemberDao memberDao;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public AuthService(MemberDao memberDao, JwtTokenProvider jwtTokenProvider) {
         this.memberDao = memberDao;
@@ -21,27 +22,29 @@ public class AuthService {
     }
 
     public TokenResponse login(TokenRequest request) {
-        try {
-            Member member = memberDao.findByEmail(request.getEmail());
-            member.checkPassword(request.getPassword());
-        } catch (Exception e) {
-            throw new AuthorizationException();
+        Member member = memberDao.findByEmail(request.getEmail())
+            .orElseThrow(() -> new AuthorizationException("입력한 정보가 틀립니다."));
+
+        validateCorrectPassword(member, request);
+        return new TokenResponse(
+            jwtTokenProvider.createToken(request.getEmail())
+        );
+    }
+
+    private void validateCorrectPassword(Member member, TokenRequest request) {
+        if (!member.checkPassword(request.getPassword())) {
+            throw new AuthorizationException("입력한 정보가 틀립니다.");
         }
-        String token = jwtTokenProvider.createToken(request.getEmail());
-        return new TokenResponse(token);
     }
 
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
+            return LoginMember.obtainGuest();
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
-        try {
-            Member member = memberDao.findByEmail(email);
-            return new LoginMember(member.getId(), member.getEmail(), member.getAge());
-        } catch (Exception e) {
-            return new LoginMember();
-        }
+        return memberDao.findByEmail(email)
+            .map(LoginMember::new)
+            .orElse(LoginMember.obtainGuest());
     }
 }
