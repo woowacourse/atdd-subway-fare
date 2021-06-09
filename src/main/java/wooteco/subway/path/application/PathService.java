@@ -49,7 +49,7 @@ public class PathService {
 
     private FareTable getFareTable(SubwayPath subwayPath) {
         FareTable fareTable = new FareTable();
-        fareTable.calculateFare(subwayPath.calculateDistance(), subwayPath.getSectionEdges());
+        fareTable.make(subwayPath.calculateDistance(), subwayPath.getSectionEdges());
         return fareTable;
     }
 }
