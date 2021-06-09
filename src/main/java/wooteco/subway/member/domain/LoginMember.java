@@ -1,28 +1,17 @@
 package wooteco.subway.member.domain;
 
-public class LoginMember {
-    private Long id;
-    private String email;
-    private Integer age;
+public class LoginMember extends AuthMember {
 
     public LoginMember() {
+        super();
     }
 
     public LoginMember(Long id, String email, Integer age) {
-        this.id = id;
-        this.email = email;
-        this.age = age;
+        super(id, email, age);
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public Integer getAge() {
-        return age;
+    @Override
+    public boolean isLoggedIn() {
+        return true;
     }
 }
