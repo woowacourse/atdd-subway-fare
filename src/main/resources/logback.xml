@@ -1,7 +1,7 @@
 <configuration debug="true">
     <property name="logHome" value="./logs/subway-application"/>
 
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <appender name="STDERR" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
         </encoder>
@@ -25,7 +25,7 @@
     </appender>
 
     <root level="info">
-        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="STDERR"/>
         <appender-ref ref="fileAppender"/>
     </root>
 </configuration>
