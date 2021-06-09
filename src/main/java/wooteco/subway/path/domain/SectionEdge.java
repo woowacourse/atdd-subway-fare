@@ -34,6 +34,6 @@ public class SectionEdge extends DefaultWeightedEdge {
 
     @Override
     protected double getWeight() {
-        return this.section.getDistanceValue();
+        return this.section.getDistance();
     }
 }

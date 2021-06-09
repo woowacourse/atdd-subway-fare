@@ -98,11 +98,11 @@ public class Section {
         return downStation.getId();
     }
 
-    public Distance getDistance() {
+    public Distance distance() {
         return distance;
     }
 
-    public int getDistanceValue() {
+    public int getDistance() {
         return distance.getValue();
     }
 }

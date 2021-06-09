@@ -65,7 +65,7 @@ public class SectionDaoTest {
         assertThat(savedSection.getLine()).isEqualTo(일호선);
         assertThat(savedSection.getUpStation()).isEqualTo(신설역);
         assertThat(savedSection.getDownStation()).isEqualTo(동대문역);
-        assertThat(savedSection.getDistance()).isEqualTo(거리);
+        assertThat(savedSection.distance()).isEqualTo(거리);
     }
 
     @Test
@@ -82,11 +82,11 @@ public class SectionDaoTest {
         assertThat(저장되어있는_신설_동묘_구간.getLine()).isEqualTo(일호선);
         assertThat(저장되어있는_신설_동묘_구간.getUpStation()).isEqualTo(신설역);
         assertThat(저장되어있는_신설_동묘_구간.getDownStation()).isEqualTo(동묘역);
-        assertThat(저장되어있는_신설_동묘_구간.getDistance()).isEqualTo(거리);
+        assertThat(저장되어있는_신설_동묘_구간.distance()).isEqualTo(거리);
         assertThat(저장되어있는_동묘_동대문_구간.getLine()).isEqualTo(일호선);
         assertThat(저장되어있는_동묘_동대문_구간.getUpStation()).isEqualTo(동묘역);
         assertThat(저장되어있는_동묘_동대문_구간.getDownStation()).isEqualTo(동대문역);
-        assertThat(저장되어있는_동묘_동대문_구간.getDistance()).isEqualTo(거리);
+        assertThat(저장되어있는_동묘_동대문_구간.distance()).isEqualTo(거리);
     }
 
     @Test
@@ -102,7 +102,7 @@ public class SectionDaoTest {
         assertThat(section.getLine()).isEqualTo(일호선);
         assertThat(section.getUpStation()).isEqualTo(신설역);
         assertThat(section.getDownStation()).isEqualTo(동묘역);
-        assertThat(section.getDistance()).isEqualTo(거리);
+        assertThat(section.distance()).isEqualTo(거리);
     }
 
     @Test
@@ -118,7 +118,7 @@ public class SectionDaoTest {
         assertThat(section.getLine()).isEqualTo(일호선);
         assertThat(section.getUpStation()).isEqualTo(신설역);
         assertThat(section.getDownStation()).isEqualTo(동묘역);
-        assertThat(section.getDistance()).isEqualTo(거리);
+        assertThat(section.distance()).isEqualTo(거리);
     }
 
     @Test

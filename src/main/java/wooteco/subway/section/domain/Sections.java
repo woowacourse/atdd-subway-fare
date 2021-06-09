@@ -116,14 +116,14 @@ public class Sections {
     public int distanceValueWithNextStationOf(Station station) {
         return sections.stream()
             .filter(section -> section.isMatchUpStation(station))
-            .map(Section::getDistanceValue)
+            .map(Section::getDistance)
             .findAny()
             .orElse(0);
     }
 
     public int totalDistanceValue() {
         return sections.stream()
-            .mapToInt(Section::getDistanceValue)
+            .mapToInt(Section::getDistance)
             .sum();
     }
 

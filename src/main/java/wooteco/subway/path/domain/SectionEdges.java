@@ -16,7 +16,7 @@ public class SectionEdges {
     public int calculateDistance() {
         return sectionEdges.stream()
             .map(SectionEdge::getSection)
-            .mapToInt(Section::getDistanceValue)
+            .mapToInt(Section::getDistance)
             .sum();
     }
 

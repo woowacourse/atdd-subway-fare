@@ -104,11 +104,11 @@ public class SectionServiceTest {
 
         assertThat(변화된_구간1.getUpStationId()).isEqualTo(동묘역.getId());
         assertThat(변화된_구간1.getDownStationId()).isEqualTo(회기역.getId());
-        assertThat(변화된_구간1.getDistanceValue()).isEqualTo(3);
+        assertThat(변화된_구간1.getDistance()).isEqualTo(3);
 
         assertThat(변화된_구간2.getUpStationId()).isEqualTo(회기역.getId());
         assertThat(변화된_구간2.getDownStationId()).isEqualTo(동대문역.getId());
-        assertThat(변화된_구간2.getDistanceValue()).isEqualTo(7);
+        assertThat(변화된_구간2.getDistance()).isEqualTo(7);
     }
 
     @Test
@@ -139,7 +139,7 @@ public class SectionServiceTest {
         // then
         assertThat(section.getUpStation()).isEqualTo(신설역);
         assertThat(section.getDownStation()).isEqualTo(동대문역);
-        assertThat(section.getDistanceValue()).isEqualTo(20);
+        assertThat(section.getDistance()).isEqualTo(20);
     }
 
     @Test
@@ -189,12 +189,12 @@ public class SectionServiceTest {
         // then
         assertThat(sectionResponses.get(0).getId()).isEqualTo(신설역_동묘역_구간.getUpStationId());
         assertThat(sectionResponses.get(0).getName()).isEqualTo(신설역_동묘역_구간.getUpStationName());
-        assertThat(sectionResponses.get(0).getDistanceToNextStation()).isEqualTo(신설역_동묘역_구간.getDistanceValue());
+        assertThat(sectionResponses.get(0).getDistanceToNextStation()).isEqualTo(신설역_동묘역_구간.getDistance());
         assertThat(sectionResponses.get(0).getTransferLines()).isEmpty();
 
         assertThat(sectionResponses.get(1).getId()).isEqualTo(동묘역_동대문역_구간.getUpStationId());
         assertThat(sectionResponses.get(1).getName()).isEqualTo(동묘역_동대문역_구간.getUpStationName());
-        assertThat(sectionResponses.get(1).getDistanceToNextStation()).isEqualTo(동묘역_동대문역_구간.getDistanceValue());
+        assertThat(sectionResponses.get(1).getDistanceToNextStation()).isEqualTo(동묘역_동대문역_구간.getDistance());
         assertThat(sectionResponses.get(1).getTransferLines()).isEmpty();
 
         assertThat(sectionResponses.get(2).getId()).isEqualTo(동묘역_동대문역_구간.getDownStationId());

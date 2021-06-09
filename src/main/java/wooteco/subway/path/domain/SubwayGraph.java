@@ -24,7 +24,7 @@ public class SubwayGraph extends WeightedMultigraph<Station, SectionEdge> {
         for (Section section : sections.getSections()) {
             SectionEdge sectionEdge = new SectionEdge(section, section.getLine());
             addEdge(section.getUpStation(), section.getDownStation(), sectionEdge);
-            setEdgeWeight(sectionEdge, section.getDistanceValue());
+            setEdgeWeight(sectionEdge, section.getDistance());
         }
     }
 }

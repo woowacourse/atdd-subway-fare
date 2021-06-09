@@ -22,7 +22,7 @@ public class SectionResponse {
     }
 
     public static SectionResponse of(Section section, List<TransferLineResponse> transferLines) {
-        return new SectionResponse(section.getUpStationId(), section.getUpStationName(), section.getDistanceValue(), transferLines);
+        return new SectionResponse(section.getUpStationId(), section.getUpStationName(), section.getDistance(), transferLines);
     }
 
     public Long getId() {

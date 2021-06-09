@@ -45,7 +45,7 @@ class SectionTest {
         // then
         assertThat(updatedSection.getUpStation()).isEqualTo(사가정역);
         assertThat(updatedSection.getDownStation()).isEqualTo(면목역);
-        assertThat(updatedSection.getDistanceValue()).isEqualTo(5);
+        assertThat(updatedSection.getDistance()).isEqualTo(5);
     }
 
     @Test
@@ -61,7 +61,7 @@ class SectionTest {
         // then
         assertThat(updatedSection.getUpStation()).isEqualTo(상봉역);
         assertThat(updatedSection.getDownStation()).isEqualTo(사가정역);
-        assertThat(updatedSection.getDistanceValue()).isEqualTo(15);
+        assertThat(updatedSection.getDistance()).isEqualTo(15);
     }
 
     @Test
