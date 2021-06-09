@@ -21,15 +21,12 @@ import wooteco.subway.station.domain.Station;
 @Transactional(readOnly = true)
 public class PathService {
 
-    private final SectionService sectionService;
     private final StationService stationService;
     private final LineService lineService;
     private final PathFinder pathFinder;
     private final FareService fareService;
 
-    public PathService(SectionService sectionService, StationService stationService, LineService lineService, PathFinder pathFinder,
-        FareService fareService) {
-        this.sectionService = sectionService;
+    public PathService(StationService stationService, LineService lineService, PathFinder pathFinder, FareService fareService) {
         this.stationService = stationService;
         this.lineService = lineService;
         this.pathFinder = pathFinder;
@@ -40,10 +37,7 @@ public class PathService {
         try {
             Station sourceStation = stationService.findById(source);
             Station targetStation = stationService.findById(target);
-            List<Sections> sectionsList = lineService.findAll()
-                .stream()
-                .map(sectionService::findSectionsByLine)
-                .collect(Collectors.toList());
+            List<Sections> sectionsList = lineService.findAllSections();
 
             SubwayPath subwayPath = pathFinder.findPath(sectionsList, sourceStation, targetStation);
             Fare fare = calculateTotalFare(user, subwayPath);
