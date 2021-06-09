@@ -1,6 +1,6 @@
 <configuration>
 
-  <property name="httpLogs" value="./logs/http" />
+  <property name="httpLogs" value="./logs/http"/>
 
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
@@ -22,8 +22,8 @@
   </appender>
 
   <root level="info">
-    <appender-ref ref="STDOUT" />
-    <appender-ref ref="fileAppender" />
+    <appender-ref ref="STDOUT"/>
+    <appender-ref ref="fileAppender"/>
   </root>
 
 </configuration>

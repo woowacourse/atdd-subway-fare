@@ -1,6 +1,6 @@
 <configuration debug="true">
 
-  <property name="applicationLogs" value="./logs/application" />
+  <property name="applicationLogs" value="./logs/application"/>
 
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
@@ -26,8 +26,8 @@
   </appender>
 
   <root level="info">
-    <appender-ref ref="STDOUT" />
-    <appender-ref ref="fileAppender" />
+    <appender-ref ref="STDOUT"/>
+    <appender-ref ref="fileAppender"/>
   </root>
 
 </configuration>

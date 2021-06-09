@@ -1,19 +1,16 @@
 package wooteco.subway.path.application;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.exception.AuthorizationException;
 import wooteco.subway.exception.InvalidPathException;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.member.domain.User;
-import wooteco.subway.path.domain.DistancePolicy;
 import wooteco.subway.path.domain.Fare;
 import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.path.dto.PathResponseAssembler;
-import wooteco.subway.section.application.SectionService;
 import wooteco.subway.section.domain.Sections;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
