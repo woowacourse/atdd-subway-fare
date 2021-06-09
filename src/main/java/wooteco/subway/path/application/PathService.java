@@ -8,6 +8,7 @@ import wooteco.subway.exception.AuthorizationException;
 import wooteco.subway.exception.InvalidPathException;
 import wooteco.subway.line.application.LineService;
 import wooteco.subway.member.domain.User;
+import wooteco.subway.path.domain.DistancePolicy;
 import wooteco.subway.path.domain.Fare;
 import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.path.dto.PathResponse;
