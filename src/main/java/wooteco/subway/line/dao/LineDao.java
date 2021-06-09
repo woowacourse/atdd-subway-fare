@@ -1,11 +1,11 @@
 package wooteco.subway.line.dao;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import wooteco.subway.line.domain.Line;
@@ -33,13 +33,8 @@ public class LineDao {
     }
 
     public Line insert(Line line) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("name", line.getName());
-        params.put("color", line.getColor());
-        params.put("extra_fare", line.getExtraFare());
-
-        long key = jdbcInsert.executeAndReturnKey(params).longValue();
-
+        SqlParameterSource params = new BeanPropertySqlParameterSource(line);
+        Long key = jdbcInsert.executeAndReturnKey(params).longValue();
         return new Line(key, line.getName(), line.getColor(), line.getExtraFare());
     }
 
