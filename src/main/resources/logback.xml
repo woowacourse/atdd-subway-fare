@@ -1,6 +1,6 @@
 <configuration debug="true">
 
-  <property name="applicationLogs" value="/atdd-subway-fare/logs/application" />
+  <property name="applicationLogs" value="./logs/application" />
 
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
