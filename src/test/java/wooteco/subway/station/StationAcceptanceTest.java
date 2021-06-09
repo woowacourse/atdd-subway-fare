@@ -17,7 +17,6 @@ import io.restassured.response.Response;
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.line.LineAcceptanceTest;
 import wooteco.subway.line.dto.LineRequest;
-import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 

@@ -1,17 +1,20 @@
 package wooteco.subway.auth;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.auth.dto.TokenResponse;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static wooteco.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static wooteco.subway.member.MemberAcceptanceTest.회원_정보_조회됨;
@@ -83,24 +86,24 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
         return RestAssured.given().log().all().
                 contentType(MediaType.APPLICATION_JSON_VALUE).
-                body(params).
-                when().
-                post("/login/token").
-                then().
-                log().all().
-                statusCode(HttpStatus.OK.value()).
-                extract();
+                                  body(params).
+                                  when().
+                                  post("/login/token").
+                                  then().
+                                  log().all().
+                                  statusCode(HttpStatus.OK.value()).
+                                  extract();
     }
 
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {
         return RestAssured.given().log().all().
                 auth().oauth2(tokenResponse.getAccessToken()).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                get("/members/me").
-                then().
-                log().all().
-                statusCode(HttpStatus.OK.value()).
-                extract();
+                                  accept(MediaType.APPLICATION_JSON_VALUE).
+                                  when().
+                                  get("/members/me").
+                                  then().
+                                  log().all().
+                                  statusCode(HttpStatus.OK.value()).
+                                  extract();
     }
 }

@@ -1,21 +1,24 @@
 package wooteco.subway.line;
 
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
+
 import wooteco.subway.AcceptanceTest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
 import wooteco.subway.station.dto.StationResponse;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static wooteco.subway.line.LineAcceptanceTest.지하철_노선_등록되어_있음;
@@ -126,12 +129,12 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     public static void 지하철_노선에_지하철역_순서_정렬됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
         LineResponse line = response.as(LineResponse.class);
         List<Long> stationIds = line.getStations().stream()
-                .map(it -> it.getId())
-                .collect(Collectors.toList());
+                                    .map(it -> it.getId())
+                                    .collect(Collectors.toList());
 
         List<Long> expectedStationIds = expectedStations.stream()
-                .map(it -> it.getId())
-                .collect(Collectors.toList());
+                                                        .map(it -> it.getId())
+                                                        .collect(Collectors.toList());
 
         assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
     }

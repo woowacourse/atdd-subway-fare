@@ -2,7 +2,7 @@ package wooteco.subway.member.dto;
 
 public class EmailExistResponse {
 
-    private boolean exist;
+    private final boolean exist;
 
     public EmailExistResponse(boolean exist) {
         this.exist = exist;

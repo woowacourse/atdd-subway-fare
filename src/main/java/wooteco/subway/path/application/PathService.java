@@ -17,9 +17,9 @@ import wooteco.subway.station.domain.Station;
 @Service
 @Transactional
 public class PathService {
-    private LineService lineService;
-    private StationService stationService;
-    private PathFinder pathFinder;
+    private final LineService lineService;
+    private final StationService stationService;
+    private final PathFinder pathFinder;
 
     public PathService(LineService lineService, StationService stationService, PathFinder pathFinder) {
         this.lineService = lineService;

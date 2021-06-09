@@ -3,9 +3,9 @@ package wooteco.subway.line.dto;
 import wooteco.subway.line.domain.Line;
 
 public class SimpleLineResponse {
-    private Long id;
-    private String name;
-    private String color;
+    private final Long id;
+    private final String name;
+    private final String color;
 
     public SimpleLineResponse(Line line) {
         this(line.getId(), line.getName(), line.getColor());

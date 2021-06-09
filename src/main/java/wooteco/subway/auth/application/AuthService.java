@@ -3,6 +3,7 @@ package wooteco.subway.auth.application;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
@@ -16,8 +17,8 @@ import wooteco.subway.member.domain.NotLoginMember;
 @Service
 @Transactional(readOnly = true)
 public class AuthService {
-    private MemberDao memberDao;
-    private JwtTokenProvider jwtTokenProvider;
+    private final MemberDao memberDao;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public AuthService(MemberDao memberDao, JwtTokenProvider jwtTokenProvider) {
         this.memberDao = memberDao;
