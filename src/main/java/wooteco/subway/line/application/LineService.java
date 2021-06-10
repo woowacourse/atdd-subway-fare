@@ -74,11 +74,11 @@ public class LineService {
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line oldLine = findLineById(id);
 
-        if (!oldLine.isSameName(lineUpdateRequest.getName())) {
+        if (!oldLine.hasSameName(lineUpdateRequest.getName())) {
             validateDuplicatedName(lineUpdateRequest);
         }
 
-        if (!oldLine.isSameColor(lineUpdateRequest.getColor())) {
+        if (!oldLine.hasSameColor(lineUpdateRequest.getColor())) {
             validateDuplicatedColor(lineUpdateRequest);
         }
 

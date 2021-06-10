@@ -50,17 +50,12 @@ public class Line {
         return sections;
     }
 
-    public boolean isSameName(String name) {
+    public boolean hasSameName(String name) {
         return this.name.equals(name);
     }
 
-    public boolean isSameColor(String color) {
+    public boolean hasSameColor(String color) {
         return this.color.equals(color);
-    }
-
-    public void update(Line line) {
-        this.name = line.getName();
-        this.color = line.getColor();
     }
 
     public void addSection(Station upStation, Station downStation, int distance) {
