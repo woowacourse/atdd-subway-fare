@@ -58,13 +58,7 @@ public class Member {
         return age;
     }
 
-    public void checkPassword(String password) {
-        if (!StringUtils.equals(this.password, password)) {
-            throw new AuthorizationException("패스워드가 일치하지 않습니다.");
-        }
-    }
-
-    public boolean hasSameEmail(final String email) {
-        return this.email.equals(email);
+    public boolean hasSamePassword(String password) {
+        return StringUtils.equals(this.password, password);
     }
 }

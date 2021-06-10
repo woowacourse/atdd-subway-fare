@@ -24,7 +24,9 @@ public class AuthService {
 
     public TokenResponse login(TokenRequest request) {
         Member member = memberDao.findByEmail(request.getEmail());
-        member.checkPassword(request.getPassword());
+        if (!member.hasSamePassword(request.getPassword())) {
+            throw new AuthorizationException("패스워드가 일치하지 않습니다.");
+        }
 
         String token = jwtTokenProvider.createToken(request.getEmail());
         return new TokenResponse(token);
