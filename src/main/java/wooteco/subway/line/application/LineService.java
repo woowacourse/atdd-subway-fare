@@ -99,8 +99,6 @@ public class LineService {
 
     @Transactional
     public void deleteLineById(Long id) {
-        findLineById(id);
-
         lineDao.deleteById(id);
     }
 

@@ -41,17 +41,11 @@ public class StationService {
 
     @Transactional
     public void deleteStationById(Long id) {
-        stationDao.findById(id)
-                .orElseThrow(() -> new StationException("존재하지 않는 역입니다."));
-
         stationDao.deleteById(id);
     }
 
     @Transactional
     public void updateStationById(Long id, StationRequest stationRequest) {
-        stationDao.findById(id)
-                .orElseThrow(() -> new StationException("존재하지 않는 역입니다."));
-
         stationDao.updateById(id, stationRequest.getName());
     }
 

@@ -44,10 +44,11 @@ public class StationDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public int deleteById(Long id) {
+    public void deleteById(Long id) {
         try {
             String sql = "delete from STATION where id = ?";
-            return jdbcTemplate.update(sql, id);
+            int update = jdbcTemplate.update(sql, id);
+            verifyExecution(update);
         } catch (DataIntegrityViolationException e) {
             throw new StationException("이미 구간에 포함된 역을 삭제할 수 없습니다.");
         }
@@ -67,8 +68,15 @@ public class StationDao {
         return jdbcTemplate.queryForObject(sql, Boolean.class, name);
     }
 
-    public int updateById(Long id, String name) {
+    public void updateById(Long id, String name) {
         String sql = "update station set name = ? where id = ?";
-        return jdbcTemplate.update(sql, name, id);
+        int update = jdbcTemplate.update(sql, name, id);
+        verifyExecution(update);
+    }
+
+    private void verifyExecution(int update) {
+        if (update < 1) {
+            throw new StationException("해당 요청은 실행되지 않았습니다.");
+        }
     }
 }

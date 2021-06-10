@@ -65,7 +65,8 @@ public class LineDao {
 
     public void update(Line newLine) {
         String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, newLine.getName(), newLine.getColor(), newLine.getId());
+        int update = jdbcTemplate.update(sql, newLine.getName(), newLine.getColor(), newLine.getId());
+        verifyExecution(update);
     }
 
     public List<Line> findAll() {
@@ -136,7 +137,8 @@ public class LineDao {
     }
 
     public void deleteById(Long id) {
-        jdbcTemplate.update("delete from LINE where id = ?", id);
+        int update = jdbcTemplate.update("delete from LINE where id = ?", id);
+        verifyExecution(update);
     }
 
     public boolean isExistingName(final String name) {
@@ -154,5 +156,11 @@ public class LineDao {
         String sql = "SELECT DISTINCT L.id as line_id, L.name as line_name, L.color as line_color, L.extra_fare as extra_fare FROM LINE L " +
                 "left outer join SECTION S WHERE L.id = S.line_id AND (S.up_station_id =? OR S.down_station_id = ?)";
         return jdbcTemplate.query(sql, lineInfoRowMapper, station.getId(), station.getId());
+    }
+
+    private void verifyExecution(int update) {
+        if (update < 1) {
+            throw new LineException("해당 요청은 실행되지 않았습니다.");
+        }
     }
 }
