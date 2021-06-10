@@ -23,7 +23,7 @@ public class DistanceFarePolicyDecorator extends FarePolicyDecorator {
 
     @Override
     public int calculate() {
-        return super.calculate() + FarePolicyByDistance.of(distance).calculate.applyAsInt(distance);
+        return super.calculate() + FarePolicyByDistance.of(distance).calculate(distance);
     }
 
     enum FarePolicyByDistance {
@@ -31,15 +31,15 @@ public class DistanceFarePolicyDecorator extends FarePolicyDecorator {
         FIRST_SECTION((distance) -> FIRST_ADDITIONAL_FARE_SECTION < distance && distance <= SECOND_ADDITIONAL_FARE_SECTION, FarePolicyByDistance::fareInFirstSection),
         SECOND_SECTION((distance) -> SECOND_ADDITIONAL_FARE_SECTION < distance, FarePolicyByDistance::fareInSecondSection);
 
-        IntPredicate checkDistanceRange;
-        IntUnaryOperator calculate;
+        private IntPredicate checkDistanceRange;
+        private IntUnaryOperator calculate;
 
         FarePolicyByDistance(IntPredicate checkDistanceRange, IntUnaryOperator calculate) {
             this.checkDistanceRange = checkDistanceRange;
             this.calculate = calculate;
         }
 
-        private static FarePolicyByDistance of(int distance) {
+        public static FarePolicyByDistance of(int distance) {
             return Arrays.stream(values())
                     .filter(farePolicyByDistance -> farePolicyByDistance.checkDistanceRange.test(distance))
                     .findFirst()
@@ -59,6 +59,10 @@ public class DistanceFarePolicyDecorator extends FarePolicyDecorator {
 
         private static int calculateAdditionalFare(int additionalDistance, int unitDistance) {
             return (int) ((Math.ceil((additionalDistance - 1) / unitDistance) + 1) * FARE_PER_UNIT_DISTANCE);
+        }
+
+        public int calculate(int distance) {
+            return calculate.applyAsInt(distance);
         }
     }
 }
