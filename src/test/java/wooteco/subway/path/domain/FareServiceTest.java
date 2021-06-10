@@ -7,7 +7,6 @@ import wooteco.subway.path.application.FareService;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class FareServiceTest {
-
     private final FareService fareService = new FareService();
 
     @DisplayName("거리가 7일 때 기본 요금 반환")

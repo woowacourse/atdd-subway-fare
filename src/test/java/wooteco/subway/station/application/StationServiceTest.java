@@ -3,10 +3,11 @@ package wooteco.subway.station.application;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureJdbc;
 import org.springframework.boot.test.context.SpringBootTest;
 import wooteco.subway.ServiceTest;
-import wooteco.subway.line.application.LineService;
-import wooteco.subway.line.dto.LineRequest;
+import wooteco.subway.line.dao.LineDao;
+import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
@@ -14,12 +15,11 @@ import wooteco.subway.station.dto.StationResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@SpringBootTest
+@AutoConfigureJdbc
+@SpringBootTest(classes = {StationService.class, StationDao.class, LineDao.class})
 class StationServiceTest extends ServiceTest {
     @Autowired
     private StationService stationService;
-    @Autowired
-    private LineService lineService;
 
     @Test
     @DisplayName("역 정상 생성")

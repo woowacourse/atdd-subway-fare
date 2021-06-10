@@ -3,8 +3,10 @@ package wooteco.subway.member.application;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureJdbc;
 import org.springframework.boot.test.context.SpringBootTest;
 import wooteco.subway.ServiceTest;
+import wooteco.subway.member.dao.MemberDao;
 import wooteco.subway.member.domain.LoginUser;
 import wooteco.subway.member.dto.EmailExistsResponse;
 import wooteco.subway.member.dto.MemberRequest;
@@ -13,7 +15,8 @@ import wooteco.subway.member.dto.MemberResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@SpringBootTest
+@AutoConfigureJdbc
+@SpringBootTest(classes = {MemberService.class, MemberDao.class})
 class MemberServiceTest extends ServiceTest {
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
