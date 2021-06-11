@@ -1,74 +1,69 @@
 package wooteco.subway.line.domain;
 
-import wooteco.subway.station.domain.Station;
-
-import java.util.List;
+import java.util.Objects;
+import wooteco.subway.path.domain.Fare;
 
 public class Line {
-    private Long id;
-    private String name;
-    private String color;
-    private Sections sections = new Sections();
 
-    public Line() {
+    private final Id id;
+    private final Name name;
+    private final Color color;
+    private final Fare extraFare;
+
+    public Line(String name, String color, int extraFare) {
+        this(null, new Name(name), new Color(color), new Fare(extraFare));
     }
 
-    public Line(String name, String color) {
-        this.name = name;
-        this.color = color;
+    public Line(Long id, String name, String color, int extraFare) {
+        this(new Id(id), new Name(name), new Color(color), new Fare(extraFare));
     }
 
-    public Line(Long id, String name, String color) {
+    public Line(Id id, Name name, Color color, Fare extraFare) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
     }
 
-    public Line(Long id, String name, String color, Sections sections) {
-        this.id = id;
-        this.name = name;
-        this.color = color;
-        this.sections = sections;
+    public boolean isDuplicate(Line line) {
+        return name.equals(line.name);
     }
 
     public Long getId() {
-        return id;
+        return id.getValue();
     }
 
     public String getName() {
-        return name;
+        return name.getValue();
     }
 
     public String getColor() {
-        return color;
+        return color.getValue();
     }
 
-    public Sections getSections() {
-        return sections;
+    public int getExtraFare() {
+        return extraFare.getValue();
     }
 
-    public void update(Line line) {
-        this.name = line.getName();
-        this.color = line.getColor();
+    public boolean isNotEqual(Line line) {
+        return !id.equals(line.id);
     }
 
-    public void addSection(Station upStation, Station downStation, int distance) {
-        Section section = new Section(upStation, downStation, distance);
-        sections.addSection(section);
-    }
-
-    public void addSection(Section section) {
-        if (section == null) {
-            return;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
         }
-        sections.addSection(section);
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Line line = (Line) o;
+        return Objects.equals(id, line.id) && Objects.equals(name, line.name)
+            && Objects.equals(color, line.color);
     }
 
-    public void removeSection(Station station) {
-        sections.removeStation(station);
-    }
-
-    public List<Station> getStations() {
-        return sections.getStations();
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, color);
     }
 }

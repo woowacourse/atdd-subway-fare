@@ -1,53 +1,64 @@
 package wooteco.subway.station.dao;
 
+import java.util.List;
+import javax.sql.DataSource;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import wooteco.subway.exception.DuplicateStationNameException;
+import wooteco.subway.exception.NoSuchStationException;
 import wooteco.subway.station.domain.Station;
-
-import javax.sql.DataSource;
-import java.util.List;
 
 @Repository
 public class StationDao {
-    private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcInsert insertAction;
 
-    private RowMapper<Station> rowMapper = (rs, rowNum) ->
-            new Station(
-                    rs.getLong("id"),
-                    rs.getString("name")
-            );
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert jdbcInsert;
 
+    private final RowMapper<Station> rowMapper = (rs, rowNum) -> {
+        Long foundId = rs.getLong("id");
+        String name = rs.getString("name");
 
-    public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+        return new Station(foundId, name);
+    };
+
+    public StationDao(JdbcTemplate jdbcTemplate, DataSource source) {
         this.jdbcTemplate = jdbcTemplate;
-        this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("station")
-                .usingGeneratedKeyColumns("id");
+        this.jdbcInsert = new SimpleJdbcInsert(source)
+            .withTableName("STATION")
+            .usingGeneratedKeyColumns("id");
     }
 
     public Station insert(Station station) {
-        SqlParameterSource params = new BeanPropertySqlParameterSource(station);
-        Long id = insertAction.executeAndReturnKey(params).longValue();
-        return new Station(id, station.getName());
+        try {
+            SqlParameterSource params = new BeanPropertySqlParameterSource(station);
+            Long id = jdbcInsert.executeAndReturnKey(params).longValue();
+            return new Station(id, station.getName());
+        } catch (Exception e) {
+            throw new DuplicateStationNameException();
+        }
     }
 
     public List<Station> findAll() {
-        String sql = "select * from STATION";
+        String sql = "SELECT * FROM STATION";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public void deleteById(Long id) {
-        String sql = "delete from STATION where id = ?";
-        jdbcTemplate.update(sql, id);
+    public Station findById(Long id) {
+        try {
+            String sql = "SELECT * FROM STATION WHERE id = ?";
+            return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new NoSuchStationException();
+        }
     }
 
-    public Station findById(Long id) {
-        String sql = "select * from STATION where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    public int delete(Long id) {
+        String sql = "DELETE FROM STATION WHERE id = ?";
+        return jdbcTemplate.update(sql, id);
     }
 }

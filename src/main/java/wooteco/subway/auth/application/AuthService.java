@@ -5,15 +5,18 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
+import wooteco.subway.exception.AuthorizationException;
+import wooteco.subway.exception.InvalidEmailException;
+import wooteco.subway.exception.MismatchIdPasswordException;
 import wooteco.subway.member.dao.MemberDao;
-import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
 
 @Service
 @Transactional
 public class AuthService {
-    private MemberDao memberDao;
-    private JwtTokenProvider jwtTokenProvider;
+
+    private final MemberDao memberDao;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public AuthService(MemberDao memberDao, JwtTokenProvider jwtTokenProvider) {
         this.memberDao = memberDao;
@@ -21,27 +24,24 @@ public class AuthService {
     }
 
     public TokenResponse login(TokenRequest request) {
-        try {
-            Member member = memberDao.findByEmail(request.getEmail());
-            member.checkPassword(request.getPassword());
-        } catch (Exception e) {
-            throw new AuthorizationException();
-        }
+        Member member = memberDao.findByEmail(request.getEmail())
+            .orElseThrow(MismatchIdPasswordException::new);
+        member.checkPassword(request.getPassword());
+
         String token = jwtTokenProvider.createToken(request.getEmail());
         return new TokenResponse(token);
     }
 
-    public LoginMember findMemberByToken(String credentials) {
+    public Member findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
+            throw new AuthorizationException();
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
         try {
-            Member member = memberDao.findByEmail(email);
-            return new LoginMember(member.getId(), member.getEmail(), member.getAge());
+            return memberDao.findByEmail(email).orElseThrow(InvalidEmailException::new);
         } catch (Exception e) {
-            return new LoginMember();
+            throw new AuthorizationException();
         }
     }
 }

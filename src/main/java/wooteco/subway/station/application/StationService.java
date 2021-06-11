@@ -1,40 +1,61 @@
 package wooteco.subway.station.application;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.exception.StationAlreadyRegisteredInLineException;
+import wooteco.subway.section.dao.SectionDao;
+import wooteco.subway.section.domain.Sections;
 import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 import wooteco.subway.station.dto.StationRequest;
 import wooteco.subway.station.dto.StationResponse;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
 public class StationService {
-    private StationDao stationDao;
 
-    public StationService(StationDao stationDao) {
+    private final StationDao stationDao;
+    private final SectionDao sectionDao;
+
+    public StationService(StationDao stationDao, SectionDao sectionDao) {
         this.stationDao = stationDao;
+        this.sectionDao = sectionDao;
     }
 
-    public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationDao.insert(stationRequest.toStation());
-        return StationResponse.of(station);
-    }
-
-    public Station findStationById(Long id) {
-        return stationDao.findById(id);
-    }
-
-    public List<StationResponse> findAllStationResponses() {
+    public List<StationResponse> showStations() {
         List<Station> stations = stationDao.findAll();
 
         return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+            .map(StationResponse::of)
+            .collect(Collectors.toList());
     }
 
-    public void deleteStationById(Long id) {
-        stationDao.deleteById(id);
+    public Station findById(Long stationId) {
+        return stationDao.findById(stationId);
+    }
+
+    @Transactional
+    public StationResponse save(@Valid StationRequest stationRequest) {
+        Station station = stationRequest.toStation();
+        Station saveStation = stationDao.insert(station);
+        return StationResponse.of(saveStation);
+    }
+
+    @Transactional
+    public void delete(@NotNull Long id) {
+        validateExistOnLines(id);
+        stationDao.delete(id);
+    }
+
+    private void validateExistOnLines(Long id) {
+        Station station = stationDao.findById(id);
+        Sections sections = new Sections(sectionDao.findAll());
+        if (sections.hasStation(station)) {
+            throw new StationAlreadyRegisteredInLineException();
+        }
     }
 }
+

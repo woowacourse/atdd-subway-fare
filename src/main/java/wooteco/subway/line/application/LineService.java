@@ -1,92 +1,119 @@
 package wooteco.subway.line.application;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.exception.NoSuchLineException;
 import wooteco.subway.line.dao.LineDao;
-import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
-import wooteco.subway.line.domain.Section;
+import wooteco.subway.line.domain.Lines;
+import wooteco.subway.line.dto.CustomLineResponse;
+import wooteco.subway.line.dto.LineMapResponse;
 import wooteco.subway.line.dto.LineRequest;
 import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
-import wooteco.subway.station.application.StationService;
-import wooteco.subway.station.domain.Station;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import wooteco.subway.line.dto.UpdateLineRequest;
+import wooteco.subway.section.application.SectionService;
+import wooteco.subway.section.domain.Sections;
+import wooteco.subway.section.dto.SectionResponse;
+import wooteco.subway.section.dto.SectionServiceDto;
+import wooteco.subway.station.dto.StationResponse;
 
 @Service
 public class LineService {
-    private LineDao lineDao;
-    private SectionDao sectionDao;
-    private StationService stationService;
 
-    public LineService(LineDao lineDao, SectionDao sectionDao, StationService stationService) {
+    private static final int NOT_FOUND = 0;
+
+    private final LineDao lineDao;
+    private final SectionService sectionService;
+
+    public LineService(LineDao lineDao, SectionService sectionService) {
         this.lineDao = lineDao;
-        this.sectionDao = sectionDao;
-        this.stationService = stationService;
+        this.sectionService = sectionService;
     }
 
-    public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
-        persistLine.addSection(addInitSection(persistLine, request));
-        return LineResponse.of(persistLine);
+    @Transactional
+    public LineResponse createLine(@Valid LineRequest lineRequest) {
+        Line line = lineRequest.toLine();
+        Lines lines = new Lines(lineDao.findAll());
+        lines.validateDuplicate(line);
+
+        Line saveLine = lineDao.insert(line);
+
+        SectionServiceDto sectionServiceDto = SectionServiceDto.of(saveLine, lineRequest);
+        sectionService.saveByLineCreate(saveLine, sectionServiceDto);
+        List<StationResponse> stationResponses = sectionService.findStationResponsesByLind(saveLine);
+        return LineResponse.of(saveLine, stationResponses);
     }
 
-    private Section addInitSection(Line line, LineRequest request) {
-        if (request.getUpStationId() != null && request.getDownStationId() != null) {
-            Station upStation = stationService.findStationById(request.getUpStationId());
-            Station downStation = stationService.findStationById(request.getDownStationId());
-            Section section = new Section(upStation, downStation, request.getDistance());
-            return sectionDao.insert(line, section);
-        }
-        return null;
+    public List<CustomLineResponse> findCustomLineResponses() {
+        return lineDao.findAll()
+            .stream()
+            .map(line -> CustomLineResponse.of(line, sectionService.findSectionsByLine(line)))
+            .collect(Collectors.toList());
     }
 
-    public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
-        return persistLines.stream()
-                .map(line -> LineResponse.of(line))
-                .collect(Collectors.toList());
-    }
-
-    public List<Line> findLines() {
+    public List<Line> findAll() {
         return lineDao.findAll();
     }
 
-    public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
+    public LineResponse findOne(Long lineId) {
+        Line line = lineDao.find(lineId);
+        List<StationResponse> stationResponses = sectionService.findStationResponsesByLind(line);
+        return LineResponse.of(line, stationResponses);
     }
 
-    public Line findLineById(Long id) {
-        return lineDao.findById(id);
+    public List<Sections> findAllSections() {
+        return lineDao.findAll()
+            .stream()
+            .map(sectionService::findSectionsByLine)
+            .collect(Collectors.toList());
     }
 
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+    @Transactional
+    public void update(Long lineId, UpdateLineRequest lineRequest) {
+        Line line = lineRequest.toLine();
+        Lines lines = new Lines(lineDao.findAll());
+        lines.validateDuplicate(line);
+
+        if (lineDao.update(lineId, line) == NOT_FOUND) {
+            throw new NoSuchLineException();
+        }
     }
 
-    public void deleteLineById(Long id) {
-        lineDao.deleteById(id);
+    @Transactional
+    public void delete(Long lineId) {
+        if (lineDao.delete(lineId) == NOT_FOUND) {
+            throw new NoSuchLineException();
+        }
     }
 
-    public void addLineStation(Long lineId, SectionRequest request) {
-        Line line = findLineById(lineId);
-        Station upStation = stationService.findStationById(request.getUpStationId());
-        Station downStation = stationService.findStationById(request.getDownStationId());
-        line.addSection(upStation, downStation, request.getDistance());
-
-        sectionDao.deleteByLineId(lineId);
-        sectionDao.insertSections(line);
+    @Transactional
+    public void createSection(Long lineId, SectionRequest sectionRequest) {
+        Line line = lineDao.find(lineId);
+        SectionServiceDto sectionServiceDto = SectionServiceDto.from(lineId, sectionRequest);
+        sectionService.save(line, sectionServiceDto);
     }
 
-    public void removeLineStation(Long lineId, Long stationId) {
-        Line line = findLineById(lineId);
-        Station station = stationService.findStationById(stationId);
-        line.removeSection(station);
-
-        sectionDao.deleteByLineId(lineId);
-        sectionDao.insertSections(line);
+    @Transactional
+    public void deleteStation(@NotNull Long lineId, @NotNull Long stationId) {
+        Line line = lineDao.find(lineId);
+        sectionService.delete(line, stationId);
     }
 
+    public List<LineMapResponse> findLineMapResponses() {
+        List<LineMapResponse> lineMapResponses = new ArrayList<>();
+        Lines lines = new Lines(lineDao.findAll());
+
+        for (Line line : lines.sortedByName()) {
+            List<SectionResponse> sectionResponses = sectionService.findSectionResponses(line);
+            lineMapResponses.add(LineMapResponse.of(line, sectionResponses));
+        }
+
+        return lineMapResponses;
+    }
 }

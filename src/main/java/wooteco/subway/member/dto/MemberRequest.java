@@ -1,10 +1,15 @@
 package wooteco.subway.member.dto;
 
+import javax.validation.constraints.NotNull;
 import wooteco.subway.member.domain.Member;
 
 public class MemberRequest {
+
+    @NotNull(message = "INVALID_INPUT")
     private String email;
+    @NotNull(message = "INVALID_INPUT")
     private String password;
+    @NotNull(message = "INVALID_INPUT")
     private Integer age;
 
     public MemberRequest() {

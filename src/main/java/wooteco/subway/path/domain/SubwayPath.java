@@ -1,27 +1,30 @@
 package wooteco.subway.path.domain;
 
-import wooteco.subway.station.domain.Station;
-
 import java.util.List;
+import wooteco.subway.line.domain.Lines;
+import wooteco.subway.section.domain.Distance;
+import wooteco.subway.station.domain.Station;
+import wooteco.subway.station.domain.Stations;
 
 public class SubwayPath {
-    private List<SectionEdge> sectionEdges;
-    private List<Station> stations;
+
+    private final SectionEdges sectionEdges;
+    private final Stations stations;
 
     public SubwayPath(List<SectionEdge> sectionEdges, List<Station> stations) {
-        this.sectionEdges = sectionEdges;
-        this.stations = stations;
+        this.sectionEdges = new SectionEdges(sectionEdges);
+        this.stations = new Stations(stations);
     }
 
-    public List<SectionEdge> getSectionEdges() {
-        return sectionEdges;
+    public Lines getLines() {
+        return new Lines(sectionEdges.getLines());
     }
 
-    public List<Station> getStations() {
+    public Stations getStations() {
         return stations;
     }
 
-    public int calculateDistance() {
-        return sectionEdges.stream().mapToInt(it -> it.getSection().getDistance()).sum();
+    public Distance calculateDistance() {
+        return new Distance(sectionEdges.calculateDistance());
     }
 }

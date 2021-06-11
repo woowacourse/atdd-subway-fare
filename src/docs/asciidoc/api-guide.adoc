@@ -1,0 +1,199 @@
+ifndef::snippets[]
+:snippets: ../../../build/generated-snippets
+endif::[]
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+== Stations (역)
+
+=== 역 생성
+
+==== Request
+
+include::{snippets}/createStation/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/createStation/http-response.adoc[]
+
+=== 역 조회
+
+==== Request
+
+include::{snippets}/showStations/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/showStations/http-response.adoc[]
+
+=== 역 삭제
+
+==== Request
+
+include::{snippets}/deleteStation/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/deleteStation/http-response.adoc[]
+
+== Lines (노선)
+
+=== 노선 생성
+
+==== Request
+
+include::{snippets}/createLine/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/createLine/http-response.adoc[]
+
+=== 노선 조회
+
+==== Request
+
+include::{snippets}/findAllLines/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/findAllLines/http-response.adoc[]
+
+=== 노선 ID 조회
+
+==== Request
+
+include::{snippets}/findLineById/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/findLineById/http-response.adoc[]
+
+=== 노선 수정
+
+==== Request
+
+include::{snippets}/updateLine/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/updateLine/http-response.adoc[]
+
+=== 노선 삭제
+
+==== Request
+
+include::{snippets}/deleteLine/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/deleteLine/http-response.adoc[]
+
+=== 신규 전체 노선 조
+
+==== Request
+
+include::{snippets}/findLineMap/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/findLineMap/http-response.adoc[]
+
+== Section (구간)
+
+=== 구간 삭제
+
+==== Request
+
+include::{snippets}/removeLineStation/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/removeLineStation/http-response.adoc[]
+
+=== 구간 생성
+
+==== Request
+
+include::{snippets}/addLineStation/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/addLineStation/http-response.adoc[]
+
+== Path (경로)
+
+=== 경로 검색
+
+==== Request
+
+include::{snippets}/findPath/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/findPath/http-response.adoc[]
+
+== Auth (인증)
+
+=== 유저 로그인
+
+==== Request
+
+include::{snippets}/login/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/login/http-response.adoc[]
+
+== Member (유저)
+
+=== 유저 생성
+
+==== Request
+
+include::{snippets}/createMember/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/createMember/http-response.adoc[]
+
+=== 현재 유저 조회
+
+==== Request
+
+include::{snippets}/findMemberOfMine/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/findMemberOfMine/http-response.adoc[]
+
+=== 현재 유저 수정
+
+==== Request
+
+include::{snippets}/updateMemberOfMine/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/updateMemberOfMine/http-response.adoc[]
+
+=== 현재 유저 삭제
+
+==== Request
+
+include::{snippets}/deleteMemberOfMine/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/deleteMemberOfMine/http-response.adoc[]
+
+=== 유저 이메일 중복 확인
+
+==== Request
+
+include::{snippets}/validateMemberEmail/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/validateMemberEmail/http-response.adoc[]

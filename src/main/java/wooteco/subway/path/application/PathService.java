@@ -1,41 +1,59 @@
 package wooteco.subway.path.application;
 
+import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wooteco.subway.exception.AuthorizationException;
+import wooteco.subway.exception.InvalidPathException;
 import wooteco.subway.line.application.LineService;
-import wooteco.subway.line.domain.Line;
-import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.domain.User;
+import wooteco.subway.path.domain.Fare;
 import wooteco.subway.path.domain.SubwayPath;
 import wooteco.subway.path.dto.PathResponse;
 import wooteco.subway.path.dto.PathResponseAssembler;
+import wooteco.subway.section.domain.Sections;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
 
-import java.util.List;
-
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class PathService {
-    private LineService lineService;
-    private StationService stationService;
-    private PathFinder pathFinder;
 
-    public PathService(LineService lineService, StationService stationService, PathFinder pathFinder) {
-        this.lineService = lineService;
+    private final StationService stationService;
+    private final LineService lineService;
+    private final PathFinder pathFinder;
+    private final FareService fareService;
+
+    public PathService(StationService stationService, LineService lineService, PathFinder pathFinder, FareService fareService) {
         this.stationService = stationService;
+        this.lineService = lineService;
         this.pathFinder = pathFinder;
+        this.fareService = fareService;
     }
 
-    public PathResponse findPath(Long source, Long target) {
+    public PathResponse findPath(User user, Long source, Long target) {
         try {
-            List<Line> lines = lineService.findLines();
-            Station sourceStation = stationService.findStationById(source);
-            Station targetStation = stationService.findStationById(target);
-            SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
+            Station sourceStation = stationService.findById(source);
+            Station targetStation = stationService.findById(target);
+            List<Sections> sectionsList = lineService.findAllSections();
 
-            return PathResponseAssembler.assemble(subwayPath);
+            SubwayPath subwayPath = pathFinder.findPath(sectionsList, sourceStation, targetStation);
+            Fare fare = calculateTotalFare(user, subwayPath);
+            return PathResponseAssembler.assemble(subwayPath, fare);
         } catch (Exception e) {
             throw new InvalidPathException();
         }
     }
+
+    private Fare calculateTotalFare(User user, SubwayPath subwayPath) {
+        Fare fare = fareService.calculateFare(subwayPath.calculateDistance());
+        Fare extraFare = fareService.calculateExtraFare(fare, subwayPath.getLines());
+
+        try {
+            return fareService.discountFareByAge(user.getAge(), extraFare.getValue());
+        } catch (AuthorizationException e) {
+            return extraFare;
+        }
+    }
+
 }
