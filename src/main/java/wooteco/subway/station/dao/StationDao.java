@@ -13,21 +13,30 @@ import java.util.List;
 
 @Repository
 public class StationDao {
-    private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcInsert insertAction;
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<Station> rowMapper = (rs, rowNum) ->
+    private final RowMapper<Station> rowMapper = (rs, rowNum) ->
             new Station(
                     rs.getLong("id"),
                     rs.getString("name")
             );
 
-
     public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("station")
+                .withTableName("STATION")
                 .usingGeneratedKeyColumns("id");
+    }
+
+    public boolean exists(String name) {
+        String sql = "select exists (select * from STATION where name = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, name);
+    }
+
+    public boolean exists(Long id) {
+        String sql = "select exists (select * from STATION where id = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, id);
     }
 
     public Station insert(Station station) {
@@ -41,13 +50,18 @@ public class StationDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public void deleteById(Long id) {
-        String sql = "delete from STATION where id = ?";
-        jdbcTemplate.update(sql, id);
-    }
-
     public Station findById(Long id) {
         String sql = "select * from STATION where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    }
+
+    public void update(Station station) {
+        String sql = "update STATION set name = ? where id = ?";
+        jdbcTemplate.update(sql, station.getName(), station.getId());
+    }
+
+    public void deleteById(Long id) {
+        String sql = "delete from STATION where id = ?";
+        jdbcTemplate.update(sql, id);
     }
 }

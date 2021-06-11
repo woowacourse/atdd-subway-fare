@@ -12,15 +12,15 @@ import wooteco.subway.auth.dto.TokenResponse;
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class AuthController {
-    private AuthService authService;
+    private final AuthService authService;
 
     public AuthController(AuthService authService) {
         this.authService = authService;
     }
 
-    @PostMapping("/login/token")
+    @PostMapping("/api/login")
     public ResponseEntity<TokenResponse> login(@RequestBody TokenRequest request) {
         TokenResponse token = authService.login(request);
-        return ResponseEntity.ok().body(token);
+        return ResponseEntity.ok(token);
     }
 }

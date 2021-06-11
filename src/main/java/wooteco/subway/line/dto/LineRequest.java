@@ -1,18 +1,43 @@
 package wooteco.subway.line.dto;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+
 public class LineRequest {
+    @NotBlank(message = "입력되지 않은 항목을 확인해주세요")
     private String name;
+    @NotBlank(message = "입력되지 않은 항목을 확인해주세요")
     private String color;
+    private int extraFare;
+    @NotNull(message = "입력되지 않은 항목을 확인해주세요")
+    @Positive
     private Long upStationId;
+    @NotNull(message = "입력되지 않은 항목을 확인해주세요")
+    @Positive
     private Long downStationId;
+    @NotNull(message = "입력되지 않은 항목을 확인해주세요")
+    @Min(value = 1, message = "거리는 1 이상의 숫자를 입력해주세요")
     private int distance;
 
     public LineRequest() {
     }
 
-    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance) {
+    public LineRequest(String name, String color,
+                       Long upStationId, Long downStationId, int distance) {
         this.name = name;
         this.color = color;
+        this.upStationId = upStationId;
+        this.downStationId = downStationId;
+        this.distance = distance;
+    }
+
+    public LineRequest(String name, String color, int extraFare,
+                       Long upStationId, Long downStationId, int distance) {
+        this.name = name;
+        this.color = color;
+        this.extraFare = extraFare;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
@@ -24,6 +49,10 @@ public class LineRequest {
 
     public String getColor() {
         return color;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 
     public Long getUpStationId() {

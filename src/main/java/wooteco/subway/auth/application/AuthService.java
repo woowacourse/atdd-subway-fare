@@ -5,15 +5,18 @@ import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
+import wooteco.subway.exception.member.InvalidLoginException;
 import wooteco.subway.member.dao.MemberDao;
+import wooteco.subway.member.domain.GuestMember;
 import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
+import wooteco.subway.member.domain.User;
 
 @Service
 @Transactional
 public class AuthService {
-    private MemberDao memberDao;
-    private JwtTokenProvider jwtTokenProvider;
+    private final MemberDao memberDao;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public AuthService(MemberDao memberDao, JwtTokenProvider jwtTokenProvider) {
         this.memberDao = memberDao;
@@ -25,23 +28,23 @@ public class AuthService {
             Member member = memberDao.findByEmail(request.getEmail());
             member.checkPassword(request.getPassword());
         } catch (Exception e) {
-            throw new AuthorizationException();
+            throw new InvalidLoginException();
         }
         String token = jwtTokenProvider.createToken(request.getEmail());
         return new TokenResponse(token);
     }
 
-    public LoginMember findMemberByToken(String credentials) {
-        if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
+    public User findMemberByToken(String token) {
+        if (!jwtTokenProvider.validateToken(token)) {
+            return new GuestMember();
         }
 
-        String email = jwtTokenProvider.getPayload(credentials);
+        String email = jwtTokenProvider.getPayload(token);
         try {
             Member member = memberDao.findByEmail(email);
             return new LoginMember(member.getId(), member.getEmail(), member.getAge());
         } catch (Exception e) {
-            return new LoginMember();
+            return new GuestMember();
         }
     }
 }

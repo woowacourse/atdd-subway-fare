@@ -13,12 +13,12 @@ import wooteco.subway.station.dao.StationDao;
 import wooteco.subway.station.domain.Station;
 
 @Component
-@Profile("!test")
+@Profile("local")
 public class DataLoader implements CommandLineRunner {
-    private StationDao stationDao;
-    private LineDao lineDao;
-    private SectionDao sectionDao;
-    private MemberDao memberDao;
+    private final StationDao stationDao;
+    private final LineDao lineDao;
+    private final SectionDao sectionDao;
+    private final MemberDao memberDao;
 
     public DataLoader(StationDao stationDao, LineDao lineDao, SectionDao sectionDao, MemberDao memberDao) {
         this.stationDao = stationDao;
@@ -28,7 +28,7 @@ public class DataLoader implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         Station 강남역 = stationDao.insert(new Station("강남역"));
         Station 판교역 = stationDao.insert(new Station("판교역"));
         Station 정자역 = stationDao.insert(new Station("정자역"));
@@ -49,4 +49,3 @@ public class DataLoader implements CommandLineRunner {
         memberDao.insert(member);
     }
 }
-
