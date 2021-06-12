@@ -27,10 +27,13 @@ public class SectionDao {
     public Section insert(Line line, Section section) {
         Map<String, Object> params = new HashMap();
         params.put("line_id", line.getId());
-        params.put("up_station_id", section.getUpStation().getId());
-        params.put("down_station_id", section.getDownStation().getId());
+        params.put("up_station_id", section.getUpStation()
+                .getId());
+        params.put("down_station_id", section.getDownStation()
+                .getId());
         params.put("distance", section.getDistance());
-        Long sectionId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
+        Long sectionId = simpleJdbcInsert.executeAndReturnKey(params)
+                .longValue();
         return new Section(sectionId, section.getUpStation(), section.getDownStation(), section.getDistance());
     }
 
@@ -39,13 +42,16 @@ public class SectionDao {
     }
 
     public void insertSections(Line line) {
-        List<Section> sections = line.getSections().getSections();
+        List<Section> sections = line.getSections()
+                .getSections();
         List<Map<String, Object>> batchValues = sections.stream()
                 .map(section -> {
                     Map<String, Object> params = new HashMap<>();
                     params.put("line_id", line.getId());
-                    params.put("up_station_id", section.getUpStation().getId());
-                    params.put("down_station_id", section.getDownStation().getId());
+                    params.put("up_station_id", section.getUpStation()
+                            .getId());
+                    params.put("down_station_id", section.getDownStation()
+                            .getId());
                     params.put("distance", section.getDistance());
                     return params;
                 })

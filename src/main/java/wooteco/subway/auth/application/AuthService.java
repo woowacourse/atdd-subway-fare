@@ -6,8 +6,10 @@ import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
-import wooteco.subway.member.domain.LoginMember;
+import wooteco.subway.member.domain.LoginUser;
 import wooteco.subway.member.domain.Member;
+
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -21,27 +23,26 @@ public class AuthService {
     }
 
     public TokenResponse login(TokenRequest request) {
-        try {
-            Member member = memberDao.findByEmail(request.getEmail());
-            member.checkPassword(request.getPassword());
-        } catch (Exception e) {
-            throw new AuthorizationException();
+        Member member = memberDao.findByEmail(request.getEmail());
+        if (!member.hasSamePassword(request.getPassword())) {
+            throw new AuthorizationException("패스워드가 일치하지 않습니다.");
         }
+
         String token = jwtTokenProvider.createToken(request.getEmail());
         return new TokenResponse(token);
     }
 
-    public LoginMember findMemberByToken(String credentials) {
+    public Optional<LoginUser> findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
+            return Optional.empty();
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
         try {
             Member member = memberDao.findByEmail(email);
-            return new LoginMember(member.getId(), member.getEmail(), member.getAge());
-        } catch (Exception e) {
-            return new LoginMember();
+            return Optional.of(new LoginUser(member));
+        } catch (AuthorizationException e) {
+            return Optional.empty();
         }
     }
 }

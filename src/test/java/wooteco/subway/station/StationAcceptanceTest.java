@@ -67,10 +67,20 @@ public class StationAcceptanceTest extends AcceptanceTest {
         StationResponse stationResponse = 지하철역_등록되어_있음(강남역);
 
         // when
-        ExtractableResponse<Response> response = 지하철역_제거_요청(stationResponse);
+        ExtractableResponse<Response> response = 지하철역_제거_요청(stationResponse.getId());
 
         // then
         지하철역_삭제됨(response);
+    }
+
+    @DisplayName("존재하지 않는 id로 역 제거를 요청한다.")
+    @Test
+    void deleteStationWithNonExistId() {
+        // when
+        ExtractableResponse<Response> response = 지하철역_제거_요청(Long.MAX_VALUE);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static StationResponse 지하철역_등록되어_있음(String name) {
@@ -81,27 +91,30 @@ public class StationAcceptanceTest extends AcceptanceTest {
         StationRequest stationRequest = new StationRequest(name);
 
         return RestAssured
-                .given().log().all()
+                .given()
                 .body(stationRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/stations")
-                .then().log().all()
+                .when()
+                .post("/stations")
+                .then()
                 .extract();
     }
 
     public static ExtractableResponse<Response> 지하철역_목록_조회_요청() {
         return RestAssured
-                .given().log().all()
-                .when().get("/stations")
-                .then().log().all()
+                .given()
+                .when()
+                .get("/stations")
+                .then()
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 지하철역_제거_요청(StationResponse stationResponse) {
+    public static ExtractableResponse<Response> 지하철역_제거_요청(Long stationId) {
         return RestAssured
-                .given().log().all()
-                .when().delete("/stations/" + stationResponse.getId())
-                .then().log().all()
+                .given()
+                .when()
+                .delete("/stations/" + stationId)
+                .then()
                 .extract();
     }
 
@@ -124,10 +137,12 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철역_목록_포함됨(ExtractableResponse<Response> response, List<StationResponse> createdResponses) {
         List<Long> expectedLineIds = createdResponses.stream()
-                .map(it -> it.getId())
+                .map(StationResponse::getId)
                 .collect(Collectors.toList());
 
-        List<Long> resultLineIds = response.jsonPath().getList(".", StationResponse.class).stream()
+        List<Long> resultLineIds = response.jsonPath()
+                .getList(".", StationResponse.class)
+                .stream()
                 .map(StationResponse::getId)
                 .collect(Collectors.toList());
 
