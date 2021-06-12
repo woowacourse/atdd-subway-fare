@@ -1,6 +1,7 @@
 package wooteco.subway.line.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.line.dao.LineDao;
 import wooteco.subway.line.dao.SectionDao;
 import wooteco.subway.line.domain.Line;
@@ -10,11 +11,14 @@ import wooteco.subway.line.dto.LineResponse;
 import wooteco.subway.line.dto.SectionRequest;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
+import wooteco.subway.station.dto.StationResponse;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class LineService {
     private LineDao lineDao;
     private SectionDao sectionDao;
@@ -26,10 +30,14 @@ public class LineService {
         this.stationService = stationService;
     }
 
+    @Transactional
     public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
+        validateDuplicatedName(request);
+        validateDuplicatedColor(request);
+
+        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), request.getExtraFare()));
         persistLine.addSection(addInitSection(persistLine, request));
-        return LineResponse.of(persistLine);
+        return toLineResponse(persistLine);
     }
 
     private Section addInitSection(Line line, LineRequest request) {
@@ -43,9 +51,9 @@ public class LineService {
     }
 
     public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
-        return persistLines.stream()
-                .map(line -> LineResponse.of(line))
+        return findLines().stream()
+                .map(this::toLineResponse)
+                .sorted(Comparator.comparing(LineResponse::getName))
                 .collect(Collectors.toList());
     }
 
@@ -54,22 +62,49 @@ public class LineService {
     }
 
     public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
+        return toLineResponse(findLineById(id));
     }
 
     public Line findLineById(Long id) {
-        return lineDao.findById(id);
+        return lineDao.findById(id)
+                .orElseThrow(() -> new LineException("존재하지 않는 노선입니다."));
     }
 
+    @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
+        Line oldLine = findLineById(id);
+
+        if (!oldLine.isSameName(lineUpdateRequest.getName())) {
+            validateDuplicatedName(lineUpdateRequest);
+        }
+
+        if (!oldLine.isSameColor(lineUpdateRequest.getColor())) {
+            validateDuplicatedColor(lineUpdateRequest);
+        }
+
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
+    private void validateDuplicatedColor(LineRequest lineUpdateRequest) {
+        if (lineDao.isExistColor(lineUpdateRequest.getColor())) {
+            throw new LineException("이미 존재하는 노선 색상입니다.");
+        }
+    }
+
+    private void validateDuplicatedName(LineRequest lineUpdateRequest) {
+        if (lineDao.isExistName(lineUpdateRequest.getName())) {
+            throw new LineException("이미 존재하는 노선 이름입니다.");
+        }
+    }
+
+    @Transactional
     public void deleteLineById(Long id) {
+        findLineById(id);
+
         lineDao.deleteById(id);
     }
 
+    @Transactional
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
@@ -80,6 +115,7 @@ public class LineService {
         sectionDao.insertSections(line);
     }
 
+    @Transactional
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
@@ -89,4 +125,13 @@ public class LineService {
         sectionDao.insertSections(line);
     }
 
+    private LineResponse toLineResponse(Line line) {
+        List<StationResponse> stations = line.getStations()
+                .stream()
+                .map(stationService::toStationResponse)
+                .collect(Collectors.toList());
+        return LineResponse.of(line, stations);
+    }
 }
+
+

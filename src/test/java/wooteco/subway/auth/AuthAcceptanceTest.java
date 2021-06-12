@@ -13,6 +13,7 @@ import wooteco.subway.auth.dto.TokenResponse;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static wooteco.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static wooteco.subway.member.MemberAcceptanceTest.회원_정보_조회됨;
 
@@ -21,28 +22,68 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     private static final String PASSWORD = "password";
     private static final Integer AGE = 20;
 
+    @DisplayName("올바르지 않은 회원 가입 요청")
+    @Test
+    void invalidSingIn() {
+        ExtractableResponse<Response> response = 회원_등록되어_있음("", PASSWORD, AGE);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
     @DisplayName("Bearer Auth")
     @Test
     void myInfoWithBearerAuth() {
-        // given
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
         TokenResponse tokenResponse = 로그인되어_있음(EMAIL, PASSWORD);
 
-        // when
         ExtractableResponse<Response> response = 내_회원_정보_조회_요청(tokenResponse);
 
-        // then
         회원_정보_조회됨(response, EMAIL, AGE);
     }
 
-    @DisplayName("Bearer Auth 로그인 실패")
+    @DisplayName("Bearer Auth 로그인 실패 :: invalid email address")
     @Test
-    void myInfoWithBadBearerAuth() {
+    void InvalidEmailAddress() {
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
 
         Map<String, String> params = new HashMap<>();
-        params.put("email", EMAIL + "OTHER");
+        params.put("email", "");
         params.put("password", PASSWORD);
+
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("Bearer Auth 로그인 실패 :: non exist email address")
+    @Test
+    void myInfoWithNonExistEmailAddress() {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("email", EMAIL + "other");
+        params.put("password", PASSWORD);
+
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @DisplayName("Bearer Auth 로그인 실패 :: invalid password")
+    @Test
+    void myInfoWithInvalidPassword() {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("email", EMAIL);
+        params.put("password", PASSWORD + "other");
 
         RestAssured
                 .given().log().all()

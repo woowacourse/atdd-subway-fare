@@ -6,11 +6,13 @@ import wooteco.subway.auth.dto.TokenRequest;
 import wooteco.subway.auth.dto.TokenResponse;
 import wooteco.subway.auth.infrastructure.JwtTokenProvider;
 import wooteco.subway.member.dao.MemberDao;
-import wooteco.subway.member.domain.LoginMember;
 import wooteco.subway.member.domain.Member;
+import wooteco.subway.member.domain.User;
 
+import java.util.Optional;
+
+@Transactional(readOnly = true)
 @Service
-@Transactional
 public class AuthService {
     private MemberDao memberDao;
     private JwtTokenProvider jwtTokenProvider;
@@ -21,27 +23,24 @@ public class AuthService {
     }
 
     public TokenResponse login(TokenRequest request) {
-        try {
-            Member member = memberDao.findByEmail(request.getEmail());
-            member.checkPassword(request.getPassword());
-        } catch (Exception e) {
-            throw new AuthorizationException();
-        }
+        Member member = memberDao.findByEmail(request.getEmail());
+        member.checkPassword(request.getPassword());
+
         String token = jwtTokenProvider.createToken(request.getEmail());
         return new TokenResponse(token);
     }
 
-    public LoginMember findMemberByToken(String credentials) {
+    public Optional<User> findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
+            return Optional.empty();
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
         try {
             Member member = memberDao.findByEmail(email);
-            return new LoginMember(member.getId(), member.getEmail(), member.getAge());
+            return Optional.of(new User(member.getId(), member.getEmail(), member.getAge()));
         } catch (Exception e) {
-            return new LoginMember();
+            return Optional.empty();
         }
     }
 }

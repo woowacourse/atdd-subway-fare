@@ -1,20 +1,20 @@
 package wooteco.subway.path.application;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import wooteco.subway.line.application.LineService;
-import wooteco.subway.line.domain.Line;
-import wooteco.subway.member.domain.LoginMember;
-import wooteco.subway.path.domain.SubwayPath;
+import wooteco.subway.member.domain.MemberType;
+import wooteco.subway.member.domain.User;
+import wooteco.subway.path.domain.SubwayRoute;
+import wooteco.subway.path.domain.fair.FarePolicy;
+import wooteco.subway.path.domain.finder.PathFinder;
 import wooteco.subway.path.dto.PathResponse;
-import wooteco.subway.path.dto.PathResponseAssembler;
 import wooteco.subway.station.application.StationService;
 import wooteco.subway.station.domain.Station;
+import wooteco.subway.station.dto.StationResponse;
 
 import java.util.List;
 
 @Service
-@Transactional
 public class PathService {
     private LineService lineService;
     private StationService stationService;
@@ -26,16 +26,27 @@ public class PathService {
         this.pathFinder = pathFinder;
     }
 
-    public PathResponse findPath(Long source, Long target) {
-        try {
-            List<Line> lines = lineService.findLines();
-            Station sourceStation = stationService.findStationById(source);
-            Station targetStation = stationService.findStationById(target);
-            SubwayPath subwayPath = pathFinder.findPath(lines, sourceStation, targetStation);
+    public PathResponse findPath(Long sourceId, Long targetId, User user) {
+        MemberType memberType = MemberType.of(user);
+        SubwayRoute route = findRoute(sourceId, targetId);
 
-            return PathResponseAssembler.assemble(subwayPath);
+        return pathResponse(route, memberType);
+    }
+
+    private SubwayRoute findRoute(Long sourceId, Long targetId) {
+        try {
+            Station source = stationService.findStationById(sourceId);
+            Station target = stationService.findStationById(targetId);
+            return pathFinder.find(lineService.findLines(), source, target);
         } catch (Exception e) {
-            throw new InvalidPathException();
+            throw new PathException("적절하지 않은 구간의 경로 탐색입니다.");
         }
+    }
+
+    private PathResponse pathResponse(SubwayRoute route, MemberType memberType) {
+        int fare = FarePolicy.calculate(route.distance(), route.extraFare(), memberType);
+        List<StationResponse> stationResponses = stationService.stationResponses(route.stations());
+
+        return new PathResponse(stationResponses, route.distance(), fare);
     }
 }

@@ -67,10 +67,20 @@ public class StationAcceptanceTest extends AcceptanceTest {
         StationResponse stationResponse = 지하철역_등록되어_있음(강남역);
 
         // when
-        ExtractableResponse<Response> response = 지하철역_제거_요청(stationResponse);
+        ExtractableResponse<Response> response = 지하철역_제거_요청(stationResponse.getId());
 
         // then
         지하철역_삭제됨(response);
+    }
+
+    @DisplayName("존재하지 않는 id로 역 제거를 요청한다.")
+    @Test
+    void deleteStationWithNonExistId() {
+        // when
+        ExtractableResponse<Response> response = 지하철역_제거_요청(Long.MAX_VALUE);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static StationResponse 지하철역_등록되어_있음(String name) {
@@ -97,10 +107,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 지하철역_제거_요청(StationResponse stationResponse) {
+    public static ExtractableResponse<Response> 지하철역_제거_요청(Long stationId) {
         return RestAssured
                 .given().log().all()
-                .when().delete("/stations/" + stationResponse.getId())
+                .when().delete("/stations/" + stationId)
                 .then().log().all()
                 .extract();
     }
